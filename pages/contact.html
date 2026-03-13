@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — ShelfSmart</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="scanlines"></div>
+  <div class="noise"></div>
+
+  <nav class="nav">
+    <a href="../index.html" class="nav-logo">
+      <span class="logo-shelf">Shelf</span><span class="logo-smart">Smart</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+      <li><a href="privacy.html">Privacy</a></li>
+    </ul>
+    <div class="nav-status">
+      <span class="status-dot"></span>
+      <span class="status-text">SYSTEM ONLINE</span>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="page-hero-grid"></div>
+    <div class="section-tag">// MAKE_CONTACT</div>
+    <h1 class="section-title">CONTACT <span class="accent">US</span></h1>
+    <p class="section-sub">Ready to bring ShelfSmart and AuraAI into your business? Let's talk.</p>
+  </section>
+
+  <section class="section">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="section-tag">// TRANSMISSION_CHANNELS</div>
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; letter-spacing:3px; margin-bottom:2rem;">GET IN <span class="accent">TOUCH</span></h2>
+        <div class="contact-item">
+          <span class="contact-icon">◈</span>
+          <div>
+            <div class="contact-label">EMAIL</div>
+            <div class="contact-value">hello@shelfsmart.ai</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">⬡</span>
+          <div>
+            <div class="contact-label">DISCORD</div>
+            <div class="contact-value">Join our server to talk to AuraAI directly</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">⬟</span>
+          <div>
+            <div class="contact-label">RESPONSE TIME</div>
+            <div class="contact-value">Within 24 hours — usually faster</div>
+          </div>
+        </div>
+        <div class="terminal-mini">
+          <div class="terminal-header">
+            <span class="t-dot red"></span>
+            <span class="t-dot yellow"></span>
+            <span class="t-dot green"></span>
+            <span class="t-title">STATUS</span>
+          </div>
+          <div class="terminal-body" style="min-height:auto; padding:1rem;">
+            <div class="t-line" style="opacity:1;"><span class="t-prompt">></span> <span class="t-cmd">ACCEPTING TRANSMISSIONS</span> <span class="t-ok">✓</span></div>
+            <div class="t-line" style="opacity:1;"><span class="t-prompt">></span> <span class="t-cmd">AURAAI STANDING BY</span> <span class="t-ok">✓</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-form-wrap">
+        <div class="section-tag">// SEND_MESSAGE</div>
+        <form class="contact-form" id="contactForm">
+          <div class="form-group">
+            <label class="form-label">YOUR NAME</label>
+            <input type="text" class="form-input" placeholder="Enter your name" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">EMAIL ADDRESS</label>
+            <input type="email" class="form-input" placeholder="your@email.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">SUBJECT</label>
+            <select class="form-input">
+              <option value="">Select a topic</option>
+              <option>ShelfSmart Demo Request</option>
+              <option>AuraAI Integration</option>
+              <option>Pricing & Plans</option>
+              <option>Technical Support</option>
+              <option>General Inquiry</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">MESSAGE</label>
+            <textarea class="form-input form-textarea" placeholder="Describe what you're looking to achieve..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="width:100%; text-align:center; border:none; cursor:pointer; font-size:0.8rem;">TRANSMIT MESSAGE</button>
+          <div class="form-success" id="formSuccess">
+            <span class="t-ok">✓</span> MESSAGE RECEIVED — WE'LL BE IN TOUCH SOON
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo"><span class="logo-shelf">Shelf</span><span class="logo-smart">Smart</span></div>
+        <p>Powered by AuraAI. Built for the future of retail.</p>
+      </div>
+      <div class="footer-links">
+        <h4>NAVIGATE</h4>
+        <a href="../index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+      <div class="footer-status">
+        <h4>SYSTEM STATUS</h4>
+        <div class="sys-item"><span class="status-dot"></span> AuraAI Core — Online</div>
+        <div class="sys-item"><span class="status-dot"></span> ShelfSmart API — Online</div>
+        <div class="sys-item"><span class="status-dot"></span> Discord Gateway — Online</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ShelfSmart. All rights reserved.</span>
+      <span>POWERED BY AURAAI</span>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      document.getElementById('formSuccess').style.display = 'block';
+      this.reset();
+    });
+  </script>
+  <style>
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 1100px; margin: 0 auto; }
+    .contact-item { display: flex; gap: 1.5rem; align-items: flex-start; margin-bottom: 2rem; }
+    .contact-icon { font-size: 1.5rem; color: var(--cyan); text-shadow: var(--glow-cyan); flex-shrink: 0; }
+    .contact-label { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 3px; color: var(--grey); margin-bottom: 0.25rem; }
+    .contact-value { font-family: var(--font-body); font-size: 0.95rem; color: var(--white); }
+    .terminal-mini { margin-top: 2rem; background: #020408; border: 1px solid rgba(0,240,255,0.2); border-radius: 4px; overflow: hidden; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label { display: block; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 3px; color: var(--cyan); margin-bottom: 0.5rem; }
+    .form-input {
+      width: 100%;
+      background: rgba(8,13,26,0.8);
+      border: 1px solid rgba(0,240,255,0.2);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      padding: 0.85rem 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0,240,255,0.1); }
+    .form-input option { background: var(--bg-2); }
+    .form-textarea { min-height: 140px; resize: vertical; }
+    .form-success { display: none; margin-top: 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: #00ff88; letter-spacing: 2px; text-align: center; padding: 1rem; border: 1px solid #00ff88; }
+    @media(max-width:900px) { .contact-grid { grid-template-columns: 1fr; } }
+  </style>
+</body>
+</html>
