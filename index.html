@@ -31,7 +31,7 @@
     </div>
   </nav>
 
-  <!--  -->
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-grid"></div>
     <div class="hero-content">
@@ -69,7 +69,7 @@
       <div class="cyber-ring ring-3"></div>
       <img src="auraai-hero.png" alt="AuraAI" class="hero-aura-img" />
     </div>
-  </section>>
+  </section>
 
   <!-- SHELFSMART SECTION -->
   <section class="section" id="shelfsmart">
@@ -124,10 +124,6 @@
             <p>AuraAI remembers every interaction, every preference, every pattern — growing smarter with every conversation.</p>
           </div>
         </div>
-              <div class="aura-img-wrap">
-        <img src="auraai-hero.png" alt="AuraAI" class="aura-section-img" />
-      </div>
-      <div class="aura-terminal">
         <div class="aura-feature">
           <span class="feature-num">03</span>
           <div>
@@ -143,20 +139,25 @@
           </div>
         </div>
       </div>
-      <div class="aura-terminal">
-        <div class="terminal-header">
-          <span class="t-dot red"></span>
-          <span class="t-dot yellow"></span>
-          <span class="t-dot green"></span>
-          <span class="t-title">AURAAI_TERMINAL v2.4</span>
+      <div class="aura-terminal-wrap">
+        <div class="aura-img-wrap">
+          <img src="auraai-hero.png" alt="AuraAI" class="aura-section-img" />
         </div>
-        <div class="terminal-body">
-          <div class="t-line"><span class="t-prompt">></span> <span class="t-cmd">INITIALIZING AURAAI...</span></div>
-          <div class="t-line delay-1"><span class="t-prompt">></span> <span class="t-cmd">LOADING MEMORY BANKS...</span> <span class="t-ok">OK</span></div>
-          <div class="t-line delay-2"><span class="t-prompt">></span> <span class="t-cmd">CONNECTING TO SHELFSMART...</span> <span class="t-ok">OK</span></div>
-          <div class="t-line delay-3"><span class="t-prompt">></span> <span class="t-cmd">SCANNING INVENTORY DATA...</span> <span class="t-ok">OK</span></div>
-          <div class="t-line delay-4"><span class="t-prompt">></span> <span class="t-cmd">ALL SYSTEMS NOMINAL</span></div>
-          <div class="t-line delay-5"><span class="t-prompt">></span> <span class="t-cursor">█</span></div>
+        <div class="aura-terminal">
+          <div class="terminal-header">
+            <span class="t-dot red"></span>
+            <span class="t-dot yellow"></span>
+            <span class="t-dot green"></span>
+            <span class="t-title">AURAAI_TERMINAL v2.4</span>
+          </div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">></span> <span class="t-cmd">INITIALIZING AURAAI...</span></div>
+            <div class="t-line delay-1"><span class="t-prompt">></span> <span class="t-cmd">LOADING MEMORY BANKS...</span> <span class="t-ok">OK</span></div>
+            <div class="t-line delay-2"><span class="t-prompt">></span> <span class="t-cmd">CONNECTING TO SHELFSMART...</span> <span class="t-ok">OK</span></div>
+            <div class="t-line delay-3"><span class="t-prompt">></span> <span class="t-cmd">SCANNING INVENTORY DATA...</span> <span class="t-ok">OK</span></div>
+            <div class="t-line delay-4"><span class="t-prompt">></span> <span class="t-cmd">ALL SYSTEMS NOMINAL</span></div>
+            <div class="t-line delay-5"><span class="t-prompt">></span> <span class="t-cursor">█</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -215,6 +216,11 @@
       max-width: 420px;
       border: 1px solid rgba(180, 79, 255, 0.3);
       box-shadow: var(--glow-purple);
+    }
+    .aura-terminal-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
     }
   </style>
 </body>
