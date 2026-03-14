@@ -80,15 +80,15 @@
         <form class="contact-form" id="contactForm" action="https://formspree.io/f/myknpdll" method="POST">
           <div class="form-group">
             <label class="form-label">YOUR NAME</label>
-            <input type="text" class="form-input" placeholder="Enter your name" required />
+            <input type="text" name="name" class="form-input" placeholder="Enter your name" required />
           </div>
           <div class="form-group">
             <label class="form-label">EMAIL ADDRESS</label>
-            <input type="email" class="form-input" placeholder="your@email.com" required />
+            <input type="email" name="email" class="form-input" placeholder="your@email.com" required />
           </div>
           <div class="form-group">
             <label class="form-label">SUBJECT</label>
-            <select class="form-input">
+            <select name="subject" class="form-input">
               <option value="">Select a topic</option>
               <option>ShelfSmart Demo Request</option>
               <option>AuraAI Integration</option>
@@ -99,7 +99,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">MESSAGE</label>
-            <textarea class="form-input form-textarea" placeholder="Describe what you're looking to achieve..." required></textarea>
+            <textarea name="message" class="form-input form-textarea" placeholder="Describe what you're looking to achieve..." required></textarea>
           </div>
           <button type="submit" class="btn-primary" style="width:100%; text-align:center; border:none; cursor:pointer; font-size:0.8rem;">TRANSMIT MESSAGE</button>
           <div class="form-success" id="formSuccess">
@@ -138,13 +138,6 @@
   </footer>
 
   <script src="../js/main.js"></script>
-  <script>
-    document.getElementById('contactForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      document.getElementById('formSuccess').style.display = 'block';
-      this.reset();
-    });
-  </script>
   <style>
     .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 1100px; margin: 0 auto; }
     .contact-item { display: flex; gap: 1.5rem; align-items: flex-start; margin-bottom: 2rem; }
