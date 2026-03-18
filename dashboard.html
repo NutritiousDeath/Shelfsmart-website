@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuraAI — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #050810;
+      --bg-2: #080d1a;
+      --cyan: #00f0ff;
+      --pink: #ff2d78;
+      --purple: #b44fff;
+      --yellow: #ffe600;
+      --white: #e8eaf0;
+      --grey: #4a5068;
+      --green: #00ff88;
+      --font-display: 'Orbitron', monospace;
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-body: 'Rajdhani', sans-serif;
+      --glow-cyan: 0 0 10px #00f0ff, 0 0 30px #00f0ff44, 0 0 60px #00f0ff22;
+      --glow-pink: 0 0 10px #ff2d78, 0 0 30px #ff2d7844;
+      --glow-purple: 0 0 10px #b44fff, 0 0 30px #b44fff44;
+      --glow-green: 0 0 8px #00ff88;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+
+    .scanlines {
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,240,255,0.012) 2px, rgba(0,240,255,0.012) 4px);
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* LOADING SCREEN */
+    #loading {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9000;
+      transition: opacity 0.4s;
+    }
+    #loading.hidden { opacity: 0; pointer-events: none; }
+    .load-logo {
+      font-family: var(--font-display);
+      font-size: 2rem; font-weight: 900;
+      letter-spacing: 4px; margin-bottom: 24px;
+    }
+    .load-bar-wrap {
+      width: 240px; height: 2px;
+      background: rgba(0,240,255,0.1);
+      margin-bottom: 12px;
+    }
+    .load-bar {
+      height: 100%;
+      background: var(--cyan);
+      box-shadow: var(--glow-cyan);
+      width: 0;
+      animation: loadbar 1.2s ease forwards;
+    }
+    @keyframes loadbar { to { width: 100%; } }
+    .load-text {
+      font-family: var(--font-mono);
+      font-size: 0.65rem; color: var(--grey);
+      letter-spacing: 2px; text-transform: uppercase;
+    }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 2rem;
+      background: rgba(5,8,16,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,240,255,0.12);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.1rem; font-weight: 900; letter-spacing: 2px;
+      text-decoration: none;
+    }
+    .logo-aura { color: var(--cyan); text-shadow: var(--glow-cyan); }
+    .logo-ai { color: var(--white); }
+
+    .nav-user {
+      display: flex; align-items: center; gap: 16px;
+      font-family: var(--font-mono); font-size: 0.68rem;
+    }
+    .nav-user-name { color: var(--cyan); letter-spacing: 1px; }
+    .nav-tier {
+      padding: 3px 10px;
+      border: 1px solid var(--purple);
+      color: var(--purple);
+      font-size: 0.6rem; letter-spacing: 2px;
+      text-transform: uppercase;
+      box-shadow: var(--glow-purple);
+    }
+    .btn-signout {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      color: var(--grey); background: none;
+      border: 1px solid rgba(74,80,104,0.4);
+      padding: 4px 10px; cursor: pointer;
+      letter-spacing: 1px; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .btn-signout:hover { color: var(--pink); border-color: var(--pink); }
+
+    /* LAYOUT */
+    .layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      min-height: 100vh;
+      padding-top: 52px;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      border-right: 1px solid rgba(0,240,255,0.1);
+      padding: 24px 10px;
+      background: rgba(8,13,26,0.6);
+      position: sticky; top: 52px;
+      height: calc(100vh - 52px);
+      display: flex; flex-direction: column; gap: 2px;
+      overflow-y: auto;
+    }
+
+    .sidebar-section {
+      font-family: var(--font-mono); font-size: 0.58rem;
+      color: var(--grey); letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 14px 12px 6px;
+    }
+
+    .sidebar-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px;
+      font-family: var(--font-mono); font-size: 0.68rem;
+      color: var(--grey); cursor: pointer;
+      border: none; background: none; width: 100%;
+      text-align: left; text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      border-left: 2px solid transparent;
+    }
+    .sidebar-item:hover { color: var(--cyan); background: rgba(0,240,255,0.04); }
+    .sidebar-item.active {
+      color: var(--cyan); border-left-color: var(--cyan);
+      background: rgba(0,240,255,0.06);
+      text-shadow: 0 0 8px rgba(0,240,255,0.5);
+    }
+    .sidebar-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    .status-indicator {
+      margin-top: auto;
+      padding: 14px 12px;
+      border-top: 1px solid rgba(0,240,255,0.08);
+    }
+    .status-row {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 0.6rem;
+      color: var(--grey); margin-bottom: 6px;
+    }
+    .dot-green {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); box-shadow: var(--glow-green);
+      animation: pulse 2s infinite; flex-shrink: 0;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* MAIN CONTENT */
+    .main { padding: 28px 28px; overflow-y: auto; }
+
+    .page-tag {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      color: var(--cyan); letter-spacing: 3px;
+      text-transform: uppercase; margin-bottom: 4px;
+      opacity: 0.8;
+    }
+    .page-title {
+      font-family: var(--font-display); font-size: 1.1rem;
+      font-weight: 900; letter-spacing: 3px;
+      color: var(--white); margin-bottom: 20px;
+    }
+
+    /* CARDS */
+    .section-card {
+      background: rgba(8,13,26,0.8);
+      border: 1px solid rgba(0,240,255,0.1);
+      padding: 20px 22px; margin-bottom: 14px;
+      position: relative;
+      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    }
+    .section-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,255,0.4), transparent);
+    }
+    .card-title {
+      font-family: var(--font-display); font-size: 0.65rem;
+      font-weight: 700; letter-spacing: 2px;
+      color: var(--cyan); text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* STAT CARDS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px; margin-bottom: 16px;
+    }
+    .stat-card {
+      background: var(--bg-2);
+      border: 1px solid rgba(0,240,255,0.12);
+      padding: 14px 16px;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+    .stat-label {
+      font-family: var(--font-mono); font-size: 0.58rem;
+      color: var(--grey); letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .stat-val {
+      font-family: var(--font-display); font-size: 1.6rem;
+      font-weight: 900; color: var(--cyan);
+      text-shadow: var(--glow-cyan);
+    }
+
+    /* BUTTONS */
+    .btn-primary {
+      font-family: var(--font-display); font-size: 0.62rem;
+      font-weight: 700; letter-spacing: 2px;
+      padding: 9px 18px; background: var(--cyan);
+      color: var(--bg); border: none; cursor: pointer;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      transition: all 0.2s; text-transform: uppercase;
+    }
+    .btn-primary:hover { background: var(--white); box-shadow: var(--glow-cyan); }
+
+    .btn-secondary {
+      font-family: var(--font-display); font-size: 0.62rem;
+      font-weight: 700; letter-spacing: 2px;
+      padding: 9px 18px; background: transparent;
+      color: var(--cyan); border: 1px solid var(--cyan); cursor: pointer;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      transition: all 0.2s; text-transform: uppercase;
+    }
+    .btn-secondary:hover { background: rgba(0,240,255,0.08); box-shadow: var(--glow-cyan); }
+
+    .btn-danger {
+      font-family: var(--font-display); font-size: 0.62rem;
+      font-weight: 700; letter-spacing: 2px;
+      padding: 9px 18px; background: transparent;
+      color: var(--pink); border: 1px solid var(--pink); cursor: pointer;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      transition: all 0.2s; text-transform: uppercase;
+    }
+    .btn-danger:hover { background: rgba(255,45,120,0.08); box-shadow: var(--glow-pink); }
+
+    /* BADGES */
+    .badge {
+      font-family: var(--font-mono); font-size: 0.58rem;
+      letter-spacing: 2px; padding: 3px 10px; text-transform: uppercase;
+      display: inline-block;
+    }
+    .badge-active { color: var(--green); border: 1px solid var(--green); box-shadow: var(--glow-green); }
+    .badge-live { color: var(--pink); border: 1px solid var(--pink); box-shadow: var(--glow-pink); }
+    .badge-pro { color: var(--purple); border: 1px solid var(--purple); box-shadow: var(--glow-purple); }
+    .badge-free { color: var(--grey); border: 1px solid var(--grey); }
+    .badge-warning { color: var(--yellow); border: 1px solid var(--yellow); }
+
+    /* LIST ROWS */
+    .list-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(0,240,255,0.06);
+      font-family: var(--font-mono); font-size: 0.7rem;
+    }
+    .list-row:last-child { border-bottom: none; }
+    .list-label { color: var(--grey); letter-spacing: 1px; }
+    .list-val { color: var(--cyan); }
+
+    /* TOGGLES */
+    .toggle-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 11px 0; border-bottom: 1px solid rgba(0,240,255,0.06);
+    }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-label {
+      font-family: var(--font-mono); font-size: 0.7rem;
+      color: var(--grey); letter-spacing: 1px; text-transform: uppercase;
+    }
+    .toggle { position: relative; width: 38px; height: 20px; display: inline-block; }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .t-track {
+      position: absolute; inset: 0;
+      background: rgba(0,240,255,0.08);
+      border: 1px solid rgba(0,240,255,0.2);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .toggle input:checked + .t-track {
+      background: rgba(0,240,255,0.15);
+      border-color: var(--cyan);
+      box-shadow: var(--glow-cyan);
+    }
+    .t-thumb {
+      position: absolute; width: 12px; height: 12px;
+      background: var(--grey); top: 3px; left: 3px;
+      transition: all 0.2s; pointer-events: none;
+    }
+    .toggle input:checked ~ .t-thumb {
+      transform: translateX(18px);
+      background: var(--cyan); box-shadow: var(--glow-cyan);
+    }
+
+    /* INPUTS */
+    .cyber-input {
+      width: 100%; font-family: var(--font-mono); font-size: 0.72rem;
+      padding: 9px 12px; background: rgba(0,240,255,0.03);
+      border: 1px solid rgba(0,240,255,0.18); color: var(--cyan);
+      letter-spacing: 1px; outline: none; transition: border-color 0.2s;
+      font-size: 0.72rem;
+    }
+    .cyber-input:focus { border-color: var(--cyan); box-shadow: var(--glow-cyan); }
+    .cyber-input::placeholder { color: var(--grey); }
+    textarea.cyber-input { resize: vertical; line-height: 1.7; }
+
+    /* INPUT LABEL */
+    .field-label {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      color: var(--grey); letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 6px; margin-top: 14px;
+      display: block;
+    }
+    .field-label:first-child { margin-top: 0; }
+
+    /* PLATFORM ROWS */
+    .platform-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 14px; border: 1px solid rgba(0,240,255,0.08);
+      margin-bottom: 8px; background: rgba(0,240,255,0.02);
+      transition: all 0.2s; cursor: default;
+    }
+    .platform-row:hover { border-color: rgba(0,240,255,0.25); background: rgba(0,240,255,0.04); }
+    .platform-name {
+      font-family: var(--font-display); font-size: 0.68rem;
+      font-weight: 700; letter-spacing: 2px; color: var(--white);
+    }
+    .platform-sub {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      color: var(--grey); margin-top: 3px;
+    }
+
+    /* ACTIVITY */
+    .activity-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 0; border-bottom: 1px solid rgba(0,240,255,0.05);
+      font-family: var(--font-mono); font-size: 0.68rem;
+    }
+    .activity-row:last-child { border-bottom: none; }
+    .activity-text { color: rgba(232,234,240,0.7); }
+    .activity-time { color: var(--grey); flex-shrink: 0; margin-left: 12px; }
+
+    /* PLAN CARDS */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .plan-card {
+      border: 1px solid rgba(0,240,255,0.12);
+      padding: 20px; background: var(--bg-2);
+      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+      transition: all 0.2s; position: relative;
+    }
+    .plan-card:hover { transform: translateY(-2px); }
+    .plan-card.current {
+      border-color: var(--cyan);
+      box-shadow: var(--glow-cyan);
+      background: rgba(0,240,255,0.03);
+    }
+    .plan-name {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 3px; color: var(--grey);
+      text-transform: uppercase; margin-bottom: 10px;
+    }
+    .plan-price {
+      font-family: var(--font-display); font-size: 1.8rem;
+      font-weight: 900; color: var(--cyan);
+      text-shadow: var(--glow-cyan); margin-bottom: 4px;
+    }
+    .plan-price span { font-size: 0.75rem; color: var(--grey); font-weight: 400; }
+    .plan-feature {
+      font-family: var(--font-mono); font-size: 0.65rem;
+      color: rgba(232,234,240,0.65); line-height: 2;
+    }
+    .plan-feature.off { opacity: 0.3; }
+
+    .divider {
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,255,0.2), transparent);
+      margin: 14px 0;
+    }
+
+    /* SAVE FEEDBACK */
+    .save-msg {
+      font-family: var(--font-mono); font-size: 0.65rem;
+      color: var(--green); letter-spacing: 1px;
+      margin-top: 10px; display: none;
+    }
+
+    /* TABS */
+    .tab { display: none; }
+    .tab.active { display: block; animation: fadeUp 0.3s both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PAYWALL OVERLAY */
+    #paywall-overlay {
+      position: fixed; inset: 0;
+      background: rgba(5,8,16,0.96);
+      z-index: 500;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; text-align: center;
+    }
+    #paywall-overlay.hidden { display: none; }
+
+    /* BOTTOM STATUS BAR */
+    .status-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 6px 2rem;
+      background: rgba(5,8,16,0.9);
+      border-top: 1px solid rgba(0,240,255,0.08);
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: var(--font-mono); font-size: 0.58rem;
+      color: var(--grey); letter-spacing: 1px; z-index: 100;
+    }
+    .s-online { display: flex; align-items: center; gap: 6px; color: var(--green); }
+
+    @media (max-width: 700px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .plans-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="load-logo">
+    <span style="color:var(--cyan);text-shadow:var(--glow-cyan)">AURA</span><span style="color:var(--white)">AI</span>
+  </div>
+  <div class="load-bar-wrap"><div class="load-bar"></div></div>
+  <p class="load-text">Authenticating session...</p>
+</div>
+
+<!-- PAYWALL (shown if user has no access) -->
+<div id="paywall-overlay" class="hidden">
+  <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--cyan);letter-spacing:3px;margin-bottom:16px">// ACCESS DENIED</p>
+  <h2 style="font-family:var(--font-display);font-size:1.8rem;font-weight:900;letter-spacing:4px;margin-bottom:8px">
+    <span style="color:var(--cyan);text-shadow:var(--glow-cyan)">UPGRADE</span> REQUIRED
+  </h2>
+  <div style="width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:16px auto"></div>
+  <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--grey);max-width:380px;line-height:1.8;margin-bottom:28px">
+    Your account does not have an active Pro subscription. Unlock the full dashboard to configure AuraAI for your server.
+  </p>
+  <a href="/pricing.html" style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:2px;padding:12px 28px;background:var(--cyan);color:var(--bg);text-decoration:none;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)">
+    View Plans
+  </a>
+  <button onclick="signOut()" style="margin-top:14px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);background:none;border:none;cursor:pointer;letter-spacing:1px;text-decoration:underline">
+    Sign out
+  </button>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-logo"><span class="logo-aura">AURA</span><span class="logo-ai">AI</span></a>
+  <div class="nav-user">
+    <span class="nav-user-name" id="nav-username">—</span>
+    <span class="nav-tier" id="nav-tier">FREE</span>
+    <button class="btn-signout" onclick="signOut()">Sign out</button>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <aside class="sidebar">
+    <div style="padding:14px 12px 10px;border-bottom:1px solid rgba(0,240,255,0.08);margin-bottom:8px">
+      <div style="font-family:var(--font-display);font-size:0.8rem;font-weight:900;letter-spacing:2px">
+        <span style="color:var(--cyan);text-shadow:var(--glow-cyan)">AURA</span><span style="color:var(--white)">AI</span>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:3px;letter-spacing:1px" id="sidebar-server">ShelfSmart Gaming</div>
+    </div>
+
+    <span class="sidebar-section">// Main</span>
+    <button class="sidebar-item active" onclick="setTab('overview', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Overview
+    </button>
+    <button class="sidebar-item" onclick="setTab('bot', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
+      Bot config
+    </button>
+
+    <span class="sidebar-section">// Features</span>
+    <button class="sidebar-item" onclick="setTab('tournaments', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 21h8M12 17v4M6 3h12l-2 8H8L6 3z"/></svg>
+      Tournaments
+    </button>
+    <button class="sidebar-item" onclick="setTab('alerts', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Social alerts
+    </button>
+    <button class="sidebar-item" onclick="setTab('persona', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      AI persona
+    </button>
+    <button class="sidebar-item" onclick="setTab('coaching', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Coaching
+    </button>
+
+    <span class="sidebar-section">// Account</span>
+    <button class="sidebar-item" onclick="setTab('billing', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="1"/><path d="M2 10h20"/></svg>
+      Billing
+    </button>
+
+    <div class="status-indicator">
+      <div class="status-row"><div class="dot-green"></div>Bot online</div>
+      <div class="status-row" style="color:rgba(74,80,104,0.6)"><div style="width:6px;height:6px;border-radius:50%;background:var(--purple);flex-shrink:0"></div>Base44 connected</div>
+      <div class="status-row" style="color:rgba(74,80,104,0.6)"><div style="width:6px;height:6px;border-radius:50%;background:var(--grey);flex-shrink:0"></div>Railway gateway</div>
+    </div>
+  </aside>
+
+  <main class="main" style="padding-bottom:60px">
+
+    <!-- OVERVIEW -->
+    <div class="tab active" id="tab-overview">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+        <div><p class="page-tag">// system overview</p><p class="page-title">DASHBOARD</p></div>
+        <span class="badge badge-active" id="overview-status">● PRO ACTIVE</span>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><p class="stat-label">Members served</p><p class="stat-val">1,284</p></div>
+        <div class="stat-card"><p class="stat-label">Tournaments run</p><p class="stat-val">47</p></div>
+        <div class="stat-card"><p class="stat-label">Commands today</p><p class="stat-val">312</p></div>
+      </div>
+      <div class="section-card">
+        <p class="card-title">// quick actions</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <button class="btn-secondary" onclick="setTab('tournaments', document.querySelector('[onclick*=tournaments]'))">New tournament</button>
+          <button class="btn-secondary" onclick="setTab('alerts', document.querySelector('[onclick*=alerts]'))">Add social alert</button>
+          <button class="btn-secondary" onclick="setTab('billing', document.querySelector('[onclick*=billing]'))">Grant access</button>
+        </div>
+      </div>
+      <div class="section-card">
+        <p class="card-title">// recent activity</p>
+        <div class="activity-row"><span class="activity-text">Tournament "OW Spring Cup" created</span><span class="activity-time">2h ago</span></div>
+        <div class="activity-row"><span class="activity-text">Twitch alert — xAuraPlayer went live</span><span class="activity-time">5h ago</span></div>
+        <div class="activity-row"><span class="activity-text">12 players registered for Rivals bracket</span><span class="activity-time">1d ago</span></div>
+        <div class="activity-row"><span class="activity-text">Coaching session scheduled — Team Nova</span><span class="activity-time">2d ago</span></div>
+      </div>
+    </div>
+
+    <!-- BOT CONFIG -->
+    <div class="tab" id="tab-bot">
+      <p class="page-tag">// configuration</p>
+      <p class="page-title">BOT CONFIG</p>
+      <div class="section-card">
+        <p class="card-title">// channel bindings</p>
+        <label class="field-label">Overwatch tournament channel ID</label>
+        <input class="cyber-input" type="text" id="ow-channel" value="1483361345096384653" placeholder="Discord channel ID">
+        <label class="field-label">Marvel Rivals tournament channel ID</label>
+        <input class="cyber-input" type="text" id="rivals-channel" value="1483439069697675396" placeholder="Discord channel ID">
+        <label class="field-label">Destiny 2 tournament channel ID</label>
+        <input class="cyber-input" type="text" id="d2-channel" value="1483438914038403072" placeholder="Discord channel ID">
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveChannels()">Save channels</button>
+          <p class="save-msg" id="channels-saved">// Settings saved successfully</p>
+        </div>
+      </div>
+      <div class="section-card">
+        <p class="card-title">// feature toggles</p>
+        <div class="toggle-row">
+          <span class="toggle-label">BattleTag auto-lookup</span>
+          <label class="toggle"><input type="checkbox" checked id="toggle-battletag"><div class="t-track"></div><div class="t-thumb"></div></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">AI Tournament Director</span>
+          <label class="toggle"><input type="checkbox" checked id="toggle-td"><div class="t-track"></div><div class="t-thumb"></div></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Scrim scheduling</span>
+          <label class="toggle"><input type="checkbox" id="toggle-scrims"><div class="t-track"></div><div class="t-thumb"></div></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Coaching requests</span>
+          <label class="toggle"><input type="checkbox" checked id="toggle-coaching"><div class="t-track"></div><div class="t-thumb"></div></label>
+        </div>
+        <div style="margin-top:14px">
+          <button class="btn-primary" onclick="saveToggles()">Save toggles</button>
+          <p class="save-msg" id="toggles-saved">// Settings saved successfully</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOURNAMENTS -->
+    <div class="tab" id="tab-tournaments">
+      <p class="page-tag">// bracket management</p>
+      <p class="page-title">TOURNAMENTS</p>
+      <div class="section-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+          <p class="card-title" style="margin-bottom:0">// active brackets</p>
+          <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px">+ New tournament</button>
+        </div>
+        <div class="platform-row">
+          <div><p class="platform-name">OW Spring Cup</p><p class="platform-sub">16 players — Overwatch — Registration open</p></div>
+          <span class="badge badge-pro">Reg open</span>
+        </div>
+        <div class="platform-row">
+          <div><p class="platform-name">Rivals Weekly #12</p><p class="platform-sub">8 players — Marvel Rivals — In progress</p></div>
+          <span class="badge badge-live">Live</span>
+        </div>
+      </div>
+      <div class="section-card">
+        <p class="card-title">// default settings</p>
+        <label class="field-label">Default tournament game</label>
+        <select class="cyber-input" style="cursor:pointer">
+          <option value="overwatch">Overwatch 2</option>
+          <option value="rivals">Marvel Rivals</option>
+          <option value="destiny">Destiny 2</option>
+        </select>
+        <label class="field-label">Max players per tournament</label>
+        <input class="cyber-input" type="number" value="16" min="4" max="256">
+        <div style="margin-top:14px">
+          <button class="btn-primary" onclick="showSaved('tournament-saved')">Save defaults</button>
+          <p class="save-msg" id="tournament-saved">// Settings saved successfully</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOCIAL ALERTS -->
+    <div class="tab" id="tab-alerts">
+      <p class="page-tag">// live monitoring</p>
+      <p class="page-title">SOCIAL ALERTS</p>
+      <div class="section-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+          <p class="card-title" style="margin-bottom:0">// connected platforms</p>
+          <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px">+ Connect platform</button>
+        </div>
+        <div class="platform-row">
+          <div><p class="platform-name">Twitch</p><p class="platform-sub">3 streamers tracked — alerts to #live-now</p></div>
+          <span class="badge badge-active">Live</span>
+        </div>
+        <div class="platform-row">
+          <div><p class="platform-name">YouTube</p><p class="platform-sub">1 channel tracked — alerts to #live-now</p></div>
+          <span class="badge badge-active">Live</span>
+        </div>
+        <div class="platform-row">
+          <div><p class="platform-name">TikTok</p><p class="platform-sub">Not connected</p></div>
+          <span class="badge badge-free">Setup needed</span>
+        </div>
+        <div class="platform-row">
+          <div><p class="platform-name">Kick</p><p class="platform-sub">Not connected</p></div>
+          <span class="badge badge-free">Setup needed</span>
+        </div>
+      </div>
+      <div class="section-card">
+        <p class="card-title">// add streamer</p>
+        <label class="field-label">Platform</label>
+        <select class="cyber-input" style="cursor:pointer">
+          <option>Twitch</option>
+          <option>YouTube</option>
+          <option>TikTok</option>
+          <option>Kick</option>
+        </select>
+        <label class="field-label">Username / channel handle</label>
+        <input class="cyber-input" type="text" placeholder="e.g. xAuraPlayer">
+        <label class="field-label">Alert channel ID</label>
+        <input class="cyber-input" type="text" placeholder="Discord channel ID">
+        <div style="margin-top:14px">
+          <button class="btn-primary" onclick="showSaved('alert-saved')">Add alert</button>
+          <p class="save-msg" id="alert-saved">// Alert added successfully</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI PERSONA -->
+    <div class="tab" id="tab-persona">
+      <p class="page-tag">// ai configuration</p>
+      <p class="page-title">AI PERSONA</p>
+      <div class="section-card">
+        <p class="card-title">// identity</p>
+        <label class="field-label">Bot display name</label>
+        <input class="cyber-input" type="text" id="persona-name" value="AuraAI">
+        <label class="field-label">Personality prompt</label>
+        <textarea class="cyber-input" id="persona-prompt" rows="5">You are AuraAI, a sharp and competitive esports bot for ShelfSmart Gaming. You're knowledgeable about Overwatch 2, Marvel Rivals, and Destiny 2. Keep responses concise, accurate, and hype the community. Always be helpful with tournament questions and player stats.</textarea>
+        <label class="field-label">Response style</label>
+        <select class="cyber-input" style="cursor:pointer">
+          <option>Competitive &amp; hype</option>
+          <option>Friendly &amp; casual</option>
+          <option>Professional &amp; formal</option>
+          <option>Custom (use prompt above)</option>
+        </select>
+        <div style="margin-top:14px">
+          <button class="btn-primary" onclick="savePersona()">Save persona</button>
+          <p class="save-msg" id="persona-saved">// Persona saved successfully</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- COACHING -->
+    <div class="tab" id="tab-coaching">
+      <p class="page-tag">// training management</p>
+      <p class="page-title">COACHING</p>
+      <div class="section-card">
+        <p class="card-title">// scheduled sessions</p>
+        <div class="platform-row">
+          <div><p class="platform-name">Team Nova — Overwatch</p><p class="platform-sub">Requested by xNova — Apr 20, 2026 7PM EST</p></div>
+          <span class="badge badge-warning">Pending</span>
+        </div>
+        <div class="platform-row">
+          <div><p class="platform-name">Solo session — Marvel Rivals</p><p class="platform-sub">Requested by FrostByte — Apr 22, 2026 3PM EST</p></div>
+          <span class="badge badge-active">Confirmed</span>
+        </div>
+      </div>
+      <div class="section-card">
+        <p class="card-title">// coaching settings</p>
+        <div class="toggle-row">
+          <span class="toggle-label">Allow coaching requests</span>
+          <label class="toggle"><input type="checkbox" checked><div class="t-track"></div><div class="t-thumb"></div></label>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Auto-confirm requests</span>
+          <label class="toggle"><input type="checkbox"><div class="t-track"></div><div class="t-thumb"></div></label>
+        </div>
+        <label class="field-label" style="margin-top:14px">Max sessions per week</label>
+        <input class="cyber-input" type="number" value="5" min="1" max="20">
+        <div style="margin-top:14px">
+          <button class="btn-primary" onclick="showSaved('coaching-saved')">Save settings</button>
+          <p class="save-msg" id="coaching-saved">// Settings saved successfully</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BILLING -->
+    <div class="tab" id="tab-billing">
+      <p class="page-tag">// subscription</p>
+      <p class="page-title">BILLING</p>
+      <div class="section-card">
+        <p class="card-title">// current plan</p>
+        <div class="platform-row" style="margin-bottom:14px">
+          <div><p class="platform-name" id="billing-plan">Pro — $9/month</p><p class="platform-sub" id="billing-renew">Renews April 18, 2026</p></div>
+          <span class="badge badge-active">Active</span>
+        </div>
+        <button class="btn-secondary">Manage in Stripe</button>
+      </div>
+      <div class="section-card">
+        <p class="card-title">// grant access</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7;letter-spacing:0.5px">
+          Manually grant Pro access to any Discord user — no payment required. Use for giveaways, free months, or community rewards.
+        </p>
+        <label class="field-label">Discord user ID</label>
+        <input class="cyber-input" type="text" id="grant-id" placeholder="e.g. 123456789012345678">
+        <label class="field-label">Access duration</label>
+        <select class="cyber-input" id="grant-duration" style="cursor:pointer">
+          <option value="30">1 month (30 days)</option>
+          <option value="90">3 months (90 days)</option>
+          <option value="365">1 year</option>
+          <option value="0">Lifetime</option>
+        </select>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-primary" onclick="grantAccess()">Grant access</button>
+          <button class="btn-danger" onclick="revokeAccess()">Revoke access</button>
+        </div>
+        <p class="save-msg" id="grant-saved">// Access granted successfully</p>
+        <p class="save-msg" id="grant-revoked" style="color:var(--pink)">// Access revoked</p>
+      </div>
+      <div class="section-card">
+        <p class="card-title">// upgrade plan</p>
+        <div class="plans-grid">
+          <div class="plan-card">
+            <p class="plan-name">Free</p>
+            <p class="plan-price">$0<span>/mo</span></p>
+            <div class="divider"></div>
+            <div class="plan-feature">✓ /chat command</div>
+            <div class="plan-feature">✓ Basic tournaments</div>
+            <div class="plan-feature">✓ BattleTag lookup</div>
+            <div class="plan-feature off">✗ Social alerts</div>
+            <div class="plan-feature off">✗ AI persona</div>
+          </div>
+          <div class="plan-card current">
+            <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div>
+            <p class="plan-name">Pro</p>
+            <p class="plan-price">$9<span>/mo</span></p>
+            <div class="divider"></div>
+            <div class="plan-feature">✓ Everything in Free</div>
+            <div class="plan-feature">✓ Social alerts</div>
+            <div class="plan-feature">✓ AI persona</div>
+            <div class="plan-feature">✓ Coaching tools</div>
+            <div class="plan-feature">✓ Advanced tournaments</div>
+          </div>
+          <div class="plan-card">
+            <p class="plan-name">Lifetime</p>
+            <p class="plan-price">$79<span> once</span></p>
+            <div class="divider"></div>
+            <div class="plan-feature">✓ Everything in Pro</div>
+            <div class="plan-feature">✓ Priority support</div>
+            <div class="plan-feature">✓ Early access</div>
+            <div class="plan-feature">✓ No recurring fees</div>
+            <button class="btn-secondary" style="width:100%;margin-top:14px;font-size:0.58rem">Upgrade</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="status-bar">
+  <div class="s-online"><div class="dot-green"></div>Systems online</div>
+  <span>ShelfSmart Gaming — AuraAI Dashboard</span>
+  <span id="clock"></span>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://uptxufmqqwjytffhbcdd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwdHh1Zm1xcXdqeXRmZmhiY2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NDUzNzMsImV4cCI6MjA4OTQyMTM3M30.Wkol9oWQwZePmfduJIteUnAxvP_SmDTiRfvWPU5JYGU';
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let currentUser = null;
+  let userAccess = null;
+
+  async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+
+    if (!session) {
+      window.location.href = '/login.html';
+      return;
+    }
+
+    currentUser = session.user;
+    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
+    const discordName = currentUser.user_metadata?.full_name || currentUser.user_metadata?.name || 'Commander';
+
+    document.getElementById('nav-username').textContent = discordName;
+
+    const { data: access } = await sb
+      .from('user_access')
+      .select('*')
+      .eq('discord_id', discordId)
+      .single();
+
+    userAccess = access;
+
+    if (access) {
+      const tier = access.tier || 'free';
+      document.getElementById('nav-tier').textContent = tier.toUpperCase();
+      if (tier === 'free') {
+        document.getElementById('paywall-overlay').classList.remove('hidden');
+      }
+    } else {
+      await sb.from('user_access').insert({
+        discord_id: discordId,
+        discord_tag: discordName,
+        email: currentUser.email,
+        tier: 'free',
+        status: 'active',
+        granted_by: 'self'
+      });
+      document.getElementById('paywall-overlay').classList.remove('hidden');
+    }
+
+    const { data: settings } = await sb
+      .from('server_settings')
+      .select('*')
+      .eq('owner_discord_id', discordId)
+      .single();
+
+    if (settings) {
+      if (settings.ow_channel_id) document.getElementById('ow-channel').value = settings.ow_channel_id;
+      if (settings.rivals_channel_id) document.getElementById('rivals-channel').value = settings.rivals_channel_id;
+      if (settings.d2_channel_id) document.getElementById('d2-channel').value = settings.d2_channel_id;
+      if (settings.bot_name) document.getElementById('persona-name').value = settings.bot_name;
+      if (settings.persona_prompt) document.getElementById('persona-prompt').value = settings.persona_prompt;
+      if (settings.feature_flags) {
+        const f = settings.feature_flags;
+        if (f.battletag !== undefined) document.getElementById('toggle-battletag').checked = f.battletag;
+        if (f.ask_td !== undefined) document.getElementById('toggle-td').checked = f.ask_td;
+        if (f.scrims !== undefined) document.getElementById('toggle-scrims').checked = f.scrims;
+        if (f.coaching !== undefined) document.getElementById('toggle-coaching').checked = f.coaching;
+      }
+    }
+
+    document.getElementById('loading').classList.add('hidden');
+  }
+
+  async function saveChannels() {
+    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
+    await sb.from('server_settings').upsert({
+      owner_discord_id: discordId,
+      discord_server_id: discordId,
+      ow_channel_id: document.getElementById('ow-channel').value,
+      rivals_channel_id: document.getElementById('rivals-channel').value,
+      d2_channel_id: document.getElementById('d2-channel').value,
+    }, { onConflict: 'owner_discord_id' });
+    showSaved('channels-saved');
+  }
+
+  async function saveToggles() {
+    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
+    await sb.from('server_settings').upsert({
+      owner_discord_id: discordId,
+      discord_server_id: discordId,
+      feature_flags: {
+        battletag: document.getElementById('toggle-battletag').checked,
+        ask_td: document.getElementById('toggle-td').checked,
+        scrims: document.getElementById('toggle-scrims').checked,
+        coaching: document.getElementById('toggle-coaching').checked,
+      }
+    }, { onConflict: 'owner_discord_id' });
+    showSaved('toggles-saved');
+  }
+
+  async function savePersona() {
+    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
+    await sb.from('server_settings').upsert({
+      owner_discord_id: discordId,
+      discord_server_id: discordId,
+      bot_name: document.getElementById('persona-name').value,
+      persona_prompt: document.getElementById('persona-prompt').value,
+    }, { onConflict: 'owner_discord_id' });
+    showSaved('persona-saved');
+  }
+
+  async function grantAccess() {
+    const id = document.getElementById('grant-id').value.trim();
+    const days = parseInt(document.getElementById('grant-duration').value);
+    if (!id) return;
+    const expires = days === 0 ? null : new Date(Date.now() + days * 86400000).toISOString();
+    await sb.from('user_access').upsert({
+      discord_id: id,
+      tier: 'pro',
+      status: 'active',
+      granted_by: 'admin',
+      expires_at: expires
+    }, { onConflict: 'discord_id' });
+    document.getElementById('grant-id').value = '';
+    showSaved('grant-saved');
+  }
+
+  async function revokeAccess() {
+    const id = document.getElementById('grant-id').value.trim();
+    if (!id) return;
+    await sb.from('user_access').update({ tier: 'free', status: 'cancelled' }).eq('discord_id', id);
+    document.getElementById('grant-id').value = '';
+    showSaved('grant-revoked');
+  }
+
+  function showSaved(id) {
+    const el = document.getElementById(id);
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 3000);
+  }
+
+  function setTab(name, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  async function signOut() {
+    await sb.auth.signOut();
+    window.location.href = '/login.html';
+  }
+
+  function updateClock() {
+    document.getElementById('clock').textContent = new Date().toUTCString().replace('GMT', 'UTC');
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  init();
+</script>
+</body>
+</html>
