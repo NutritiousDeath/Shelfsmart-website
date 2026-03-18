@@ -529,10 +529,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       Social alerts
     </button>
-    <button class="sidebar-item" onclick="setTab('persona', this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      AI persona
-    </button>
+
     <button class="sidebar-item" onclick="setTab('coaching', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       Coaching
@@ -718,29 +715,7 @@
       </div>
     </div>
 
-    <!-- AI PERSONA -->
-    <div class="tab" id="tab-persona">
-      <p class="page-tag">// ai configuration</p>
-      <p class="page-title">AI PERSONA</p>
-      <div class="section-card">
-        <p class="card-title">// identity</p>
-        <label class="field-label">Bot display name</label>
-        <input class="cyber-input" type="text" id="persona-name" value="AuraAI">
-        <label class="field-label">Personality prompt</label>
-        <textarea class="cyber-input" id="persona-prompt" rows="5">You are AuraAI, a sharp and competitive esports bot for ShelfSmart Gaming. You're knowledgeable about Overwatch 2, Marvel Rivals, and Destiny 2. Keep responses concise, accurate, and hype the community. Always be helpful with tournament questions and player stats.</textarea>
-        <label class="field-label">Response style</label>
-        <select class="cyber-input" style="cursor:pointer">
-          <option>Competitive &amp; hype</option>
-          <option>Friendly &amp; casual</option>
-          <option>Professional &amp; formal</option>
-          <option>Custom (use prompt above)</option>
-        </select>
-        <div style="margin-top:14px">
-          <button class="btn-primary" onclick="savePersona()">Save persona</button>
-          <p class="save-msg" id="persona-saved">// Persona saved successfully</p>
-        </div>
-      </div>
-    </div>
+
 
     <!-- COACHING -->
     <div class="tab" id="tab-coaching">
@@ -916,8 +891,6 @@
       if (settings.ow_channel_id) document.getElementById('ow-channel').value = settings.ow_channel_id;
       if (settings.rivals_channel_id) document.getElementById('rivals-channel').value = settings.rivals_channel_id;
       if (settings.d2_channel_id) document.getElementById('d2-channel').value = settings.d2_channel_id;
-      if (settings.bot_name) document.getElementById('persona-name').value = settings.bot_name;
-      if (settings.persona_prompt) document.getElementById('persona-prompt').value = settings.persona_prompt;
       if (settings.feature_flags) {
         const f = settings.feature_flags;
         if (f.battletag !== undefined) document.getElementById('toggle-battletag').checked = f.battletag;
@@ -957,16 +930,7 @@
     showSaved('toggles-saved');
   }
 
-  async function savePersona() {
-    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
-    await sb.from('server_settings').upsert({
-      owner_discord_id: discordId,
-      discord_server_id: discordId,
-      bot_name: document.getElementById('persona-name').value,
-      persona_prompt: document.getElementById('persona-prompt').value,
-    }, { onConflict: 'owner_discord_id' });
-    showSaved('persona-saved');
-  }
+
 
   async function grantAccess() {
     const id = document.getElementById('grant-id').value.trim();
