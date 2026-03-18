@@ -587,15 +587,29 @@
       <p class="page-title">BOT CONFIG</p>
       <div class="section-card">
         <p class="card-title">// channel bindings</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          Enter the Discord channel ID where AuraAI should post tournament updates for each game.<br>
+          To get a channel ID: right-click any channel in Discord → <span style="color:var(--cyan)">Copy Channel ID</span> (Developer Mode must be on).
+        </p>
         <label class="field-label">Overwatch tournament channel ID</label>
-        <input class="cyber-input" type="text" id="ow-channel" value="1483361345096384653" placeholder="Discord channel ID">
+        <input class="cyber-input" type="text" id="ow-channel" placeholder="e.g. 1483361345096384653">
         <label class="field-label">Marvel Rivals tournament channel ID</label>
-        <input class="cyber-input" type="text" id="rivals-channel" value="1483439069697675396" placeholder="Discord channel ID">
+        <input class="cyber-input" type="text" id="rivals-channel" placeholder="e.g. 1483439069697675396">
         <label class="field-label">Destiny 2 tournament channel ID</label>
-        <input class="cyber-input" type="text" id="d2-channel" value="1483438914038403072" placeholder="Discord channel ID">
+        <input class="cyber-input" type="text" id="d2-channel" placeholder="e.g. 1483438914038403072">
         <div style="margin-top:16px">
           <button class="btn-primary" onclick="saveChannels()">Save channels</button>
           <p class="save-msg" id="channels-saved">// Settings saved successfully</p>
+        </div>
+      </div>
+      <div class="section-card" style="border-color:rgba(180,79,255,0.2)">
+        <p class="card-title" style="color:var(--purple)">// how to find your channel ID</p>
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:2;letter-spacing:0.5px">
+          <p><span style="color:var(--purple)">01.</span> Open Discord → Settings → Advanced</p>
+          <p><span style="color:var(--purple)">02.</span> Enable <span style="color:var(--white)">Developer Mode</span></p>
+          <p><span style="color:var(--purple)">03.</span> Right-click any channel in your server</p>
+          <p><span style="color:var(--purple)">04.</span> Click <span style="color:var(--white)">Copy Channel ID</span></p>
+          <p><span style="color:var(--purple)">05.</span> Paste it into the field above</p>
         </div>
       </div>
       <div class="section-card">
