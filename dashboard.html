@@ -507,7 +507,11 @@
       <div style="font-family:var(--font-display);font-size:0.8rem;font-weight:900;letter-spacing:2px">
         <span style="color:var(--cyan);text-shadow:var(--glow-cyan)">AURA</span><span style="color:var(--white)">AI</span>
       </div>
-      <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:3px;letter-spacing:1px" id="sidebar-server">ShelfSmart Gaming</div>
+      <div style="margin-top:8px">
+        <select id="server-select" class="cyber-input" style="font-size:0.62rem;padding:6px 8px;cursor:pointer" onchange="onServerChange(this.value)">
+          <option value="">— Select server —</option>
+        </select>
+      </div>
     </div>
 
     <span class="sidebar-section">// Main</span>
@@ -713,9 +717,11 @@
           <input class="cyber-input" type="text" id="alert-manual" placeholder="Enter exact username" style="margin-top:6px">
         </div>
 
-        <label class="field-label">Alert Discord channel ID</label>
-        <input class="cyber-input" type="text" id="alert-channel" placeholder="Paste your Discord channel ID">
-        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px">Right-click any Discord channel → Copy Channel ID</p>
+        <label class="field-label">Alert channel</label>
+        <select class="cyber-input" id="alert-channel" style="cursor:pointer">
+          <option value="">— Select a server first —</option>
+        </select>
+        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px">Select your server above to load channels</p>
 
         <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn-primary" onclick="addAlert()">Add alert</button>
@@ -912,6 +918,7 @@
 
     document.getElementById('loading').classList.add('hidden');
     loadAlerts();
+    loadUserServers();
   }
 
   async function saveChannels() {
@@ -990,6 +997,125 @@
   }
   updateClock();
   setInterval(updateClock, 1000);
+
+  // ── Server & Channel Selection ──
+  let userGuilds = [];
+  let selectedGuildId = null;
+
+  async function loadUserServers() {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session?.provider_token) return;
+
+      const res = await fetch('https://discord.com/api/users/@me/guilds', {
+        headers: { 'Authorization': `Bearer ${session.provider_token}` }
+      });
+      if (!res.ok) return;
+
+      const guilds = await res.json();
+      // Filter to servers where user is admin (permissions & 0x8 = administrator)
+      userGuilds = guilds.filter(g => (parseInt(g.permissions) & 0x8) === 0x8);
+
+      const select = document.getElementById('server-select');
+      if (!select) return;
+      select.innerHTML = '<option value="">— Select server —</option>';
+      userGuilds.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g.id;
+        opt.textContent = g.name;
+        select.appendChild(opt);
+      });
+
+      // Auto-select if only one server
+      if (userGuilds.length === 1) {
+        select.value = userGuilds[0].id;
+        onServerChange(userGuilds[0].id);
+      }
+    } catch (err) {
+      console.error('Error loading servers:', err.message);
+    }
+  }
+
+  async function onServerChange(guildId) {
+    selectedGuildId = guildId;
+    const channelSelect = document.getElementById('alert-channel');
+    if (!channelSelect) return;
+
+    if (!guildId) {
+      channelSelect.innerHTML = '<option value="">— Select a server first —</option>';
+      return;
+    }
+
+    channelSelect.innerHTML = '<option value="">Loading channels...</option>';
+
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session?.provider_token) return;
+
+      const res = await fetch(`https://discord.com/api/guilds/${guildId}/channels`, {
+        headers: { 'Authorization': `Bearer ${session.provider_token}` }
+      });
+
+      if (!res.ok) {
+        // Bot token fallback via edge function
+        const edgeRes = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+          body: JSON.stringify({ action: 'get_channels', guildId })
+        });
+        const edgeData = await edgeRes.json();
+        if (edgeData.channels) {
+          populateChannels(edgeData.channels, channelSelect);
+          return;
+        }
+        channelSelect.innerHTML = '<option value="">Could not load channels — enter ID manually</option>';
+        return;
+      }
+
+      const channels = await res.json();
+      populateChannels(channels, channelSelect);
+
+    } catch (err) {
+      console.error('Error loading channels:', err.message);
+      channelSelect.innerHTML = '<option value="">Error loading channels</option>';
+    }
+  }
+
+  function populateChannels(channels, selectEl) {
+    // Sort: categories first, then text, then voice
+    const categories = channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position);
+    const others = channels.filter(c => c.type !== 4).sort((a,b) => a.position - b.position);
+
+    selectEl.innerHTML = '<option value="">— Pick a channel —</option>';
+
+    categories.forEach(cat => {
+      const group = document.createElement('optgroup');
+      group.label = '📁 ' + cat.name.toUpperCase();
+      const children = others.filter(c => c.parent_id === cat.id);
+      children.forEach(ch => {
+        const opt = document.createElement('option');
+        opt.value = ch.id;
+        const icon = ch.type === 2 ? '🔊' : '#';
+        opt.textContent = `${icon} ${ch.name}`;
+        group.appendChild(opt);
+      });
+      if (group.children.length > 0) selectEl.appendChild(group);
+    });
+
+    // Uncategorized channels
+    const uncategorized = others.filter(c => !c.parent_id);
+    if (uncategorized.length > 0) {
+      const group = document.createElement('optgroup');
+      group.label = '— Uncategorized —';
+      uncategorized.forEach(ch => {
+        const opt = document.createElement('option');
+        opt.value = ch.id;
+        opt.textContent = `# ${ch.name}`;
+        group.appendChild(opt);
+      });
+      selectEl.appendChild(group);
+    }
+  }
 
   // ── Social Alerts ──
   let selectedStreamer = null;
