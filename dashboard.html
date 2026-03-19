@@ -1200,7 +1200,7 @@
   }
 
   async function searchStreamers(query) {
-    const platform = document.getElementById('alert-platform').value;
+    const platform = ddPlatform ? ddPlatform.getValue() : 'twitch';
     const resultsEl = document.getElementById('search-results');
     resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Searching...</div>';
     resultsEl.style.display = 'block';
