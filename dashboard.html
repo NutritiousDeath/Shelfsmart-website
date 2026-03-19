@@ -1054,7 +1054,7 @@
     resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Searching...</div>';
     resultsEl.style.display = 'block';
     try {
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/twitch-search`, {
+      const res = await fetch(`https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/twitch-search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
         body: JSON.stringify({ query, platform })
