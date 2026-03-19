@@ -451,6 +451,25 @@
     }
     .s-online { display: flex; align-items: center; gap: 6px; color: var(--green); }
 
+    /* CUSTOM DROPDOWN */
+    .cd-wrap{position:relative;width:100%}
+    .cd-selected{width:100%;font-family:var(--font-mono);font-size:0.72rem;padding:9px 32px 9px 12px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.18);color:var(--cyan);letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color 0.2s;user-select:none}
+    .cd-selected:hover{border-color:var(--cyan)}
+    .cd-selected.open{border-color:var(--cyan);box-shadow:var(--glow-cyan)}
+    .cd-arrow{font-size:10px;color:var(--grey);transition:transform 0.2s;flex-shrink:0;margin-left:8px}
+    .cd-selected.open .cd-arrow{transform:rotate(180deg)}
+    .cd-list{display:none;position:absolute;top:100%;left:0;right:0;background:#020408;border:1px solid rgba(0,240,255,0.25);border-top:none;z-index:1000;max-height:260px;overflow-y:auto}
+    .cd-list.open{display:block}
+    .cd-list::-webkit-scrollbar{width:4px}
+    .cd-list::-webkit-scrollbar-track{background:var(--bg-2)}
+    .cd-list::-webkit-scrollbar-thumb{background:rgba(0,240,255,0.3)}
+    .cd-group-label{font-family:var(--font-mono);font-size:0.58rem;color:var(--grey);letter-spacing:2px;padding:8px 12px 4px;text-transform:uppercase;border-top:1px solid rgba(0,240,255,0.06)}
+    .cd-group-label:first-child{border-top:none}
+    .cd-option{font-family:var(--font-mono);font-size:0.7rem;color:rgba(232,234,240,0.7);padding:9px 14px;cursor:pointer;letter-spacing:0.5px;transition:all 0.15s;border-left:2px solid transparent}
+    .cd-option:hover{background:rgba(0,240,255,0.06);color:var(--cyan);border-left-color:var(--cyan)}
+    .cd-option.selected{color:var(--cyan);background:rgba(0,240,255,0.04);border-left-color:var(--cyan)}
+    .cd-option.disabled{opacity:0.3;cursor:default;pointer-events:none}
+
     @media (max-width: 700px) {
       .layout { grid-template-columns: 1fr; }
       .sidebar { display: none; }
@@ -1248,7 +1267,268 @@
     loadAlerts();
   }
 
+  // ── Custom Dropdown Component ──
+  class CyberDropdown {
+    constructor(el, onChange) {
+      this.el = el;
+      this.onChange = onChange;
+      this.value = '';
+      this.options = [];
+      this.isOpen = false;
+
+      this.wrap = document.createElement('div');
+      this.wrap.className = 'cd-wrap';
+
+      this.selected = document.createElement('div');
+      this.selected.className = 'cd-selected';
+      this.selected.innerHTML = '<span class="cd-label">— Select —</span><span class="cd-arrow">▼</span>';
+      this.selected.onclick = (e) => { e.stopPropagation(); this.toggle(); };
+
+      this.list = document.createElement('div');
+      this.list.className = 'cd-list';
+
+      this.wrap.appendChild(this.selected);
+      this.wrap.appendChild(this.list);
+      el.parentNode.replaceChild(this.wrap, el);
+
+      document.addEventListener('click', () => this.close());
+    }
+
+    toggle() { this.isOpen ? this.close() : this.open(); }
+    open() { this.isOpen = true; this.selected.classList.add('open'); this.list.classList.add('open'); }
+    close() { this.isOpen = false; this.selected.classList.remove('open'); this.list.classList.remove('open'); }
+
+    setOptions(options, groups) {
+      this.list.innerHTML = '';
+      this.options = [];
+
+      if (groups) {
+        groups.forEach(group => {
+          if (group.label) {
+            const lbl = document.createElement('div');
+            lbl.className = 'cd-group-label';
+            lbl.textContent = group.label;
+            this.list.appendChild(lbl);
+          }
+          group.options.forEach(opt => this._addOption(opt));
+        });
+      } else {
+        options.forEach(opt => this._addOption(opt));
+      }
+    }
+
+    _addOption(opt) {
+      const div = document.createElement('div');
+      div.className = 'cd-option' + (opt.disabled ? ' disabled' : '');
+      div.textContent = opt.label;
+      div.dataset.value = opt.value || '';
+      div.onclick = (e) => {
+        e.stopPropagation();
+        if (opt.disabled) return;
+        this.setValue(opt.value, opt.label);
+        this.close();
+        if (this.onChange) this.onChange(opt.value, opt.label);
+      };
+      this.list.appendChild(div);
+      this.options.push({ ...opt, el: div });
+    }
+
+    setValue(value, label) {
+      this.value = value;
+      this.selected.querySelector('.cd-label').textContent = label || '— Select —';
+      this.options.forEach(o => o.el.classList.toggle('selected', o.value === value));
+    }
+
+    getValue() { return this.value; }
+  }
+
+  // Initialize all dropdowns after DOM loads
+  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame, ddCoachingToggle1, ddCoachingToggle2;
+
+  function initDropdowns() {
+    // Platform dropdown
+    const platEl = document.getElementById('alert-platform');
+    if (platEl) {
+      ddPlatform = new CyberDropdown(platEl, (val) => onPlatformChange(val));
+      ddPlatform.setOptions([
+        { value: 'twitch', label: '🟣 Twitch' },
+        { value: 'youtube', label: '🔴 YouTube' },
+        { value: 'kick', label: '🟢 Kick' },
+        { value: 'tiktok', label: '⚫ TikTok' },
+      ]);
+      ddPlatform.setValue('twitch', '🟣 Twitch');
+    }
+
+    // Server select dropdown
+    const serverEl = document.getElementById('server-select');
+    if (serverEl) {
+      ddServerSelect = new CyberDropdown(serverEl, (val) => onServerChange(val));
+      ddServerSelect.setOptions([{ value: '', label: '— Select server —', disabled: true }]);
+    }
+
+    // Alert channel dropdown
+    const chanEl = document.getElementById('alert-channel');
+    if (chanEl) {
+      ddAlertChannel = new CyberDropdown(chanEl, () => {});
+      ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]);
+    }
+
+    // Tournament game select
+    const gameEl = document.querySelector('select.cyber-input[id="tournament-game"]');
+    if (gameEl) {
+      const ddGame = new CyberDropdown(gameEl, () => {});
+      ddGame.setOptions([
+        { value: 'overwatch', label: 'Overwatch 2' },
+        { value: 'rivals', label: 'Marvel Rivals' },
+        { value: 'destiny', label: 'Destiny 2' },
+      ]);
+      ddGame.setValue('overwatch', 'Overwatch 2');
+    }
+  }
+
+  // Override onPlatformChange to use custom dropdown value
+  const _origPlatformChange = onPlatformChange;
+  function onPlatformChange(val) {
+    const platform = val || (ddPlatform ? ddPlatform.getValue() : 'twitch');
+    clearSelectedStreamer();
+    const searchEl = document.getElementById('alert-search');
+    const manualEl = document.getElementById('manual-entry');
+    const resultsEl = document.getElementById('search-results');
+    if (searchEl) searchEl.value = '';
+    if (resultsEl) resultsEl.style.display = 'none';
+    if (platform === 'tiktok' || platform === 'kick') {
+      if (searchEl) searchEl.style.display = 'none';
+      if (manualEl) manualEl.style.display = 'block';
+    } else {
+      if (searchEl) searchEl.style.display = 'block';
+      if (manualEl) manualEl.style.display = 'none';
+    }
+  }
+
+  // Override populateChannels to use custom dropdown
+  const _origPopulateChannels = populateChannels;
+  function populateChannels(channels, selectEl) {
+    if (!ddAlertChannel) return;
+    const categories = channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position);
+    const others = channels.filter(c => c.type !== 4).sort((a,b) => a.position - b.position);
+    const groups = [];
+
+    categories.forEach(cat => {
+      const children = others.filter(c => c.parent_id === cat.id);
+      if (children.length > 0) {
+        groups.push({
+          label: '📁 ' + cat.name.toUpperCase(),
+          options: children.map(ch => ({
+            value: ch.id,
+            label: (ch.type === 2 ? '🔊 ' : '# ') + ch.name
+          }))
+        });
+      }
+    });
+
+    const uncategorized = others.filter(c => !c.parent_id);
+    if (uncategorized.length > 0) {
+      groups.push({
+        label: '— Uncategorized —',
+        options: uncategorized.map(ch => ({ value: ch.id, label: '# ' + ch.name }))
+      });
+    }
+
+    ddAlertChannel.setOptions([], groups);
+    ddAlertChannel.setValue('', '— Pick a channel —');
+  }
+
+  // Override addAlert to use custom dropdown values
+  const _origAddAlert = addAlert;
+  async function addAlert() {
+    const platform = ddPlatform ? ddPlatform.getValue() : 'twitch';
+    const channelId = ddAlertChannel ? ddAlertChannel.getValue() : '';
+    const errorEl = document.getElementById('alert-error');
+    errorEl.style.display = 'none';
+
+    let username = '';
+    if (platform === 'tiktok' || platform === 'kick') {
+      username = document.getElementById('alert-manual')?.value.trim() || '';
+    } else {
+      username = selectedStreamer?.username || document.getElementById('alert-search')?.value.trim() || '';
+    }
+
+    if (!username) { errorEl.textContent = '// Error: Please select or enter a streamer'; errorEl.style.display = 'block'; return; }
+    if (!channelId) { errorEl.textContent = '// Error: Please select an alert channel'; errorEl.style.display = 'block'; return; }
+
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const { error } = await sb.from('social_alerts').insert({
+      discord_server_id: discordId,
+      platform,
+      username,
+      alert_channel_id: channelId,
+      enabled: true
+    });
+
+    if (error) { errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return; }
+    showSaved('alert-saved');
+    clearSelectedStreamer();
+    if (document.getElementById('alert-search')) document.getElementById('alert-search').value = '';
+    if (document.getElementById('alert-manual')) document.getElementById('alert-manual').value = '';
+    ddAlertChannel.setValue('', '— Pick a channel —');
+    loadAlerts();
+  }
+
+  // Override loadUserServers to populate custom dropdown
+  const _origLoadUserServers = loadUserServers;
+  async function loadUserServers() {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session?.provider_token) return;
+      const res = await fetch('https://discord.com/api/users/@me/guilds', {
+        headers: { 'Authorization': `Bearer ${session.provider_token}` }
+      });
+      if (!res.ok) return;
+      const guilds = await res.json();
+      userGuilds = guilds.filter(g => (parseInt(g.permissions) & 0x8) === 0x8);
+      if (!ddServerSelect) return;
+      const opts = [{ value: '', label: '— Select server —', disabled: true },
+        ...userGuilds.map(g => ({ value: g.id, label: g.name }))];
+      ddServerSelect.setOptions(opts);
+      if (userGuilds.length === 1) {
+        ddServerSelect.setValue(userGuilds[0].id, userGuilds[0].name);
+        onServerChange(userGuilds[0].id);
+      }
+    } catch (err) {
+      console.error('Error loading servers:', err.message);
+    }
+  }
+
+  // Override onServerChange to update custom channel dropdown
+  const _origOnServerChange = onServerChange;
+  async function onServerChange(guildId) {
+    selectedGuildId = guildId;
+    if (!ddAlertChannel) return;
+    if (!guildId) {
+      ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]);
+      return;
+    }
+    ddAlertChannel.setOptions([{ value: '', label: 'Loading channels...', disabled: true }]);
+    try {
+      const edgeRes = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+        body: JSON.stringify({ action: 'get_channels', guildId })
+      });
+      const edgeData = await edgeRes.json();
+      if (edgeData.channels && edgeData.channels.length > 0) {
+        populateChannels(edgeData.channels, null);
+      } else {
+        ddAlertChannel.setOptions([{ value: '', label: 'No channels found', disabled: true }]);
+      }
+    } catch (err) {
+      console.error('Error loading channels:', err.message);
+      ddAlertChannel.setOptions([{ value: '', label: 'Error loading channels', disabled: true }]);
+    }
+  }
+
   init();
+  setTimeout(initDropdowns, 100);
 </script>
 </body>
 </html>
