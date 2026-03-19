@@ -673,45 +673,55 @@
     <div class="tab" id="tab-alerts">
       <p class="page-tag">// live monitoring</p>
       <p class="page-title">SOCIAL ALERTS</p>
+
       <div class="section-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-          <p class="card-title" style="margin-bottom:0">// connected platforms</p>
-          <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px">+ Connect platform</button>
-        </div>
-        <div class="platform-row">
-          <div><p class="platform-name">Twitch</p><p class="platform-sub">3 streamers tracked — alerts to #live-now</p></div>
-          <span class="badge badge-active">Live</span>
-        </div>
-        <div class="platform-row">
-          <div><p class="platform-name">YouTube</p><p class="platform-sub">1 channel tracked — alerts to #live-now</p></div>
-          <span class="badge badge-active">Live</span>
-        </div>
-        <div class="platform-row">
-          <div><p class="platform-name">TikTok</p><p class="platform-sub">Not connected</p></div>
-          <span class="badge badge-free">Setup needed</span>
-        </div>
-        <div class="platform-row">
-          <div><p class="platform-name">Kick</p><p class="platform-sub">Not connected</p></div>
-          <span class="badge badge-free">Setup needed</span>
+        <p class="card-title">// active alerts</p>
+        <div id="alerts-list">
+          <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading alerts...</p>
         </div>
       </div>
+
       <div class="section-card">
-        <p class="card-title">// add streamer</p>
+        <p class="card-title">// add new alert</p>
         <label class="field-label">Platform</label>
-        <select class="cyber-input" style="cursor:pointer">
-          <option>Twitch</option>
-          <option>YouTube</option>
-          <option>TikTok</option>
-          <option>Kick</option>
+        <select class="cyber-input" id="alert-platform" style="cursor:pointer" onchange="onPlatformChange()">
+          <option value="twitch">Twitch</option>
+          <option value="youtube">YouTube</option>
+          <option value="kick">Kick</option>
+          <option value="tiktok">TikTok</option>
         </select>
-        <label class="field-label">Username / channel handle</label>
-        <input class="cyber-input" type="text" placeholder="e.g. xAuraPlayer">
-        <label class="field-label">Alert channel ID</label>
-        <input class="cyber-input" type="text" placeholder="Discord channel ID">
-        <div style="margin-top:14px">
-          <button class="btn-primary" onclick="showSaved('alert-saved')">Add alert</button>
-          <p class="save-msg" id="alert-saved">// Alert added successfully</p>
+
+        <label class="field-label">Search for streamer / channel</label>
+        <div style="position:relative">
+          <input class="cyber-input" type="text" id="alert-search" placeholder="Type a name to search..." oninput="onAlertSearch(this.value)" autocomplete="off">
+          <div id="search-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:#080d1a;border:1px solid rgba(0,240,255,0.2);border-top:none;z-index:100;max-height:240px;overflow-y:auto"></div>
         </div>
+
+        <div id="selected-streamer" style="display:none;margin-top:10px;padding:10px 12px;border:1px solid rgba(0,240,255,0.3);background:rgba(0,240,255,0.04)">
+          <div style="display:flex;align-items:center;gap:10px">
+            <img id="selected-avatar" src="" style="width:32px;height:32px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'">
+            <div>
+              <p id="selected-name" style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;color:var(--cyan)"></p>
+              <p id="selected-meta" style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey)"></p>
+            </div>
+            <button onclick="clearSelectedStreamer()" style="margin-left:auto;background:none;border:none;color:var(--grey);cursor:pointer;font-size:16px">✕</button>
+          </div>
+        </div>
+
+        <div id="manual-entry" style="display:none">
+          <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);margin-top:8px">Search not available for this platform — enter username manually</p>
+          <input class="cyber-input" type="text" id="alert-manual" placeholder="Enter exact username" style="margin-top:6px">
+        </div>
+
+        <label class="field-label">Alert Discord channel ID</label>
+        <input class="cyber-input" type="text" id="alert-channel" placeholder="Paste your Discord channel ID">
+        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px">Right-click any Discord channel → Copy Channel ID</p>
+
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-primary" onclick="addAlert()">Add alert</button>
+        </div>
+        <p class="save-msg" id="alert-saved">// Alert added successfully</p>
+        <p class="save-msg" id="alert-error" style="color:var(--pink)"></p>
       </div>
     </div>
 
@@ -901,6 +911,7 @@
     }
 
     document.getElementById('loading').classList.add('hidden');
+    loadAlerts();
   }
 
   async function saveChannels() {
@@ -979,6 +990,137 @@
   }
   updateClock();
   setInterval(updateClock, 1000);
+
+  // ── Social Alerts ──
+  let selectedStreamer = null;
+  let searchTimeout = null;
+
+  async function loadAlerts() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!discordId) return;
+    const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_server_id', discordId);
+    const list = document.getElementById('alerts-list');
+    if (!list) return;
+    if (!alerts || alerts.length === 0) {
+      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No alerts set up yet. Add one below.</p>';
+      return;
+    }
+    const icons = { twitch: '🟣', youtube: '🔴', tiktok: '⚫', kick: '🟢' };
+    list.innerHTML = alerts.map(a => `
+      <div class="platform-row" style="margin-bottom:8px">
+        <div>
+          <p class="platform-name">${icons[a.platform] || '📡'} ${a.username}</p>
+          <p class="platform-sub">${a.platform} — channel ${a.alert_channel_id || 'not set'}</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="badge ${a.enabled ? 'badge-active' : 'badge-free'}">${a.enabled ? 'Active' : 'Paused'}</span>
+          <button onclick="removeAlert('${a.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function removeAlert(id) {
+    await sb.from('social_alerts').delete().eq('id', id);
+    loadAlerts();
+  }
+
+  function onPlatformChange() {
+    const platform = document.getElementById('alert-platform').value;
+    clearSelectedStreamer();
+    document.getElementById('alert-search').value = '';
+    document.getElementById('search-results').style.display = 'none';
+    if (platform === 'tiktok' || platform === 'kick') {
+      document.getElementById('alert-search').style.display = 'none';
+      document.getElementById('manual-entry').style.display = 'block';
+    } else {
+      document.getElementById('alert-search').style.display = 'block';
+      document.getElementById('manual-entry').style.display = 'none';
+    }
+  }
+
+  function onAlertSearch(value) {
+    clearTimeout(searchTimeout);
+    if (value.length < 2) {
+      document.getElementById('search-results').style.display = 'none';
+      return;
+    }
+    searchTimeout = setTimeout(() => searchStreamers(value), 400);
+  }
+
+  async function searchStreamers(query) {
+    const platform = document.getElementById('alert-platform').value;
+    const resultsEl = document.getElementById('search-results');
+    resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Searching...</div>';
+    resultsEl.style.display = 'block';
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/twitch-search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
+        body: JSON.stringify({ query, platform })
+      });
+      const data = await res.json();
+      if (!data.results || data.results.length === 0) {
+        resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No results found</div>';
+        return;
+      }
+      resultsEl.innerHTML = data.results.map(r => `
+        <div onclick='selectStreamer(${JSON.stringify(r)})' style="display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(0,240,255,0.06)" onmouseover="this.style.background='rgba(0,240,255,0.06)'" onmouseout="this.style.background='none'">
+          ${r.avatar ? `<img src="${r.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover">` : '<div style="width:28px;height:28px;border-radius:50%;background:rgba(0,240,255,0.1)"></div>'}
+          <div>
+            <p style="font-family:var(--font-display);font-size:0.65rem;font-weight:700;color:var(--white)">${r.displayName}</p>
+            <p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">@${r.username}${r.live ? ' 🔴 LIVE' : ''}${r.game ? ` — ${r.game}` : ''}</p>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--pink)">Search error — try entering username manually</div>';
+    }
+  }
+
+  function selectStreamer(streamer) {
+    selectedStreamer = streamer;
+    document.getElementById('search-results').style.display = 'none';
+    document.getElementById('alert-search').value = streamer.displayName;
+    document.getElementById('selected-streamer').style.display = 'block';
+    document.getElementById('selected-avatar').src = streamer.avatar || '';
+    document.getElementById('selected-name').textContent = streamer.displayName;
+    document.getElementById('selected-meta').textContent = `@${streamer.username}${streamer.live ? ' — 🔴 Currently Live' : ''}`;
+  }
+
+  function clearSelectedStreamer() {
+    selectedStreamer = null;
+    document.getElementById('selected-streamer').style.display = 'none';
+  }
+
+  async function addAlert() {
+    const platform = document.getElementById('alert-platform').value;
+    const channelId = document.getElementById('alert-channel').value.trim();
+    const errorEl = document.getElementById('alert-error');
+    errorEl.style.display = 'none';
+    let username = '';
+    if (platform === 'tiktok' || platform === 'kick') {
+      username = document.getElementById('alert-manual').value.trim();
+    } else {
+      username = selectedStreamer?.username || document.getElementById('alert-search').value.trim();
+    }
+    if (!username) { errorEl.textContent = '// Error: Please select or enter a streamer'; errorEl.style.display = 'block'; return; }
+    if (!channelId) { errorEl.textContent = '// Error: Please enter a Discord channel ID'; errorEl.style.display = 'block'; return; }
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const { error } = await sb.from('social_alerts').insert({
+      discord_server_id: discordId,
+      platform,
+      username,
+      alert_channel_id: channelId,
+      enabled: true
+    });
+    if (error) { errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return; }
+    showSaved('alert-saved');
+    clearSelectedStreamer();
+    document.getElementById('alert-search').value = '';
+    document.getElementById('alert-channel').value = '';
+    loadAlerts();
+  }
 
   init();
 </script>
