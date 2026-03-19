@@ -411,7 +411,8 @@
       const { error } = await sb.auth.signInWithOAuth({
         provider: 'discord',
         options: {
-          redirectTo: window.location.origin + '/dashboard.html'
+          redirectTo: window.location.origin + '/dashboard.html',
+          scopes: 'identify email guilds'
         }
       });
 
