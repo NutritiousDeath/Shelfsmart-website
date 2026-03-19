@@ -1,38 +1,247 @@
-<!-- =============================================
-     CHANGE 1: Add this to your nav-links ul
-     Add it after the Privacy link
-     ============================================= -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShelfSmart — Powered by AuraAI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
 
-<li><a href="/dashboard.html" class="nav-dashboard">Dashboard</a></li>
+  <!-- Scanline overlay -->
+  <div class="scanlines"></div>
+  <div class="noise"></div>
 
-<!-- Then add this CSS to your style.css file or inside a <style> tag -->
-<style>
-.nav-links a.nav-dashboard {
-  color: var(--cyan);
-  text-shadow: var(--glow-cyan);
-  border: 1px solid rgba(0, 240, 255, 0.4);
-  padding: 4px 12px;
-  transition: all 0.2s;
-}
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo">
+      <span class="logo-shelf">Shelf</span><span class="logo-smart">Smart</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="pages/about.html">About</a></li>
+      <li><a href="pages/services.html">Services</a></li>
+      <li><a href="pages/contact.html">Contact</a></li>
+      <li><a href="pages/privacy.html">Privacy</a></li>
+      <li><a href="/login.html" class="nav-dashboard">Dashboard</a></li>
+    </ul>
+    <div class="nav-status">
+      <span class="status-dot"></span>
+      <span class="status-text">SYSTEM ONLINE</span>
+    </div>
+  </nav>
 
-.nav-links a.nav-dashboard::after {
-  display: none;
-}
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">// NEXT GENERATION RETAIL INTELLIGENCE</div>
+      <h1 class="hero-title">
+        <span class="title-line">THE FUTURE</span>
+        <span class="title-line accent">OF THE SHELF</span>
+        <span class="title-line">IS HERE</span>
+      </h1>
+      <p class="hero-subtitle">ShelfSmart combines cutting-edge AI with real-world retail intelligence. Powered by AuraAI, we deliver insights that were once impossible.</p>
+      <div class="hero-cta">
+        <a href="pages/services.html" class="btn-primary">EXPLORE SYSTEMS</a>
+        <a href="pages/contact.html" class="btn-secondary">MAKE CONTACT</a>
+        <a href="/login.html" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.055a19.85 19.85 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          AURAAI DASHBOARD
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num" data-target="99">0</span><span class="stat-unit">%</span>
+          <span class="stat-label">Accuracy Rate</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num" data-target="24">0</span><span class="stat-unit">/7</span>
+          <span class="stat-label">Always Online</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-num" data-target="500">0</span><span class="stat-unit">ms</span>
+          <span class="stat-label">Response Time</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="cyber-ring ring-1"></div>
+      <div class="cyber-ring ring-2"></div>
+      <div class="cyber-ring ring-3"></div>
+      <img src="auraai-hero.png" alt="AuraAI" class="hero-aura-img" />
+    </div>
+  </section>
 
-.nav-links a.nav-dashboard:hover {
-  background: rgba(0, 240, 255, 0.1);
-  box-shadow: var(--glow-cyan);
-  transform: translateY(-1px);
-}
-</style>
+  <!-- SHELFSMART SECTION -->
+  <section class="section" id="shelfsmart">
+    <div class="section-header">
+      <div class="section-tag">// MODULE_01</div>
+      <h2 class="section-title">SHELF<span class="accent">SMART</span></h2>
+      <p class="section-sub">Retail intelligence reimagined for the digital age</p>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">⬡</div>
+        <h3>Smart Inventory</h3>
+        <p>Real-time shelf monitoring and inventory tracking with zero human error. Know what's on your shelves before your customers do.</p>
+        <div class="card-line"></div>
+      </div>
+      <div class="card">
+        <div class="card-icon">◈</div>
+        <h3>Predictive Restocking</h3>
+        <p>AI-driven demand forecasting ensures shelves are always stocked. Never lose a sale to an empty shelf again.</p>
+        <div class="card-line"></div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⬟</div>
+        <h3>Analytics Dashboard</h3>
+        <p>Deep insights into product performance, customer behavior, and shelf optimization — all in one unified interface.</p>
+        <div class="card-line"></div>
+      </div>
+    </div>
+  </section>
 
+  <!-- AURAAI SECTION -->
+  <section class="section aura-section" id="auraai">
+    <div class="aura-bg-glow"></div>
+    <div class="section-header">
+      <div class="section-tag">// MODULE_02</div>
+      <h2 class="section-title">AURA<span class="accent-pink">AI</span></h2>
+      <p class="section-sub">The intelligence engine powering ShelfSmart</p>
+    </div>
+    <div class="aura-grid">
+      <div class="aura-info">
+        <div class="aura-feature">
+          <span class="feature-num">01</span>
+          <div>
+            <h4>Natural Language Processing</h4>
+            <p>AuraAI understands context, nuance, and intent — communicating with your team as naturally as a human colleague would.</p>
+          </div>
+        </div>
+        <div class="aura-feature">
+          <span class="feature-num">02</span>
+          <div>
+            <h4>Memory & Learning</h4>
+            <p>AuraAI remembers every interaction, every preference, every pattern — growing smarter with every conversation.</p>
+          </div>
+        </div>
+        <div class="aura-feature">
+          <span class="feature-num">03</span>
+          <div>
+            <h4>Discord Integration</h4>
+            <p>Access AuraAI directly from your Discord server. Ask questions, get insights, and manage your shelf intelligence in real time.</p>
+          </div>
+        </div>
+        <div class="aura-feature">
+          <span class="feature-num">04</span>
+          <div>
+            <h4>Always Evolving</h4>
+            <p>Continuous learning means AuraAI gets better every single day, adapting to your business as it grows and changes.</p>
+          </div>
+        </div>
+      </div>
+      <div class="aura-terminal-wrap">
+        <div class="aura-img-wrap">
+          <img src="auraai-hero.png" alt="AuraAI" class="aura-section-img" />
+        </div>
+        <div class="aura-terminal">
+          <div class="terminal-header">
+            <span class="t-dot red"></span>
+            <span class="t-dot yellow"></span>
+            <span class="t-dot green"></span>
+            <span class="t-title">AURAAI_TERMINAL v2.4</span>
+          </div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">></span> <span class="t-cmd">INITIALIZING AURAAI...</span></div>
+            <div class="t-line delay-1"><span class="t-prompt">></span> <span class="t-cmd">LOADING MEMORY BANKS...</span> <span class="t-ok">OK</span></div>
+            <div class="t-line delay-2"><span class="t-prompt">></span> <span class="t-cmd">CONNECTING TO SHELFSMART...</span> <span class="t-ok">OK</span></div>
+            <div class="t-line delay-3"><span class="t-prompt">></span> <span class="t-cmd">SCANNING INVENTORY DATA...</span> <span class="t-ok">OK</span></div>
+            <div class="t-line delay-4"><span class="t-prompt">></span> <span class="t-cmd">ALL SYSTEMS NOMINAL</span></div>
+            <div class="t-line delay-5"><span class="t-prompt">></span> <span class="t-cursor">█</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<!-- =============================================
-     CHANGE 2: Add this to your hero-cta div
-     Add it after the existing two buttons
-     ============================================= -->
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-logo"><span class="logo-shelf">Shelf</span><span class="logo-smart">Smart</span></div>
+        <p>Powered by AuraAI. Built for the future of retail.</p>
+      </div>
+      <div class="footer-links">
+        <h4>NAVIGATE</h4>
+        <a href="index.html">Home</a>
+        <a href="pages/about.html">About</a>
+        <a href="pages/services.html">Services</a>
+        <a href="pages/contact.html">Contact</a>
+        <a href="pages/privacy.html">Privacy Policy</a>
+        <a href="/login.html" style="color:var(--cyan)">AuraAI Dashboard</a>
+      </div>
+      <div class="footer-status">
+        <h4>SYSTEM STATUS</h4>
+        <div class="sys-item"><span class="status-dot"></span> AuraAI Core — Online</div>
+        <div class="sys-item"><span class="status-dot"></span> ShelfSmart API — Online</div>
+        <div class="sys-item"><span class="status-dot"></span> Discord Gateway — Online</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ShelfSmart. All rights reserved.</span>
+      <span>POWERED BY AURAAI</span>
+    </div>
+  </footer>
 
-<a href="/login.html" class="btn-primary" style="display:inline-flex;align-items:center;gap:8px">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.055a19.85 19.85 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-  AURAAI DASHBOARD
-</a>
+  <script src="js/main.js"></script>
+  <style>
+    .hero-aura-img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 280px;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--cyan);
+      box-shadow: var(--glow-cyan);
+      z-index: 2;
+    }
+    .aura-img-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .aura-section-img {
+      width: 100%;
+      max-width: 420px;
+      border: 1px solid rgba(180, 79, 255, 0.3);
+      box-shadow: var(--glow-purple);
+    }
+    .aura-terminal-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .nav-links a.nav-dashboard {
+      color: var(--cyan);
+      text-shadow: var(--glow-cyan);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      padding: 4px 12px;
+      transition: all 0.2s;
+    }
+    .nav-links a.nav-dashboard::after {
+      display: none;
+    }
+    .nav-links a.nav-dashboard:hover {
+      background: rgba(0, 240, 255, 0.1);
+      box-shadow: var(--glow-cyan);
+    }
+  </style>
+</body>
+</html>
