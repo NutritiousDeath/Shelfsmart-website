@@ -451,15 +451,20 @@
     }
     .s-online { display: flex; align-items: center; gap: 6px; color: var(--green); }
 
-    /* CUSTOM DROPDOWN */
+    /* CUSTOM SEARCHABLE DROPDOWN */
     .cd-wrap{position:relative;width:100%}
     .cd-selected{width:100%;font-family:var(--font-mono);font-size:0.72rem;padding:9px 32px 9px 12px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.18);color:var(--cyan);letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color 0.2s;user-select:none}
     .cd-selected:hover{border-color:var(--cyan)}
     .cd-selected.open{border-color:var(--cyan);box-shadow:var(--glow-cyan)}
     .cd-arrow{font-size:10px;color:var(--grey);transition:transform 0.2s;flex-shrink:0;margin-left:8px}
     .cd-selected.open .cd-arrow{transform:rotate(180deg)}
-    .cd-list{display:none;position:absolute;top:100%;left:0;right:0;background:#020408;border:1px solid rgba(0,240,255,0.25);border-top:none;z-index:1000;max-height:260px;overflow-y:auto}
-    .cd-list.open{display:block}
+    .cd-dropdown{display:none;position:absolute;top:100%;left:0;right:0;background:#020408;border:1px solid rgba(0,240,255,0.25);border-top:none;z-index:1000}
+    .cd-dropdown.open{display:block}
+    .cd-search-wrap{padding:8px;border-bottom:1px solid rgba(0,240,255,0.1)}
+    .cd-search{width:100%;font-family:var(--font-mono);font-size:0.68rem;padding:7px 10px;background:rgba(0,240,255,0.05);border:1px solid rgba(0,240,255,0.2);color:var(--cyan);letter-spacing:1px;outline:none}
+    .cd-search:focus{border-color:var(--cyan)}
+    .cd-search::placeholder{color:var(--grey)}
+    .cd-list{max-height:220px;overflow-y:auto}
     .cd-list::-webkit-scrollbar{width:4px}
     .cd-list::-webkit-scrollbar-track{background:var(--bg-2)}
     .cd-list::-webkit-scrollbar-thumb{background:rgba(0,240,255,0.3)}
@@ -468,7 +473,8 @@
     .cd-option{font-family:var(--font-mono);font-size:0.7rem;color:rgba(232,234,240,0.7);padding:9px 14px;cursor:pointer;letter-spacing:0.5px;transition:all 0.15s;border-left:2px solid transparent}
     .cd-option:hover{background:rgba(0,240,255,0.06);color:var(--cyan);border-left-color:var(--cyan)}
     .cd-option.selected{color:var(--cyan);background:rgba(0,240,255,0.04);border-left-color:var(--cyan)}
-    .cd-option.disabled{opacity:0.3;cursor:default;pointer-events:none}
+    .cd-option.hidden{display:none}
+    .cd-no-results{font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);padding:12px 14px;text-align:center}
 
     @media (max-width: 700px) {
       .layout { grid-template-columns: 1fr; }
@@ -1267,7 +1273,7 @@
     loadAlerts();
   }
 
-  // ── Custom Dropdown Component ──
+  // ── Custom Searchable Dropdown Component ──
   class CyberDropdown {
     constructor(el, onChange) {
       this.el = el;
@@ -1284,25 +1290,81 @@
       this.selected.innerHTML = '<span class="cd-label">— Select —</span><span class="cd-arrow">▼</span>';
       this.selected.onclick = (e) => { e.stopPropagation(); this.toggle(); };
 
+      this.dropdown = document.createElement('div');
+      this.dropdown.className = 'cd-dropdown';
+
+      this.searchWrap = document.createElement('div');
+      this.searchWrap.className = 'cd-search-wrap';
+      this.searchInput = document.createElement('input');
+      this.searchInput.className = 'cd-search';
+      this.searchInput.placeholder = 'Type to filter...';
+      this.searchInput.oninput = () => this.filter(this.searchInput.value);
+      this.searchInput.onclick = (e) => e.stopPropagation();
+      this.searchWrap.appendChild(this.searchInput);
+
       this.list = document.createElement('div');
       this.list.className = 'cd-list';
 
+      this.noResults = document.createElement('div');
+      this.noResults.className = 'cd-no-results';
+      this.noResults.textContent = 'No results found';
+      this.noResults.style.display = 'none';
+
+      this.dropdown.appendChild(this.searchWrap);
+      this.dropdown.appendChild(this.list);
+      this.dropdown.appendChild(this.noResults);
+
       this.wrap.appendChild(this.selected);
-      this.wrap.appendChild(this.list);
+      this.wrap.appendChild(this.dropdown);
       el.parentNode.replaceChild(this.wrap, el);
 
       document.addEventListener('click', () => this.close());
     }
 
     toggle() { this.isOpen ? this.close() : this.open(); }
-    open() { this.isOpen = true; this.selected.classList.add('open'); this.list.classList.add('open'); }
-    close() { this.isOpen = false; this.selected.classList.remove('open'); this.list.classList.remove('open'); }
+
+    open() {
+      this.isOpen = true;
+      this.selected.classList.add('open');
+      this.dropdown.classList.add('open');
+      this.searchInput.value = '';
+      this.filter('');
+      setTimeout(() => this.searchInput.focus(), 50);
+    }
+
+    close() {
+      this.isOpen = false;
+      this.selected.classList.remove('open');
+      this.dropdown.classList.remove('open');
+    }
+
+    filter(query) {
+      const q = query.toLowerCase().trim();
+      let visibleCount = 0;
+      this.options.forEach(o => {
+        const matches = !q || o.label.toLowerCase().includes(q);
+        o.el.classList.toggle('hidden', !matches);
+        if (matches) visibleCount++;
+      });
+      // Show/hide group labels based on visible children
+      this.list.querySelectorAll('.cd-group-label').forEach(lbl => {
+        const next = lbl.nextElementSibling;
+        let hasVisible = false;
+        let cur = lbl.nextElementSibling;
+        while (cur && !cur.classList.contains('cd-group-label')) {
+          if (!cur.classList.contains('hidden')) hasVisible = true;
+          cur = cur.nextElementSibling;
+        }
+        lbl.style.display = hasVisible ? '' : 'none';
+      });
+      this.noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
 
     setOptions(options, groups) {
       this.list.innerHTML = '';
       this.options = [];
 
-      if (groups) {
+      if (groups && groups.length > 0) {
         groups.forEach(group => {
           if (group.label) {
             const lbl = document.createElement('div');
