@@ -458,7 +458,7 @@
     .cd-selected.open{border-color:var(--cyan);box-shadow:var(--glow-cyan)}
     .cd-arrow{font-size:10px;color:var(--grey);transition:transform 0.2s;flex-shrink:0;margin-left:8px}
     .cd-selected.open .cd-arrow{transform:rotate(180deg)}
-    .cd-dropdown{display:none;position:absolute;top:100%;left:0;right:0;background:#020408;border:1px solid rgba(0,240,255,0.25);border-top:none;z-index:1000}
+    .cd-dropdown{display:none;position:fixed;background:#020408;border:1px solid rgba(0,240,255,0.25);z-index:9000;min-width:200px;box-shadow:0 8px 32px rgba(0,0,0,0.8)}
     .cd-dropdown.open{display:block}
     .cd-search-wrap{padding:8px;border-bottom:1px solid rgba(0,240,255,0.1)}
     .cd-search{width:100%;font-family:var(--font-mono);font-size:0.68rem;padding:7px 10px;background:rgba(0,240,255,0.05);border:1px solid rgba(0,240,255,0.2);color:var(--cyan);letter-spacing:1px;outline:none}
@@ -1327,6 +1327,11 @@
       this.isOpen = true;
       this.selected.classList.add('open');
       this.dropdown.classList.add('open');
+      // Position dropdown using fixed coords
+      const rect = this.selected.getBoundingClientRect();
+      this.dropdown.style.top = (rect.bottom + 2) + 'px';
+      this.dropdown.style.left = rect.left + 'px';
+      this.dropdown.style.width = rect.width + 'px';
       this.searchInput.value = '';
       this.filter('');
       setTimeout(() => this.searchInput.focus(), 50);
