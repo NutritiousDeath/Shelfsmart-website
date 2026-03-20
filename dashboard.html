@@ -679,8 +679,17 @@
           <option value="rivals">⚔️ Marvel Rivals</option>
           <option value="destiny">🌌 Destiny 2</option>
         </select>
+        <label class="field-label">Bracket format</label>
+        <select class="cyber-input" id="new-t-bracket" style="cursor:pointer">
+          <option value="single_elim">Single Elimination</option>
+          <option value="double_elim">Double Elimination</option>
+          <option value="swiss">Swiss</option>
+          <option value="round_robin">Round Robin</option>
+        </select>
         <label class="field-label">Max players</label>
         <input class="cyber-input" type="number" id="new-t-max" value="16" min="4" max="256">
+        <label class="field-label">Ruleset</label>
+        <textarea class="cyber-input" id="new-t-ruleset" rows="6" placeholder="Enter your tournament rules here...&#10;&#10;e.g.&#10;- Best of 3 matches&#10;- No hero stacking&#10;- Maps: Lijiang Tower, King's Row, Havana&#10;- Check-in required 15 mins before match"></textarea>
         <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn-primary" onclick="createTournament()">Create tournament</button>
           <button class="btn-secondary" onclick="document.getElementById('new-tournament-form').style.display='none'">Cancel</button>
@@ -1413,7 +1422,7 @@
   }
 
   // Initialize all dropdowns after DOM loads
-  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame, ddNewTournamentGame;
+  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame, ddNewTournamentGame, ddNewTournamentBracket;
 
   function initDropdowns() {
     // Platform dropdown
@@ -1453,6 +1462,19 @@
         { value: 'destiny',   label: '🌌 Destiny 2' },
       ]);
       ddNewTournamentGame.setValue('overwatch', '🎮 Overwatch 2');
+    }
+
+    // ✅ New tournament bracket format dropdown
+    const bracketEl = document.getElementById('new-t-bracket');
+    if (bracketEl) {
+      ddNewTournamentBracket = new CyberDropdown(bracketEl, () => {});
+      ddNewTournamentBracket.setOptions([
+        { value: 'single_elim',  label: '⚡ Single Elimination' },
+        { value: 'double_elim',  label: '🔁 Double Elimination' },
+        { value: 'swiss',        label: '🔀 Swiss' },
+        { value: 'round_robin',  label: '🔄 Round Robin' },
+      ]);
+      ddNewTournamentBracket.setValue('single_elim', '⚡ Single Elimination');
     }
 
     // ✅ Default tournament game dropdown
@@ -1627,11 +1649,18 @@
       cancelled:    '<span class="badge badge-free">Cancelled</span>',
     };
 
+    const bracketLabels = {
+      single_elim: 'Single Elim',
+      double_elim: 'Double Elim',
+      swiss:       'Swiss',
+      round_robin: 'Round Robin',
+    };
+
     list.innerHTML = tournaments.map(t => `
       <div class="platform-row" style="margin-bottom:8px">
         <div>
           <p class="platform-name">${gameIcons[t.game] || '🏆'} ${t.name}</p>
-          <p class="platform-sub">${t.max_players} players — ${t.game} — ${(t.status || 'registration').replace('_', ' ')}</p>
+          <p class="platform-sub">${t.max_players} players — ${t.game} — ${bracketLabels[t.bracket_type] || 'Single Elim'} — ${(t.status || 'registration').replace('_', ' ')}</p>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           ${statusBadge[t.status] || statusBadge.registration}
@@ -1644,7 +1673,9 @@
   async function createTournament() {
     const name       = document.getElementById('new-t-name').value.trim();
     const game       = ddNewTournamentGame ? ddNewTournamentGame.getValue() : document.getElementById('new-t-game').value;
+    const bracket    = ddNewTournamentBracket ? ddNewTournamentBracket.getValue() : document.getElementById('new-t-bracket').value;
     const maxPlayers = parseInt(document.getElementById('new-t-max').value);
+    const ruleset    = document.getElementById('new-t-ruleset').value.trim();
     const errorEl    = document.getElementById('tournament-error');
     errorEl.style.display = 'none';
 
@@ -1659,7 +1690,9 @@
     const { error } = await sb.from('tournaments').insert({
       name,
       game,
+      bracket_type: bracket,
       max_players: maxPlayers,
+      ruleset: ruleset || null,
       status: 'registration',
       discord_server_id: discordId,
     });
@@ -1671,6 +1704,7 @@
     }
 
     document.getElementById('new-t-name').value = '';
+    document.getElementById('new-t-ruleset').value = '';
     document.getElementById('new-tournament-form').style.display = 'none';
     showSaved('tournament-created');
     loadTournaments();
