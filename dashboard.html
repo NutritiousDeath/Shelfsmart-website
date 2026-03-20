@@ -626,6 +626,7 @@
         <div style="margin-top:16px">
           <button class="btn-primary" onclick="saveChannels()">Save channels</button>
           <p class="save-msg" id="channels-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="channels-error" style="color:var(--pink)">// Error: Please select your Discord server from the dropdown first!</p>
         </div>
       </div>
       <div class="section-card" style="border-color:rgba(180,79,255,0.2)">
@@ -974,9 +975,16 @@
 
   async function saveChannels() {
     const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
+
+    if (!selectedGuildId) {
+      const errEl = document.getElementById('channels-error');
+      if (errEl) { errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
+      return;
+    }
+
     await sb.from('server_settings').upsert({
       owner_discord_id: discordId,
-      discord_server_id: discordId,
+      discord_server_id: selectedGuildId,
       ow_channel_id: document.getElementById('ow-channel').value,
       rivals_channel_id: document.getElementById('rivals-channel').value,
       d2_channel_id: document.getElementById('d2-channel').value,
