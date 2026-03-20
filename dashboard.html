@@ -843,7 +843,7 @@
         </div>
       </div>
 
-      <div class="section-card">
+      <div class="section-card" id="admin-grant-section" style="display:none">
         <p class="card-title">// grant access</p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7;letter-spacing:0.5px">Manually grant Pro access to any Discord user — no payment required.</p>
         <label class="field-label">Discord user ID</label>
@@ -947,6 +947,14 @@
     loadUserServers();
     updateBillingUI(userAccess?.tier || 'free', userAccess?.stripe_id);
     checkPaymentReturn();
+
+    // Only show admin grant section to the server owner
+    const ADMIN_DISCORD_ID = '176467159000678400';
+    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
+    if (discordId === ADMIN_DISCORD_ID) {
+      const adminSection = document.getElementById('admin-grant-section');
+      if (adminSection) adminSection.style.display = 'block';
+    }
   }
 
   async function saveChannels() {
