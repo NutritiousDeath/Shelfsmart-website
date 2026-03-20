@@ -684,7 +684,8 @@
       <div class="section-card">
         <p class="card-title">// default settings</p>
         <label class="field-label">Default tournament game</label>
-        <select class="cyber-input" style="cursor:pointer">
+        <!-- ✅ FIX: added id="tournament-game" so CyberDropdown picks it up -->
+        <select class="cyber-input" id="tournament-game" style="cursor:pointer">
           <option value="overwatch">Overwatch 2</option>
           <option value="rivals">Marvel Rivals</option>
           <option value="destiny">Destiny 2</option>
@@ -755,8 +756,6 @@
         <p class="save-msg" id="alert-error" style="color:var(--pink)"></p>
       </div>
     </div>
-
-
 
     <!-- COACHING -->
     <div class="tab" id="tab-coaching">
@@ -973,8 +972,6 @@
     showSaved('toggles-saved');
   }
 
-
-
   async function grantAccess() {
     const id = document.getElementById('grant-id').value.trim();
     const days = parseInt(document.getElementById('grant-duration').value);
@@ -1038,7 +1035,6 @@
       if (!res.ok) return;
 
       const guilds = await res.json();
-      // Filter to servers where user is admin (permissions & 0x8 = administrator)
       userGuilds = guilds.filter(g => (parseInt(g.permissions) & 0x8) === 0x8);
 
       const select = document.getElementById('server-select');
@@ -1051,7 +1047,6 @@
         select.appendChild(opt);
       });
 
-      // Auto-select if only one server
       if (userGuilds.length === 1) {
         select.value = userGuilds[0].id;
         onServerChange(userGuilds[0].id);
@@ -1082,7 +1077,6 @@
       });
 
       if (!res.ok) {
-        // Bot token fallback via edge function
         const edgeRes = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
@@ -1107,7 +1101,6 @@
   }
 
   function populateChannels(channels, selectEl) {
-    // Sort: categories first, then text, then voice
     const categories = channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position);
     const others = channels.filter(c => c.type !== 4).sort((a,b) => a.position - b.position);
 
@@ -1127,7 +1120,6 @@
       if (group.children.length > 0) selectEl.appendChild(group);
     });
 
-    // Uncategorized channels
     const uncategorized = others.filter(c => !c.parent_id);
     if (uncategorized.length > 0) {
       const group = document.createElement('optgroup');
@@ -1346,9 +1338,7 @@
         o.el.classList.toggle('hidden', !matches);
         if (matches) visibleCount++;
       });
-      // Show/hide group labels based on visible children
       this.list.querySelectorAll('.cd-group-label').forEach(lbl => {
-        const next = lbl.nextElementSibling;
         let hasVisible = false;
         let cur = lbl.nextElementSibling;
         while (cur && !cur.classList.contains('cd-group-label')) {
@@ -1405,7 +1395,7 @@
   }
 
   // Initialize all dropdowns after DOM loads
-  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame, ddCoachingToggle1, ddCoachingToggle2;
+  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame;
 
   function initDropdowns() {
     // Platform dropdown
@@ -1435,21 +1425,20 @@
       ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]);
     }
 
-    // Tournament game select
-    const gameEl = document.querySelector('select.cyber-input[id="tournament-game"]');
+    // ✅ FIX: Tournament game dropdown now has id="tournament-game" so this connects properly
+    const gameEl = document.getElementById('tournament-game');
     if (gameEl) {
-      const ddGame = new CyberDropdown(gameEl, () => {});
-      ddGame.setOptions([
-        { value: 'overwatch', label: 'Overwatch 2' },
-        { value: 'rivals', label: 'Marvel Rivals' },
-        { value: 'destiny', label: 'Destiny 2' },
+      ddTournamentGame = new CyberDropdown(gameEl, () => {});
+      ddTournamentGame.setOptions([
+        { value: 'overwatch', label: '🎮 Overwatch 2' },
+        { value: 'rivals', label: '⚔️ Marvel Rivals' },
+        { value: 'destiny', label: '🌌 Destiny 2' },
       ]);
-      ddGame.setValue('overwatch', 'Overwatch 2');
+      ddTournamentGame.setValue('overwatch', '🎮 Overwatch 2');
     }
   }
 
   // Override onPlatformChange to use custom dropdown value
-  const _origPlatformChange = onPlatformChange;
   function onPlatformChange(val) {
     const platform = val || (ddPlatform ? ddPlatform.getValue() : 'twitch');
     clearSelectedStreamer();
@@ -1467,8 +1456,6 @@
     }
   }
 
-  // Override populateChannels to use custom dropdown
-  const _origPopulateChannels = populateChannels;
   function populateChannels(channels, selectEl) {
     if (!ddAlertChannel) return;
     const categories = channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position);
@@ -1500,8 +1487,6 @@
     ddAlertChannel.setValue('', '— Pick a channel —');
   }
 
-  // Override addAlert to use custom dropdown values
-  const _origAddAlert = addAlert;
   async function addAlert() {
     const platform = ddPlatform ? ddPlatform.getValue() : 'twitch';
     const channelId = ddAlertChannel ? ddAlertChannel.getValue() : '';
@@ -1536,8 +1521,6 @@
     loadAlerts();
   }
 
-  // Override loadUserServers to populate custom dropdown
-  const _origLoadUserServers = loadUserServers;
   async function loadUserServers() {
     try {
       const { data: { session } } = await sb.auth.getSession();
@@ -1561,8 +1544,6 @@
     }
   }
 
-  // Override onServerChange to update custom channel dropdown
-  const _origOnServerChange = onServerChange;
   async function onServerChange(guildId) {
     selectedGuildId = guildId;
     if (!ddAlertChannel) return;
