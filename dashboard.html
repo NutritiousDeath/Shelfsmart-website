@@ -890,7 +890,6 @@
       window.location.href = '/login.html';
       return;
     }
-
     currentUser = session.user;
     const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
     const discordName = currentUser.user_metadata?.full_name || currentUser.user_metadata?.name || 'Commander';
@@ -950,7 +949,6 @@
 
     // Only show admin grant section to the server owner
     const ADMIN_DISCORD_ID = '176467159000678400';
-    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
     if (discordId === ADMIN_DISCORD_ID) {
       const adminSection = document.getElementById('admin-grant-section');
       if (adminSection) adminSection.style.display = 'block';
