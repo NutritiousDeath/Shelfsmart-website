@@ -876,58 +876,43 @@
 <script>
   const SUPABASE_URL = 'https://uptxufmqqwjytffhbcdd.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwdHh1Zm1xcXdqeXRmZmhiY2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NDUzNzMsImV4cCI6MjA4OTQyMTM3M30.Wkol9oWQwZePmfduJIteUnAxvP_SmDTiRfvWPU5JYGU';
+  const EDGE_URL = 'https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function';
+  const ADMIN_ID = '176467159000678400';
 
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   let currentUser = null;
   let userAccess = null;
+  let userGuilds = [];
+  let selectedGuildId = null;
+  let selectedStreamer = null;
+  let searchTimeout = null;
+  let ddPlatform, ddServerSelect, ddAlertChannel;
 
+  // ── INIT ──
   async function init() {
     const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = '/login.html'; return; }
 
-    if (!session) {
-      window.location.href = '/login.html';
-      return;
-    }
     currentUser = session.user;
     const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
     const discordName = currentUser.user_metadata?.full_name || currentUser.user_metadata?.name || 'Commander';
 
     document.getElementById('nav-username').textContent = discordName;
 
-    const { data: access } = await sb
-      .from('user_access')
-      .select('*')
-      .eq('discord_id', discordId)
-      .single();
-
+    const { data: access } = await sb.from('user_access').select('*').eq('discord_id', discordId).single();
     userAccess = access;
 
     if (access) {
-      const tier = access.tier || 'free';
-      document.getElementById('nav-tier').textContent = tier.toUpperCase();
-      if (tier === 'free') {
-        document.getElementById('paywall-overlay').classList.remove('hidden');
-      }
+      document.getElementById('nav-tier').textContent = (access.tier || 'free').toUpperCase();
+      if ((access.tier || 'free') === 'free') document.getElementById('paywall-overlay').classList.remove('hidden');
     } else {
-      await sb.from('user_access').insert({
-        discord_id: discordId,
-        discord_tag: discordName,
-        email: currentUser.email,
-        tier: 'free',
-        status: 'active',
-        granted_by: 'self'
-      });
+      await sb.from('user_access').insert({ discord_id: discordId, discord_tag: discordName, email: currentUser.email, tier: 'free', status: 'active', granted_by: 'self' });
       document.getElementById('paywall-overlay').classList.remove('hidden');
     }
 
-    const { data: settings } = await sb
-      .from('server_settings')
-      .select('*')
-      .eq('owner_discord_id', discordId)
-      .single();
-
+    const { data: settings } = await sb.from('server_settings').select('*').eq('owner_discord_id', discordId).single();
     if (settings) {
       if (settings.ow_channel_id) document.getElementById('ow-channel').value = settings.ow_channel_id;
       if (settings.rivals_channel_id) document.getElementById('rivals-channel').value = settings.rivals_channel_id;
@@ -942,252 +927,45 @@
     }
 
     document.getElementById('loading').classList.add('hidden');
-    loadAlerts();
-    loadUserServers();
     updateBillingUI(userAccess?.tier || 'free', userAccess?.stripe_id);
     checkPaymentReturn();
+    loadAlerts();
+    loadUserServers();
 
-    // Only show admin grant section to the server owner
-    const ADMIN_DISCORD_ID = '176467159000678400';
-    if (discordId === ADMIN_DISCORD_ID) {
-      const adminSection = document.getElementById('admin-grant-section');
-      if (adminSection) adminSection.style.display = 'block';
+    if (discordId === ADMIN_ID) {
+      const s = document.getElementById('admin-grant-section');
+      if (s) s.style.display = 'block';
     }
   }
 
+  // ── BOT CONFIG ──
   async function saveChannels() {
-    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
-    await sb.from('server_settings').upsert({
-      owner_discord_id: discordId,
-      discord_server_id: discordId,
-      ow_channel_id: document.getElementById('ow-channel').value,
-      rivals_channel_id: document.getElementById('rivals-channel').value,
-      d2_channel_id: document.getElementById('d2-channel').value,
-    }, { onConflict: 'owner_discord_id' });
+    const id = currentUser.user_metadata?.provider_id || currentUser.id;
+    await sb.from('server_settings').upsert({ owner_discord_id: id, discord_server_id: id, ow_channel_id: document.getElementById('ow-channel').value, rivals_channel_id: document.getElementById('rivals-channel').value, d2_channel_id: document.getElementById('d2-channel').value }, { onConflict: 'owner_discord_id' });
     showSaved('channels-saved');
   }
 
   async function saveToggles() {
-    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
-    await sb.from('server_settings').upsert({
-      owner_discord_id: discordId,
-      discord_server_id: discordId,
-      feature_flags: {
-        battletag: document.getElementById('toggle-battletag').checked,
-        ask_td: document.getElementById('toggle-td').checked,
-        scrims: document.getElementById('toggle-scrims').checked,
-        coaching: document.getElementById('toggle-coaching').checked,
-      }
-    }, { onConflict: 'owner_discord_id' });
+    const id = currentUser.user_metadata?.provider_id || currentUser.id;
+    await sb.from('server_settings').upsert({ owner_discord_id: id, discord_server_id: id, feature_flags: { battletag: document.getElementById('toggle-battletag').checked, ask_td: document.getElementById('toggle-td').checked, scrims: document.getElementById('toggle-scrims').checked, coaching: document.getElementById('toggle-coaching').checked } }, { onConflict: 'owner_discord_id' });
     showSaved('toggles-saved');
   }
 
-
-
-  async function grantAccess() {
-    const id = document.getElementById('grant-id').value.trim();
-    const days = parseInt(document.getElementById('grant-duration').value);
-    if (!id) return;
-    const expires = days === 0 ? null : new Date(Date.now() + days * 86400000).toISOString();
-    await sb.from('user_access').upsert({
-      discord_id: id,
-      tier: 'pro',
-      status: 'active',
-      granted_by: 'admin',
-      expires_at: expires
-    }, { onConflict: 'discord_id' });
-    document.getElementById('grant-id').value = '';
-    showSaved('grant-saved');
-  }
-
-  async function revokeAccess() {
-    const id = document.getElementById('grant-id').value.trim();
-    if (!id) return;
-    await sb.from('user_access').update({ tier: 'free', status: 'cancelled' }).eq('discord_id', id);
-    document.getElementById('grant-id').value = '';
-    showSaved('grant-revoked');
-  }
-
-  function showSaved(id) {
-    const el = document.getElementById(id);
-    el.style.display = 'block';
-    setTimeout(() => el.style.display = 'none', 3000);
-  }
-
-  function setTab(name, btn) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + name).classList.add('active');
-    if (btn) btn.classList.add('active');
-  }
-
-  async function signOut() {
-    await sb.auth.signOut();
-    window.location.href = '/login.html';
-  }
-
-  function updateClock() {
-    document.getElementById('clock').textContent = new Date().toUTCString().replace('GMT', 'UTC');
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
-
-  // ── Server & Channel Selection ──
-  let userGuilds = [];
-  let selectedGuildId = null;
-
-  async function loadUserServers() {
-    try {
-      const { data: { session } } = await sb.auth.getSession();
-      if (!session?.provider_token) return;
-
-      const res = await fetch('https://discord.com/api/users/@me/guilds', {
-        headers: { 'Authorization': `Bearer ${session.provider_token}` }
-      });
-      if (!res.ok) return;
-
-      const guilds = await res.json();
-      // Filter to servers where user is admin (permissions & 0x8 = administrator)
-      userGuilds = guilds.filter(g => (parseInt(g.permissions) & 0x8) === 0x8);
-
-      const select = document.getElementById('server-select');
-      if (!select) return;
-      select.innerHTML = '<option value="">— Select server —</option>';
-      userGuilds.forEach(g => {
-        const opt = document.createElement('option');
-        opt.value = g.id;
-        opt.textContent = g.name;
-        select.appendChild(opt);
-      });
-
-      // Auto-select if only one server
-      if (userGuilds.length === 1) {
-        select.value = userGuilds[0].id;
-        onServerChange(userGuilds[0].id);
-      }
-    } catch (err) {
-      console.error('Error loading servers:', err.message);
-    }
-  }
-
-  async function onServerChange(guildId) {
-    selectedGuildId = guildId;
-    const channelSelect = document.getElementById('alert-channel');
-    if (!channelSelect) return;
-
-    if (!guildId) {
-      channelSelect.innerHTML = '<option value="">— Select a server first —</option>';
-      return;
-    }
-
-    channelSelect.innerHTML = '<option value="">Loading channels...</option>';
-
-    try {
-      const { data: { session } } = await sb.auth.getSession();
-      if (!session?.provider_token) return;
-
-      const res = await fetch(`https://discord.com/api/guilds/${guildId}/channels`, {
-        headers: { 'Authorization': `Bearer ${session.provider_token}` }
-      });
-
-      if (!res.ok) {
-        // Bot token fallback via edge function
-        const edgeRes = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
-          body: JSON.stringify({ action: 'get_channels', guildId })
-        });
-        const edgeData = await edgeRes.json();
-        if (edgeData.channels) {
-          populateChannels(edgeData.channels, channelSelect);
-          return;
-        }
-        channelSelect.innerHTML = '<option value="">Could not load channels — enter ID manually</option>';
-        return;
-      }
-
-      const channels = await res.json();
-      populateChannels(channels, channelSelect);
-
-    } catch (err) {
-      console.error('Error loading channels:', err.message);
-      channelSelect.innerHTML = '<option value="">Error loading channels</option>';
-    }
-  }
-
-  function populateChannels(channels, selectEl) {
-    // Sort: categories first, then text, then voice
-    const categories = channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position);
-    const others = channels.filter(c => c.type !== 4).sort((a,b) => a.position - b.position);
-
-    selectEl.innerHTML = '<option value="">— Pick a channel —</option>';
-
-    categories.forEach(cat => {
-      const group = document.createElement('optgroup');
-      group.label = '📁 ' + cat.name.toUpperCase();
-      const children = others.filter(c => c.parent_id === cat.id);
-      children.forEach(ch => {
-        const opt = document.createElement('option');
-        opt.value = ch.id;
-        const icon = ch.type === 2 ? '🔊' : '#';
-        opt.textContent = `${icon} ${ch.name}`;
-        group.appendChild(opt);
-      });
-      if (group.children.length > 0) selectEl.appendChild(group);
-    });
-
-    // Uncategorized channels
-    const uncategorized = others.filter(c => !c.parent_id);
-    if (uncategorized.length > 0) {
-      const group = document.createElement('optgroup');
-      group.label = '— Uncategorized —';
-      uncategorized.forEach(ch => {
-        const opt = document.createElement('option');
-        opt.value = ch.id;
-        opt.textContent = `# ${ch.name}`;
-        group.appendChild(opt);
-      });
-      selectEl.appendChild(group);
-    }
-  }
-
-  // ── Stripe Billing ──
+  // ── BILLING ──
   async function startCheckout(plan) {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    try {
-      const res = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
-        body: JSON.stringify({ action: 'create_checkout', discord_id: discordId, plan })
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert('Error creating checkout: ' + (data.error || 'Unknown error'));
-      }
-    } catch (err) {
-      alert('Checkout error: ' + err.message);
-    }
+    const id = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const res = await fetch(EDGE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }, body: JSON.stringify({ action: 'create_checkout', discord_id: id, plan }) });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else alert('Checkout error: ' + (data.error || 'Unknown'));
   }
 
   async function openStripePortal() {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    try {
-      const res = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
-        body: JSON.stringify({ action: 'create_portal', discord_id: discordId })
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert('Error opening portal: ' + (data.error || 'Unknown error'));
-      }
-    } catch (err) {
-      alert('Portal error: ' + err.message);
-    }
+    const id = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const res = await fetch(EDGE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }, body: JSON.stringify({ action: 'create_portal', discord_id: id }) });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else alert('Portal error: ' + (data.error || 'Unknown'));
   }
 
   function updateBillingUI(tier, stripeId) {
@@ -1196,7 +974,6 @@
     const statusEl = document.getElementById('billing-status');
     const manageBtn = document.getElementById('btn-manage-stripe');
     const upgradeSection = document.getElementById('billing-upgrade');
-
     if (tier === 'pro') {
       if (planEl) planEl.textContent = 'AuraAI Pro — $9/month';
       if (renewEl) renewEl.textContent = 'Active subscription';
@@ -1218,42 +995,42 @@
     }
   }
 
-  // Check for payment success/cancel in URL
   function checkPaymentReturn() {
     const params = new URLSearchParams(window.location.search);
     if (params.get('payment') === 'success') {
       showSaved('grant-saved');
-      setTimeout(() => window.location.href = '/dashboard.html', 100);
+      setTimeout(() => { window.history.replaceState({}, '', '/dashboard.html'); }, 100);
     }
   }
 
-  // ── Social Alerts ──
-  let selectedStreamer = null;
-  let searchTimeout = null;
+  async function grantAccess() {
+    const id = document.getElementById('grant-id').value.trim();
+    const days = parseInt(document.getElementById('grant-duration').value);
+    if (!id) return;
+    const expires = days === 0 ? null : new Date(Date.now() + days * 86400000).toISOString();
+    await sb.from('user_access').upsert({ discord_id: id, tier: 'pro', status: 'active', granted_by: 'admin', expires_at: expires }, { onConflict: 'discord_id' });
+    document.getElementById('grant-id').value = '';
+    showSaved('grant-saved');
+  }
 
+  async function revokeAccess() {
+    const id = document.getElementById('grant-id').value.trim();
+    if (!id) return;
+    await sb.from('user_access').update({ tier: 'free', status: 'cancelled' }).eq('discord_id', id);
+    document.getElementById('grant-id').value = '';
+    showSaved('grant-revoked');
+  }
+
+  // ── SOCIAL ALERTS ──
   async function loadAlerts() {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    if (!discordId) return;
-    const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_server_id', discordId);
+    const id = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!id) return;
+    const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_server_id', id);
     const list = document.getElementById('alerts-list');
     if (!list) return;
-    if (!alerts || alerts.length === 0) {
-      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No alerts set up yet. Add one below.</p>';
-      return;
-    }
+    if (!alerts || alerts.length === 0) { list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No alerts set up yet. Add one below.</p>'; return; }
     const icons = { twitch: '🟣', youtube: '🔴', tiktok: '⚫', kick: '🟢' };
-    list.innerHTML = alerts.map(a => `
-      <div class="platform-row" style="margin-bottom:8px">
-        <div>
-          <p class="platform-name">${icons[a.platform] || '📡'} ${a.username}</p>
-          <p class="platform-sub">${a.platform} — channel ${a.alert_channel_id || 'not set'}</p>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span class="badge ${a.enabled ? 'badge-active' : 'badge-free'}">${a.enabled ? 'Active' : 'Paused'}</span>
-          <button onclick="removeAlert('${a.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button>
-        </div>
-      </div>
-    `).join('');
+    list.innerHTML = alerts.map(a => `<div class="platform-row" style="margin-bottom:8px"><div><p class="platform-name">${icons[a.platform]||'📡'} ${a.username}</p><p class="platform-sub">${a.platform} — channel ${a.alert_channel_id||'not set'}</p></div><div style="display:flex;align-items:center;gap:8px"><span class="badge ${a.enabled?'badge-active':'badge-free'}">${a.enabled?'Active':'Paused'}</span><button onclick="removeAlert('${a.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
   }
 
   async function removeAlert(id) {
@@ -1261,26 +1038,38 @@
     loadAlerts();
   }
 
-  function onPlatformChange() {
-    const platform = document.getElementById('alert-platform').value;
+  function onPlatformChange(val) {
+    const platform = val || (ddPlatform ? ddPlatform.getValue() : 'twitch');
     clearSelectedStreamer();
-    document.getElementById('alert-search').value = '';
-    document.getElementById('search-results').style.display = 'none';
+    const searchEl = document.getElementById('alert-search');
+    const manualEl = document.getElementById('manual-entry');
+    const manualInput = document.getElementById('alert-manual');
+    const manualLabel = document.getElementById('manual-label');
+    const hint = document.getElementById('manual-hint');
+    const resultsEl = document.getElementById('search-results');
+    if (searchEl) searchEl.value = '';
+    if (resultsEl) resultsEl.style.display = 'none';
     if (platform === 'tiktok' || platform === 'kick') {
-      document.getElementById('alert-search').style.display = 'none';
-      document.getElementById('manual-entry').style.display = 'block';
+      if (searchEl) searchEl.style.display = 'none';
+      if (manualEl) manualEl.style.display = 'block';
+      if (manualInput) manualInput.placeholder = 'Enter exact username';
+      if (manualLabel) manualLabel.textContent = 'Enter your exact username on this platform';
+      if (hint) hint.innerHTML = '';
+    } else if (platform === 'youtube') {
+      if (searchEl) searchEl.style.display = 'none';
+      if (manualEl) manualEl.style.display = 'block';
+      if (manualInput) manualInput.placeholder = 'Paste YouTube Channel ID (starts with UC...)';
+      if (manualLabel) manualLabel.textContent = 'YouTube search unreliable for smaller channels — paste Channel ID instead.';
+      if (hint) hint.innerHTML = 'Find it: <a href="https://studio.youtube.com" target="_blank" style="color:var(--cyan)">YouTube Studio</a> → Settings → Channel → Basic info → Channel ID';
     } else {
-      document.getElementById('alert-search').style.display = 'block';
-      document.getElementById('manual-entry').style.display = 'none';
+      if (searchEl) searchEl.style.display = 'block';
+      if (manualEl) manualEl.style.display = 'none';
     }
   }
 
   function onAlertSearch(value) {
     clearTimeout(searchTimeout);
-    if (value.length < 2) {
-      document.getElementById('search-results').style.display = 'none';
-      return;
-    }
+    if (value.length < 2) { document.getElementById('search-results').style.display = 'none'; return; }
     searchTimeout = setTimeout(() => searchStreamers(value), 400);
   }
 
@@ -1290,25 +1079,10 @@
     resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Searching...</div>';
     resultsEl.style.display = 'block';
     try {
-      const res = await fetch(`https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
-        body: JSON.stringify({ query, platform })
-      });
+      const res = await fetch(EDGE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }, body: JSON.stringify({ query, platform }) });
       const data = await res.json();
-      if (!data.results || data.results.length === 0) {
-        resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No results found</div>';
-        return;
-      }
-      resultsEl.innerHTML = data.results.map(r => `
-        <div onclick='selectStreamer(${JSON.stringify(r)})' style="display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(0,240,255,0.06)" onmouseover="this.style.background='rgba(0,240,255,0.06)'" onmouseout="this.style.background='none'">
-          ${r.avatar ? `<img src="${r.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover">` : '<div style="width:28px;height:28px;border-radius:50%;background:rgba(0,240,255,0.1)"></div>'}
-          <div>
-            <p style="font-family:var(--font-display);font-size:0.65rem;font-weight:700;color:var(--white)">${r.displayName}</p>
-            <p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">@${r.username}${r.live ? ' 🔴 LIVE' : ''}${r.game ? ` — ${r.game}` : ''}</p>
-          </div>
-        </div>
-      `).join('');
+      if (!data.results || data.results.length === 0) { resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No results found</div>'; return; }
+      resultsEl.innerHTML = data.results.map(r => `<div onclick='selectStreamer(${JSON.stringify(r)})' style="display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(0,240,255,0.06)" onmouseover="this.style.background='rgba(0,240,255,0.06)'" onmouseout="this.style.background='none'">${r.avatar?`<img src="${r.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover">`:'<div style="width:28px;height:28px;border-radius:50%;background:rgba(0,240,255,0.1)"></div>'}<div><p style="font-family:var(--font-display);font-size:0.65rem;font-weight:700;color:var(--white)">${r.displayName}</p><p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">@${r.username}${r.live?' 🔴 LIVE':''}${r.game?` — ${r.game}`:''}</p></div></div>`).join('');
     } catch (err) {
       resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--pink)">Search error — try entering username manually</div>';
     }
@@ -1321,369 +1095,152 @@
     document.getElementById('selected-streamer').style.display = 'block';
     document.getElementById('selected-avatar').src = streamer.avatar || '';
     document.getElementById('selected-name').textContent = streamer.displayName;
-    document.getElementById('selected-meta').textContent = `@${streamer.username}${streamer.live ? ' — 🔴 Currently Live' : ''}`;
+    document.getElementById('selected-meta').textContent = `@${streamer.username}${streamer.live?' — 🔴 Currently Live':''}`;
   }
 
   function clearSelectedStreamer() {
     selectedStreamer = null;
-    document.getElementById('selected-streamer').style.display = 'none';
+    const el = document.getElementById('selected-streamer');
+    if (el) el.style.display = 'none';
   }
 
-  async function addAlert() {
-    const platform = document.getElementById('alert-platform').value;
-    const channelId = document.getElementById('alert-channel').value.trim();
-    const errorEl = document.getElementById('alert-error');
-    errorEl.style.display = 'none';
-    let username = '';
-    if (platform === 'tiktok' || platform === 'kick') {
-      username = document.getElementById('alert-manual').value.trim();
-    } else {
-      username = selectedStreamer?.username || document.getElementById('alert-search').value.trim();
-    }
-    if (!username) { errorEl.textContent = '// Error: Please select or enter a streamer'; errorEl.style.display = 'block'; return; }
-    if (!channelId) { errorEl.textContent = '// Error: Please enter a Discord channel ID'; errorEl.style.display = 'block'; return; }
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    const { error } = await sb.from('social_alerts').insert({
-      discord_server_id: discordId,
-      platform,
-      username,
-      alert_channel_id: channelId,
-      enabled: true
-    });
-    if (error) { errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return; }
-    showSaved('alert-saved');
-    clearSelectedStreamer();
-    document.getElementById('alert-search').value = '';
-    document.getElementById('alert-channel').value = '';
-    loadAlerts();
-  }
-
-  // ── Custom Searchable Dropdown Component ──
-  class CyberDropdown {
-    constructor(el, onChange) {
-      this.el = el;
-      this.onChange = onChange;
-      this.value = '';
-      this.options = [];
-      this.isOpen = false;
-
-      this.wrap = document.createElement('div');
-      this.wrap.className = 'cd-wrap';
-
-      this.selected = document.createElement('div');
-      this.selected.className = 'cd-selected';
-      this.selected.innerHTML = '<span class="cd-label">— Select —</span><span class="cd-arrow">▼</span>';
-      this.selected.onclick = (e) => { e.stopPropagation(); this.toggle(); };
-
-      this.dropdown = document.createElement('div');
-      this.dropdown.className = 'cd-dropdown';
-
-      this.searchWrap = document.createElement('div');
-      this.searchWrap.className = 'cd-search-wrap';
-      this.searchInput = document.createElement('input');
-      this.searchInput.className = 'cd-search';
-      this.searchInput.placeholder = 'Type to filter...';
-      this.searchInput.oninput = () => this.filter(this.searchInput.value);
-      this.searchInput.onclick = (e) => e.stopPropagation();
-      this.searchWrap.appendChild(this.searchInput);
-
-      this.list = document.createElement('div');
-      this.list.className = 'cd-list';
-
-      this.noResults = document.createElement('div');
-      this.noResults.className = 'cd-no-results';
-      this.noResults.textContent = 'No results found';
-      this.noResults.style.display = 'none';
-
-      this.dropdown.appendChild(this.searchWrap);
-      this.dropdown.appendChild(this.list);
-      this.dropdown.appendChild(this.noResults);
-
-      this.wrap.appendChild(this.selected);
-      this.wrap.appendChild(this.dropdown);
-      el.parentNode.replaceChild(this.wrap, el);
-
-      document.addEventListener('click', () => this.close());
-    }
-
-    toggle() { this.isOpen ? this.close() : this.open(); }
-
-    open() {
-      this.isOpen = true;
-      this.selected.classList.add('open');
-      this.dropdown.classList.add('open');
-      this.searchInput.value = '';
-      this.filter('');
-      setTimeout(() => this.searchInput.focus(), 50);
-    }
-
-    close() {
-      this.isOpen = false;
-      this.selected.classList.remove('open');
-      this.dropdown.classList.remove('open');
-    }
-
-    filter(query) {
-      const q = query.toLowerCase().trim();
-      let visibleCount = 0;
-      this.options.forEach(o => {
-        const matches = !q || o.label.toLowerCase().includes(q);
-        o.el.classList.toggle('hidden', !matches);
-        if (matches) visibleCount++;
-      });
-      // Show/hide group labels based on visible children
-      this.list.querySelectorAll('.cd-group-label').forEach(lbl => {
-        const next = lbl.nextElementSibling;
-        let hasVisible = false;
-        let cur = lbl.nextElementSibling;
-        while (cur && !cur.classList.contains('cd-group-label')) {
-          if (!cur.classList.contains('hidden')) hasVisible = true;
-          cur = cur.nextElementSibling;
-        }
-        lbl.style.display = hasVisible ? '' : 'none';
-      });
-      this.noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-    }
-
-    setOptions(options, groups) {
-      this.list.innerHTML = '';
-      this.options = [];
-
-      if (groups && groups.length > 0) {
-        groups.forEach(group => {
-          if (group.label) {
-            const lbl = document.createElement('div');
-            lbl.className = 'cd-group-label';
-            lbl.textContent = group.label;
-            this.list.appendChild(lbl);
-          }
-          group.options.forEach(opt => this._addOption(opt));
-        });
-      } else {
-        options.forEach(opt => this._addOption(opt));
-      }
-    }
-
-    _addOption(opt) {
-      const div = document.createElement('div');
-      div.className = 'cd-option' + (opt.disabled ? ' disabled' : '');
-      div.textContent = opt.label;
-      div.dataset.value = opt.value || '';
-      div.onclick = (e) => {
-        e.stopPropagation();
-        if (opt.disabled) return;
-        this.setValue(opt.value, opt.label);
-        this.close();
-        if (this.onChange) this.onChange(opt.value, opt.label);
-      };
-      this.list.appendChild(div);
-      this.options.push({ ...opt, el: div });
-    }
-
-    setValue(value, label) {
-      this.value = value;
-      this.selected.querySelector('.cd-label').textContent = label || '— Select —';
-      this.options.forEach(o => o.el.classList.toggle('selected', o.value === value));
-    }
-
-    getValue() { return this.value; }
-  }
-
-  // Initialize all dropdowns after DOM loads
-  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame, ddCoachingToggle1, ddCoachingToggle2;
-
-  function initDropdowns() {
-    // Platform dropdown
-    const platEl = document.getElementById('alert-platform');
-    if (platEl) {
-      ddPlatform = new CyberDropdown(platEl, (val) => onPlatformChange(val));
-      ddPlatform.setOptions([
-        { value: 'twitch', label: '🟣 Twitch' },
-        { value: 'youtube', label: '🔴 YouTube' },
-        { value: 'kick', label: '🟢 Kick' },
-        { value: 'tiktok', label: '⚫ TikTok' },
-      ]);
-      ddPlatform.setValue('twitch', '🟣 Twitch');
-    }
-
-    // Server select dropdown
-    const serverEl = document.getElementById('server-select');
-    if (serverEl) {
-      ddServerSelect = new CyberDropdown(serverEl, (val) => onServerChange(val));
-      ddServerSelect.setOptions([{ value: '', label: '— Select server —', disabled: true }]);
-    }
-
-    // Alert channel dropdown
-    const chanEl = document.getElementById('alert-channel');
-    if (chanEl) {
-      ddAlertChannel = new CyberDropdown(chanEl, () => {});
-      ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]);
-    }
-
-    // Tournament game select
-    const gameEl = document.querySelector('select.cyber-input[id="tournament-game"]');
-    if (gameEl) {
-      const ddGame = new CyberDropdown(gameEl, () => {});
-      ddGame.setOptions([
-        { value: 'overwatch', label: 'Overwatch 2' },
-        { value: 'rivals', label: 'Marvel Rivals' },
-        { value: 'destiny', label: 'Destiny 2' },
-      ]);
-      ddGame.setValue('overwatch', 'Overwatch 2');
-    }
-  }
-
-  // Override onPlatformChange to use custom dropdown value
-  const _origPlatformChange = onPlatformChange;
-  function onPlatformChange(val) {
-    const platform = val || (ddPlatform ? ddPlatform.getValue() : 'twitch');
-    clearSelectedStreamer();
-    const searchEl = document.getElementById('alert-search');
-    const manualEl = document.getElementById('manual-entry');
-    const manualInput = document.getElementById('alert-manual');
-    const manualLabel = document.getElementById('manual-label');
-    const resultsEl = document.getElementById('search-results');
-    if (searchEl) searchEl.value = '';
-    if (resultsEl) resultsEl.style.display = 'none';
-
-    if (platform === 'tiktok' || platform === 'kick') {
-      if (searchEl) searchEl.style.display = 'none';
-      if (manualEl) manualEl.style.display = 'block';
-      if (manualInput) manualInput.placeholder = 'Enter exact username';
-      if (manualLabel) manualLabel.textContent = 'Search not available for this platform — enter username manually';
-    } else if (platform === 'youtube') {
-      if (searchEl) searchEl.style.display = 'none';
-      if (manualEl) manualEl.style.display = 'block';
-      if (manualInput) manualInput.placeholder = 'Paste YouTube Channel ID (starts with UC...)';
-      if (manualLabel) manualLabel.textContent = 'YouTube search is unreliable for smaller channels — paste your Channel ID instead.';
-      const hint = document.getElementById('manual-hint');
-      if (hint) hint.innerHTML = 'Find it: <a href="https://studio.youtube.com" target="_blank" style="color:var(--cyan)">YouTube Studio</a> → Settings → Channel → Basic info → Channel ID';
-    } else {
-      if (searchEl) searchEl.style.display = 'block';
-      if (manualEl) manualEl.style.display = 'none';
-    }
-  }
-
-  // Override populateChannels to use custom dropdown
-  const _origPopulateChannels = populateChannels;
-  function populateChannels(channels, selectEl) {
-    if (!ddAlertChannel) return;
-    const categories = channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position);
-    const others = channels.filter(c => c.type !== 4).sort((a,b) => a.position - b.position);
-    const groups = [];
-
-    categories.forEach(cat => {
-      const children = others.filter(c => c.parent_id === cat.id);
-      if (children.length > 0) {
-        groups.push({
-          label: '📁 ' + cat.name.toUpperCase(),
-          options: children.map(ch => ({
-            value: ch.id,
-            label: (ch.type === 2 ? '🔊 ' : '# ') + ch.name
-          }))
-        });
-      }
-    });
-
-    const uncategorized = others.filter(c => !c.parent_id);
-    if (uncategorized.length > 0) {
-      groups.push({
-        label: '— Uncategorized —',
-        options: uncategorized.map(ch => ({ value: ch.id, label: '# ' + ch.name }))
-      });
-    }
-
-    ddAlertChannel.setOptions([], groups);
-    ddAlertChannel.setValue('', '— Pick a channel —');
-  }
-
-  // Override addAlert to use custom dropdown values
-  const _origAddAlert = addAlert;
   async function addAlert() {
     const platform = ddPlatform ? ddPlatform.getValue() : 'twitch';
     const channelId = ddAlertChannel ? ddAlertChannel.getValue() : '';
     const errorEl = document.getElementById('alert-error');
     errorEl.style.display = 'none';
-
     let username = '';
     if (platform === 'tiktok' || platform === 'kick' || platform === 'youtube') {
       username = document.getElementById('alert-manual')?.value.trim() || '';
     } else {
       username = selectedStreamer?.username || document.getElementById('alert-search')?.value.trim() || '';
     }
-
     if (!username) { errorEl.textContent = '// Error: Please select or enter a streamer'; errorEl.style.display = 'block'; return; }
     if (!channelId) { errorEl.textContent = '// Error: Please select an alert channel'; errorEl.style.display = 'block'; return; }
-
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    const { error } = await sb.from('social_alerts').insert({
-      discord_server_id: discordId,
-      platform,
-      username,
-      alert_channel_id: channelId,
-      enabled: true
-    });
-
+    const id = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const { error } = await sb.from('social_alerts').insert({ discord_server_id: id, platform, username, alert_channel_id: channelId, enabled: true });
     if (error) { errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return; }
     showSaved('alert-saved');
     clearSelectedStreamer();
     if (document.getElementById('alert-search')) document.getElementById('alert-search').value = '';
     if (document.getElementById('alert-manual')) document.getElementById('alert-manual').value = '';
-    ddAlertChannel.setValue('', '— Pick a channel —');
+    if (ddAlertChannel) ddAlertChannel.setValue('', '— Pick a channel —');
     loadAlerts();
   }
 
-  // Override loadUserServers to populate custom dropdown
-  const _origLoadUserServers = loadUserServers;
+  // ── SERVER & CHANNELS ──
   async function loadUserServers() {
     try {
       const { data: { session } } = await sb.auth.getSession();
       if (!session?.provider_token) return;
-      const res = await fetch('https://discord.com/api/users/@me/guilds', {
-        headers: { 'Authorization': `Bearer ${session.provider_token}` }
-      });
+      const res = await fetch('https://discord.com/api/users/@me/guilds', { headers: { 'Authorization': `Bearer ${session.provider_token}` } });
       if (!res.ok) return;
       const guilds = await res.json();
       userGuilds = guilds.filter(g => (parseInt(g.permissions) & 0x8) === 0x8);
       if (!ddServerSelect) return;
-      const opts = [{ value: '', label: '— Select server —', disabled: true },
-        ...userGuilds.map(g => ({ value: g.id, label: g.name }))];
-      ddServerSelect.setOptions(opts);
-      if (userGuilds.length === 1) {
-        ddServerSelect.setValue(userGuilds[0].id, userGuilds[0].name);
-        onServerChange(userGuilds[0].id);
-      }
-    } catch (err) {
-      console.error('Error loading servers:', err.message);
-    }
+      ddServerSelect.setOptions([{ value: '', label: '— Select server —', disabled: true }, ...userGuilds.map(g => ({ value: g.id, label: g.name }))]);
+      if (userGuilds.length === 1) { ddServerSelect.setValue(userGuilds[0].id, userGuilds[0].name); onServerChange(userGuilds[0].id); }
+    } catch (err) { console.error('Error loading servers:', err.message); }
   }
 
-  // Override onServerChange to update custom channel dropdown
-  const _origOnServerChange = onServerChange;
   async function onServerChange(guildId) {
     selectedGuildId = guildId;
     if (!ddAlertChannel) return;
-    if (!guildId) {
-      ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]);
-      return;
-    }
+    if (!guildId) { ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]); return; }
     ddAlertChannel.setOptions([{ value: '', label: 'Loading channels...', disabled: true }]);
     try {
-      const edgeRes = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
-        body: JSON.stringify({ action: 'get_channels', guildId })
-      });
-      const edgeData = await edgeRes.json();
-      if (edgeData.channels && edgeData.channels.length > 0) {
-        populateChannels(edgeData.channels, null);
+      const res = await fetch(EDGE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }, body: JSON.stringify({ action: 'get_channels', guildId }) });
+      const data = await res.json();
+      if (data.channels && data.channels.length > 0) {
+        populateChannels(data.channels);
       } else {
         ddAlertChannel.setOptions([{ value: '', label: 'No channels found', disabled: true }]);
       }
-    } catch (err) {
-      console.error('Error loading channels:', err.message);
-      ddAlertChannel.setOptions([{ value: '', label: 'Error loading channels', disabled: true }]);
+    } catch (err) { ddAlertChannel.setOptions([{ value: '', label: 'Error loading channels', disabled: true }]); }
+  }
+
+  function populateChannels(channels) {
+    if (!ddAlertChannel) return;
+    const categories = channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position);
+    const others = channels.filter(c => c.type !== 4).sort((a,b) => a.position - b.position);
+    const groups = [];
+    categories.forEach(cat => {
+      const children = others.filter(c => c.parent_id === cat.id);
+      if (children.length > 0) groups.push({ label: '📁 ' + cat.name.toUpperCase(), options: children.map(ch => ({ value: ch.id, label: (ch.type === 2 ? '🔊 ' : '# ') + ch.name })) });
+    });
+    const uncategorized = others.filter(c => !c.parent_id);
+    if (uncategorized.length > 0) groups.push({ label: '— Uncategorized —', options: uncategorized.map(ch => ({ value: ch.id, label: '# ' + ch.name })) });
+    ddAlertChannel.setOptions([], groups);
+    ddAlertChannel.setValue('', '— Pick a channel —');
+  }
+
+  // ── CUSTOM DROPDOWN ──
+  class CyberDropdown {
+    constructor(el, onChange) {
+      this.onChange = onChange; this.value = ''; this.options = []; this.isOpen = false;
+      this.wrap = document.createElement('div'); this.wrap.className = 'cd-wrap';
+      this.selected = document.createElement('div'); this.selected.className = 'cd-selected';
+      this.selected.innerHTML = '<span class="cd-label">— Select —</span><span class="cd-arrow">▼</span>';
+      this.selected.onclick = (e) => { e.stopPropagation(); this.toggle(); };
+      this.dropdown = document.createElement('div'); this.dropdown.className = 'cd-dropdown';
+      this.searchWrap = document.createElement('div'); this.searchWrap.className = 'cd-search-wrap';
+      this.searchInput = document.createElement('input'); this.searchInput.className = 'cd-search'; this.searchInput.placeholder = 'Type to filter...';
+      this.searchInput.oninput = () => this.filter(this.searchInput.value);
+      this.searchInput.onclick = (e) => e.stopPropagation();
+      this.searchWrap.appendChild(this.searchInput);
+      this.list = document.createElement('div'); this.list.className = 'cd-list';
+      this.noResults = document.createElement('div'); this.noResults.className = 'cd-no-results'; this.noResults.textContent = 'No results found'; this.noResults.style.display = 'none';
+      this.dropdown.appendChild(this.searchWrap); this.dropdown.appendChild(this.list); this.dropdown.appendChild(this.noResults);
+      this.wrap.appendChild(this.selected); this.wrap.appendChild(this.dropdown);
+      el.parentNode.replaceChild(this.wrap, el);
+      document.addEventListener('click', () => this.close());
     }
+    toggle() { this.isOpen ? this.close() : this.open(); }
+    open() { this.isOpen = true; this.selected.classList.add('open'); this.dropdown.classList.add('open'); this.searchInput.value = ''; this.filter(''); setTimeout(() => this.searchInput.focus(), 50); }
+    close() { this.isOpen = false; this.selected.classList.remove('open'); this.dropdown.classList.remove('open'); }
+    filter(query) {
+      const q = query.toLowerCase().trim(); let visible = 0;
+      this.options.forEach(o => { const m = !q || o.label.toLowerCase().includes(q); o.el.classList.toggle('hidden', !m); if (m) visible++; });
+      this.list.querySelectorAll('.cd-group-label').forEach(lbl => { let has = false; let cur = lbl.nextElementSibling; while (cur && !cur.classList.contains('cd-group-label')) { if (!cur.classList.contains('hidden')) has = true; cur = cur.nextElementSibling; } lbl.style.display = has ? '' : 'none'; });
+      this.noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+    setOptions(options, groups) {
+      this.list.innerHTML = ''; this.options = [];
+      if (groups && groups.length > 0) { groups.forEach(g => { if (g.label) { const l = document.createElement('div'); l.className = 'cd-group-label'; l.textContent = g.label; this.list.appendChild(l); } g.options.forEach(o => this._addOption(o)); }); }
+      else { options.forEach(o => this._addOption(o)); }
+    }
+    _addOption(opt) {
+      const div = document.createElement('div'); div.className = 'cd-option' + (opt.disabled ? ' disabled' : ''); div.textContent = opt.label; div.dataset.value = opt.value || '';
+      div.onclick = (e) => { e.stopPropagation(); if (opt.disabled) return; this.setValue(opt.value, opt.label); this.close(); if (this.onChange) this.onChange(opt.value, opt.label); };
+      this.list.appendChild(div); this.options.push({ ...opt, el: div });
+    }
+    setValue(value, label) { this.value = value; this.selected.querySelector('.cd-label').textContent = label || '— Select —'; this.options.forEach(o => o.el.classList.toggle('selected', o.value === value)); }
+    getValue() { return this.value; }
+  }
+
+  // ── HELPERS ──
+  function showSaved(id) { const el = document.getElementById(id); if (el) { el.style.display = 'block'; setTimeout(() => el.style.display = 'none', 3000); } }
+
+  function setTab(name, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+    const tab = document.getElementById('tab-' + name);
+    if (tab) tab.classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  async function signOut() { await sb.auth.signOut(); window.location.href = '/login.html'; }
+
+  function updateClock() { document.getElementById('clock').textContent = new Date().toUTCString().replace('GMT', 'UTC'); }
+  updateClock(); setInterval(updateClock, 1000);
+
+  function initDropdowns() {
+    const platEl = document.getElementById('alert-platform');
+    if (platEl) { ddPlatform = new CyberDropdown(platEl, (val) => onPlatformChange(val)); ddPlatform.setOptions([{ value: 'twitch', label: '🟣 Twitch' }, { value: 'youtube', label: '🔴 YouTube' }, { value: 'kick', label: '🟢 Kick' }, { value: 'tiktok', label: '⚫ TikTok' }]); ddPlatform.setValue('twitch', '🟣 Twitch'); }
+    const serverEl = document.getElementById('server-select');
+    if (serverEl) { ddServerSelect = new CyberDropdown(serverEl, (val) => onServerChange(val)); ddServerSelect.setOptions([{ value: '', label: '— Select server —', disabled: true }]); }
+    const chanEl = document.getElementById('alert-channel');
+    if (chanEl) { ddAlertChannel = new CyberDropdown(chanEl, () => {}); ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]); }
   }
 
   init();
