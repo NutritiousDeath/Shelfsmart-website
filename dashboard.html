@@ -667,33 +667,50 @@
     <div class="tab" id="tab-tournaments">
       <p class="page-tag">// bracket management</p>
       <p class="page-title">TOURNAMENTS</p>
+
+      <!-- NEW TOURNAMENT FORM (hidden by default) -->
+      <div class="section-card" id="new-tournament-form" style="display:none;border-color:rgba(0,240,255,0.3)">
+        <p class="card-title" style="color:var(--cyan)">// create new tournament</p>
+        <label class="field-label">Tournament name</label>
+        <input class="cyber-input" type="text" id="new-t-name" placeholder="e.g. OW Spring Cup 2026">
+        <label class="field-label">Game</label>
+        <select class="cyber-input" id="new-t-game" style="cursor:pointer">
+          <option value="overwatch">🎮 Overwatch 2</option>
+          <option value="rivals">⚔️ Marvel Rivals</option>
+          <option value="destiny">🌌 Destiny 2</option>
+        </select>
+        <label class="field-label">Max players</label>
+        <input class="cyber-input" type="number" id="new-t-max" value="16" min="4" max="256">
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-primary" onclick="createTournament()">Create tournament</button>
+          <button class="btn-secondary" onclick="document.getElementById('new-tournament-form').style.display='none'">Cancel</button>
+        </div>
+        <p class="save-msg" id="tournament-created">// Tournament created successfully</p>
+        <p class="save-msg" id="tournament-error" style="color:var(--pink)"></p>
+      </div>
+
       <div class="section-card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
           <p class="card-title" style="margin-bottom:0">// active brackets</p>
-          <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px">+ New tournament</button>
+          <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px" onclick="document.getElementById('new-tournament-form').style.display='block';document.getElementById('new-t-name').focus()">+ New tournament</button>
         </div>
-        <div class="platform-row">
-          <div><p class="platform-name">OW Spring Cup</p><p class="platform-sub">16 players — Overwatch — Registration open</p></div>
-          <span class="badge badge-pro">Reg open</span>
-        </div>
-        <div class="platform-row">
-          <div><p class="platform-name">Rivals Weekly #12</p><p class="platform-sub">8 players — Marvel Rivals — In progress</p></div>
-          <span class="badge badge-live">Live</span>
+        <div id="tournaments-list">
+          <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading tournaments...</p>
         </div>
       </div>
+
       <div class="section-card">
         <p class="card-title">// default settings</p>
         <label class="field-label">Default tournament game</label>
-        <!-- ✅ FIX: added id="tournament-game" so CyberDropdown picks it up -->
         <select class="cyber-input" id="tournament-game" style="cursor:pointer">
           <option value="overwatch">Overwatch 2</option>
           <option value="rivals">Marvel Rivals</option>
           <option value="destiny">Destiny 2</option>
         </select>
         <label class="field-label">Max players per tournament</label>
-        <input class="cyber-input" type="number" value="16" min="4" max="256">
+        <input class="cyber-input" type="number" id="default-max-players" value="16" min="4" max="256">
         <div style="margin-top:14px">
-          <button class="btn-primary" onclick="showSaved('tournament-saved')">Save defaults</button>
+          <button class="btn-primary" onclick="saveTournamentDefaults()">Save defaults</button>
           <p class="save-msg" id="tournament-saved">// Settings saved successfully</p>
         </div>
       </div>
@@ -942,6 +959,7 @@
 
     document.getElementById('loading').classList.add('hidden');
     loadAlerts();
+    loadTournaments();
     loadUserServers();
   }
 
@@ -1395,7 +1413,7 @@
   }
 
   // Initialize all dropdowns after DOM loads
-  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame;
+  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame, ddNewTournamentGame;
 
   function initDropdowns() {
     // Platform dropdown
@@ -1425,7 +1443,19 @@
       ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]);
     }
 
-    // ✅ FIX: Tournament game dropdown now has id="tournament-game" so this connects properly
+    // ✅ New tournament form game dropdown
+    const newGameEl = document.getElementById('new-t-game');
+    if (newGameEl) {
+      ddNewTournamentGame = new CyberDropdown(newGameEl, () => {});
+      ddNewTournamentGame.setOptions([
+        { value: 'overwatch', label: '🎮 Overwatch 2' },
+        { value: 'rivals',    label: '⚔️ Marvel Rivals' },
+        { value: 'destiny',   label: '🌌 Destiny 2' },
+      ]);
+      ddNewTournamentGame.setValue('overwatch', '🎮 Overwatch 2');
+    }
+
+    // ✅ Default tournament game dropdown
     const gameEl = document.getElementById('tournament-game');
     if (gameEl) {
       ddTournamentGame = new CyberDropdown(gameEl, () => {});
@@ -1568,6 +1598,107 @@
       console.error('Error loading channels:', err.message);
       ddAlertChannel.setOptions([{ value: '', label: 'Error loading channels', disabled: true }]);
     }
+  }
+
+  // ── Tournaments ──
+  async function loadTournaments() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!discordId) return;
+
+    const { data: tournaments } = await sb
+      .from('tournaments')
+      .select('*')
+      .eq('discord_server_id', discordId)
+      .order('created_at', { ascending: false });
+
+    const list = document.getElementById('tournaments-list');
+    if (!list) return;
+
+    if (!tournaments || tournaments.length === 0) {
+      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No tournaments yet. Click + New tournament to create one.</p>';
+      return;
+    }
+
+    const gameIcons = { overwatch: '🎮', rivals: '⚔️', destiny: '🌌' };
+    const statusBadge = {
+      registration: '<span class="badge badge-pro">Reg open</span>',
+      in_progress:  '<span class="badge badge-live">Live</span>',
+      completed:    '<span class="badge badge-active">Done</span>',
+      cancelled:    '<span class="badge badge-free">Cancelled</span>',
+    };
+
+    list.innerHTML = tournaments.map(t => `
+      <div class="platform-row" style="margin-bottom:8px">
+        <div>
+          <p class="platform-name">${gameIcons[t.game] || '🏆'} ${t.name}</p>
+          <p class="platform-sub">${t.max_players} players — ${t.game} — ${(t.status || 'registration').replace('_', ' ')}</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${statusBadge[t.status] || statusBadge.registration}
+          <button onclick="deleteTournament('${t.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function createTournament() {
+    const name       = document.getElementById('new-t-name').value.trim();
+    const game       = ddNewTournamentGame ? ddNewTournamentGame.getValue() : document.getElementById('new-t-game').value;
+    const maxPlayers = parseInt(document.getElementById('new-t-max').value);
+    const errorEl    = document.getElementById('tournament-error');
+    errorEl.style.display = 'none';
+
+    if (!name) {
+      errorEl.textContent = '// Error: Please enter a tournament name';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+
+    const { error } = await sb.from('tournaments').insert({
+      name,
+      game,
+      max_players: maxPlayers,
+      status: 'registration',
+      discord_server_id: discordId,
+    });
+
+    if (error) {
+      errorEl.textContent = '// Error: ' + error.message;
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    document.getElementById('new-t-name').value = '';
+    document.getElementById('new-tournament-form').style.display = 'none';
+    showSaved('tournament-created');
+    loadTournaments();
+  }
+
+  async function deleteTournament(id) {
+    if (!confirm('Are you sure you want to delete this tournament?')) return;
+    await sb.from('tournaments').delete().eq('id', id);
+    loadTournaments();
+  }
+
+  async function saveTournamentDefaults() {
+    const discordId  = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const game       = ddTournamentGame ? ddTournamentGame.getValue() : document.getElementById('tournament-game').value;
+    const maxPlayers = document.getElementById('default-max-players').value;
+    await sb.from('server_settings').upsert({
+      owner_discord_id: discordId,
+      discord_server_id: discordId,
+      feature_flags: {
+        battletag:                document.getElementById('toggle-battletag').checked,
+        ask_td:                   document.getElementById('toggle-td').checked,
+        scrims:                   document.getElementById('toggle-scrims').checked,
+        coaching:                 document.getElementById('toggle-coaching').checked,
+        default_tournament_game:  game,
+        default_max_players:      parseInt(maxPlayers),
+      }
+    }, { onConflict: 'owner_discord_id' });
+    showSaved('tournament-saved');
   }
 
   init();
