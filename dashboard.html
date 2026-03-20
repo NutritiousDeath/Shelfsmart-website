@@ -629,14 +629,32 @@
           <p class="save-msg" id="channels-error" style="color:var(--pink)">// Error: Please select your Discord server from the dropdown first!</p>
         </div>
       </div>
+      <div class="section-card">
+        <p class="card-title">// role pings</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          Enter the Discord role ID to ping when a tournament is announced for each game.<br>
+          To get a role ID: Server Settings → Roles → right-click the role → <span style="color:var(--cyan)">Copy Role ID</span> (Developer Mode must be on).
+        </p>
+        <label class="field-label">Overwatch role ID</label>
+        <input class="cyber-input" type="text" id="ow-role" placeholder="Paste your Overwatch role ID here">
+        <label class="field-label">Marvel Rivals role ID</label>
+        <input class="cyber-input" type="text" id="rivals-role" placeholder="Paste your Marvel Rivals role ID here">
+        <label class="field-label">Destiny 2 role ID</label>
+        <input class="cyber-input" type="text" id="d2-role" placeholder="Paste your Destiny 2 role ID here">
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveRoles()">Save roles</button>
+          <p class="save-msg" id="roles-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="roles-error" style="color:var(--pink)">// Error: Please select your Discord server from the dropdown first!</p>
+        </div>
+      </div>
       <div class="section-card" style="border-color:rgba(180,79,255,0.2)">
-        <p class="card-title" style="color:var(--purple)">// how to find your channel ID</p>
+        <p class="card-title" style="color:var(--purple)">// how to find your channel & role IDs</p>
         <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:2;letter-spacing:0.5px">
           <p><span style="color:var(--purple)">01.</span> Open Discord → Settings → Advanced</p>
           <p><span style="color:var(--purple)">02.</span> Enable <span style="color:var(--white)">Developer Mode</span></p>
-          <p><span style="color:var(--purple)">03.</span> Right-click any channel in your server</p>
-          <p><span style="color:var(--purple)">04.</span> Click <span style="color:var(--white)">Copy Channel ID</span></p>
-          <p><span style="color:var(--purple)">05.</span> Paste it into the field above</p>
+          <p><span style="color:var(--purple)">03.</span> For channels: right-click any channel → <span style="color:var(--white)">Copy Channel ID</span></p>
+          <p><span style="color:var(--purple)">04.</span> For roles: Server Settings → Roles → right-click role → <span style="color:var(--white)">Copy Role ID</span></p>
+          <p><span style="color:var(--purple)">05.</span> Paste IDs into the fields above</p>
         </div>
       </div>
       <div class="section-card">
@@ -958,6 +976,9 @@
       if (settings.ow_channel_id) document.getElementById('ow-channel').value = settings.ow_channel_id;
       if (settings.rivals_channel_id) document.getElementById('rivals-channel').value = settings.rivals_channel_id;
       if (settings.d2_channel_id) document.getElementById('d2-channel').value = settings.d2_channel_id;
+      if (settings.ow_role_id) document.getElementById('ow-role').value = settings.ow_role_id;
+      if (settings.rivals_role_id) document.getElementById('rivals-role').value = settings.rivals_role_id;
+      if (settings.d2_role_id) document.getElementById('d2-role').value = settings.d2_role_id;
       if (settings.feature_flags) {
         const f = settings.feature_flags;
         if (f.battletag !== undefined) document.getElementById('toggle-battletag').checked = f.battletag;
@@ -990,6 +1011,25 @@
       d2_channel_id: document.getElementById('d2-channel').value,
     }, { onConflict: 'owner_discord_id' });
     showSaved('channels-saved');
+  }
+
+  async function saveRoles() {
+    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
+
+    if (!selectedGuildId) {
+      const errEl = document.getElementById('roles-error');
+      if (errEl) { errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
+      return;
+    }
+
+    await sb.from('server_settings').upsert({
+      owner_discord_id: discordId,
+      discord_server_id: selectedGuildId,
+      ow_role_id: document.getElementById('ow-role').value,
+      rivals_role_id: document.getElementById('rivals-role').value,
+      d2_role_id: document.getElementById('d2-role').value,
+    }, { onConflict: 'owner_discord_id' });
+    showSaved('roles-saved');
   }
 
   async function saveToggles() {
