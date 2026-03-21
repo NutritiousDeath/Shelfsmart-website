@@ -1126,7 +1126,7 @@
       .from('user_access')
       .select('*')
       .eq('discord_id', discordId)
-      .single();
+      .maybeSingle();
 
     userAccess = access;
 
@@ -1210,7 +1210,7 @@
       .from('server_settings')
       .select('*')
       .eq('owner_discord_id', discordId)
-      .single();
+      .maybeSingle();
 
     if (settings) {
       if (settings.ow_channel_id) document.getElementById('ow-channel').value = settings.ow_channel_id;
@@ -1956,7 +1956,7 @@
         .from('server_settings')
         .select('*')
         .eq('discord_server_id', guildId)
-        .single();
+        .maybeSingle();
 
       if (settings) {
         if (settings.ow_channel_id) document.getElementById('ow-channel').value = settings.ow_channel_id;
