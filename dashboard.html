@@ -621,7 +621,7 @@
     </div>
 
     <span class="sidebar-section">// Main</span>
-    <button class="sidebar-item" onclick="setTab('alerts', this);loadAlerts()">
+    <button class="sidebar-item active" onclick="setTab('overview', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       Overview
     </button>
@@ -635,7 +635,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 21h8M12 17v4M6 3h12l-2 8H8L6 3z"/></svg>
       Tournaments
     </button>
-    <button class="sidebar-item" onclick="setTab('alerts', this)">
+    <button class="sidebar-item" onclick="setTab('alerts', this);loadAlerts()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       Social alerts
     </button>
@@ -1232,7 +1232,6 @@
     loadAlerts();
     loadTournaments();
     loadCoachingSessions();
-    loadAlerts();
     loadCoaches();
     loadUserServers();
   }
@@ -1997,6 +1996,9 @@
       console.error('Error loading channels:', err.message);
       ddAlertChannel.setOptions([{ value: '', label: 'Error loading channels', disabled: true }]);
     }
+    loadAlerts();
+    loadCoachingSessions();
+    loadTournaments();
   }
 
   // ── Tournaments ──
