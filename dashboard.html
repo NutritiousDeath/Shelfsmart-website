@@ -1458,7 +1458,12 @@
   async function loadAlerts() {
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
     if (!discordId) return;
-    const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_server_id', selectedGuildId || discordId);
+    const serverId = selectedGuildId;
+if (!serverId) {
+  list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Select your server from the sidebar to view alerts.</p>';
+  return;
+}
+const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_server_id', serverId);
     const list = document.getElementById('alerts-list');
     if (!list) return;
     if (!alerts || alerts.length === 0) {
