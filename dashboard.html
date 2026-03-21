@@ -611,6 +611,12 @@
     <div class="tab" id="tab-bot">
       <p class="page-tag">// configuration</p>
       <p class="page-title">BOT CONFIG</p>
+      <div id="bot-config-server-warning" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid rgba(255,230,0,0.3);background:rgba(255,230,0,0.05);margin-bottom:14px">
+        <span style="font-size:18px">⚠️</span>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--yellow);letter-spacing:0.5px;line-height:1.7">
+          Select your Discord server from the dropdown at the top of the sidebar before editing any settings. Changes will be saved for the selected server only.
+        </p>
+      </div>
       <div class="section-card">
         <p class="card-title">// channel bindings</p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
@@ -1725,11 +1731,52 @@
 
   async function onServerChange(guildId) {
     selectedGuildId = guildId;
-    if (!ddAlertChannel) return;
+
+    // Update warning banner visibility
+    const warning = document.getElementById('bot-config-server-warning');
+    if (warning) warning.style.borderColor = guildId ? 'rgba(0,240,255,0.2)' : 'rgba(255,230,0,0.3)';
+
+    // Clear all Bot Config fields when server changes
+    const fieldsToClear = ['ow-channel', 'rivals-channel', 'd2-channel', 'ow-role', 'rivals-role', 'd2-role'];
+    fieldsToClear.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+
     if (!guildId) {
-      ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]);
+      if (ddAlertChannel) ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]);
       return;
     }
+
+    // Load this server's settings into Bot Config fields
+    try {
+      const { data: settings } = await sb
+        .from('server_settings')
+        .select('*')
+        .eq('discord_server_id', guildId)
+        .single();
+
+      if (settings) {
+        if (settings.ow_channel_id) document.getElementById('ow-channel').value = settings.ow_channel_id;
+        if (settings.rivals_channel_id) document.getElementById('rivals-channel').value = settings.rivals_channel_id;
+        if (settings.d2_channel_id) document.getElementById('d2-channel').value = settings.d2_channel_id;
+        if (settings.ow_role_id) document.getElementById('ow-role').value = settings.ow_role_id;
+        if (settings.rivals_role_id) document.getElementById('rivals-role').value = settings.rivals_role_id;
+        if (settings.d2_role_id) document.getElementById('d2-role').value = settings.d2_role_id;
+        if (settings.feature_flags) {
+          const f = settings.feature_flags;
+          if (f.battletag !== undefined) document.getElementById('toggle-battletag').checked = f.battletag;
+          if (f.ask_td !== undefined) document.getElementById('toggle-td').checked = f.ask_td;
+          if (f.scrims !== undefined) document.getElementById('toggle-scrims').checked = f.scrims;
+          if (f.coaching !== undefined) document.getElementById('toggle-coaching').checked = f.coaching;
+        }
+      }
+    } catch (err) {
+      console.error('Error loading server settings:', err.message);
+    }
+
+    // Load alert channels for this server
+    if (!ddAlertChannel) return;
     ddAlertChannel.setOptions([{ value: '', label: 'Loading channels...', disabled: true }]);
     try {
       const edgeRes = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', {
