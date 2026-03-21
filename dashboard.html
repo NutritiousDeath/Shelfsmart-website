@@ -1126,9 +1126,15 @@
         }
       } else if (tier === 'pro') {
         if (planEl) planEl.textContent = 'Pro — $9/month';
-        if (renewEl && access.expires_at) {
-          const exp = new Date(access.expires_at);
-          renewEl.textContent = `Renews ${exp.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+        if (renewEl) {
+          if (access.expires_at) {
+            const exp = new Date(access.expires_at);
+            renewEl.textContent = `Renews ${exp.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+          } else if (access.granted_by === 'admin' || access.granted_by === 'self') {
+            renewEl.textContent = '★ Manually granted — no expiry date set';
+          } else {
+            renewEl.textContent = 'Active subscription';
+          }
         }
       }
 
