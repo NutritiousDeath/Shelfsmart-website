@@ -621,7 +621,7 @@
     </div>
 
     <span class="sidebar-section">// Main</span>
-    <button class="sidebar-item active" onclick="setTab('overview', this)">
+    <button class="sidebar-item" onclick="setTab('alerts', this);loadAlerts()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       Overview
     </button>
@@ -1232,6 +1232,7 @@
     loadAlerts();
     loadTournaments();
     loadCoachingSessions();
+    loadAlerts();
     loadCoaches();
     loadUserServers();
   }
