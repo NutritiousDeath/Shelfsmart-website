@@ -653,8 +653,8 @@
 
     <div class="status-indicator">
       <div class="status-row"><div class="dot-green"></div>Bot online</div>
-      <div class="status-row" style="color:rgba(74,80,104,0.6)"><div style="width:6px;height:6px;border-radius:50%;background:var(--purple);flex-shrink:0"></div>Discord connected</div>
-      <div class="status-row" style="color:rgba(74,80,104,0.6)"><div style="width:6px;height:6px;border-radius:50%;background:var(--grey);flex-shrink:0"></div>Beatdown Gateway Established</div>
+      <div class="status-row" style="color:rgba(74,80,104,0.6)"><div style="width:6px;height:6px;border-radius:50%;background:var(--purple);flex-shrink:0"></div>Base44 connected</div>
+      <div class="status-row" style="color:rgba(74,80,104,0.6)"><div style="width:6px;height:6px;border-radius:50%;background:var(--grey);flex-shrink:0"></div>Railway gateway</div>
     </div>
   </aside>
 
@@ -1456,20 +1456,22 @@
   let searchTimeout = null;
 
   async function loadAlerts() {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    if (!discordId) return;
-    const serverId = selectedGuildId;
-if (!serverId) {
-  list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Select your server from the sidebar to view alerts.</p>';
-  return;
-}
-const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_server_id', serverId);
     const list = document.getElementById('alerts-list');
     if (!list) return;
+
+    const serverId = selectedGuildId;
+    if (!serverId) {
+      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Select your server from the sidebar dropdown to view alerts.</p>';
+      return;
+    }
+
+    const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_server_id', serverId);
+
     if (!alerts || alerts.length === 0) {
       list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No alerts set up yet. Add one below.</p>';
       return;
     }
+
     const icons = { twitch: '🟣', youtube: '🔴', tiktok: '⚫', kick: '🟢' };
     list.innerHTML = alerts.map(a => `
       <div class="platform-row" style="margin-bottom:8px">
@@ -1484,7 +1486,6 @@ const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_
       </div>
     `).join('');
   }
-
   async function removeAlert(id) {
     await sb.from('social_alerts').delete().eq('id', id);
     loadAlerts();
@@ -1573,7 +1574,7 @@ const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_
     if (!channelId) { errorEl.textContent = '// Error: Please enter a Discord channel ID'; errorEl.style.display = 'block'; return; }
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
     const { error } = await sb.from('social_alerts').insert({
-      discord_server_id: selectedGuildId || discordId,
+      discord_server_id: discordId,
       platform,
       username,
       alert_channel_id: channelId,
@@ -2081,7 +2082,6 @@ const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_
     if (!confirm('Remove this coaching session?')) return;
     await sb.from('coaching_schedules').delete().eq('id', id);
     loadCoachingSessions();
-    loadAlerts();
   }
 
   async function loadCoaches() {
