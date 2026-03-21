@@ -1278,7 +1278,7 @@
     const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
     await sb.from('server_settings').upsert({
       owner_discord_id: discordId,
-      discord_server_id: discordId,
+      discord_server_id: selectedGuildId || discordId,
       feature_flags: {
         battletag: document.getElementById('toggle-battletag').checked,
         ask_td: document.getElementById('toggle-td').checked,
@@ -1574,7 +1574,7 @@
     if (!channelId) { errorEl.textContent = '// Error: Please enter a Discord channel ID'; errorEl.style.display = 'block'; return; }
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
     const { error } = await sb.from('social_alerts').insert({
-      discord_server_id: discordId,
+      discord_server_id: selectedGuildId || discordId,
       platform,
       username,
       alert_channel_id: channelId,
@@ -1865,7 +1865,7 @@
 
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
     const { error } = await sb.from('social_alerts').insert({
-      discord_server_id: discordId,
+      discord_server_id: selectedGuildId || discordId,
       platform,
       username,
       alert_channel_id: channelId,
@@ -2153,7 +2153,7 @@
     }
 
     const { error } = await sb.from('coaches').insert({
-      discord_server_id: discordId,
+      discord_server_id: selectedGuildId || discordId,
       discord_profile_id: coachDiscordId,
       display_name: name,
       logo_url: logo || null,
@@ -2278,7 +2278,7 @@
       max_players: maxPlayers,
       ruleset: ruleset || null,
       status: 'registration',
-      discord_server_id: discordId,
+      discord_server_id: selectedGuildId || discordId,
     });
 
     if (error) {
@@ -2306,7 +2306,7 @@
     const maxPlayers = document.getElementById('default-max-players').value;
     await sb.from('server_settings').upsert({
       owner_discord_id: discordId,
-      discord_server_id: discordId,
+      discord_server_id: selectedGuildId || discordId,
       feature_flags: {
         battletag:                document.getElementById('toggle-battletag').checked,
         ask_td:                   document.getElementById('toggle-td').checked,
