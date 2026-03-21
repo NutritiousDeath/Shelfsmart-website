@@ -1458,7 +1458,7 @@
   async function loadAlerts() {
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
     if (!discordId) return;
-    const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_server_id', discordId);
+    const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_server_id', selectedGuildId || discordId);
     const list = document.getElementById('alerts-list');
     if (!list) return;
     if (!alerts || alerts.length === 0) {
@@ -1568,7 +1568,7 @@
     if (!channelId) { errorEl.textContent = '// Error: Please enter a Discord channel ID'; errorEl.style.display = 'block'; return; }
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
     const { error } = await sb.from('social_alerts').insert({
-      discord_server_id: discordId,
+      discord_server_id: selectedGuildId || discordId,
       platform,
       username,
       alert_channel_id: channelId,
@@ -2076,6 +2076,7 @@
     if (!confirm('Remove this coaching session?')) return;
     await sb.from('coaching_schedules').delete().eq('id', id);
     loadCoachingSessions();
+    loadAlerts();
   }
 
   async function loadCoaches() {
