@@ -1042,7 +1042,8 @@
       <div class="section-card">
         <p class="card-title">// upgrade plan</p>
         <div class="plans-grid">
-          <div class="plan-card">
+          <div class="plan-card" id="plan-card-free">
+            <div id="plan-badge-free" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div>
             <p class="plan-name">Free</p>
             <p class="plan-price">$0<span>/mo</span></p>
             <div class="divider"></div>
@@ -1052,8 +1053,8 @@
             <div class="plan-feature off">✗ Social alerts</div>
             <div class="plan-feature off">✗ AI persona</div>
           </div>
-          <div class="plan-card current">
-            <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div>
+          <div class="plan-card" id="plan-card-pro">
+            <div id="plan-badge-pro" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div>
             <p class="plan-name">Pro</p>
             <p class="plan-price">$9<span>/mo</span></p>
             <div class="divider"></div>
@@ -1063,7 +1064,8 @@
             <div class="plan-feature">✓ Coaching tools</div>
             <div class="plan-feature">✓ Advanced tournaments</div>
           </div>
-          <div class="plan-card">
+          <div class="plan-card" id="plan-card-lifetime">
+            <div id="plan-badge-lifetime" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:#b44fff;text-shadow:0 0 8px #b44fff;letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div>
             <p class="plan-name" style="color:#b44fff;text-shadow:0 0 10px #b44fff,0 0 30px #b44fff44;letter-spacing:3px">Lifetime</p>
             <p class="plan-price" style="color:#b44fff;text-shadow:0 0 10px #b44fff,0 0 30px #b44fff44">$79<span> once</span></p>
             <div class="divider"></div>
@@ -1071,7 +1073,9 @@
             <div class="plan-feature">✓ Priority support</div>
             <div class="plan-feature">✓ Early access</div>
             <div class="plan-feature">✓ No recurring fees</div>
-            <button class="btn-secondary" style="width:100%;margin-top:14px;font-size:0.58rem">Upgrade</button>
+            <div id="plan-upgrade-lifetime">
+              <button class="btn-secondary" style="width:100%;margin-top:14px;font-size:0.58rem">Upgrade</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1132,6 +1136,18 @@
       const planEl = document.getElementById('billing-plan');
       const renewEl = document.getElementById('billing-renew');
       const badgeEl = document.getElementById('billing-badge');
+
+      // Update plan cards — highlight correct one, hide upgrade button if already on lifetime
+      const cards = { free: 'plan-card-free', pro: 'plan-card-pro', lifetime: 'plan-card-lifetime' };
+      Object.entries(cards).forEach(([t, id]) => {
+        const card = document.getElementById(id);
+        const badge = document.getElementById(`plan-badge-${t}`);
+        if (card) card.classList.toggle('current', t === tier);
+        if (badge) badge.style.display = t === tier ? 'block' : 'none';
+      });
+      // Hide upgrade button if user already has lifetime
+      const upgradeBtn = document.getElementById('plan-upgrade-lifetime');
+      if (upgradeBtn) upgradeBtn.style.display = tier === 'lifetime' ? 'none' : 'block';
 
       if (tier === 'lifetime') {
         if (planEl) {
