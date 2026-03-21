@@ -57,6 +57,36 @@
         linear-gradient(90deg, rgba(255,10,10,0.04) 1px, transparent 1px);
     }
 
+    body.theme-pink {
+      --bg: #050108;
+      --bg-2: #0d010d;
+      --cyan: #ff2d78;
+      --pink: #ff00cc;
+      --purple: #cc00ff;
+      --yellow: #ff66cc;
+      --white: #f0e8f0;
+      --grey: #5a3055;
+      --green: #00ff88;
+      --glow-cyan: 0 0 10px #ff2d78, 0 0 30px #ff2d7844, 0 0 60px #ff2d7822;
+      --glow-pink: 0 0 10px #ff00cc, 0 0 30px #ff00cc44;
+      --glow-purple: 0 0 10px #cc00ff, 0 0 30px #cc00ff44;
+      --glow-green: 0 0 8px #00ff88;
+    }
+
+    body.theme-pink .scanlines {
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(255,45,120,0.012) 2px, rgba(255,45,120,0.012) 4px
+      );
+    }
+
+    body.theme-pink .hero-grid,
+    body.theme-pink .page-hero-grid {
+      background-image:
+        linear-gradient(rgba(255,45,120,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,45,120,0.04) 1px, transparent 1px);
+    }
+
     /* Theme toggle button */
     .theme-toggle-wrap {
       display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;
@@ -981,6 +1011,9 @@
           </button>
           <button class="theme-btn" id="theme-btn-red" onclick="setTheme('red')">
             🔴 Crimson Red
+          </button>
+          <button class="theme-btn" id="theme-btn-pink" onclick="setTheme('pink')">
+            🩷 Neon Pink
           </button>
         </div>
         <p class="save-msg" id="theme-saved" style="margin-top:10px">// Theme saved</p>
@@ -1946,12 +1979,14 @@
 
   async function setTheme(theme) {
     // Apply theme to body
-    document.body.classList.remove('theme-red', 'theme-cyber');
+    document.body.classList.remove('theme-red', 'theme-pink', 'theme-cyber');
     if (theme === 'red') document.body.classList.add('theme-red');
+    if (theme === 'pink') document.body.classList.add('theme-pink');
 
     // Update button states
     document.getElementById('theme-btn-cyber').classList.toggle('active', theme === 'cyber');
     document.getElementById('theme-btn-red').classList.toggle('active', theme === 'red');
+    document.getElementById('theme-btn-pink').classList.toggle('active', theme === 'pink');
 
     // Save to Supabase
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
@@ -1965,12 +2000,15 @@
   }
 
   function applyTheme(theme) {
-    document.body.classList.remove('theme-red', 'theme-cyber');
+    document.body.classList.remove('theme-red', 'theme-pink', 'theme-cyber');
     if (theme === 'red') document.body.classList.add('theme-red');
+    if (theme === 'pink') document.body.classList.add('theme-pink');
     const cyberBtn = document.getElementById('theme-btn-cyber');
     const redBtn = document.getElementById('theme-btn-red');
-    if (cyberBtn) cyberBtn.classList.toggle('active', theme !== 'red');
+    const pinkBtn = document.getElementById('theme-btn-pink');
+    if (cyberBtn) cyberBtn.classList.toggle('active', theme === 'cyber' || (!theme));
     if (redBtn) redBtn.classList.toggle('active', theme === 'red');
+    if (pinkBtn) pinkBtn.classList.toggle('active', theme === 'pink');
   }
 
   async function loadCoachingSessions() {
