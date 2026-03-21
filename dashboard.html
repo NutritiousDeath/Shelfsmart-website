@@ -966,7 +966,7 @@
         <p class="card-title">// current plan</p>
         <div class="platform-row" style="margin-bottom:14px">
           <div><p class="platform-name" id="billing-plan">Pro — $9/month</p><p class="platform-sub" id="billing-renew">Renews April 18, 2026</p></div>
-          <span class="badge badge-active">Active</span>
+          <span class="badge badge-active" id="billing-badge">Active</span>
         </div>
         <button class="btn-secondary">Manage in Stripe</button>
       </div>
@@ -1094,6 +1094,44 @@
       document.getElementById('nav-tier').textContent = tier.toUpperCase();
       // Apply saved theme from Supabase
       if (access.theme) applyTheme(access.theme);
+
+      // Update billing plan display
+      const planEl = document.getElementById('billing-plan');
+      const renewEl = document.getElementById('billing-renew');
+      const badgeEl = document.getElementById('billing-badge');
+
+      if (tier === 'lifetime') {
+        if (planEl) {
+          planEl.textContent = 'Lifetime License';
+          planEl.style.color = '#b44fff';
+          planEl.style.textShadow = '0 0 10px #b44fff, 0 0 30px #b44fff44';
+          planEl.style.fontFamily = 'var(--font-display)';
+          planEl.style.letterSpacing = '2px';
+        }
+        if (renewEl) renewEl.textContent = '★ Never expires — unlimited access forever';
+        if (badgeEl) {
+          badgeEl.textContent = 'LIFETIME';
+          badgeEl.style.color = '#b44fff';
+          badgeEl.style.borderColor = '#b44fff';
+          badgeEl.style.boxShadow = '0 0 10px #b44fff, 0 0 30px #b44fff44';
+          // Always purple regardless of theme
+          badgeEl.setAttribute('data-lifetime', 'true');
+        }
+        // Nav tier badge also always purple for lifetime
+        const navTier = document.getElementById('nav-tier');
+        if (navTier) {
+          navTier.style.borderColor = '#b44fff';
+          navTier.style.color = '#b44fff';
+          navTier.style.boxShadow = '0 0 10px #b44fff, 0 0 30px #b44fff44';
+        }
+      } else if (tier === 'pro') {
+        if (planEl) planEl.textContent = 'Pro — $9/month';
+        if (renewEl && access.expires_at) {
+          const exp = new Date(access.expires_at);
+          renewEl.textContent = `Renews ${exp.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+        }
+      }
+
       if (tier === 'free') {
         document.getElementById('paywall-overlay').classList.remove('hidden');
       }
