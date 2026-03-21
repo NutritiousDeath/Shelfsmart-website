@@ -26,6 +26,57 @@
       --glow-green: 0 0 8px #00ff88;
     }
 
+    /* ── RED THEME ── */
+    body.theme-red {
+      --bg: #020202;
+      --bg-2: #0d0505;
+      --cyan: #ff0a0a;
+      --pink: #ff4400;
+      --purple: #cc0000;
+      --yellow: #ff6600;
+      --white: #f0e8e8;
+      --grey: #5a3030;
+      --green: #00ff88;
+      --glow-cyan: 0 0 10px #ff0a0a, 0 0 30px #ff0a0a44, 0 0 60px #ff0a0a22;
+      --glow-pink: 0 0 10px #ff4400, 0 0 30px #ff440044;
+      --glow-purple: 0 0 10px #cc0000, 0 0 30px #cc000044;
+      --glow-green: 0 0 8px #00ff88;
+    }
+
+    body.theme-red .scanlines {
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(255,10,10,0.012) 2px, rgba(255,10,10,0.012) 4px
+      );
+    }
+
+    body.theme-red .hero-grid,
+    body.theme-red .page-hero-grid {
+      background-image:
+        linear-gradient(rgba(255,10,10,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,10,10,0.04) 1px, transparent 1px);
+    }
+
+    /* Theme toggle button */
+    .theme-toggle-wrap {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;
+    }
+    .theme-btn {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 2px; padding: 7px 14px;
+      border: 1px solid rgba(0,240,255,0.3);
+      background: transparent; color: var(--grey);
+      cursor: pointer; text-transform: uppercase;
+      clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+      transition: all 0.2s;
+    }
+    .theme-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+    .theme-btn.active {
+      border-color: var(--cyan); color: var(--cyan);
+      background: rgba(0,240,255,0.08);
+      box-shadow: var(--glow-cyan);
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -920,6 +971,21 @@
         <button class="btn-secondary">Manage in Stripe</button>
       </div>
       <div class="section-card">
+        <p class="card-title">// dashboard theme</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7;letter-spacing:0.5px">
+          Choose your dashboard color scheme. Theme is saved per account and applies every time you log in.
+        </p>
+        <div class="theme-toggle-wrap">
+          <button class="theme-btn active" id="theme-btn-cyber" onclick="setTheme('cyber')">
+            🔵 Cyber Blue
+          </button>
+          <button class="theme-btn" id="theme-btn-red" onclick="setTheme('red')">
+            🔴 Crimson Red
+          </button>
+        </div>
+        <p class="save-msg" id="theme-saved" style="margin-top:10px">// Theme saved</p>
+      </div>
+      <div class="section-card">
         <p class="card-title">// grant access</p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7;letter-spacing:0.5px">
           Manually grant Pro access to any Discord user — no payment required. Use for giveaways, free months, or community rewards.
@@ -1011,6 +1077,10 @@
 
     document.getElementById('nav-username').textContent = discordName;
 
+    // Apply saved theme immediately from localStorage while we wait for Supabase
+    const savedThemeLocal = localStorage.getItem('auraai-theme');
+    if (savedThemeLocal) applyTheme(savedThemeLocal);
+
     const { data: access } = await sb
       .from('user_access')
       .select('*')
@@ -1022,6 +1092,8 @@
     if (access) {
       const tier = access.tier || 'free';
       document.getElementById('nav-tier').textContent = tier.toUpperCase();
+      // Apply saved theme from Supabase
+      if (access.theme) applyTheme(access.theme);
       if (tier === 'free') {
         document.getElementById('paywall-overlay').classList.remove('hidden');
       }
@@ -1825,6 +1897,37 @@
 
   // ── Tournaments ──
   // ── Coaching ──────────────────────────────────────────────────────────────
+
+  // ── Theme ──────────────────────────────────────────────────────────────────
+
+  async function setTheme(theme) {
+    // Apply theme to body
+    document.body.classList.remove('theme-red', 'theme-cyber');
+    if (theme === 'red') document.body.classList.add('theme-red');
+
+    // Update button states
+    document.getElementById('theme-btn-cyber').classList.toggle('active', theme === 'cyber');
+    document.getElementById('theme-btn-red').classList.toggle('active', theme === 'red');
+
+    // Save to Supabase
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (discordId) {
+      await sb.from('user_access').update({ theme }).eq('discord_id', discordId);
+    }
+
+    // Also save to localStorage as instant fallback
+    localStorage.setItem('auraai-theme', theme);
+    showSaved('theme-saved');
+  }
+
+  function applyTheme(theme) {
+    document.body.classList.remove('theme-red', 'theme-cyber');
+    if (theme === 'red') document.body.classList.add('theme-red');
+    const cyberBtn = document.getElementById('theme-btn-cyber');
+    const redBtn = document.getElementById('theme-btn-red');
+    if (cyberBtn) cyberBtn.classList.toggle('active', theme !== 'red');
+    if (redBtn) redBtn.classList.toggle('active', theme === 'red');
+  }
 
   async function loadCoachingSessions() {
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
