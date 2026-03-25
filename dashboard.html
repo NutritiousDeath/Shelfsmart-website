@@ -2399,7 +2399,6 @@
     const { data: coaches } = await sb
       .from('coaches')
       .select('*')
-      .or(`discord_server_id.eq.global,discord_server_id.eq.${discordId}`)
       .order('created_at', { ascending: false });
 
     const list = document.getElementById('coaches-list');
@@ -2461,7 +2460,7 @@
     }
 
     const { error } = await sb.from('coaches').insert({
-      discord_server_id: selectedGuildId || discordId,
+      discord_server_id: 'global',
       discord_profile_id: coachDiscordId,
       display_name: name,
       logo_url: logo || null,
