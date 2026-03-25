@@ -87,6 +87,36 @@
         linear-gradient(90deg, rgba(255,45,120,0.04) 1px, transparent 1px);
     }
 
+    body.theme-orange {
+      --bg: #050300;
+      --bg-2: #0d0800;
+      --cyan: #ff8c00;
+      --pink: #ff6600;
+      --purple: #ffaa00;
+      --yellow: #ffcc00;
+      --white: #f0ede8;
+      --grey: #5a4020;
+      --green: #00ff88;
+      --glow-cyan: 0 0 10px #ff8c00, 0 0 30px #ff8c0044, 0 0 60px #ff8c0022;
+      --glow-pink: 0 0 10px #ff6600, 0 0 30px #ff660044;
+      --glow-purple: 0 0 10px #ffaa00, 0 0 30px #ffaa0044;
+      --glow-green: 0 0 8px #00ff88;
+    }
+
+    body.theme-orange .scanlines {
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(255,140,0,0.012) 2px, rgba(255,140,0,0.012) 4px
+      );
+    }
+
+    body.theme-orange .hero-grid,
+    body.theme-orange .page-hero-grid {
+      background-image:
+        linear-gradient(rgba(255,140,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,140,0,0.04) 1px, transparent 1px);
+    }
+
     /* Theme toggle button */
     .theme-toggle-wrap {
       display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;
@@ -1081,6 +1111,9 @@
           <button class="theme-btn" id="theme-btn-pink" onclick="setTheme('pink')">
             🩷 Neon Pink
           </button>
+          <button class="theme-btn" id="theme-btn-orange" onclick="setTheme('orange')">
+            🟠 Neon Orange
+          </button>
         </div>
         <p class="save-msg" id="theme-saved" style="margin-top:10px">// Theme saved</p>
       </div>
@@ -1201,6 +1234,8 @@
       if (isCoach) {
         navTierEl.textContent = 'COACH';
         navTierEl.classList.add('coach-badge');
+        const overviewStatus = document.getElementById('overview-status');
+        if (overviewStatus) overviewStatus.style.display = 'none';
         // Hide server selector for coaches
         const serverSelectWrap = document.getElementById('server-select')?.closest('div[style]') || document.getElementById('server-select')?.parentElement;
         if (serverSelectWrap) serverSelectWrap.style.display = 'none';
@@ -2235,14 +2270,16 @@
 
   async function setTheme(theme) {
     // Apply theme to body
-    document.body.classList.remove('theme-red', 'theme-pink', 'theme-cyber');
+    document.body.classList.remove('theme-red', 'theme-pink', 'theme-orange', 'theme-cyber');
     if (theme === 'red') document.body.classList.add('theme-red');
     if (theme === 'pink') document.body.classList.add('theme-pink');
+    if (theme === 'orange') document.body.classList.add('theme-orange');
 
     // Update button states
     document.getElementById('theme-btn-cyber').classList.toggle('active', theme === 'cyber');
     document.getElementById('theme-btn-red').classList.toggle('active', theme === 'red');
     document.getElementById('theme-btn-pink').classList.toggle('active', theme === 'pink');
+    document.getElementById('theme-btn-orange').classList.toggle('active', theme === 'orange');
 
     // Save to Supabase
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
@@ -2256,15 +2293,18 @@
   }
 
   function applyTheme(theme) {
-    document.body.classList.remove('theme-red', 'theme-pink', 'theme-cyber');
+    document.body.classList.remove('theme-red', 'theme-pink', 'theme-orange', 'theme-cyber');
     if (theme === 'red') document.body.classList.add('theme-red');
     if (theme === 'pink') document.body.classList.add('theme-pink');
+    if (theme === 'orange') document.body.classList.add('theme-orange');
     const cyberBtn = document.getElementById('theme-btn-cyber');
     const redBtn = document.getElementById('theme-btn-red');
     const pinkBtn = document.getElementById('theme-btn-pink');
+    const orangeBtn = document.getElementById('theme-btn-orange');
     if (cyberBtn) cyberBtn.classList.toggle('active', theme === 'cyber' || (!theme));
     if (redBtn) redBtn.classList.toggle('active', theme === 'red');
     if (pinkBtn) pinkBtn.classList.toggle('active', theme === 'pink');
+    if (orangeBtn) orangeBtn.classList.toggle('active', theme === 'orange');
   }
 
   async function loadCoachingSessions() {
