@@ -1015,6 +1015,12 @@
       <!-- COACHING SETTINGS -->
       <div class="section-card">
         <p class="card-title">// coaching settings</p>
+        <div id="coaching-server-warning" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid rgba(255,45,120,0.5);background:rgba(255,45,120,0.07);box-shadow:0 0 12px rgba(255,45,120,0.15);margin-bottom:14px;transition:all 0.4s">
+          <span id="coaching-warning-icon" style="font-size:18px;flex-shrink:0">⚠️</span>
+          <p id="coaching-warning-text" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--pink);letter-spacing:0.5px;line-height:1.7;text-shadow:0 0 8px rgba(255,45,120,0.5)">
+            No server selected — select your Discord server from the sidebar dropdown before editing coaching settings.
+          </p>
+        </div>
         <label class="field-label">Coaching channel ID</label>
         <input class="cyber-input" type="text" id="coaching-channel" placeholder="Paste your coaching channel ID here">
         <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px;margin-bottom:14px">Players will select their coach and receive session threads in this channel.</p>
@@ -2083,7 +2089,7 @@
     }
 
     // Clear all Bot Config fields when server changes
-    const fieldsToClear = ['ow-channel', 'rivals-channel', 'd2-channel', 'ow-role', 'rivals-role', 'd2-role'];
+    const fieldsToClear = ['ow-channel', 'rivals-channel', 'd2-channel', 'ow-role', 'rivals-role', 'd2-role', 'coaching-channel'];
     fieldsToClear.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
@@ -2144,6 +2150,33 @@
     loadAlerts();
     loadCoachingSessions();
     loadTournaments();
+
+    // Update coaching warning banner
+    const coachingWarning = document.getElementById('coaching-server-warning');
+    const coachingIcon = document.getElementById('coaching-warning-icon');
+    const coachingText = document.getElementById('coaching-warning-text');
+    if (coachingWarning && guildId) {
+      coachingWarning.style.border = '1px solid rgba(0,255,136,0.5)';
+      coachingWarning.style.background = 'rgba(0,255,136,0.07)';
+      coachingWarning.style.boxShadow = '0 0 12px rgba(0,255,136,0.15)';
+      if (coachingIcon) coachingIcon.textContent = '✅';
+      if (coachingText) {
+        coachingText.style.color = 'var(--green)';
+        coachingText.style.textShadow = '0 0 8px rgba(0,255,136,0.5)';
+        const guild = userGuilds.find(g => g.id === guildId);
+        coachingText.textContent = `Server selected: ${guild ? guild.name : guildId} — coaching settings below are for this server.`;
+      }
+    } else if (coachingWarning) {
+      coachingWarning.style.border = '1px solid rgba(255,45,120,0.5)';
+      coachingWarning.style.background = 'rgba(255,45,120,0.07)';
+      coachingWarning.style.boxShadow = '0 0 12px rgba(255,45,120,0.15)';
+      if (coachingIcon) coachingIcon.textContent = '⚠️';
+      if (coachingText) {
+        coachingText.style.color = 'var(--pink)';
+        coachingText.style.textShadow = '0 0 8px rgba(255,45,120,0.5)';
+        coachingText.textContent = 'No server selected — select your Discord server from the sidebar dropdown before editing coaching settings.';
+      }
+    }
   }
 
   // ── Tournaments ──
