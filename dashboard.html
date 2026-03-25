@@ -1015,6 +1015,10 @@
       <!-- COACHING SETTINGS -->
       <div class="section-card">
         <p class="card-title">// coaching settings</p>
+        <label class="field-label">Coaching channel ID</label>
+        <input class="cyber-input" type="text" id="coaching-channel" placeholder="Paste your coaching channel ID here">
+        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px;margin-bottom:14px">Players will select their coach and receive session threads in this channel.</p>
+        <div class="divider"></div>
         <div class="toggle-row">
           <span class="toggle-label">Allow coaching requests</span>
           <label class="toggle"><input type="checkbox" checked id="toggle-coaching-allow"><div class="t-track"></div><div class="t-thumb"></div></label>
@@ -2105,6 +2109,7 @@
         if (settings.ow_role_id) document.getElementById('ow-role').value = settings.ow_role_id;
         if (settings.rivals_role_id) document.getElementById('rivals-role').value = settings.rivals_role_id;
         if (settings.d2_role_id) document.getElementById('d2-role').value = settings.d2_role_id;
+        if (settings.coaching_channel_id) document.getElementById('coaching-channel').value = settings.coaching_channel_id;
         if (settings.feature_flags) {
           const f = settings.feature_flags;
           if (f.battletag !== undefined) document.getElementById('toggle-battletag').checked = f.battletag;
@@ -2464,6 +2469,7 @@
     await sb.from('server_settings').upsert({
       owner_discord_id: discordId,
       discord_server_id: selectedGuildId || discordId,
+      coaching_channel_id: document.getElementById('coaching-channel').value.trim() || null,
       feature_flags: {
         battletag: document.getElementById('toggle-battletag').checked,
         ask_td: document.getElementById('toggle-td').checked,
