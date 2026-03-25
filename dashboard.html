@@ -963,7 +963,7 @@
         <label class="field-label">Coach display name</label>
         <input class="cyber-input" type="text" id="coach-name" placeholder="e.g. CoachAura">
         <label class="field-label">Discord profile ID</label>
-        <input class="cyber-input" type="text" id="coach-discord-id" placeholder="e.g. 176467159000678400">
+        <input class="cyber-input" type="text" id="coach-discord-id" placeholder="e.g. 123456789012345678">
         <label class="field-label">Logo / avatar URL</label>
         <input class="cyber-input" type="text" id="coach-logo" placeholder="https://... (direct image link)">
         <label class="field-label">Game</label>
@@ -2399,7 +2399,7 @@
     const { data: coaches } = await sb
       .from('coaches')
       .select('*')
-      .eq('discord_server_id', discordId)
+      .or(`discord_server_id.eq.global,discord_server_id.eq.${discordId}`)
       .order('created_at', { ascending: false });
 
     const list = document.getElementById('coaches-list');
