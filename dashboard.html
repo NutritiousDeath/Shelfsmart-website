@@ -190,6 +190,11 @@
       box-shadow: var(--glow-purple);
       transition: all 0.3s;
     }
+    .nav-tier.coach-badge {
+      border: 1px solid #00aaff !important;
+      color: #00aaff !important;
+      box-shadow: 0 0 10px #00aaff, 0 0 30px #00aaff44 !important;
+    }
     .btn-signout {
       font-family: var(--font-mono); font-size: 0.62rem;
       color: var(--grey); background: none;
@@ -1195,9 +1200,7 @@
       const navTierEl = document.getElementById('nav-tier');
       if (isCoach) {
         navTierEl.textContent = 'COACH';
-        navTierEl.style.setProperty('border-color', '#00aaff', 'important');
-        navTierEl.style.setProperty('color', '#00aaff', 'important');
-        navTierEl.style.setProperty('box-shadow', '0 0 10px #00aaff, 0 0 30px #00aaff44', 'important');
+        navTierEl.classList.add('coach-badge');
         // Hide server selector for coaches
         const serverSelectWrap = document.getElementById('server-select')?.closest('div[style]') || document.getElementById('server-select')?.parentElement;
         if (serverSelectWrap) serverSelectWrap.style.display = 'none';
