@@ -644,6 +644,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       Coaching
     </button>
+    <button class="sidebar-item" id="coach-profile-sidebar" style="display:none;border-left-color:#00aaff;color:#00aaff" onclick="setTab('coach-profile', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><path d="M12 14v2"/></svg>
+      My Profile
+    </button>
 
     <span class="sidebar-section">// Account</span>
     <button class="sidebar-item" onclick="setTab('billing', this)">
@@ -992,6 +996,58 @@
       </div>
     </div>
 
+    <!-- COACH PROFILE -->
+    <div class="tab" id="tab-coach-profile">
+      <p class="page-tag">// coach profile</p>
+      <p class="page-title">MY PROFILE</p>
+
+      <div class="section-card" style="border-color:rgba(0,170,255,0.3)">
+        <p class="card-title" style="color:#00aaff">// your coaching card</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px">
+          This is how you appear to players looking for coaching. Keep it up to date!
+        </p>
+        <label class="field-label">Display name</label>
+        <input class="cyber-input" type="text" id="my-coach-name" placeholder="e.g. CoachAura">
+        <label class="field-label">Avatar / logo URL</label>
+        <input class="cyber-input" type="text" id="my-coach-logo" placeholder="https://... (direct image link)">
+        <label class="field-label">Game</label>
+        <select class="cyber-input" id="my-coach-game" style="cursor:pointer">
+          <option value="overwatch">🎮 Overwatch 2</option>
+          <option value="rivals">⚔️ Marvel Rivals</option>
+          <option value="destiny">🌌 Destiny 2</option>
+        </select>
+        <label class="field-label">Bio</label>
+        <textarea class="cyber-input" id="my-coach-bio" rows="4" placeholder="Tell players about your background and coaching experience..."></textarea>
+        <label class="field-label">Strengths / specialties</label>
+        <textarea class="cyber-input" id="my-coach-strengths" rows="3" placeholder="e.g. Support positioning, team coordination, mechanical aim training..."></textarea>
+        <label class="field-label">CashApp URL</label>
+        <input class="cyber-input" type="text" id="my-coach-cashapp" placeholder="https://cash.app/$username">
+        <label class="field-label">Stripe payment URL</label>
+        <input class="cyber-input" type="text" id="my-coach-stripe" placeholder="https://buy.stripe.com/...">
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-primary" onclick="saveMyCoachProfile()" style="border-color:#00aaff;background:#00aaff">Save profile</button>
+        </div>
+        <p class="save-msg" id="my-coach-saved" style="color:#00aaff">// Profile saved successfully</p>
+        <p class="save-msg" id="my-coach-error" style="color:var(--pink)"></p>
+      </div>
+
+      <!-- PREVIEW CARD -->
+      <div class="section-card">
+        <p class="card-title">// preview — how players see you</p>
+        <div id="coach-preview-card" style="background:var(--bg-2);border:1px solid rgba(0,170,255,0.2);padding:16px;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));max-width:320px">
+          <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Fill out your profile above to see a preview here.</p>
+        </div>
+      </div>
+
+      <!-- MY SESSIONS -->
+      <div class="section-card">
+        <p class="card-title">// my coaching sessions</p>
+        <div id="my-coaching-sessions">
+          <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading sessions...</p>
+        </div>
+      </div>
+    </div>
+
     <!-- BILLING -->
     <div class="tab" id="tab-billing">
       <p class="page-tag">// subscription</p>
@@ -1132,7 +1188,31 @@
 
     if (access) {
       const tier = access.tier || 'free';
-      document.getElementById('nav-tier').textContent = tier.toUpperCase();
+      const isCoach = access.is_coach === true;
+
+      // Handle coach badge — always blue neon regardless of theme
+      const navTierEl = document.getElementById('nav-tier');
+      if (isCoach) {
+        navTierEl.textContent = 'COACH';
+        navTierEl.style.borderColor = '#00aaff';
+        navTierEl.style.color = '#00aaff';
+        navTierEl.style.boxShadow = '0 0 10px #00aaff, 0 0 30px #00aaff44';
+        // Hide server-owner sections for coaches
+        document.querySelectorAll('.sidebar-item').forEach(btn => {
+          const tab = btn.getAttribute('onclick') || '';
+          if (tab.includes('tournaments') || tab.includes('alerts') || tab.includes('billing')) {
+            btn.style.display = 'none';
+          }
+        });
+        // Show coach profile sidebar button
+        const coachSidebar = document.getElementById('coach-profile-sidebar');
+        if (coachSidebar) coachSidebar.style.display = 'flex';
+        // Load coach profile after dropdowns init
+        setTimeout(() => loadMyCoachProfile(), 200);
+      } else {
+        navTierEl.textContent = tier.toUpperCase();
+      }
+
       // Apply saved theme from Supabase
       if (access.theme) applyTheme(access.theme);
 
@@ -1718,7 +1798,7 @@
   }
 
   // Initialize all dropdowns after DOM loads
-  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame, ddNewTournamentGame, ddNewTournamentBracket, ddCoachGame;
+  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame, ddNewTournamentGame, ddNewTournamentBracket, ddCoachGame, ddMyCoachGame;
 
   function initDropdowns() {
     // Platform dropdown
@@ -1758,6 +1838,18 @@
         { value: 'destiny',   label: '🌌 Destiny 2' },
       ]);
       ddNewTournamentGame.setValue('overwatch', '🎮 Overwatch 2');
+    }
+
+    // ✅ My coach profile game dropdown
+    const myCoachGameEl = document.getElementById('my-coach-game');
+    if (myCoachGameEl) {
+      ddMyCoachGame = new CyberDropdown(myCoachGameEl, () => {});
+      ddMyCoachGame.setOptions([
+        { value: 'overwatch', label: '🎮 Overwatch 2' },
+        { value: 'rivals',    label: '⚔️ Marvel Rivals' },
+        { value: 'destiny',   label: '🌌 Destiny 2' },
+      ]);
+      ddMyCoachGame.setValue('overwatch', '🎮 Overwatch 2');
     }
 
     // ✅ Coach game dropdown
@@ -2003,6 +2095,128 @@
 
   // ── Tournaments ──
   // ── Coaching ──────────────────────────────────────────────────────────────
+
+  // ── Coach Profile ────────────────────────────────────────────────────────────
+
+  async function loadMyCoachProfile() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!discordId) return;
+
+    const { data: profile } = await sb
+      .from('coaches')
+      .select('*')
+      .eq('discord_profile_id', discordId)
+      .maybeSingle();
+
+    if (profile) {
+      if (profile.display_name) document.getElementById('my-coach-name').value = profile.display_name;
+      if (profile.logo_url) document.getElementById('my-coach-logo').value = profile.logo_url;
+      if (profile.game) document.getElementById('my-coach-game').value = profile.game;
+      if (profile.bio) document.getElementById('my-coach-bio').value = profile.bio;
+      if (profile.strengths) document.getElementById('my-coach-strengths').value = profile.strengths;
+      if (profile.cashapp_url) document.getElementById('my-coach-cashapp').value = profile.cashapp_url;
+      if (profile.stripe_url) document.getElementById('my-coach-stripe').value = profile.stripe_url;
+      updateCoachPreview(profile);
+    }
+
+    // Load sessions
+    await loadMyCoachingSessions(discordId);
+  }
+
+  async function saveMyCoachProfile() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const errorEl = document.getElementById('my-coach-error');
+    errorEl.style.display = 'none';
+
+    const name = document.getElementById('my-coach-name').value.trim();
+    if (!name) {
+      errorEl.textContent = '// Error: Display name is required';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    const game = ddMyCoachGame ? ddMyCoachGame.getValue() : document.getElementById('my-coach-game').value;
+
+    const profileData = {
+      discord_profile_id: discordId,
+      discord_server_id: 'global',
+      display_name: name,
+      logo_url: document.getElementById('my-coach-logo').value.trim() || null,
+      game,
+      bio: document.getElementById('my-coach-bio').value.trim() || null,
+      strengths: document.getElementById('my-coach-strengths').value.trim() || null,
+      cashapp_url: document.getElementById('my-coach-cashapp').value.trim() || null,
+      stripe_url: document.getElementById('my-coach-stripe').value.trim() || null,
+      is_active: true,
+      discord_user_id: discordId,
+    };
+
+    const { error } = await sb.from('coaches').upsert(profileData, { onConflict: 'discord_profile_id' });
+
+    if (error) {
+      errorEl.textContent = '// Error: ' + error.message;
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    updateCoachPreview(profileData);
+    showSaved('my-coach-saved');
+  }
+
+  function updateCoachPreview(profile) {
+    const preview = document.getElementById('coach-preview-card');
+    if (!preview) return;
+    const gameNames = { overwatch: 'Overwatch 2', rivals: 'Marvel Rivals', destiny: 'Destiny 2' };
+    const gameIcons = { overwatch: '🎮', rivals: '⚔️', destiny: '🌌' };
+    preview.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        ${profile.logo_url ? `<img src="${profile.logo_url}" style="width:40px;height:40px;border-radius:50%;border:1px solid #00aaff;object-fit:cover" onerror="this.style.display='none'">` : `<div style="width:40px;height:40px;border-radius:50%;background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);display:flex;align-items:center;justify-content:center;font-size:18px">🎮</div>`}
+        <div>
+          <p style="font-family:var(--font-display);font-size:0.72rem;font-weight:700;color:#00aaff;text-shadow:0 0 8px #00aaff44">${profile.display_name || 'Coach'}</p>
+          <p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">${gameIcons[profile.game] || ''} ${gameNames[profile.game] || profile.game || ''}</p>
+        </div>
+      </div>
+      ${profile.bio ? `<p style="font-family:var(--font-mono);font-size:0.62rem;color:rgba(232,234,240,0.7);line-height:1.7;margin-bottom:8px">${profile.bio}</p>` : ''}
+      ${profile.strengths ? `<p style="font-family:var(--font-mono);font-size:0.6rem;color:#00aaff;margin-bottom:10px">💪 ${profile.strengths}</p>` : ''}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+        ${profile.cashapp_url ? `<span style="font-family:var(--font-mono);font-size:0.58rem;color:#00d632;border:1px solid #00d632;padding:3px 8px">💵 CashApp</span>` : ''}
+        ${profile.stripe_url ? `<span style="font-family:var(--font-mono);font-size:0.58rem;color:#635bff;border:1px solid #635bff;padding:3px 8px">💳 Stripe</span>` : ''}
+      </div>
+    `;
+  }
+
+  async function loadMyCoachingSessions(discordId) {
+    const list = document.getElementById('my-coaching-sessions');
+    if (!list) return;
+
+    const { data: sessions } = await sb
+      .from('coaching_sessions')
+      .select('*')
+      .eq('coach_discord_id', discordId)
+      .order('created_at', { ascending: false });
+
+    if (!sessions || sessions.length === 0) {
+      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No coaching sessions yet.</p>';
+      return;
+    }
+
+    const statusBadge = {
+      pending:   '<span class="badge badge-warning">Pending</span>',
+      active:    '<span class="badge badge-live">Active</span>',
+      completed: '<span class="badge badge-active">Completed</span>',
+      cancelled: '<span class="badge badge-free">Cancelled</span>',
+    };
+
+    list.innerHTML = sessions.map(s => `
+      <div class="platform-row" style="margin-bottom:8px">
+        <div>
+          <p class="platform-name">🎮 ${s.user_username || s.user_discord_id}</p>
+          <p class="platform-sub">${s.game || 'N/A'} — ${new Date(s.created_at).toLocaleDateString()}</p>
+        </div>
+        ${statusBadge[s.status] || statusBadge.pending}
+      </div>
+    `).join('');
+  }
 
   // ── Theme ──────────────────────────────────────────────────────────────────
 
