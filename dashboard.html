@@ -182,14 +182,14 @@
     }
     .nav-user-name { color: var(--cyan); letter-spacing: 1px; }
     .nav-tier {
-  padding: 3px 10px;
-  border: 1px solid var(--purple);
-  color: var(--purple);
-  font-size: 0.6rem; letter-spacing: 2px;
-  text-transform: uppercase;
-  box-shadow: var(--glow-purple);
-  transition: all 0.3s;
-}
+      padding: 3px 10px;
+      border: 1px solid var(--purple);
+      color: var(--purple);
+      font-size: 0.6rem; letter-spacing: 2px;
+      text-transform: uppercase;
+      box-shadow: var(--glow-purple);
+      transition: all 0.3s;
+    }
     .btn-signout {
       font-family: var(--font-mono); font-size: 0.62rem;
       color: var(--grey); background: none;
@@ -1192,22 +1192,28 @@
       const isCoach = access.is_coach === true;
 
       // Handle coach badge — always blue neon regardless of theme
-     if (isCoach) {
-  navTierEl.textContent = 'COACH';
-  navTierEl.style.borderColor = '#00aaff';
-  navTierEl.style.color = '#00aaff';
-  navTierEl.style.boxShadow = '0 0 10px #00aaff, 0 0 30px #00aaff44';
-  navTierEl.style.setProperty('border-color', '#00aaff', 'important');
-  // Hide server selector for coaches
-  const serverSelectWrap = document.getElementById('server-select')?.closest('div');
-  if (serverSelectWrap) serverSelectWrap.style.display = 'none';
-  // Hide irrelevant sidebar items for coaches
-  document.querySelectorAll('.sidebar-item').forEach(btn => {
-    const tab = btn.getAttribute('onclick') || '';
-    if (tab.includes('tournaments') || tab.includes('alerts') || tab.includes('billing') || tab.includes('overview') || tab.includes('bot')) {
-      btn.style.display = 'none';
-    }
-  });
+      const navTierEl = document.getElementById('nav-tier');
+      if (isCoach) {
+        navTierEl.textContent = 'COACH';
+        navTierEl.style.setProperty('border-color', '#00aaff', 'important');
+        navTierEl.style.setProperty('color', '#00aaff', 'important');
+        navTierEl.style.setProperty('box-shadow', '0 0 10px #00aaff, 0 0 30px #00aaff44', 'important');
+        // Hide server selector for coaches
+        const serverSelectWrap = document.getElementById('server-select')?.closest('div[style]') || document.getElementById('server-select')?.parentElement;
+        if (serverSelectWrap) serverSelectWrap.style.display = 'none';
+        // Hide sidebar section labels and irrelevant items for coaches
+        document.querySelectorAll('.sidebar-item').forEach(btn => {
+          const tab = btn.getAttribute('onclick') || '';
+          if (tab.includes('tournaments') || tab.includes('alerts') || tab.includes('billing') || tab.includes('overview') || tab.includes('bot')) {
+            btn.style.display = 'none';
+          }
+        });
+        // Hide sidebar section labels
+        document.querySelectorAll('.sidebar-section').forEach(section => {
+          if (section.textContent.includes('Main') || section.textContent.includes('Features') || section.textContent.includes('Account')) {
+            section.style.display = 'none';
+          }
+        });
         // Show coach profile sidebar button
         const coachSidebar = document.getElementById('coach-profile-sidebar');
         if (coachSidebar) coachSidebar.style.display = 'flex';
