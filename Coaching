@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuraAI — Apply to Coach</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #050810;
+      --bg-2: #080d1a;
+      --cyan: #00f0ff;
+      --pink: #ff2d78;
+      --purple: #b44fff;
+      --yellow: #ffe600;
+      --white: #e8eaf0;
+      --grey: #4a5068;
+      --green: #00ff88;
+      --font-display: 'Orbitron', monospace;
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-body: 'Rajdhani', sans-serif;
+      --glow-cyan: 0 0 10px #00f0ff, 0 0 30px #00f0ff44, 0 0 60px #00f0ff22;
+      --glow-pink: 0 0 10px #ff2d78, 0 0 30px #ff2d7844;
+      --glow-green: 0 0 8px #00ff88;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      cursor: crosshair;
+      overflow-x: hidden;
+    }
+
+    .scanlines {
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,240,255,0.012) 2px, rgba(0,240,255,0.012) 4px);
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* Grid background */
+    .page-bg {
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 2rem;
+      background: rgba(5,8,16,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,240,255,0.12);
+    }
+    .nav-logo { font-family: var(--font-display); font-size: 1.1rem; font-weight: 900; letter-spacing: 2px; text-decoration: none; }
+    .logo-aura { color: var(--cyan); text-shadow: var(--glow-cyan); }
+    .logo-ai { color: var(--white); }
+    .nav-link {
+      font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 2px;
+      color: var(--grey); text-decoration: none; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--cyan); }
+
+    /* MAIN */
+    .main {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 100px 20px 80px;
+    }
+
+    /* HERO */
+    .hero {
+      text-align: center; margin-bottom: 48px; max-width: 600px;
+    }
+    .hero-tag {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      color: var(--cyan); letter-spacing: 3px;
+      text-transform: uppercase; margin-bottom: 12px; opacity: 0.8;
+    }
+    .hero-title {
+      font-family: var(--font-display); font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 900; letter-spacing: 4px;
+      color: var(--white); margin-bottom: 16px; line-height: 1.2;
+    }
+    .hero-title span { color: var(--cyan); text-shadow: var(--glow-cyan); }
+    .hero-divider {
+      width: 200px; height: 1px; margin: 20px auto;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    }
+    .hero-sub {
+      font-family: var(--font-mono); font-size: 0.72rem;
+      color: var(--grey); line-height: 1.9; letter-spacing: 0.5px;
+    }
+
+    /* FORM CARD */
+    .form-card {
+      width: 100%; max-width: 580px;
+      background: rgba(8,13,26,0.9);
+      border: 1px solid rgba(0,240,255,0.12);
+      padding: 32px 36px;
+      position: relative;
+    }
+    .form-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,255,0.5), transparent);
+    }
+    .form-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,255,0.2), transparent);
+    }
+
+    .form-section-title {
+      font-family: var(--font-display); font-size: 0.62rem;
+      font-weight: 700; letter-spacing: 2px;
+      color: var(--cyan); text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .field-label {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      color: var(--grey); letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 6px; margin-top: 16px;
+      display: block;
+    }
+    .field-label:first-of-type { margin-top: 0; }
+    .field-req { color: var(--pink); }
+
+    .cyber-input {
+      width: 100%; font-family: var(--font-mono); font-size: 0.72rem;
+      padding: 10px 14px; background: rgba(0,240,255,0.03);
+      border: 1px solid rgba(0,240,255,0.18); color: var(--cyan);
+      letter-spacing: 1px; outline: none; transition: border-color 0.2s;
+    }
+    .cyber-input:focus { border-color: var(--cyan); box-shadow: var(--glow-cyan); }
+    .cyber-input::placeholder { color: var(--grey); }
+    textarea.cyber-input { resize: vertical; line-height: 1.7; }
+    select.cyber-input { cursor: pointer; }
+    select.cyber-input option { background: #080d1a; }
+
+    .field-hint {
+      font-family: var(--font-mono); font-size: 0.58rem;
+      color: rgba(74,80,104,0.7); margin-top: 5px; line-height: 1.6;
+    }
+
+    .divider {
+      width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,240,255,0.15), transparent);
+      margin: 24px 0;
+    }
+
+    .btn-submit {
+      width: 100%; font-family: var(--font-display); font-size: 0.7rem;
+      font-weight: 700; letter-spacing: 3px; padding: 14px 24px;
+      background: var(--cyan); color: var(--bg); border: none; cursor: pointer;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: all 0.2s; text-transform: uppercase; margin-top: 24px;
+    }
+    .btn-submit:hover { background: var(--white); box-shadow: var(--glow-cyan); }
+    .btn-submit:disabled { background: var(--grey); cursor: not-allowed; box-shadow: none; }
+
+    /* STATUS STATES */
+    .status-box {
+      display: none; padding: 16px 20px; margin-top: 16px;
+      font-family: var(--font-mono); font-size: 0.68rem; line-height: 1.8;
+      letter-spacing: 0.5px;
+    }
+    .status-box.success {
+      border: 1px solid rgba(0,255,136,0.4);
+      background: rgba(0,255,136,0.05);
+      color: var(--green);
+    }
+    .status-box.error {
+      border: 1px solid rgba(255,45,120,0.4);
+      background: rgba(255,45,120,0.05);
+      color: var(--pink);
+    }
+
+    /* SUCCESS SCREEN */
+    #success-screen {
+      display: none; text-align: center; max-width: 500px;
+      padding: 48px 32px;
+      background: rgba(8,13,26,0.9);
+      border: 1px solid rgba(0,255,136,0.3);
+      position: relative;
+    }
+    #success-screen::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+    }
+    .success-icon { font-size: 3rem; margin-bottom: 20px; }
+    .success-title {
+      font-family: var(--font-display); font-size: 1.2rem; font-weight: 900;
+      letter-spacing: 3px; color: var(--green);
+      text-shadow: var(--glow-green); margin-bottom: 12px;
+    }
+    .success-sub {
+      font-family: var(--font-mono); font-size: 0.68rem;
+      color: var(--grey); line-height: 1.9; letter-spacing: 0.5px;
+    }
+
+    /* HOW IT WORKS */
+    .info-strip {
+      display: flex; gap: 0; flex-wrap: wrap;
+      width: 100%; max-width: 580px; margin-bottom: 32px;
+    }
+    .info-step {
+      flex: 1; min-width: 160px;
+      padding: 16px 18px;
+      border: 1px solid rgba(0,240,255,0.08);
+      background: rgba(0,240,255,0.02);
+      border-right: none;
+    }
+    .info-step:last-child { border-right: 1px solid rgba(0,240,255,0.08); }
+    .info-step-num {
+      font-family: var(--font-display); font-size: 1.2rem; font-weight: 900;
+      color: var(--cyan); text-shadow: var(--glow-cyan);
+      margin-bottom: 6px; opacity: 0.5;
+    }
+    .info-step-label {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      color: var(--grey); letter-spacing: 1px; line-height: 1.6;
+    }
+
+    /* DISCORD HELPER */
+    .discord-help {
+      width: 100%; max-width: 580px; margin-top: 16px;
+      padding: 14px 18px;
+      border: 1px solid rgba(88,101,242,0.3);
+      background: rgba(88,101,242,0.05);
+      font-family: var(--font-mono); font-size: 0.62rem;
+      color: rgba(232,234,240,0.5); line-height: 1.8;
+    }
+    .discord-help a { color: #5865F2; text-decoration: none; }
+    .discord-help a:hover { text-decoration: underline; }
+
+    /* STATUS BAR */
+    .status-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 6px 2rem;
+      background: rgba(5,8,16,0.9);
+      border-top: 1px solid rgba(0,240,255,0.08);
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: var(--font-mono); font-size: 0.58rem;
+      color: var(--grey); letter-spacing: 1px; z-index: 100;
+    }
+    .dot-green { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: var(--glow-green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    @media (max-width: 600px) {
+      .form-card { padding: 24px 20px; }
+      .info-step { min-width: 140px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="page-bg"></div>
+
+<nav>
+  <a href="/" class="nav-logo"><span class="logo-aura">AURA</span><span class="logo-ai">AI</span></a>
+  <a href="/dashboard.html" class="nav-link">Dashboard →</a>
+</nav>
+
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-tag">// coaching program</p>
+    <h1 class="hero-title">Apply to <span>Coach</span> on AuraAI</h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">
+      Help players level up in Overwatch 2, Marvel Rivals, and Destiny 2.<br>
+      Set your own rates. Get paid your way. We handle the rest.
+    </p>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="info-strip">
+    <div class="info-step">
+      <div class="info-step-num">01</div>
+      <div class="info-step-label">Fill out the application below</div>
+    </div>
+    <div class="info-step">
+      <div class="info-step-num">02</div>
+      <div class="info-step-label">Get reviewed within 1-2 days</div>
+    </div>
+    <div class="info-step">
+      <div class="info-step-num">03</div>
+      <div class="info-step-label">Receive a Discord DM with your decision</div>
+    </div>
+    <div class="info-step">
+      <div class="info-step-num">04</div>
+      <div class="info-step-label">Log in to set up your coach profile</div>
+    </div>
+  </div>
+
+  <!-- APPLICATION FORM -->
+  <div class="form-card" id="form-card">
+    <p class="form-section-title">// coach application</p>
+
+    <label class="field-label">Display name <span class="field-req">*</span></label>
+    <input class="cyber-input" type="text" id="f-name" placeholder="e.g. CoachAura" maxlength="50">
+
+    <label class="field-label">Discord user ID <span class="field-req">*</span></label>
+    <input class="cyber-input" type="text" id="f-discord-id" placeholder="e.g. 123456789012345678">
+    <p class="field-hint">We use this to DM you your decision and grant access if approved. <a href="#how-to-get-id" style="color:var(--cyan)">How to find your ID ↓</a></p>
+
+    <label class="field-label">Discord username <span class="field-req">*</span></label>
+    <input class="cyber-input" type="text" id="f-discord-tag" placeholder="e.g. username or username#1234">
+
+    <label class="field-label">Game you want to coach <span class="field-req">*</span></label>
+    <select class="cyber-input" id="f-game">
+      <option value="Overwatch 2">🎮 Overwatch 2</option>
+      <option value="Marvel Rivals">⚔️ Marvel Rivals</option>
+      <option value="Destiny 2">🌌 Destiny 2</option>
+    </select>
+
+    <label class="field-label">Bio <span class="field-req">*</span></label>
+    <textarea class="cyber-input" id="f-bio" rows="4" placeholder="Tell us about your rank, experience, and why you'd be a great coach..."></textarea>
+
+    <label class="field-label">Strengths / specialties</label>
+    <textarea class="cyber-input" id="f-strengths" rows="2" placeholder="e.g. Support positioning, mechanical aim training, team coordination..."></textarea>
+
+    <div class="divider"></div>
+
+    <p class="form-section-title">// payment info <span style="color:var(--grey);font-size:0.55rem;letter-spacing:1px">(optional — set your own rates)</span></p>
+
+    <label class="field-label">Logo / avatar URL</label>
+    <input class="cyber-input" type="text" id="f-logo" placeholder="https://... (direct image link)">
+
+    <label class="field-label">CashApp URL</label>
+    <input class="cyber-input" type="text" id="f-cashapp" placeholder="https://cash.app/$username">
+
+    <label class="field-label">Stripe payment URL</label>
+    <input class="cyber-input" type="text" id="f-stripe" placeholder="https://buy.stripe.com/...">
+
+    <button class="btn-submit" id="submit-btn" onclick="submitApplication()">Submit Application</button>
+
+    <div class="status-box error" id="error-box"></div>
+  </div>
+
+  <!-- SUCCESS SCREEN (shown after submit) -->
+  <div id="success-screen">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Application Submitted!</div>
+    <div style="width:100px;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent);margin:16px auto 20px"></div>
+    <p class="success-sub" id="success-msg">
+      Thanks! Your application has been received.<br>
+      You'll get a Discord DM within 1-2 days with your decision.<br><br>
+      <span style="color:rgba(74,80,104,0.5)">You can also check your status by logging into the dashboard at<br>
+      <a href="/dashboard.html" style="color:var(--cyan)">uptight-shelf-smart-flow.com/dashboard.html</a></span>
+    </p>
+  </div>
+
+  <!-- DISCORD ID HELPER -->
+  <div class="discord-help" id="how-to-get-id">
+    <span style="color:var(--cyan)">// How to find your Discord User ID</span><br>
+    1. Open Discord → Settings → Advanced → Enable <strong style="color:var(--white)">Developer Mode</strong><br>
+    2. Click your profile picture or username anywhere in Discord<br>
+    3. Click <strong style="color:var(--white)">Copy User ID</strong><br>
+    4. Paste it in the field above<br><br>
+    <span style="opacity:0.5">Don't have a Discord account? <a href="https://discord.com/register" target="_blank">Create one for free →</a></span>
+  </div>
+
+</div>
+
+<div class="status-bar">
+  <div style="display:flex;align-items:center;gap:6px;color:var(--green)"><div class="dot-green"></div>AuraAI online</div>
+  <span>ShelfSmart Gaming — Coach Application</span>
+  <span id="clock"></span>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://uptxufmqqwjytffhbcdd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwdHh1Zm1xcXdqeXRmZmhiY2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NDUzNzMsImV4cCI6MjA4OTQyMTM3M30.Wkol9oWQwZePmfduJIteUnAxvP_SmDTiRfvWPU5JYGU';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function updateClock() { document.getElementById('clock').textContent = new Date().toUTCString().replace('GMT', 'UTC'); }
+  updateClock(); setInterval(updateClock, 1000);
+
+  function showError(msg) {
+    const box = document.getElementById('error-box');
+    box.textContent = '// Error: ' + msg;
+    box.style.display = 'block';
+    setTimeout(() => box.style.display = 'none', 6000);
+  }
+
+  async function submitApplication() {
+    const btn = document.getElementById('submit-btn');
+    const errorBox = document.getElementById('error-box');
+    errorBox.style.display = 'none';
+
+    const name = document.getElementById('f-name').value.trim();
+    const discordId = document.getElementById('f-discord-id').value.trim();
+    const discordTag = document.getElementById('f-discord-tag').value.trim();
+    const game = document.getElementById('f-game').value;
+    const bio = document.getElementById('f-bio').value.trim();
+    const strengths = document.getElementById('f-strengths').value.trim();
+    const logo = document.getElementById('f-logo').value.trim();
+    const cashapp = document.getElementById('f-cashapp').value.trim();
+    const stripe = document.getElementById('f-stripe').value.trim();
+
+    // Validation
+    if (!name) { showError('Display name is required'); return; }
+    if (!discordId) { showError('Discord user ID is required'); return; }
+    if (!/^\d{17,19}$/.test(discordId)) { showError('Discord user ID must be a 17-19 digit number. Check the instructions below.'); return; }
+    if (!discordTag) { showError('Discord username is required'); return; }
+    if (!bio) { showError('Bio is required'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    try {
+      // Check for existing pending application
+      const { data: existing } = await sb
+        .from('coach_applications')
+        .select('status')
+        .eq('discord_id', discordId)
+        .eq('status', 'pending')
+        .maybeSingle();
+
+      if (existing) {
+        showError('You already have a pending application. Check your Discord DMs for updates.');
+        btn.disabled = false;
+        btn.textContent = 'Submit Application';
+        return;
+      }
+
+      // Check if already approved
+      const { data: alreadyCoach } = await sb
+        .from('user_access')
+        .select('is_coach')
+        .eq('discord_id', discordId)
+        .maybeSingle();
+
+      if (alreadyCoach?.is_coach) {
+        showError("You're already an approved coach! Log into the dashboard to manage your profile.");
+        btn.disabled = false;
+        btn.textContent = 'Submit Application';
+        return;
+      }
+
+      const { error } = await sb.from('coach_applications').insert({
+        discord_id: discordId,
+        discord_tag: discordTag,
+        display_name: name,
+        game,
+        bio,
+        strengths: strengths || null,
+        logo_url: logo || null,
+        cashapp_url: cashapp || null,
+        stripe_url: stripe || null,
+        status: 'pending'
+      });
+
+      if (error) {
+        console.error('Submit error:', error.message);
+        showError('Something went wrong. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Submit Application';
+        return;
+      }
+
+      // Show success screen
+      document.getElementById('form-card').style.display = 'none';
+      document.getElementById('success-msg').innerHTML = `
+        Thanks <strong style="color:var(--green)">${name}</strong>! Your application to coach <strong style="color:var(--cyan)">${game}</strong> has been received.<br><br>
+        We'll send a Discord DM to <strong style="color:var(--white)">${discordTag}</strong> within 1-2 days with your decision.<br><br>
+        <span style="color:rgba(74,80,104,0.5)">You can also check your status by logging into the dashboard at<br>
+        <a href="/dashboard.html" style="color:var(--cyan)">uptight-shelf-smart-flow.com/dashboard.html</a></span>
+      `;
+      document.getElementById('success-screen').style.display = 'block';
+
+    } catch (err) {
+      console.error('Unexpected error:', err.message);
+      showError('Unexpected error. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Submit Application';
+    }
+  }
+</script>
+</body>
+</html>
