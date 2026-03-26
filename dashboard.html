@@ -28,547 +28,182 @@
 
     /* ── RED THEME ── */
     body.theme-red {
-      --bg: #020202;
-      --bg-2: #0d0505;
-      --cyan: #ff0a0a;
-      --pink: #ff4400;
-      --purple: #cc0000;
-      --yellow: #ff6600;
-      --white: #f0e8e8;
-      --grey: #5a3030;
+      --bg: #020202; --bg-2: #0d0505; --cyan: #ff0a0a; --pink: #ff4400;
+      --purple: #cc0000; --yellow: #ff6600; --white: #f0e8e8; --grey: #5a3030;
       --green: #00ff88;
       --glow-cyan: 0 0 10px #ff0a0a, 0 0 30px #ff0a0a44, 0 0 60px #ff0a0a22;
       --glow-pink: 0 0 10px #ff4400, 0 0 30px #ff440044;
       --glow-purple: 0 0 10px #cc0000, 0 0 30px #cc000044;
       --glow-green: 0 0 8px #00ff88;
     }
-
-    body.theme-red .scanlines {
-      background: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(255,10,10,0.012) 2px, rgba(255,10,10,0.012) 4px
-      );
-    }
-
-    body.theme-red .hero-grid,
-    body.theme-red .page-hero-grid {
-      background-image:
-        linear-gradient(rgba(255,10,10,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,10,10,0.04) 1px, transparent 1px);
-    }
+    body.theme-red .scanlines { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,10,10,0.012) 2px, rgba(255,10,10,0.012) 4px); }
+    body.theme-red .hero-grid, body.theme-red .page-hero-grid { background-image: linear-gradient(rgba(255,10,10,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,10,10,0.04) 1px, transparent 1px); }
 
     body.theme-pink {
-      --bg: #050108;
-      --bg-2: #0d010d;
-      --cyan: #ff2d78;
-      --pink: #ff00cc;
-      --purple: #cc00ff;
-      --yellow: #ff66cc;
-      --white: #f0e8f0;
-      --grey: #5a3055;
+      --bg: #050108; --bg-2: #0d010d; --cyan: #ff2d78; --pink: #ff00cc;
+      --purple: #cc00ff; --yellow: #ff66cc; --white: #f0e8f0; --grey: #5a3055;
       --green: #00ff88;
       --glow-cyan: 0 0 10px #ff2d78, 0 0 30px #ff2d7844, 0 0 60px #ff2d7822;
       --glow-pink: 0 0 10px #ff00cc, 0 0 30px #ff00cc44;
       --glow-purple: 0 0 10px #cc00ff, 0 0 30px #cc00ff44;
       --glow-green: 0 0 8px #00ff88;
     }
-
-    body.theme-pink .scanlines {
-      background: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(255,45,120,0.012) 2px, rgba(255,45,120,0.012) 4px
-      );
-    }
-
-    body.theme-pink .hero-grid,
-    body.theme-pink .page-hero-grid {
-      background-image:
-        linear-gradient(rgba(255,45,120,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,45,120,0.04) 1px, transparent 1px);
-    }
+    body.theme-pink .scanlines { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,45,120,0.012) 2px, rgba(255,45,120,0.012) 4px); }
+    body.theme-pink .hero-grid, body.theme-pink .page-hero-grid { background-image: linear-gradient(rgba(255,45,120,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,45,120,0.04) 1px, transparent 1px); }
 
     body.theme-orange {
-      --bg: #050300;
-      --bg-2: #0d0800;
-      --cyan: #ff8c00;
-      --pink: #ff6600;
-      --purple: #ffaa00;
-      --yellow: #ffcc00;
-      --white: #f0ede8;
-      --grey: #5a4020;
+      --bg: #050300; --bg-2: #0d0800; --cyan: #ff8c00; --pink: #ff6600;
+      --purple: #ffaa00; --yellow: #ffcc00; --white: #f0ede8; --grey: #5a4020;
       --green: #00ff88;
       --glow-cyan: 0 0 10px #ff8c00, 0 0 30px #ff8c0044, 0 0 60px #ff8c0022;
       --glow-pink: 0 0 10px #ff6600, 0 0 30px #ff660044;
       --glow-purple: 0 0 10px #ffaa00, 0 0 30px #ffaa0044;
       --glow-green: 0 0 8px #00ff88;
     }
+    body.theme-orange .scanlines { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,140,0,0.012) 2px, rgba(255,140,0,0.012) 4px); }
+    body.theme-orange .hero-grid, body.theme-orange .page-hero-grid { background-image: linear-gradient(rgba(255,140,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,140,0,0.04) 1px, transparent 1px); }
 
-    body.theme-orange .scanlines {
-      background: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(255,140,0,0.012) 2px, rgba(255,140,0,0.012) 4px
-      );
-    }
-
-    body.theme-orange .hero-grid,
-    body.theme-orange .page-hero-grid {
-      background-image:
-        linear-gradient(rgba(255,140,0,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,140,0,0.04) 1px, transparent 1px);
-    }
-
-    /* Theme toggle button */
-    .theme-toggle-wrap {
-      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;
-    }
-    .theme-btn {
-      font-family: var(--font-mono); font-size: 0.6rem;
-      letter-spacing: 2px; padding: 7px 14px;
-      border: 1px solid rgba(0,240,255,0.3);
-      background: transparent; color: var(--grey);
-      cursor: pointer; text-transform: uppercase;
-      clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
-      transition: all 0.2s;
-    }
+    .theme-toggle-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .theme-btn { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 2px; padding: 7px 14px; border: 1px solid rgba(0,240,255,0.3); background: transparent; color: var(--grey); cursor: pointer; text-transform: uppercase; clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%); transition: all 0.2s; }
     .theme-btn:hover { border-color: var(--cyan); color: var(--cyan); }
-    .theme-btn.active {
-      border-color: var(--cyan); color: var(--cyan);
-      background: rgba(0,240,255,0.08);
-      box-shadow: var(--glow-cyan);
-    }
+    .theme-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,240,255,0.08); box-shadow: var(--glow-cyan); }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--white); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; cursor: crosshair; }
+    .scanlines { position: fixed; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,240,255,0.012) 2px, rgba(0,240,255,0.012) 4px); pointer-events: none; z-index: 9999; }
 
-    body {
-      background: var(--bg);
-      color: var(--white);
-      font-family: var(--font-body);
-      min-height: 100vh;
-      overflow-x: hidden;
-      cursor: crosshair;
-    }
-
-    .scanlines {
-      position: fixed; inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,240,255,0.012) 2px, rgba(0,240,255,0.012) 4px);
-      pointer-events: none; z-index: 9999;
-    }
-
-    /* LOADING SCREEN */
-    #loading {
-      position: fixed; inset: 0;
-      background: var(--bg);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      z-index: 9000;
-      transition: opacity 0.4s;
-    }
+    #loading { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9000; transition: opacity 0.4s; }
     #loading.hidden { opacity: 0; pointer-events: none; }
-    .load-logo {
-      font-family: var(--font-display);
-      font-size: 2rem; font-weight: 900;
-      letter-spacing: 4px; margin-bottom: 24px;
-    }
-    .load-bar-wrap {
-      width: 240px; height: 2px;
-      background: rgba(0,240,255,0.1);
-      margin-bottom: 12px;
-    }
-    .load-bar {
-      height: 100%;
-      background: var(--cyan);
-      box-shadow: var(--glow-cyan);
-      width: 0;
-      animation: loadbar 1.2s ease forwards;
-    }
+    .load-logo { font-family: var(--font-display); font-size: 2rem; font-weight: 900; letter-spacing: 4px; margin-bottom: 24px; }
+    .load-bar-wrap { width: 240px; height: 2px; background: rgba(0,240,255,0.1); margin-bottom: 12px; }
+    .load-bar { height: 100%; background: var(--cyan); box-shadow: var(--glow-cyan); width: 0; animation: loadbar 1.2s ease forwards; }
     @keyframes loadbar { to { width: 100%; } }
-    .load-text {
-      font-family: var(--font-mono);
-      font-size: 0.65rem; color: var(--grey);
-      letter-spacing: 2px; text-transform: uppercase;
-    }
+    .load-text { font-family: var(--font-mono); font-size: 0.65rem; color: var(--grey); letter-spacing: 2px; text-transform: uppercase; }
 
-    /* NAV */
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      z-index: 1000;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.85rem 2rem;
-      background: rgba(5,8,16,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(0,240,255,0.12);
-    }
-    .nav-logo {
-      font-family: var(--font-display);
-      font-size: 1.1rem; font-weight: 900; letter-spacing: 2px;
-      text-decoration: none;
-    }
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 2rem; background: rgba(5,8,16,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,240,255,0.12); }
+    .nav-logo { font-family: var(--font-display); font-size: 1.1rem; font-weight: 900; letter-spacing: 2px; text-decoration: none; }
     .logo-aura { color: var(--cyan); text-shadow: var(--glow-cyan); }
     .logo-ai { color: var(--white); }
-
-    .nav-user {
-      display: flex; align-items: center; gap: 16px;
-      font-family: var(--font-mono); font-size: 0.68rem;
-    }
+    .nav-user { display: flex; align-items: center; gap: 16px; font-family: var(--font-mono); font-size: 0.68rem; }
     .nav-user-name { color: var(--cyan); letter-spacing: 1px; }
-    .nav-tier {
-      padding: 3px 10px;
-      border: 1px solid var(--purple);
-      color: var(--purple);
-      font-size: 0.6rem; letter-spacing: 2px;
-      text-transform: uppercase;
-      box-shadow: var(--glow-purple);
-      transition: all 0.3s;
-    }
-    .nav-tier.coach-badge {
-      border: 1px solid #00aaff !important;
-      color: #00aaff !important;
-      box-shadow: 0 0 10px #00aaff, 0 0 30px #00aaff44 !important;
-    }
-    .btn-signout {
-      font-family: var(--font-mono); font-size: 0.62rem;
-      color: var(--grey); background: none;
-      border: 1px solid rgba(74,80,104,0.4);
-      padding: 4px 10px; cursor: pointer;
-      letter-spacing: 1px; text-transform: uppercase;
-      transition: all 0.2s;
-    }
+    .nav-tier { padding: 3px 10px; border: 1px solid var(--purple); color: var(--purple); font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; box-shadow: var(--glow-purple); transition: all 0.3s; }
+    .nav-tier.coach-badge { border: 1px solid #00aaff !important; color: #00aaff !important; box-shadow: 0 0 10px #00aaff, 0 0 30px #00aaff44 !important; }
+    .btn-signout { font-family: var(--font-mono); font-size: 0.62rem; color: var(--grey); background: none; border: 1px solid rgba(74,80,104,0.4); padding: 4px 10px; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; transition: all 0.2s; }
     .btn-signout:hover { color: var(--pink); border-color: var(--pink); }
 
-    /* LAYOUT */
-    .layout {
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      min-height: 100vh;
-      padding-top: 52px;
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      border-right: 1px solid rgba(0,240,255,0.1);
-      padding: 24px 10px;
-      background: rgba(8,13,26,0.6);
-      position: sticky; top: 52px;
-      height: calc(100vh - 52px);
-      display: flex; flex-direction: column; gap: 2px;
-      overflow-y: auto;
-    }
-
-    .sidebar-section {
-      font-family: var(--font-mono); font-size: 0.58rem;
-      color: var(--grey); letter-spacing: 3px;
-      text-transform: uppercase;
-      padding: 14px 12px 6px;
-    }
-
-    .sidebar-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 12px;
-      font-family: var(--font-mono); font-size: 0.68rem;
-      color: var(--grey); cursor: pointer;
-      border: none; background: none; width: 100%;
-      text-align: left; text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.2s;
-      border-left: 2px solid transparent;
-    }
+    .layout { display: grid; grid-template-columns: 200px 1fr; min-height: 100vh; padding-top: 52px; }
+    .sidebar { border-right: 1px solid rgba(0,240,255,0.1); padding: 24px 10px; background: rgba(8,13,26,0.6); position: sticky; top: 52px; height: calc(100vh - 52px); display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .sidebar-section { font-family: var(--font-mono); font-size: 0.58rem; color: var(--grey); letter-spacing: 3px; text-transform: uppercase; padding: 14px 12px 6px; }
+    .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; font-family: var(--font-mono); font-size: 0.68rem; color: var(--grey); cursor: pointer; border: none; background: none; width: 100%; text-align: left; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s; border-left: 2px solid transparent; }
     .sidebar-item:hover { color: var(--cyan); background: rgba(0,240,255,0.04); }
-    .sidebar-item.active {
-      color: var(--cyan); border-left-color: var(--cyan);
-      background: rgba(0,240,255,0.06);
-      text-shadow: 0 0 8px rgba(0,240,255,0.5);
-    }
+    .sidebar-item.active { color: var(--cyan); border-left-color: var(--cyan); background: rgba(0,240,255,0.06); text-shadow: 0 0 8px rgba(0,240,255,0.5); }
     .sidebar-item svg { width: 14px; height: 14px; flex-shrink: 0; }
-
-    .status-indicator {
-      margin-top: auto;
-      padding: 14px 12px;
-      border-top: 1px solid rgba(0,240,255,0.08);
-    }
-    .status-row {
-      display: flex; align-items: center; gap: 8px;
-      font-family: var(--font-mono); font-size: 0.6rem;
-      color: var(--grey); margin-bottom: 6px;
-    }
-    .dot-green {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--green); box-shadow: var(--glow-green);
-      animation: pulse 2s infinite; flex-shrink: 0;
-    }
+    .status-indicator { margin-top: auto; padding: 14px 12px; border-top: 1px solid rgba(0,240,255,0.08); }
+    .status-row { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.6rem; color: var(--grey); margin-bottom: 6px; }
+    .dot-green { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: var(--glow-green); animation: pulse 2s infinite; flex-shrink: 0; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-    /* MAIN CONTENT */
     .main { padding: 28px 28px; overflow-y: auto; }
+    .page-tag { font-family: var(--font-mono); font-size: 0.62rem; color: var(--cyan); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px; opacity: 0.8; }
+    .page-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 900; letter-spacing: 3px; color: var(--white); margin-bottom: 20px; }
 
-    .page-tag {
-      font-family: var(--font-mono); font-size: 0.62rem;
-      color: var(--cyan); letter-spacing: 3px;
-      text-transform: uppercase; margin-bottom: 4px;
-      opacity: 0.8;
-    }
-    .page-title {
-      font-family: var(--font-display); font-size: 1.1rem;
-      font-weight: 900; letter-spacing: 3px;
-      color: var(--white); margin-bottom: 20px;
-    }
+    .section-card { background: rgba(8,13,26,0.8); border: 1px solid rgba(0,240,255,0.1); padding: 20px 22px; margin-bottom: 14px; position: relative; overflow: visible; }
+    .section-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,240,255,0.4), transparent); }
+    .card-title { font-family: var(--font-display); font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; color: var(--cyan); text-transform: uppercase; margin-bottom: 14px; }
 
-    /* CARDS */
-    .section-card {
-      background: rgba(8,13,26,0.8);
-      border: 1px solid rgba(0,240,255,0.1);
-      padding: 20px 22px; margin-bottom: 14px;
-      position: relative;
-      overflow: visible;
-    }
-    .section-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(0,240,255,0.4), transparent);
-    }
-    .card-title {
-      font-family: var(--font-display); font-size: 0.65rem;
-      font-weight: 700; letter-spacing: 2px;
-      color: var(--cyan); text-transform: uppercase;
-      margin-bottom: 14px;
-    }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .stat-card { background: var(--bg-2); border: 1px solid rgba(0,240,255,0.12); padding: 14px 16px; clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
+    .stat-label { font-family: var(--font-mono); font-size: 0.58rem; color: var(--grey); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    .stat-val { font-family: var(--font-display); font-size: 1.6rem; font-weight: 900; color: var(--cyan); text-shadow: var(--glow-cyan); }
 
-    /* STAT CARDS */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px; margin-bottom: 16px;
-    }
-    .stat-card {
-      background: var(--bg-2);
-      border: 1px solid rgba(0,240,255,0.12);
-      padding: 14px 16px;
-      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-    }
-    .stat-label {
-      font-family: var(--font-mono); font-size: 0.58rem;
-      color: var(--grey); letter-spacing: 2px;
-      text-transform: uppercase; margin-bottom: 8px;
-    }
-    .stat-val {
-      font-family: var(--font-display); font-size: 1.6rem;
-      font-weight: 900; color: var(--cyan);
-      text-shadow: var(--glow-cyan);
-    }
-
-    /* BUTTONS */
-    .btn-primary {
-      font-family: var(--font-display); font-size: 0.62rem;
-      font-weight: 700; letter-spacing: 2px;
-      padding: 9px 18px; background: var(--cyan);
-      color: var(--bg); border: none; cursor: pointer;
-      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
-      transition: all 0.2s; text-transform: uppercase;
-    }
+    .btn-primary { font-family: var(--font-display); font-size: 0.62rem; font-weight: 700; letter-spacing: 2px; padding: 9px 18px; background: var(--cyan); color: var(--bg); border: none; cursor: pointer; clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%); transition: all 0.2s; text-transform: uppercase; }
     .btn-primary:hover { background: var(--white); box-shadow: var(--glow-cyan); }
-
-    .btn-secondary {
-      font-family: var(--font-display); font-size: 0.62rem;
-      font-weight: 700; letter-spacing: 2px;
-      padding: 9px 18px; background: transparent;
-      color: var(--cyan); border: 1px solid var(--cyan); cursor: pointer;
-      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
-      transition: all 0.2s; text-transform: uppercase;
-    }
+    .btn-secondary { font-family: var(--font-display); font-size: 0.62rem; font-weight: 700; letter-spacing: 2px; padding: 9px 18px; background: transparent; color: var(--cyan); border: 1px solid var(--cyan); cursor: pointer; clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%); transition: all 0.2s; text-transform: uppercase; }
     .btn-secondary:hover { background: rgba(0,240,255,0.08); box-shadow: var(--glow-cyan); }
-
-    .btn-danger {
-      font-family: var(--font-display); font-size: 0.62rem;
-      font-weight: 700; letter-spacing: 2px;
-      padding: 9px 18px; background: transparent;
-      color: var(--pink); border: 1px solid var(--pink); cursor: pointer;
-      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
-      transition: all 0.2s; text-transform: uppercase;
-    }
+    .btn-danger { font-family: var(--font-display); font-size: 0.62rem; font-weight: 700; letter-spacing: 2px; padding: 9px 18px; background: transparent; color: var(--pink); border: 1px solid var(--pink); cursor: pointer; clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%); transition: all 0.2s; text-transform: uppercase; }
     .btn-danger:hover { background: rgba(255,45,120,0.08); box-shadow: var(--glow-pink); }
+    .btn-approve { font-family: var(--font-display); font-size: 0.58rem; font-weight: 700; letter-spacing: 2px; padding: 6px 14px; background: transparent; color: var(--green); border: 1px solid var(--green); cursor: pointer; clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%); transition: all 0.2s; text-transform: uppercase; }
+    .btn-approve:hover { background: rgba(0,255,136,0.1); box-shadow: var(--glow-green); }
+    .btn-deny { font-family: var(--font-display); font-size: 0.58rem; font-weight: 700; letter-spacing: 2px; padding: 6px 14px; background: transparent; color: var(--pink); border: 1px solid var(--pink); cursor: pointer; clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%); transition: all 0.2s; text-transform: uppercase; }
+    .btn-deny:hover { background: rgba(255,45,120,0.08); box-shadow: var(--glow-pink); }
 
-    /* BADGES */
-    .badge {
-      font-family: var(--font-mono); font-size: 0.58rem;
-      letter-spacing: 2px; padding: 3px 10px; text-transform: uppercase;
-      display: inline-block;
-    }
+    .badge { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 2px; padding: 3px 10px; text-transform: uppercase; display: inline-block; }
     .badge-active { color: var(--green); border: 1px solid var(--green); box-shadow: var(--glow-green); }
     .badge-live { color: var(--pink); border: 1px solid var(--pink); box-shadow: var(--glow-pink); }
     .badge-pro { color: var(--purple); border: 1px solid var(--purple); box-shadow: var(--glow-purple); }
     .badge-free { color: var(--grey); border: 1px solid var(--grey); }
     .badge-warning { color: var(--yellow); border: 1px solid var(--yellow); }
+    .badge-pending { color: var(--yellow); border: 1px solid var(--yellow); }
+    .badge-approved { color: var(--green); border: 1px solid var(--green); box-shadow: var(--glow-green); }
+    .badge-denied { color: var(--pink); border: 1px solid var(--pink); }
 
-    /* LIST ROWS */
-    .list-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(0,240,255,0.06);
-      font-family: var(--font-mono); font-size: 0.7rem;
-    }
+    .list-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0,240,255,0.06); font-family: var(--font-mono); font-size: 0.7rem; }
     .list-row:last-child { border-bottom: none; }
     .list-label { color: var(--grey); letter-spacing: 1px; }
     .list-val { color: var(--cyan); }
 
-    /* TOGGLES */
-    .toggle-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 11px 0; border-bottom: 1px solid rgba(0,240,255,0.06);
-    }
+    .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid rgba(0,240,255,0.06); }
     .toggle-row:last-child { border-bottom: none; }
-    .toggle-label {
-      font-family: var(--font-mono); font-size: 0.7rem;
-      color: var(--grey); letter-spacing: 1px; text-transform: uppercase;
-    }
+    .toggle-label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--grey); letter-spacing: 1px; text-transform: uppercase; }
     .toggle { position: relative; width: 38px; height: 20px; display: inline-block; }
     .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
-    .t-track {
-      position: absolute; inset: 0;
-      background: rgba(0,240,255,0.08);
-      border: 1px solid rgba(0,240,255,0.2);
-      cursor: pointer; transition: all 0.2s;
-    }
-    .toggle input:checked + .t-track {
-      background: rgba(0,240,255,0.15);
-      border-color: var(--cyan);
-      box-shadow: var(--glow-cyan);
-    }
-    .t-thumb {
-      position: absolute; width: 12px; height: 12px;
-      background: var(--grey); top: 3px; left: 3px;
-      transition: all 0.2s; pointer-events: none;
-    }
-    .toggle input:checked ~ .t-thumb {
-      transform: translateX(18px);
-      background: var(--cyan); box-shadow: var(--glow-cyan);
-    }
+    .t-track { position: absolute; inset: 0; background: rgba(0,240,255,0.08); border: 1px solid rgba(0,240,255,0.2); cursor: pointer; transition: all 0.2s; }
+    .toggle input:checked + .t-track { background: rgba(0,240,255,0.15); border-color: var(--cyan); box-shadow: var(--glow-cyan); }
+    .t-thumb { position: absolute; width: 12px; height: 12px; background: var(--grey); top: 3px; left: 3px; transition: all 0.2s; pointer-events: none; }
+    .toggle input:checked ~ .t-thumb { transform: translateX(18px); background: var(--cyan); box-shadow: var(--glow-cyan); }
 
-    /* INPUTS */
-    .cyber-input {
-      width: 100%; font-family: var(--font-mono); font-size: 0.72rem;
-      padding: 9px 12px; background: rgba(0,240,255,0.03);
-      border: 1px solid rgba(0,240,255,0.18); color: var(--cyan);
-      letter-spacing: 1px; outline: none; transition: border-color 0.2s;
-      font-size: 0.72rem;
-    }
+    .cyber-input { width: 100%; font-family: var(--font-mono); font-size: 0.72rem; padding: 9px 12px; background: rgba(0,240,255,0.03); border: 1px solid rgba(0,240,255,0.18); color: var(--cyan); letter-spacing: 1px; outline: none; transition: border-color 0.2s; }
     .cyber-input:focus { border-color: var(--cyan); box-shadow: var(--glow-cyan); }
     .cyber-input::placeholder { color: var(--grey); }
     textarea.cyber-input { resize: vertical; line-height: 1.7; }
-
-    /* INPUT LABEL */
-    .field-label {
-      font-family: var(--font-mono); font-size: 0.6rem;
-      color: var(--grey); letter-spacing: 2px;
-      text-transform: uppercase; margin-bottom: 6px; margin-top: 14px;
-      display: block;
-    }
+    .field-label { font-family: var(--font-mono); font-size: 0.6rem; color: var(--grey); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; margin-top: 14px; display: block; }
     .field-label:first-child { margin-top: 0; }
 
-    /* PLATFORM ROWS */
-    .platform-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 14px; border: 1px solid rgba(0,240,255,0.08);
-      margin-bottom: 8px; background: rgba(0,240,255,0.02);
-      transition: all 0.2s; cursor: default;
-    }
+    .platform-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border: 1px solid rgba(0,240,255,0.08); margin-bottom: 8px; background: rgba(0,240,255,0.02); transition: all 0.2s; cursor: default; }
     .platform-row:hover { border-color: rgba(0,240,255,0.25); background: rgba(0,240,255,0.04); }
-    .platform-name {
-      font-family: var(--font-display); font-size: 0.68rem;
-      font-weight: 700; letter-spacing: 2px; color: var(--white);
-    }
-    .platform-sub {
-      font-family: var(--font-mono); font-size: 0.6rem;
-      color: var(--grey); margin-top: 3px;
-    }
+    .platform-name { font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; color: var(--white); }
+    .platform-sub { font-family: var(--font-mono); font-size: 0.6rem; color: var(--grey); margin-top: 3px; }
 
-    /* ACTIVITY */
-    .activity-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 9px 0; border-bottom: 1px solid rgba(0,240,255,0.05);
-      font-family: var(--font-mono); font-size: 0.68rem;
-    }
+    .activity-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid rgba(0,240,255,0.05); font-family: var(--font-mono); font-size: 0.68rem; }
     .activity-row:last-child { border-bottom: none; }
     .activity-text { color: rgba(232,234,240,0.7); }
     .activity-time { color: var(--grey); flex-shrink: 0; margin-left: 12px; }
 
-    /* PLAN CARDS */
-    .plans-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-    .plan-card {
-      border: 1px solid rgba(0,240,255,0.12);
-      padding: 20px; background: var(--bg-2);
-      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
-      transition: all 0.2s; position: relative;
-    }
+    .plans-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .plan-card { border: 1px solid rgba(0,240,255,0.12); padding: 20px; background: var(--bg-2); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px)); transition: all 0.2s; position: relative; }
     .plan-card:hover { transform: translateY(-2px); }
-    .plan-card.current {
-      border-color: var(--cyan);
-      box-shadow: var(--glow-cyan);
-      background: rgba(0,240,255,0.03);
-    }
-    .plan-name {
-      font-family: var(--font-mono); font-size: 0.6rem;
-      letter-spacing: 3px; color: var(--grey);
-      text-transform: uppercase; margin-bottom: 10px;
-    }
-    .plan-price {
-      font-family: var(--font-display); font-size: 1.8rem;
-      font-weight: 900; color: var(--cyan);
-      text-shadow: var(--glow-cyan); margin-bottom: 4px;
-    }
+    .plan-card.current { border-color: var(--cyan); box-shadow: var(--glow-cyan); background: rgba(0,240,255,0.03); }
+    .plan-name { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 3px; color: var(--grey); text-transform: uppercase; margin-bottom: 10px; }
+    .plan-price { font-family: var(--font-display); font-size: 1.8rem; font-weight: 900; color: var(--cyan); text-shadow: var(--glow-cyan); margin-bottom: 4px; }
     .plan-price span { font-size: 0.75rem; color: var(--grey); font-weight: 400; }
-    .plan-feature {
-      font-family: var(--font-mono); font-size: 0.65rem;
-      color: rgba(232,234,240,0.65); line-height: 2;
-    }
+    .plan-feature { font-family: var(--font-mono); font-size: 0.65rem; color: rgba(232,234,240,0.65); line-height: 2; }
     .plan-feature.off { opacity: 0.3; }
 
-    .divider {
-      width: 100%; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(0,240,255,0.2), transparent);
-      margin: 14px 0;
-    }
-
-    /* SAVE FEEDBACK */
-    .save-msg {
-      font-family: var(--font-mono); font-size: 0.65rem;
-      color: var(--green); letter-spacing: 1px;
-      margin-top: 10px; display: none;
-    }
-
-    /* TABS */
+    .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,240,255,0.2), transparent); margin: 14px 0; }
+    .save-msg { font-family: var(--font-mono); font-size: 0.65rem; color: var(--green); letter-spacing: 1px; margin-top: 10px; display: none; }
     .tab { display: none; }
     .tab.active { display: block; animation: fadeUp 0.3s both; }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* PAYWALL OVERLAY */
-    #paywall-overlay {
-      position: fixed; inset: 0;
-      background: rgba(5,8,16,0.96);
-      z-index: 500;
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column; text-align: center;
-    }
+    #paywall-overlay { position: fixed; inset: 0; background: rgba(5,8,16,0.96); z-index: 500; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; }
     #paywall-overlay.hidden { display: none; }
 
-    /* BOTTOM STATUS BAR */
-    .status-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      padding: 6px 2rem;
-      background: rgba(5,8,16,0.9);
-      border-top: 1px solid rgba(0,240,255,0.08);
-      display: flex; align-items: center; justify-content: space-between;
-      font-family: var(--font-mono); font-size: 0.58rem;
-      color: var(--grey); letter-spacing: 1px; z-index: 100;
-    }
+    .status-bar { position: fixed; bottom: 0; left: 0; right: 0; padding: 6px 2rem; background: rgba(5,8,16,0.9); border-top: 1px solid rgba(0,240,255,0.08); display: flex; align-items: center; justify-content: space-between; font-family: var(--font-mono); font-size: 0.58rem; color: var(--grey); letter-spacing: 1px; z-index: 100; }
     .s-online { display: flex; align-items: center; gap: 6px; color: var(--green); }
 
-    /* CUSTOM SEARCHABLE DROPDOWN */
+    /* Application card */
+    .app-card { background: rgba(8,13,26,0.9); border: 1px solid rgba(0,240,255,0.12); padding: 16px; margin-bottom: 10px; position: relative; }
+    .app-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(0,240,255,0.3),transparent); }
+    .app-card-name { font-family:var(--font-display); font-size:0.7rem; font-weight:700; color:var(--white); letter-spacing:2px; }
+    .app-card-meta { font-family:var(--font-mono); font-size:0.6rem; color:var(--grey); margin-top:3px; margin-bottom:10px; }
+    .app-card-bio { font-family:var(--font-mono); font-size:0.62rem; color:rgba(232,234,240,0.6); line-height:1.7; margin-bottom:8px; }
+    .app-card-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+
+    /* Delegate tag */
+    .delegate-tag { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border:1px solid rgba(0,240,255,0.2); background:rgba(0,240,255,0.04); font-family:var(--font-mono); font-size:0.62rem; color:var(--cyan); margin:4px; }
+    .delegate-tag button { background:none; border:none; color:var(--pink); cursor:pointer; font-size:12px; padding:0 2px; }
+
+    /* Custom dropdown */
     .cd-wrap{position:relative;width:100%}
     .cd-selected{width:100%;font-family:var(--font-mono);font-size:0.72rem;padding:9px 32px 9px 12px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.18);color:var(--cyan);letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color 0.2s;user-select:none}
     .cd-selected:hover{border-color:var(--cyan)}
@@ -607,29 +242,19 @@
 
 <!-- LOADING -->
 <div id="loading">
-  <div class="load-logo">
-    <span style="color:var(--cyan);text-shadow:var(--glow-cyan)">AURA</span><span style="color:var(--white)">AI</span>
-  </div>
+  <div class="load-logo"><span style="color:var(--cyan);text-shadow:var(--glow-cyan)">AURA</span><span style="color:var(--white)">AI</span></div>
   <div class="load-bar-wrap"><div class="load-bar"></div></div>
   <p class="load-text">Authenticating session...</p>
 </div>
 
-<!-- PAYWALL (shown if user has no access) -->
+<!-- PAYWALL -->
 <div id="paywall-overlay" class="hidden">
   <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--cyan);letter-spacing:3px;margin-bottom:16px">// ACCESS DENIED</p>
-  <h2 style="font-family:var(--font-display);font-size:1.8rem;font-weight:900;letter-spacing:4px;margin-bottom:8px">
-    <span style="color:var(--cyan);text-shadow:var(--glow-cyan)">UPGRADE</span> REQUIRED
-  </h2>
+  <h2 style="font-family:var(--font-display);font-size:1.8rem;font-weight:900;letter-spacing:4px;margin-bottom:8px"><span style="color:var(--cyan);text-shadow:var(--glow-cyan)">UPGRADE</span> REQUIRED</h2>
   <div style="width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:16px auto"></div>
-  <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--grey);max-width:380px;line-height:1.8;margin-bottom:28px">
-    Your account does not have an active Pro subscription. Unlock the full dashboard to configure AuraAI for your server.
-  </p>
-  <a href="/pricing.html" style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:2px;padding:12px 28px;background:var(--cyan);color:var(--bg);text-decoration:none;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)">
-    View Plans
-  </a>
-  <button onclick="signOut()" style="margin-top:14px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);background:none;border:none;cursor:pointer;letter-spacing:1px;text-decoration:underline">
-    Sign out
-  </button>
+  <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--grey);max-width:380px;line-height:1.8;margin-bottom:28px">Your account does not have an active Pro subscription. Unlock the full dashboard to configure AuraAI for your server.</p>
+  <a href="/pricing.html" style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:2px;padding:12px 28px;background:var(--cyan);color:var(--bg);text-decoration:none;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)">View Plans</a>
+  <button onclick="signOut()" style="margin-top:14px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);background:none;border:none;cursor:pointer;letter-spacing:1px;text-decoration:underline">Sign out</button>
 </div>
 
 <!-- NAV -->
@@ -646,9 +271,7 @@
 <div class="layout">
   <aside class="sidebar">
     <div style="padding:14px 12px 10px;border-bottom:1px solid rgba(0,240,255,0.08);margin-bottom:8px">
-      <div style="font-family:var(--font-display);font-size:0.8rem;font-weight:900;letter-spacing:2px">
-        <span style="color:var(--cyan);text-shadow:var(--glow-cyan)">AURA</span><span style="color:var(--white)">AI</span>
-      </div>
+      <div style="font-family:var(--font-display);font-size:0.8rem;font-weight:900;letter-spacing:2px"><span style="color:var(--cyan);text-shadow:var(--glow-cyan)">AURA</span><span style="color:var(--white)">AI</span></div>
       <div style="margin-top:8px">
         <select id="server-select" class="cyber-input" style="font-size:0.62rem;padding:6px 8px;cursor:pointer" onchange="onServerChange(this.value)">
           <option value="">— Select server —</option>
@@ -675,8 +298,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       Social alerts
     </button>
-
-    <button class="sidebar-item" onclick="setTab('coaching', this)">
+    <button class="sidebar-item" onclick="setTab('coaching', this);loadCoachingTab()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       Coaching
     </button>
@@ -738,16 +360,11 @@
       <p class="page-title">BOT CONFIG</p>
       <div id="bot-config-server-warning" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid rgba(255,45,120,0.5);background:rgba(255,45,120,0.07);box-shadow:0 0 12px rgba(255,45,120,0.15);margin-bottom:14px;transition:all 0.4s">
         <span id="bot-warning-icon" style="font-size:18px;flex-shrink:0">⚠️</span>
-        <p id="bot-warning-text" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--pink);letter-spacing:0.5px;line-height:1.7;text-shadow:0 0 8px rgba(255,45,120,0.5)">
-          No server selected — select your Discord server from the sidebar dropdown before editing any settings.
-        </p>
+        <p id="bot-warning-text" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--pink);letter-spacing:0.5px;line-height:1.7;text-shadow:0 0 8px rgba(255,45,120,0.5)">No server selected — select your Discord server from the sidebar dropdown before editing any settings.</p>
       </div>
       <div class="section-card">
         <p class="card-title">// channel bindings</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          Enter the Discord channel ID where AuraAI should post tournament updates for each game.<br>
-          To get a channel ID: right-click any channel in Discord → <span style="color:var(--cyan)">Copy Channel ID</span> (Developer Mode must be on).
-        </p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">Enter the Discord channel ID where AuraAI should post tournament updates for each game.<br>To get a channel ID: right-click any channel in Discord → <span style="color:var(--cyan)">Copy Channel ID</span> (Developer Mode must be on).</p>
         <label class="field-label">Overwatch tournament channel ID</label>
         <input class="cyber-input" type="text" id="ow-channel" placeholder="Paste your Overwatch channel ID here">
         <label class="field-label">Marvel Rivals tournament channel ID</label>
@@ -762,10 +379,7 @@
       </div>
       <div class="section-card">
         <p class="card-title">// role pings</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          Enter the Discord role ID to ping when a tournament is announced for each game.<br>
-          To get a role ID: Server Settings → Roles → right-click the role → <span style="color:var(--cyan)">Copy Role ID</span> (Developer Mode must be on).
-        </p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">Enter the Discord role ID to ping when a tournament is announced for each game.<br>To get a role ID: Server Settings → Roles → right-click the role → <span style="color:var(--cyan)">Copy Role ID</span> (Developer Mode must be on).</p>
         <label class="field-label">Overwatch role ID</label>
         <input class="cyber-input" type="text" id="ow-role" placeholder="Paste your Overwatch role ID here">
         <label class="field-label">Marvel Rivals role ID</label>
@@ -790,22 +404,10 @@
       </div>
       <div class="section-card">
         <p class="card-title">// feature toggles</p>
-        <div class="toggle-row">
-          <span class="toggle-label">BattleTag auto-lookup</span>
-          <label class="toggle"><input type="checkbox" checked id="toggle-battletag"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div class="toggle-row">
-          <span class="toggle-label">AI Tournament Director</span>
-          <label class="toggle"><input type="checkbox" checked id="toggle-td"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div class="toggle-row">
-          <span class="toggle-label">Scrim scheduling</span>
-          <label class="toggle"><input type="checkbox" id="toggle-scrims"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div class="toggle-row">
-          <span class="toggle-label">Coaching requests</span>
-          <label class="toggle"><input type="checkbox" checked id="toggle-coaching"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
+        <div class="toggle-row"><span class="toggle-label">BattleTag auto-lookup</span><label class="toggle"><input type="checkbox" checked id="toggle-battletag"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <div class="toggle-row"><span class="toggle-label">AI Tournament Director</span><label class="toggle"><input type="checkbox" checked id="toggle-td"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <div class="toggle-row"><span class="toggle-label">Scrim scheduling</span><label class="toggle"><input type="checkbox" id="toggle-scrims"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <div class="toggle-row"><span class="toggle-label">Coaching requests</span><label class="toggle"><input type="checkbox" checked id="toggle-coaching"><div class="t-track"></div><div class="t-thumb"></div></label></div>
         <div style="margin-top:14px">
           <button class="btn-primary" onclick="saveToggles()">Save toggles</button>
           <p class="save-msg" id="toggles-saved">// Settings saved successfully</p>
@@ -817,8 +419,6 @@
     <div class="tab" id="tab-tournaments">
       <p class="page-tag">// bracket management</p>
       <p class="page-title">TOURNAMENTS</p>
-
-      <!-- NEW TOURNAMENT FORM (hidden by default) -->
       <div class="section-card" id="new-tournament-form" style="display:none;border-color:rgba(0,240,255,0.3)">
         <p class="card-title" style="color:var(--cyan)">// create new tournament</p>
         <label class="field-label">Tournament name</label>
@@ -839,7 +439,7 @@
         <label class="field-label">Max players</label>
         <input class="cyber-input" type="number" id="new-t-max" value="16" min="4" max="256">
         <label class="field-label">Ruleset</label>
-        <textarea class="cyber-input" id="new-t-ruleset" rows="6" placeholder="Enter your tournament rules here...&#10;&#10;e.g.&#10;- Best of 3 matches&#10;- No hero stacking&#10;- Maps: Lijiang Tower, King's Row, Havana&#10;- Check-in required 15 mins before match"></textarea>
+        <textarea class="cyber-input" id="new-t-ruleset" rows="6" placeholder="Enter your tournament rules here..."></textarea>
         <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn-primary" onclick="createTournament()">Create tournament</button>
           <button class="btn-secondary" onclick="document.getElementById('new-tournament-form').style.display='none'">Cancel</button>
@@ -847,17 +447,13 @@
         <p class="save-msg" id="tournament-created">// Tournament created successfully</p>
         <p class="save-msg" id="tournament-error" style="color:var(--pink)"></p>
       </div>
-
       <div class="section-card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
           <p class="card-title" style="margin-bottom:0">// active brackets</p>
           <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px" onclick="document.getElementById('new-tournament-form').style.display='block';document.getElementById('new-t-name').focus()">+ New tournament</button>
         </div>
-        <div id="tournaments-list">
-          <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading tournaments...</p>
-        </div>
+        <div id="tournaments-list"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading tournaments...</p></div>
       </div>
-
       <div class="section-card">
         <p class="card-title">// default settings</p>
         <label class="field-label">Default tournament game</label>
@@ -879,14 +475,10 @@
     <div class="tab" id="tab-alerts">
       <p class="page-tag">// live monitoring</p>
       <p class="page-title">SOCIAL ALERTS</p>
-
       <div class="section-card">
         <p class="card-title">// active alerts</p>
-        <div id="alerts-list">
-          <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading alerts...</p>
-        </div>
+        <div id="alerts-list"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading alerts...</p></div>
       </div>
-
       <div class="section-card">
         <p class="card-title">// add new alert</p>
         <label class="field-label">Platform</label>
@@ -896,13 +488,11 @@
           <option value="kick">Kick</option>
           <option value="tiktok">TikTok</option>
         </select>
-
         <label class="field-label">Search for streamer / channel</label>
         <div style="position:relative">
           <input class="cyber-input" type="text" id="alert-search" placeholder="Type a name to search..." oninput="onAlertSearch(this.value)" autocomplete="off">
           <div id="search-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:#080d1a;border:1px solid rgba(0,240,255,0.2);border-top:none;z-index:100;max-height:240px;overflow-y:auto"></div>
         </div>
-
         <div id="selected-streamer" style="display:none;margin-top:10px;padding:10px 12px;border:1px solid rgba(0,240,255,0.3);background:rgba(0,240,255,0.04)">
           <div style="display:flex;align-items:center;gap:10px">
             <img id="selected-avatar" src="" style="width:32px;height:32px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'">
@@ -913,18 +503,13 @@
             <button onclick="clearSelectedStreamer()" style="margin-left:auto;background:none;border:none;color:var(--grey);cursor:pointer;font-size:16px">✕</button>
           </div>
         </div>
-
         <div id="manual-entry" style="display:none">
           <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);margin-top:8px">Search not available for this platform — enter username manually</p>
           <input class="cyber-input" type="text" id="alert-manual" placeholder="Enter exact username" style="margin-top:6px">
         </div>
-
         <label class="field-label">Alert channel</label>
-        <select class="cyber-input" id="alert-channel" style="cursor:pointer">
-          <option value="">— Select a server first —</option>
-        </select>
+        <select class="cyber-input" id="alert-channel" style="cursor:pointer"><option value="">— Select a server first —</option></select>
         <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px">Select your server above to load channels</p>
-
         <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn-primary" onclick="addAlert()">Add alert</button>
         </div>
@@ -933,31 +518,107 @@
       </div>
     </div>
 
-    <!-- COACHING -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         COACHING TAB — full tab with onboarding flow integrated
+         ═══════════════════════════════════════════════════════════════ -->
     <div class="tab" id="tab-coaching">
       <p class="page-tag">// training management</p>
       <p class="page-title">COACHING</p>
 
-      <!-- SCHEDULED SESSIONS — real data from Supabase -->
-      <div class="section-card">
-        <p class="card-title">// scheduled sessions</p>
-        <div id="coaching-sessions-list">
-          <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading sessions...</p>
+      <!-- ── APPLY TO BE A COACH (shown to non-coaches only) ── -->
+      <div class="section-card" id="coach-apply-section" style="display:none;border-color:rgba(0,170,255,0.25)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+          <p class="card-title" style="margin-bottom:0;color:#00aaff">// become a coach</p>
+          <span id="my-application-status" style="display:none"></span>
+        </div>
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:1.9;margin-bottom:16px">
+          Interested in coaching players on AuraAI? Submit an application below. You'll receive a Discord DM when your application is reviewed.
+        </p>
+
+        <!-- Application status banner -->
+        <div id="existing-application-banner" style="display:none;padding:12px 16px;border:1px solid rgba(255,230,0,0.3);background:rgba(255,230,0,0.05);margin-bottom:16px">
+          <p id="existing-application-text" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--yellow);letter-spacing:0.5px"></p>
+        </div>
+
+        <!-- Application form -->
+        <div id="coach-apply-form">
+          <label class="field-label">Display name</label>
+          <input class="cyber-input" type="text" id="apply-name" placeholder="e.g. CoachAura">
+          <label class="field-label">Game you coach</label>
+          <select class="cyber-input" id="apply-game" style="cursor:pointer">
+            <option value="Overwatch 2">🎮 Overwatch 2</option>
+            <option value="Marvel Rivals">⚔️ Marvel Rivals</option>
+            <option value="Destiny 2">🌌 Destiny 2</option>
+          </select>
+          <label class="field-label">Bio <span style="color:var(--grey)">(background & experience)</span></label>
+          <textarea class="cyber-input" id="apply-bio" rows="3" placeholder="Tell us about your rank, experience, and why you'd make a great coach..."></textarea>
+          <label class="field-label">Strengths / specialties</label>
+          <textarea class="cyber-input" id="apply-strengths" rows="2" placeholder="e.g. Support positioning, mechanical aim, team coordination..."></textarea>
+          <label class="field-label">Logo / avatar URL <span style="color:var(--grey)">(optional)</span></label>
+          <input class="cyber-input" type="text" id="apply-logo" placeholder="https://... (direct image link)">
+          <label class="field-label">CashApp URL <span style="color:var(--grey)">(optional)</span></label>
+          <input class="cyber-input" type="text" id="apply-cashapp" placeholder="https://cash.app/$username">
+          <label class="field-label">Stripe payment URL <span style="color:var(--grey)">(optional)</span></label>
+          <input class="cyber-input" type="text" id="apply-stripe" placeholder="https://buy.stripe.com/...">
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn-primary" onclick="submitCoachApplication()" style="background:#00aaff;border-color:#00aaff">Submit application</button>
+          </div>
+          <p class="save-msg" id="apply-saved" style="color:#00aaff">// Application submitted — we'll DM you on Discord when reviewed!</p>
+          <p class="save-msg" id="apply-error" style="color:var(--pink)"></p>
         </div>
       </div>
 
-      <!-- COACH ROSTER -->
+      <!-- ── PENDING APPLICATIONS (owner + delegates only) ── -->
+      <div class="section-card" id="applications-review-section" style="display:none;border-color:rgba(255,230,0,0.2)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+          <p class="card-title" style="margin-bottom:0;color:var(--yellow)">// coach applications</p>
+          <span id="pending-app-count" class="badge badge-warning">0 pending</span>
+        </div>
+        <div id="applications-list">
+          <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading applications...</p>
+        </div>
+      </div>
+
+      <!-- ── MANAGE DELEGATES (owner only) ── -->
+      <div class="section-card" id="delegates-section" style="display:none;border-color:rgba(180,79,255,0.2)">
+        <p class="card-title" style="color:var(--purple)">// approval delegates</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px">
+          Delegates can approve or deny coach applications on your behalf. You can revoke access at any time.
+        </p>
+        <div id="delegates-list" style="margin-bottom:14px">
+          <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading delegates...</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+          <div style="flex:1;min-width:200px">
+            <label class="field-label" style="margin-top:0">Discord ID to add as delegate</label>
+            <input class="cyber-input" type="text" id="delegate-id" placeholder="e.g. 123456789012345678">
+          </div>
+          <div style="flex:1;min-width:160px">
+            <label class="field-label" style="margin-top:0">Discord tag (for display)</label>
+            <input class="cyber-input" type="text" id="delegate-tag" placeholder="e.g. username#0000">
+          </div>
+          <button class="btn-secondary" onclick="addDelegate()" style="flex-shrink:0;margin-bottom:0">Add delegate</button>
+        </div>
+        <p class="save-msg" id="delegate-saved">// Delegate added</p>
+        <p class="save-msg" id="delegate-error" style="color:var(--pink)"></p>
+      </div>
+
+      <!-- ── SCHEDULED SESSIONS ── -->
+      <div class="section-card">
+        <p class="card-title">// scheduled sessions</p>
+        <div id="coaching-sessions-list"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading sessions...</p></div>
+      </div>
+
+      <!-- ── COACH ROSTER ── -->
       <div class="section-card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
           <p class="card-title" style="margin-bottom:0">// coaching roster</p>
-          <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px" onclick="document.getElementById('add-coach-form').style.display='block';document.getElementById('coach-name').focus()">+ Add coach</button>
+          <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px" id="add-coach-btn" onclick="document.getElementById('add-coach-form').style.display='block';document.getElementById('coach-name').focus()">+ Add coach</button>
         </div>
-        <div id="coaches-list">
-          <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No coaches added yet. Add one below.</p>
-        </div>
+        <div id="coaches-list"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No coaches added yet. Add one below.</p></div>
       </div>
 
-      <!-- ADD COACH FORM -->
+      <!-- ── ADD COACH FORM (admin direct add) ── -->
       <div class="section-card" id="add-coach-form" style="display:none;border-color:rgba(0,240,255,0.3)">
         <p class="card-title" style="color:var(--cyan)">// add new coach</p>
         <label class="field-label">Coach display name</label>
@@ -975,7 +636,7 @@
         <label class="field-label">Bio</label>
         <textarea class="cyber-input" id="coach-bio" rows="3" placeholder="Brief background and coaching experience..."></textarea>
         <label class="field-label">Strengths / specialties</label>
-        <textarea class="cyber-input" id="coach-strengths" rows="3" placeholder="e.g. Support positioning, team coordination, mechanical aim training..."></textarea>
+        <textarea class="cyber-input" id="coach-strengths" rows="3" placeholder="e.g. Support positioning, team coordination..."></textarea>
         <label class="field-label">CashApp URL (optional)</label>
         <input class="cyber-input" type="text" id="coach-cashapp" placeholder="https://cash.app/$username">
         <label class="field-label">Stripe payment URL (optional)</label>
@@ -988,38 +649,28 @@
         <p class="save-msg" id="coach-error" style="color:var(--pink)"></p>
       </div>
 
-      <!-- PAYMENT DISCLAIMER -->
+      <!-- ── PAYMENT DISCLAIMER ── -->
       <div class="section-card" style="border-color:rgba(255,230,0,0.2)">
         <p class="card-title" style="color:var(--yellow)">// payment & disclaimer</p>
-        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:1.9;margin-bottom:18px;letter-spacing:0.5px">
-          ⚠️ <span style="color:var(--yellow)">Coaching sessions will not begin until payment has been made.</span> Please complete payment before your scheduled session using one of the methods below.
-        </p>
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:1.9;margin-bottom:18px;letter-spacing:0.5px">⚠️ <span style="color:var(--yellow)">Coaching sessions will not begin until payment has been made.</span> Please complete payment before your scheduled session using one of the methods below.</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a id="cashapp-link" href="#" target="_blank"
-            style="display:flex;align-items:center;gap:10px;padding:10px 18px;border:1px solid #00d632;background:rgba(0,214,50,0.05);text-decoration:none;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)"
-            onmouseover="this.style.background='rgba(0,214,50,0.12)';this.style.boxShadow='0 0 10px #00d63244'"
-            onmouseout="this.style.background='rgba(0,214,50,0.05)';this.style.boxShadow='none'">
+          <a id="cashapp-link" href="#" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 18px;border:1px solid #00d632;background:rgba(0,214,50,0.05);text-decoration:none;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)" onmouseover="this.style.background='rgba(0,214,50,0.12)';this.style.boxShadow='0 0 10px #00d63244'" onmouseout="this.style.background='rgba(0,214,50,0.05)';this.style.boxShadow='none'">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#00d632"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm4.5 8.25h-1.875c-.414 0-.75.336-.75.75v1.5h2.625l-.375 2.25H13.875V18h-2.25v-5.25H9.75V10.5h1.875V9c0-1.657 1.343-3 3-3H16.5v2.25z"/></svg>
             <span style="font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;color:#00d632">CASHAPP</span>
           </a>
-          <a id="stripe-link" href="#" target="_blank"
-            style="display:flex;align-items:center;gap:10px;padding:10px 18px;border:1px solid #635bff;background:rgba(99,91,255,0.05);text-decoration:none;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)"
-            onmouseover="this.style.background='rgba(99,91,255,0.12)';this.style.boxShadow='0 0 10px #635bff44'"
-            onmouseout="this.style.background='rgba(99,91,255,0.05)';this.style.boxShadow='none'">
+          <a id="stripe-link" href="#" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 18px;border:1px solid #635bff;background:rgba(99,91,255,0.05);text-decoration:none;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)" onmouseover="this.style.background='rgba(99,91,255,0.12)';this.style.boxShadow='0 0 10px #635bff44'" onmouseout="this.style.background='rgba(99,91,255,0.05)';this.style.boxShadow='none'">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#635bff"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.594-7.305h.003z"/></svg>
             <span style="font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;color:#635bff">STRIPE</span>
           </a>
         </div>
       </div>
 
-      <!-- COACHING SETTINGS -->
+      <!-- ── COACHING SETTINGS ── -->
       <div class="section-card">
         <p class="card-title">// coaching settings</p>
         <div id="coaching-server-warning" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid rgba(255,45,120,0.5);background:rgba(255,45,120,0.07);box-shadow:0 0 12px rgba(255,45,120,0.15);margin-bottom:14px;transition:all 0.4s">
           <span id="coaching-warning-icon" style="font-size:18px;flex-shrink:0">⚠️</span>
-          <p id="coaching-warning-text" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--pink);letter-spacing:0.5px;line-height:1.7;text-shadow:0 0 8px rgba(255,45,120,0.5)">
-            No server selected — select your Discord server from the sidebar dropdown before editing coaching settings.
-          </p>
+          <p id="coaching-warning-text" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--pink);letter-spacing:0.5px;line-height:1.7;text-shadow:0 0 8px rgba(255,45,120,0.5)">No server selected — select your Discord server from the sidebar dropdown before editing coaching settings.</p>
         </div>
         <label class="field-label">Coaching channel ID <span style="color:var(--pink)">*required</span></label>
         <input class="cyber-input" type="text" id="coaching-channel" placeholder="Paste your coaching channel ID here">
@@ -1028,14 +679,8 @@
         <input class="cyber-input" type="text" id="coaching-log-channel" placeholder="Paste your coaching log channel ID here">
         <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px;margin-bottom:14px">Full session transcripts will be posted here when a session ends. Required to enable coaching.</p>
         <div class="divider"></div>
-        <div class="toggle-row">
-          <span class="toggle-label">Allow coaching requests</span>
-          <label class="toggle"><input type="checkbox" checked id="toggle-coaching-allow"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div class="toggle-row">
-          <span class="toggle-label">Auto-confirm requests</span>
-          <label class="toggle"><input type="checkbox" id="toggle-coaching-auto"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
+        <div class="toggle-row"><span class="toggle-label">Allow coaching requests</span><label class="toggle"><input type="checkbox" checked id="toggle-coaching-allow"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <div class="toggle-row"><span class="toggle-label">Auto-confirm requests</span><label class="toggle"><input type="checkbox" id="toggle-coaching-auto"><div class="t-track"></div><div class="t-thumb"></div></label></div>
         <label class="field-label" style="margin-top:14px">Max sessions per week</label>
         <input class="cyber-input" type="number" id="coaching-max-sessions" value="5" min="1" max="20">
         <div style="margin-top:14px">
@@ -1049,12 +694,9 @@
     <div class="tab" id="tab-coach-profile">
       <p class="page-tag">// coach profile</p>
       <p class="page-title">MY PROFILE</p>
-
       <div class="section-card" style="border-color:rgba(0,170,255,0.3)">
         <p class="card-title" style="color:#00aaff">// your coaching card</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px">
-          This is how you appear to players looking for coaching. Keep it up to date!
-        </p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px">This is how you appear to players looking for coaching. Keep it up to date!</p>
         <label class="field-label">Display name</label>
         <input class="cyber-input" type="text" id="my-coach-name" placeholder="e.g. CoachAura">
         <label class="field-label">Avatar / logo URL</label>
@@ -1079,21 +721,15 @@
         <p class="save-msg" id="my-coach-saved" style="color:#00aaff">// Profile saved successfully</p>
         <p class="save-msg" id="my-coach-error" style="color:var(--pink)"></p>
       </div>
-
-      <!-- PREVIEW CARD -->
       <div class="section-card">
         <p class="card-title">// preview — how players see you</p>
         <div id="coach-preview-card" style="background:var(--bg-2);border:1px solid rgba(0,170,255,0.2);padding:16px;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));max-width:320px">
           <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Fill out your profile above to see a preview here.</p>
         </div>
       </div>
-
-      <!-- MY SESSIONS -->
       <div class="section-card">
         <p class="card-title">// my coaching sessions</p>
-        <div id="my-coaching-sessions">
-          <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading sessions...</p>
-        </div>
+        <div id="my-coaching-sessions"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading sessions...</p></div>
       </div>
     </div>
 
@@ -1111,30 +747,18 @@
       </div>
       <div class="section-card">
         <p class="card-title">// dashboard theme</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7;letter-spacing:0.5px">
-          Choose your dashboard color scheme. Theme is saved per account and applies every time you log in.
-        </p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7;letter-spacing:0.5px">Choose your dashboard color scheme. Theme is saved per account and applies every time you log in.</p>
         <div class="theme-toggle-wrap">
-          <button class="theme-btn active" id="theme-btn-cyber" onclick="setTheme('cyber')">
-            🔵 Cyber Blue
-          </button>
-          <button class="theme-btn" id="theme-btn-red" onclick="setTheme('red')">
-            🔴 Crimson Red
-          </button>
-          <button class="theme-btn" id="theme-btn-pink" onclick="setTheme('pink')">
-            🩷 Neon Pink
-          </button>
-          <button class="theme-btn" id="theme-btn-orange" onclick="setTheme('orange')">
-            🟠 Neon Orange
-          </button>
+          <button class="theme-btn active" id="theme-btn-cyber" onclick="setTheme('cyber')">🔵 Cyber Blue</button>
+          <button class="theme-btn" id="theme-btn-red" onclick="setTheme('red')">🔴 Crimson Red</button>
+          <button class="theme-btn" id="theme-btn-pink" onclick="setTheme('pink')">🩷 Neon Pink</button>
+          <button class="theme-btn" id="theme-btn-orange" onclick="setTheme('orange')">🟠 Neon Orange</button>
         </div>
         <p class="save-msg" id="theme-saved" style="margin-top:10px">// Theme saved</p>
       </div>
       <div class="section-card">
         <p class="card-title">// grant access</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7;letter-spacing:0.5px">
-          Manually grant Pro access to any Discord user — no payment required. Use for giveaways, free months, or community rewards.
-        </p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7;letter-spacing:0.5px">Manually grant Pro access to any Discord user — no payment required. Use for giveaways, free months, or community rewards.</p>
         <label class="field-label">Discord user ID</label>
         <input class="cyber-input" type="text" id="grant-id" placeholder="e.g. 123456789012345678">
         <label class="field-label">Access duration</label>
@@ -1156,24 +780,18 @@
         <div class="plans-grid">
           <div class="plan-card" id="plan-card-free">
             <div id="plan-badge-free" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div>
-            <p class="plan-name">Free</p>
-            <p class="plan-price">$0<span>/mo</span></p>
+            <p class="plan-name">Free</p><p class="plan-price">$0<span>/mo</span></p>
             <div class="divider"></div>
-            <div class="plan-feature">✓ /chat command</div>
-            <div class="plan-feature">✓ Basic tournaments</div>
-            <div class="plan-feature">✓ BattleTag lookup</div>
-            <div class="plan-feature off">✗ Social alerts</div>
+            <div class="plan-feature">✓ /chat command</div><div class="plan-feature">✓ Basic tournaments</div>
+            <div class="plan-feature">✓ BattleTag lookup</div><div class="plan-feature off">✗ Social alerts</div>
             <div class="plan-feature off">✗ AI persona</div>
           </div>
           <div class="plan-card" id="plan-card-pro">
             <div id="plan-badge-pro" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div>
-            <p class="plan-name">Pro</p>
-            <p class="plan-price">$9<span>/mo</span></p>
+            <p class="plan-name">Pro</p><p class="plan-price">$9<span>/mo</span></p>
             <div class="divider"></div>
-            <div class="plan-feature">✓ Everything in Free</div>
-            <div class="plan-feature">✓ Social alerts</div>
-            <div class="plan-feature">✓ AI persona</div>
-            <div class="plan-feature">✓ Coaching tools</div>
+            <div class="plan-feature">✓ Everything in Free</div><div class="plan-feature">✓ Social alerts</div>
+            <div class="plan-feature">✓ AI persona</div><div class="plan-feature">✓ Coaching tools</div>
             <div class="plan-feature">✓ Advanced tournaments</div>
           </div>
           <div class="plan-card" id="plan-card-lifetime">
@@ -1181,13 +799,9 @@
             <p class="plan-name" style="color:#b44fff;text-shadow:0 0 10px #b44fff,0 0 30px #b44fff44;letter-spacing:3px">Lifetime</p>
             <p class="plan-price" style="color:#b44fff;text-shadow:0 0 10px #b44fff,0 0 30px #b44fff44">$79<span> once</span></p>
             <div class="divider"></div>
-            <div class="plan-feature">✓ Everything in Pro</div>
-            <div class="plan-feature">✓ Priority support</div>
-            <div class="plan-feature">✓ Early access</div>
-            <div class="plan-feature">✓ No recurring fees</div>
-            <div id="plan-upgrade-lifetime">
-              <button class="btn-secondary" style="width:100%;margin-top:14px;font-size:0.58rem">Upgrade</button>
-            </div>
+            <div class="plan-feature">✓ Everything in Pro</div><div class="plan-feature">✓ Priority support</div>
+            <div class="plan-feature">✓ Early access</div><div class="plan-feature">✓ No recurring fees</div>
+            <div id="plan-upgrade-lifetime"><button class="btn-secondary" style="width:100%;margin-top:14px;font-size:0.58rem">Upgrade</button></div>
           </div>
         </div>
       </div>
@@ -1205,20 +819,22 @@
 <script>
   const SUPABASE_URL = 'https://uptxufmqqwjytffhbcdd.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwdHh1Zm1xcXdqeXRmZmhiY2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NDUzNzMsImV4cCI6MjA4OTQyMTM3M30.Wkol9oWQwZePmfduJIteUnAxvP_SmDTiRfvWPU5JYGU';
+  const OWNER_DISCORD_ID = '176467159000678400';
+  const RAILWAY_BOT_URL = 'https://web-production-01b81.up.railway.app';
 
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   let currentUser = null;
   let userAccess = null;
+  let isOwner = false;
+  let isDelegate = false;
+  let isCoach = false;
 
+  // ── INIT ──────────────────────────────────────────────────────────────────
   async function init() {
     const { data: { session } } = await sb.auth.getSession();
-
-    if (!session) {
-      window.location.href = '/login.html';
-      return;
-    }
+    if (!session) { window.location.href = '/login.html'; return; }
 
     currentUser = session.user;
     const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
@@ -1226,63 +842,48 @@
 
     document.getElementById('nav-username').textContent = discordName;
 
-    // Apply saved theme immediately from localStorage while we wait for Supabase
     const savedThemeLocal = localStorage.getItem('auraai-theme');
     if (savedThemeLocal) applyTheme(savedThemeLocal);
 
-    const { data: access } = await sb
-      .from('user_access')
-      .select('*')
-      .eq('discord_id', discordId)
-      .maybeSingle();
-
+    const { data: access } = await sb.from('user_access').select('*').eq('discord_id', discordId).maybeSingle();
     userAccess = access;
+
+    isOwner = (discordId === OWNER_DISCORD_ID);
+
+    // Check delegate status
+    if (!isOwner) {
+      const { data: delegateRow } = await sb.from('approval_delegates').select('id').eq('discord_id', discordId).maybeSingle();
+      isDelegate = !!delegateRow;
+    }
 
     if (access) {
       const tier = access.tier || 'free';
-      const isCoach = access.is_coach === true;
+      isCoach = access.is_coach === true;
 
-      // Handle coach badge — always blue neon regardless of theme
       const navTierEl = document.getElementById('nav-tier');
       if (isCoach) {
         navTierEl.textContent = 'COACH';
         navTierEl.classList.add('coach-badge');
         const overviewStatus = document.getElementById('overview-status');
         if (overviewStatus) overviewStatus.style.display = 'none';
-        // Hide server selector for coaches
-        const serverSelectWrap = document.getElementById('server-select')?.closest('div[style]') || document.getElementById('server-select')?.parentElement;
+        const serverSelectWrap = document.getElementById('server-select')?.parentElement;
         if (serverSelectWrap) serverSelectWrap.style.display = 'none';
-        // Hide sidebar section labels and irrelevant items for coaches
         document.querySelectorAll('.sidebar-item').forEach(btn => {
           const tab = btn.getAttribute('onclick') || '';
-          if (tab.includes('tournaments') || tab.includes('alerts') || tab.includes('billing') || tab.includes('overview') || tab.includes('bot')) {
-            btn.style.display = 'none';
-          }
+          if (tab.includes('tournaments') || tab.includes('alerts') || tab.includes('billing') || tab.includes('overview') || tab.includes('bot')) btn.style.display = 'none';
         });
-        // Hide sidebar section labels
         document.querySelectorAll('.sidebar-section').forEach(section => {
-          if (section.textContent.includes('Main') || section.textContent.includes('Features') || section.textContent.includes('Account')) {
-            section.style.display = 'none';
-          }
+          if (section.textContent.includes('Main') || section.textContent.includes('Features') || section.textContent.includes('Account')) section.style.display = 'none';
         });
-        // Show coach profile sidebar button
         const coachSidebar = document.getElementById('coach-profile-sidebar');
         if (coachSidebar) coachSidebar.style.display = 'flex';
-        // Load coach profile after dropdowns init
         setTimeout(() => loadMyCoachProfile(), 200);
       } else {
         navTierEl.textContent = tier.toUpperCase();
       }
 
-      // Apply saved theme from Supabase
       if (access.theme) applyTheme(access.theme);
 
-      // Update billing plan display
-      const planEl = document.getElementById('billing-plan');
-      const renewEl = document.getElementById('billing-renew');
-      const badgeEl = document.getElementById('billing-badge');
-
-      // Update plan cards — highlight correct one, hide upgrade button if already on lifetime
       const cards = { free: 'plan-card-free', pro: 'plan-card-pro', lifetime: 'plan-card-lifetime' };
       Object.entries(cards).forEach(([t, id]) => {
         const card = document.getElementById(id);
@@ -1290,69 +891,35 @@
         if (card) card.classList.toggle('current', t === tier);
         if (badge) badge.style.display = t === tier ? 'block' : 'none';
       });
-      // Hide upgrade button if user already has lifetime
       const upgradeBtn = document.getElementById('plan-upgrade-lifetime');
       if (upgradeBtn) upgradeBtn.style.display = tier === 'lifetime' ? 'none' : 'block';
 
+      const planEl = document.getElementById('billing-plan');
+      const renewEl = document.getElementById('billing-renew');
+      const badgeEl = document.getElementById('billing-badge');
+
       if (tier === 'lifetime') {
-        if (planEl) {
-          planEl.textContent = 'Lifetime License';
-          planEl.style.color = '#b44fff';
-          planEl.style.textShadow = '0 0 10px #b44fff, 0 0 30px #b44fff44';
-          planEl.style.fontFamily = 'var(--font-display)';
-          planEl.style.letterSpacing = '2px';
-        }
+        if (planEl) { planEl.textContent = 'Lifetime License'; planEl.style.color = '#b44fff'; planEl.style.textShadow = '0 0 10px #b44fff,0 0 30px #b44fff44'; planEl.style.fontFamily = 'var(--font-display)'; planEl.style.letterSpacing = '2px'; }
         if (renewEl) renewEl.textContent = '★ Never expires — unlimited access forever';
-        if (badgeEl) {
-          badgeEl.textContent = 'LIFETIME';
-          badgeEl.style.color = '#b44fff';
-          badgeEl.style.borderColor = '#b44fff';
-          badgeEl.style.boxShadow = '0 0 10px #b44fff, 0 0 30px #b44fff44';
-          // Always purple regardless of theme
-          badgeEl.setAttribute('data-lifetime', 'true');
-        }
-        // Nav tier badge also always purple for lifetime
+        if (badgeEl) { badgeEl.textContent = 'LIFETIME'; badgeEl.style.color = '#b44fff'; badgeEl.style.borderColor = '#b44fff'; badgeEl.style.boxShadow = '0 0 10px #b44fff,0 0 30px #b44fff44'; }
         const navTier = document.getElementById('nav-tier');
-        if (navTier) {
-          navTier.style.borderColor = '#b44fff';
-          navTier.style.color = '#b44fff';
-          navTier.style.boxShadow = '0 0 10px #b44fff, 0 0 30px #b44fff44';
-        }
+        if (navTier && !isCoach) { navTier.style.borderColor = '#b44fff'; navTier.style.color = '#b44fff'; navTier.style.boxShadow = '0 0 10px #b44fff,0 0 30px #b44fff44'; }
       } else if (tier === 'pro') {
         if (planEl) planEl.textContent = 'Pro — $9/month';
         if (renewEl) {
-          if (access.expires_at) {
-            const exp = new Date(access.expires_at);
-            renewEl.textContent = `Renews ${exp.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
-          } else if (access.granted_by === 'admin' || access.granted_by === 'self') {
-            renewEl.textContent = '★ Manually granted — no expiry date set';
-          } else {
-            renewEl.textContent = 'Active subscription';
-          }
+          if (access.expires_at) renewEl.textContent = `Renews ${new Date(access.expires_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`;
+          else if (access.granted_by === 'admin' || access.granted_by === 'self') renewEl.textContent = '★ Manually granted — no expiry date set';
+          else renewEl.textContent = 'Active subscription';
         }
       }
 
-      if (tier === 'free') {
-        document.getElementById('paywall-overlay').classList.remove('hidden');
-      }
+      if (tier === 'free') document.getElementById('paywall-overlay').classList.remove('hidden');
     } else {
-      await sb.from('user_access').insert({
-        discord_id: discordId,
-        discord_tag: discordName,
-        email: currentUser.email,
-        tier: 'free',
-        status: 'active',
-        granted_by: 'self'
-      });
+      await sb.from('user_access').insert({ discord_id: discordId, discord_tag: discordName, email: currentUser.email, tier: 'free', status: 'active', granted_by: 'self' });
       document.getElementById('paywall-overlay').classList.remove('hidden');
     }
 
-    const { data: settings } = await sb
-      .from('server_settings')
-      .select('*')
-      .eq('owner_discord_id', discordId)
-      .maybeSingle();
-
+    const { data: settings } = await sb.from('server_settings').select('*').eq('owner_discord_id', discordId).maybeSingle();
     if (settings) {
       if (settings.ow_channel_id) document.getElementById('ow-channel').value = settings.ow_channel_id;
       if (settings.rivals_channel_id) document.getElementById('rivals-channel').value = settings.rivals_channel_id;
@@ -1377,56 +944,320 @@
     loadUserServers();
   }
 
+  // ── COACHING TAB LOADER ───────────────────────────────────────────────────
+  async function loadCoachingTab() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+
+    // Show apply section to non-coaches
+    const applySection = document.getElementById('coach-apply-section');
+    if (applySection) applySection.style.display = (!isCoach) ? 'block' : 'none';
+
+    // Show applications + delegates to owner and delegates
+    const canReview = isOwner || isDelegate;
+    const reviewSection = document.getElementById('applications-review-section');
+    const delegatesSection = document.getElementById('delegates-section');
+    if (reviewSection) reviewSection.style.display = canReview ? 'block' : 'none';
+    if (delegatesSection) delegatesSection.style.display = isOwner ? 'block' : 'none';
+
+    // Hide "Add coach" button for non-owners/delegates
+    const addCoachBtn = document.getElementById('add-coach-btn');
+    if (addCoachBtn) addCoachBtn.style.display = canReview ? 'inline-block' : 'none';
+
+    if (!isCoach) await loadMyApplicationStatus(discordId);
+    if (canReview) {
+      await loadApplications();
+      if (isOwner) await loadDelegates();
+    }
+    loadCoachingSessions();
+    loadCoaches();
+  }
+
+  // ── MY APPLICATION STATUS ─────────────────────────────────────────────────
+  async function loadMyApplicationStatus(discordId) {
+    const { data: app } = await sb.from('coach_applications').select('*').eq('discord_id', discordId).order('created_at', { ascending: false }).limit(1).maybeSingle();
+
+    const banner = document.getElementById('existing-application-banner');
+    const text = document.getElementById('existing-application-text');
+    const form = document.getElementById('coach-apply-form');
+
+    if (!app) {
+      if (banner) banner.style.display = 'none';
+      if (form) form.style.display = 'block';
+      return;
+    }
+
+    if (banner) banner.style.display = 'block';
+
+    if (app.status === 'pending') {
+      banner.style.borderColor = 'rgba(255,230,0,0.3)';
+      banner.style.background = 'rgba(255,230,0,0.05)';
+      if (text) { text.style.color = 'var(--yellow)'; text.textContent = '⏳ Your application is pending review. We\'ll DM you on Discord when it\'s been reviewed.'; }
+      if (form) form.style.display = 'none';
+    } else if (app.status === 'approved') {
+      banner.style.borderColor = 'rgba(0,255,136,0.3)';
+      banner.style.background = 'rgba(0,255,136,0.05)';
+      if (text) { text.style.color = 'var(--green)'; text.textContent = '✅ Your application was approved! Refresh the page to access your coach profile.'; }
+      if (form) form.style.display = 'none';
+    } else if (app.status === 'denied') {
+      banner.style.borderColor = 'rgba(255,45,120,0.3)';
+      banner.style.background = 'rgba(255,45,120,0.05)';
+      if (text) { text.style.color = 'var(--pink)'; text.textContent = `❌ Your application was not approved${app.review_note ? ': ' + app.review_note : '.'}  You may reapply below.`; }
+      if (form) form.style.display = 'block';
+    }
+  }
+
+  // ── SUBMIT APPLICATION ────────────────────────────────────────────────────
+  async function submitCoachApplication() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const discordTag = currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || discordId;
+    const errorEl = document.getElementById('apply-error');
+    errorEl.style.display = 'none';
+
+    const name = document.getElementById('apply-name').value.trim();
+    const game = document.getElementById('apply-game').value;
+    const bio = document.getElementById('apply-bio').value.trim();
+    const strengths = document.getElementById('apply-strengths').value.trim();
+    const logo = document.getElementById('apply-logo').value.trim();
+    const cashapp = document.getElementById('apply-cashapp').value.trim();
+    const stripe = document.getElementById('apply-stripe').value.trim();
+
+    if (!name) { errorEl.textContent = '// Error: Display name is required'; errorEl.style.display = 'block'; return; }
+    if (!bio) { errorEl.textContent = '// Error: Bio is required'; errorEl.style.display = 'block'; return; }
+
+    // Check for existing pending application
+    const { data: existing } = await sb.from('coach_applications').select('status').eq('discord_id', discordId).eq('status', 'pending').maybeSingle();
+    if (existing) { errorEl.textContent = '// You already have a pending application'; errorEl.style.display = 'block'; return; }
+
+    const { error } = await sb.from('coach_applications').insert({
+      discord_id: discordId,
+      discord_tag: discordTag,
+      display_name: name,
+      game,
+      bio: bio || null,
+      strengths: strengths || null,
+      logo_url: logo || null,
+      cashapp_url: cashapp || null,
+      stripe_url: stripe || null,
+      status: 'pending'
+    });
+
+    if (error) { errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return; }
+
+    showSaved('apply-saved');
+    // Reload status banner
+    await loadMyApplicationStatus(discordId);
+  }
+
+  // ── LOAD APPLICATIONS (for reviewers) ────────────────────────────────────
+  async function loadApplications() {
+    const list = document.getElementById('applications-list');
+    const countEl = document.getElementById('pending-app-count');
+    if (!list) return;
+
+    const { data: apps } = await sb.from('coach_applications').select('*').order('created_at', { ascending: false });
+
+    if (!apps || apps.length === 0) {
+      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No applications yet.</p>';
+      if (countEl) countEl.textContent = '0 pending';
+      return;
+    }
+
+    const pending = apps.filter(a => a.status === 'pending');
+    if (countEl) countEl.textContent = `${pending.length} pending`;
+
+    const gameIcons = { 'Overwatch 2': '🎮', 'Marvel Rivals': '⚔️', 'Destiny 2': '🌌' };
+    const statusBadge = {
+      pending:  '<span class="badge badge-pending">Pending</span>',
+      approved: '<span class="badge badge-approved">Approved</span>',
+      denied:   '<span class="badge badge-denied">Denied</span>',
+    };
+
+    list.innerHTML = apps.map(a => `
+      <div class="app-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+          <div>
+            <p class="app-card-name">${gameIcons[a.game] || '🎮'} ${a.display_name}</p>
+            <p class="app-card-meta">${a.discord_tag} · ${a.game} · Applied ${new Date(a.created_at).toLocaleDateString()}</p>
+          </div>
+          ${statusBadge[a.status] || statusBadge.pending}
+        </div>
+        ${a.bio ? `<p class="app-card-bio">${a.bio}</p>` : ''}
+        ${a.strengths ? `<p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--purple);margin-bottom:8px">💪 ${a.strengths}</p>` : ''}
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+          ${a.cashapp_url ? `<a href="${a.cashapp_url}" target="_blank" style="font-family:var(--font-mono);font-size:0.58rem;color:#00d632;border:1px solid #00d632;padding:2px 8px;text-decoration:none">💵 CashApp</a>` : ''}
+          ${a.stripe_url ? `<a href="${a.stripe_url}" target="_blank" style="font-family:var(--font-mono);font-size:0.58rem;color:#635bff;border:1px solid #635bff;padding:2px 8px;text-decoration:none">💳 Stripe</a>` : ''}
+        </div>
+        ${a.status === 'pending' ? `
+          <div class="app-card-actions">
+            <button class="btn-approve" onclick="reviewApplication('${a.id}', '${a.discord_id}', '${a.discord_tag}', 'approved', '${a.display_name}', '${(a.game||'').replace(/'/g,"\\'")}', '${(a.bio||'').replace(/'/g,"\\'").replace(/\n/g,' ')}', '${(a.strengths||'').replace(/'/g,"\\'")}', '${(a.logo_url||'')}', '${(a.cashapp_url||'')}', '${(a.stripe_url||'')}')">✓ Approve</button>
+            <button class="btn-deny" onclick="denyApplicationPrompt('${a.id}', '${a.discord_id}', '${a.discord_tag}')">✕ Deny</button>
+          </div>
+        ` : `<p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey)">Reviewed by ${a.reviewed_by || 'admin'}${a.review_note ? ' — ' + a.review_note : ''}</p>`}
+      </div>
+    `).join('');
+  }
+
+  // ── APPROVE APPLICATION ───────────────────────────────────────────────────
+  async function reviewApplication(appId, discordId, discordTag, action, displayName, game, bio, strengths, logoUrl, cashappUrl, stripeUrl) {
+    const reviewerTag = currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || 'admin';
+
+    // Update application status
+    await sb.from('coach_applications').update({
+      status: action,
+      reviewed_by: reviewerTag,
+      updated_at: new Date().toISOString()
+    }).eq('id', appId);
+
+    if (action === 'approved') {
+      // Grant is_coach in user_access (upsert in case they don't have a row yet)
+      await sb.from('user_access').upsert({
+        discord_id: discordId,
+        discord_tag: discordTag,
+        tier: 'pro',
+        status: 'active',
+        is_coach: true,
+        granted_by: 'coach_approval'
+      }, { onConflict: 'discord_id' });
+
+      // Also create/update their coaches entry
+      await sb.from('coaches').upsert({
+        discord_profile_id: discordId,
+        discord_server_id: 'global',
+        display_name: displayName,
+        game: game,
+        bio: bio || null,
+        strengths: strengths || null,
+        logo_url: logoUrl || null,
+        cashapp_url: cashappUrl || null,
+        stripe_url: stripeUrl || null,
+        is_active: true,
+        discord_user_id: discordId,
+      }, { onConflict: 'discord_profile_id' });
+    }
+
+    // Send Discord DM notification via Railway bot
+    await sendCoachDM(discordId, action, displayName);
+
+    await loadApplications();
+    await loadCoaches();
+  }
+
+  // ── DENY WITH NOTE ────────────────────────────────────────────────────────
+  async function denyApplicationPrompt(appId, discordId, discordTag) {
+    const note = prompt('Optional: Add a reason for denial (shown to applicant via DM):') || '';
+    const reviewerTag = currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || 'admin';
+
+    await sb.from('coach_applications').update({
+      status: 'denied',
+      reviewed_by: reviewerTag,
+      review_note: note || null,
+      updated_at: new Date().toISOString()
+    }).eq('id', appId);
+
+    // Get display name for DM
+    const { data: app } = await sb.from('coach_applications').select('display_name').eq('id', appId).maybeSingle();
+    await sendCoachDM(discordId, 'denied', app?.display_name || 'Applicant', note);
+
+    await loadApplications();
+  }
+
+  // ── DISCORD DM VIA RAILWAY BOT ────────────────────────────────────────────
+  async function sendCoachDM(discordId, action, displayName, note) {
+    try {
+      await fetch(`${RAILWAY_BOT_URL}/send-dm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          discord_id: discordId,
+          action,
+          display_name: displayName,
+          note: note || null
+        })
+      });
+    } catch (err) {
+      console.warn('DM notification failed (bot may be offline):', err.message);
+    }
+  }
+
+  // ── DELEGATES ─────────────────────────────────────────────────────────────
+  async function loadDelegates() {
+    const list = document.getElementById('delegates-list');
+    if (!list) return;
+
+    const { data: delegates } = await sb.from('approval_delegates').select('*').order('created_at', { ascending: true });
+
+    if (!delegates || delegates.length === 0) {
+      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No delegates yet. Add trusted approvers above.</p>';
+      return;
+    }
+
+    list.innerHTML = '<div>' + delegates.map(d => `
+      <span class="delegate-tag">
+        ${d.discord_tag || d.discord_id}
+        <button onclick="removeDelegate('${d.id}', '${d.discord_tag}')" title="Remove delegate">✕</button>
+      </span>
+    `).join('') + '</div>';
+  }
+
+  async function addDelegate() {
+    const id = document.getElementById('delegate-id').value.trim();
+    const tag = document.getElementById('delegate-tag').value.trim();
+    const errorEl = document.getElementById('delegate-error');
+    errorEl.style.display = 'none';
+
+    if (!id) { errorEl.textContent = '// Error: Discord ID is required'; errorEl.style.display = 'block'; return; }
+
+    const reviewerTag = currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || 'owner';
+
+    const { error } = await sb.from('approval_delegates').insert({
+      discord_id: id,
+      discord_tag: tag || id,
+      granted_by: reviewerTag
+    });
+
+    if (error) {
+      if (error.code === '23505') { errorEl.textContent = '// This user is already a delegate'; errorEl.style.display = 'block'; return; }
+      errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return;
+    }
+
+    document.getElementById('delegate-id').value = '';
+    document.getElementById('delegate-tag').value = '';
+    showSaved('delegate-saved');
+    await loadDelegates();
+  }
+
+  async function removeDelegate(id, tag) {
+    if (!confirm(`Remove ${tag} as a delegate?`)) return;
+    await sb.from('approval_delegates').delete().eq('id', id);
+    await loadDelegates();
+  }
+
+  // ── SAVE FUNCTIONS ────────────────────────────────────────────────────────
   async function saveChannels() {
     const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
-
     if (!selectedGuildId) {
       const errEl = document.getElementById('channels-error');
       if (errEl) { errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
       return;
     }
-
-    await sb.from('server_settings').upsert({
-      owner_discord_id: discordId,
-      discord_server_id: selectedGuildId,
-      ow_channel_id: document.getElementById('ow-channel').value,
-      rivals_channel_id: document.getElementById('rivals-channel').value,
-      d2_channel_id: document.getElementById('d2-channel').value,
-    }, { onConflict: 'owner_discord_id' });
+    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_channel_id: document.getElementById('ow-channel').value, rivals_channel_id: document.getElementById('rivals-channel').value, d2_channel_id: document.getElementById('d2-channel').value }, { onConflict: 'owner_discord_id' });
     showSaved('channels-saved');
   }
 
   async function saveRoles() {
     const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
-
     if (!selectedGuildId) {
       const errEl = document.getElementById('roles-error');
       if (errEl) { errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
       return;
     }
-
-    await sb.from('server_settings').upsert({
-      owner_discord_id: discordId,
-      discord_server_id: selectedGuildId,
-      ow_role_id: document.getElementById('ow-role').value,
-      rivals_role_id: document.getElementById('rivals-role').value,
-      d2_role_id: document.getElementById('d2-role').value,
-    }, { onConflict: 'owner_discord_id' });
+    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_role_id: document.getElementById('ow-role').value, rivals_role_id: document.getElementById('rivals-role').value, d2_role_id: document.getElementById('d2-role').value }, { onConflict: 'owner_discord_id' });
     showSaved('roles-saved');
   }
 
   async function saveToggles() {
     const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
-    await sb.from('server_settings').upsert({
-      owner_discord_id: discordId,
-      discord_server_id: selectedGuildId || discordId,
-      feature_flags: {
-        battletag: document.getElementById('toggle-battletag').checked,
-        ask_td: document.getElementById('toggle-td').checked,
-        scrims: document.getElementById('toggle-scrims').checked,
-        coaching: document.getElementById('toggle-coaching').checked,
-      }
-    }, { onConflict: 'owner_discord_id' });
+    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId || discordId, feature_flags: { battletag: document.getElementById('toggle-battletag').checked, ask_td: document.getElementById('toggle-td').checked, scrims: document.getElementById('toggle-scrims').checked, coaching: document.getElementById('toggle-coaching').checked } }, { onConflict: 'owner_discord_id' });
     showSaved('toggles-saved');
   }
 
@@ -1435,13 +1266,7 @@
     const days = parseInt(document.getElementById('grant-duration').value);
     if (!id) return;
     const expires = days === 0 ? null : new Date(Date.now() + days * 86400000).toISOString();
-    await sb.from('user_access').upsert({
-      discord_id: id,
-      tier: 'pro',
-      status: 'active',
-      granted_by: 'admin',
-      expires_at: expires
-    }, { onConflict: 'discord_id' });
+    await sb.from('user_access').upsert({ discord_id: id, tier: 'pro', status: 'active', granted_by: 'admin', expires_at: expires }, { onConflict: 'discord_id' });
     document.getElementById('grant-id').value = '';
     showSaved('grant-saved');
   }
@@ -1456,6 +1281,7 @@
 
   function showSaved(id) {
     const el = document.getElementById(id);
+    if (!el) return;
     el.style.display = 'block';
     setTimeout(() => el.style.display = 'none', 3000);
   }
@@ -1467,18 +1293,12 @@
     if (btn) btn.classList.add('active');
   }
 
-  async function signOut() {
-    await sb.auth.signOut();
-    window.location.href = '/login.html';
-  }
+  async function signOut() { await sb.auth.signOut(); window.location.href = '/login.html'; }
 
-  function updateClock() {
-    document.getElementById('clock').textContent = new Date().toUTCString().replace('GMT', 'UTC');
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
+  function updateClock() { document.getElementById('clock').textContent = new Date().toUTCString().replace('GMT', 'UTC'); }
+  updateClock(); setInterval(updateClock, 1000);
 
-  // ── Server & Channel Selection ──
+  // ── SERVER & CHANNEL SELECTION ────────────────────────────────────────────
   let userGuilds = [];
   let selectedGuildId = null;
 
@@ -1486,631 +1306,38 @@
     try {
       const { data: { session } } = await sb.auth.getSession();
       if (!session?.provider_token) return;
-
-      const res = await fetch('https://discord.com/api/users/@me/guilds', {
-        headers: { 'Authorization': `Bearer ${session.provider_token}` }
-      });
-      if (!res.ok) return;
-
-      const guilds = await res.json();
-      userGuilds = guilds.filter(g => (parseInt(g.permissions) & 0x8) === 0x8);
-
-      const select = document.getElementById('server-select');
-      if (!select) return;
-      select.innerHTML = '<option value="">— Select server —</option>';
-      userGuilds.forEach(g => {
-        const opt = document.createElement('option');
-        opt.value = g.id;
-        opt.textContent = g.name;
-        select.appendChild(opt);
-      });
-
-      if (userGuilds.length === 1) {
-        select.value = userGuilds[0].id;
-        onServerChange(userGuilds[0].id);
-      }
-    } catch (err) {
-      console.error('Error loading servers:', err.message);
-    }
-  }
-
-  async function onServerChange(guildId) {
-    selectedGuildId = guildId;
-    const channelSelect = document.getElementById('alert-channel');
-    if (!channelSelect) return;
-
-    if (!guildId) {
-      channelSelect.innerHTML = '<option value="">— Select a server first —</option>';
-      return;
-    }
-
-    channelSelect.innerHTML = '<option value="">Loading channels...</option>';
-
-    try {
-      const { data: { session } } = await sb.auth.getSession();
-      if (!session?.provider_token) return;
-
-      const res = await fetch(`https://discord.com/api/guilds/${guildId}/channels`, {
-        headers: { 'Authorization': `Bearer ${session.provider_token}` }
-      });
-
-      if (!res.ok) {
-        const edgeRes = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
-          body: JSON.stringify({ action: 'get_channels', guildId })
-        });
-        const edgeData = await edgeRes.json();
-        if (edgeData.channels) {
-          populateChannels(edgeData.channels, channelSelect);
-          return;
-        }
-        channelSelect.innerHTML = '<option value="">Could not load channels — enter ID manually</option>';
-        return;
-      }
-
-      const channels = await res.json();
-      populateChannels(channels, channelSelect);
-
-    } catch (err) {
-      console.error('Error loading channels:', err.message);
-      channelSelect.innerHTML = '<option value="">Error loading channels</option>';
-    }
-  }
-
-  function populateChannels(channels, selectEl) {
-    const categories = channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position);
-    const others = channels.filter(c => c.type !== 4).sort((a,b) => a.position - b.position);
-
-    selectEl.innerHTML = '<option value="">— Pick a channel —</option>';
-
-    categories.forEach(cat => {
-      const group = document.createElement('optgroup');
-      group.label = '📁 ' + cat.name.toUpperCase();
-      const children = others.filter(c => c.parent_id === cat.id);
-      children.forEach(ch => {
-        const opt = document.createElement('option');
-        opt.value = ch.id;
-        const icon = ch.type === 2 ? '🔊' : '#';
-        opt.textContent = `${icon} ${ch.name}`;
-        group.appendChild(opt);
-      });
-      if (group.children.length > 0) selectEl.appendChild(group);
-    });
-
-    const uncategorized = others.filter(c => !c.parent_id);
-    if (uncategorized.length > 0) {
-      const group = document.createElement('optgroup');
-      group.label = '— Uncategorized —';
-      uncategorized.forEach(ch => {
-        const opt = document.createElement('option');
-        opt.value = ch.id;
-        opt.textContent = `# ${ch.name}`;
-        group.appendChild(opt);
-      });
-      selectEl.appendChild(group);
-    }
-  }
-
-  // ── Social Alerts ──
-  let selectedStreamer = null;
-  let searchTimeout = null;
-
-  async function loadAlerts() {
-    const list = document.getElementById('alerts-list');
-    if (!list) return;
-
-    const serverId = selectedGuildId;
-    if (!serverId) {
-      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Select your server from the sidebar dropdown to view alerts.</p>';
-      return;
-    }
-
-    const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_server_id', serverId);
-
-    if (!alerts || alerts.length === 0) {
-      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No alerts set up yet. Add one below.</p>';
-      return;
-    }
-
-    const icons = { twitch: '🟣', youtube: '🔴', tiktok: '⚫', kick: '🟢' };
-    list.innerHTML = alerts.map(a => `
-      <div class="platform-row" style="margin-bottom:8px">
-        <div>
-          <p class="platform-name">${icons[a.platform] || '📡'} ${a.username}</p>
-          <p class="platform-sub">${a.platform} — channel ${a.alert_channel_id || 'not set'}</p>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span class="badge ${a.enabled ? 'badge-active' : 'badge-free'}">${a.enabled ? 'Active' : 'Paused'}</span>
-          <button onclick="removeAlert('${a.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button>
-        </div>
-      </div>
-    `).join('');
-  }
-  async function removeAlert(id) {
-    await sb.from('social_alerts').delete().eq('id', id);
-    loadAlerts();
-  }
-
-  function onPlatformChange() {
-    const platform = document.getElementById('alert-platform').value;
-    clearSelectedStreamer();
-    document.getElementById('alert-search').value = '';
-    document.getElementById('search-results').style.display = 'none';
-    if (platform === 'tiktok' || platform === 'kick') {
-      document.getElementById('alert-search').style.display = 'none';
-      document.getElementById('manual-entry').style.display = 'block';
-    } else {
-      document.getElementById('alert-search').style.display = 'block';
-      document.getElementById('manual-entry').style.display = 'none';
-    }
-  }
-
-  function onAlertSearch(value) {
-    clearTimeout(searchTimeout);
-    if (value.length < 2) {
-      document.getElementById('search-results').style.display = 'none';
-      return;
-    }
-    searchTimeout = setTimeout(() => searchStreamers(value), 400);
-  }
-
-  async function searchStreamers(query) {
-    const platform = ddPlatform ? ddPlatform.getValue() : 'twitch';
-    const resultsEl = document.getElementById('search-results');
-    resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Searching...</div>';
-    resultsEl.style.display = 'block';
-    try {
-      const res = await fetch(`https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
-        body: JSON.stringify({ query, platform })
-      });
-      const data = await res.json();
-      if (!data.results || data.results.length === 0) {
-        resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No results found</div>';
-        return;
-      }
-      resultsEl.innerHTML = data.results.map(r => `
-        <div onclick='selectStreamer(${JSON.stringify(r)})' style="display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(0,240,255,0.06)" onmouseover="this.style.background='rgba(0,240,255,0.06)'" onmouseout="this.style.background='none'">
-          ${r.avatar ? `<img src="${r.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover">` : '<div style="width:28px;height:28px;border-radius:50%;background:rgba(0,240,255,0.1)"></div>'}
-          <div>
-            <p style="font-family:var(--font-display);font-size:0.65rem;font-weight:700;color:var(--white)">${r.displayName}</p>
-            <p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">@${r.username}${r.live ? ' 🔴 LIVE' : ''}${r.game ? ` — ${r.game}` : ''}</p>
-          </div>
-        </div>
-      `).join('');
-    } catch (err) {
-      resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--pink)">Search error — try entering username manually</div>';
-    }
-  }
-
-  function selectStreamer(streamer) {
-    selectedStreamer = streamer;
-    document.getElementById('search-results').style.display = 'none';
-    document.getElementById('alert-search').value = streamer.displayName;
-    document.getElementById('selected-streamer').style.display = 'block';
-    document.getElementById('selected-avatar').src = streamer.avatar || '';
-    document.getElementById('selected-name').textContent = streamer.displayName;
-    document.getElementById('selected-meta').textContent = `@${streamer.username}${streamer.live ? ' — 🔴 Currently Live' : ''}`;
-  }
-
-  function clearSelectedStreamer() {
-    selectedStreamer = null;
-    document.getElementById('selected-streamer').style.display = 'none';
-  }
-
-  async function addAlert() {
-    const platform = document.getElementById('alert-platform').value;
-    const channelId = document.getElementById('alert-channel').value.trim();
-    const errorEl = document.getElementById('alert-error');
-    errorEl.style.display = 'none';
-    let username = '';
-    if (platform === 'tiktok' || platform === 'kick') {
-      username = document.getElementById('alert-manual').value.trim();
-    } else {
-      username = selectedStreamer?.username || document.getElementById('alert-search').value.trim();
-    }
-    if (!username) { errorEl.textContent = '// Error: Please select or enter a streamer'; errorEl.style.display = 'block'; return; }
-    if (!channelId) { errorEl.textContent = '// Error: Please enter a Discord channel ID'; errorEl.style.display = 'block'; return; }
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    const { error } = await sb.from('social_alerts').insert({
-      discord_server_id: selectedGuildId || discordId,
-      platform,
-      username,
-      alert_channel_id: channelId,
-      enabled: true
-    });
-    if (error) { errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return; }
-    showSaved('alert-saved');
-    clearSelectedStreamer();
-    document.getElementById('alert-search').value = '';
-    document.getElementById('alert-channel').value = '';
-    loadAlerts();
-  }
-
-  // ── Custom Searchable Dropdown Component ──
-  class CyberDropdown {
-    constructor(el, onChange) {
-      this.el = el;
-      this.onChange = onChange;
-      this.value = '';
-      this.options = [];
-      this.isOpen = false;
-
-      this.wrap = document.createElement('div');
-      this.wrap.className = 'cd-wrap';
-
-      this.selected = document.createElement('div');
-      this.selected.className = 'cd-selected';
-      this.selected.innerHTML = '<span class="cd-label">— Select —</span><span class="cd-arrow">▼</span>';
-      this.selected.onclick = (e) => { e.stopPropagation(); this.toggle(); };
-
-      this.dropdown = document.createElement('div');
-      this.dropdown.className = 'cd-dropdown';
-
-      this.searchWrap = document.createElement('div');
-      this.searchWrap.className = 'cd-search-wrap';
-      this.searchInput = document.createElement('input');
-      this.searchInput.className = 'cd-search';
-      this.searchInput.placeholder = 'Type to filter...';
-      this.searchInput.oninput = () => this.filter(this.searchInput.value);
-      this.searchInput.onclick = (e) => e.stopPropagation();
-      this.searchWrap.appendChild(this.searchInput);
-
-      this.list = document.createElement('div');
-      this.list.className = 'cd-list';
-
-      this.noResults = document.createElement('div');
-      this.noResults.className = 'cd-no-results';
-      this.noResults.textContent = 'No results found';
-      this.noResults.style.display = 'none';
-
-      this.dropdown.appendChild(this.searchWrap);
-      this.dropdown.appendChild(this.list);
-      this.dropdown.appendChild(this.noResults);
-
-      this.wrap.appendChild(this.selected);
-      this.wrap.appendChild(this.dropdown);
-      el.parentNode.replaceChild(this.wrap, el);
-
-      document.addEventListener('click', () => this.close());
-    }
-
-    toggle() { this.isOpen ? this.close() : this.open(); }
-
-    open() {
-      this.isOpen = true;
-      this.selected.classList.add('open');
-      this.dropdown.classList.add('open');
-      this.searchInput.value = '';
-      this.filter('');
-      setTimeout(() => this.searchInput.focus(), 50);
-    }
-
-    close() {
-      this.isOpen = false;
-      this.selected.classList.remove('open');
-      this.dropdown.classList.remove('open');
-    }
-
-    filter(query) {
-      const q = query.toLowerCase().trim();
-      let visibleCount = 0;
-      this.options.forEach(o => {
-        const matches = !q || o.label.toLowerCase().includes(q);
-        o.el.classList.toggle('hidden', !matches);
-        if (matches) visibleCount++;
-      });
-      this.list.querySelectorAll('.cd-group-label').forEach(lbl => {
-        let hasVisible = false;
-        let cur = lbl.nextElementSibling;
-        while (cur && !cur.classList.contains('cd-group-label')) {
-          if (!cur.classList.contains('hidden')) hasVisible = true;
-          cur = cur.nextElementSibling;
-        }
-        lbl.style.display = hasVisible ? '' : 'none';
-      });
-      this.noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-    }
-
-    setOptions(options, groups) {
-      this.list.innerHTML = '';
-      this.options = [];
-
-      if (groups && groups.length > 0) {
-        groups.forEach(group => {
-          if (group.label) {
-            const lbl = document.createElement('div');
-            lbl.className = 'cd-group-label';
-            lbl.textContent = group.label;
-            this.list.appendChild(lbl);
-          }
-          group.options.forEach(opt => this._addOption(opt));
-        });
-      } else {
-        options.forEach(opt => this._addOption(opt));
-      }
-    }
-
-    _addOption(opt) {
-      const div = document.createElement('div');
-      div.className = 'cd-option' + (opt.disabled ? ' disabled' : '');
-      div.textContent = opt.label;
-      div.dataset.value = opt.value || '';
-      div.onclick = (e) => {
-        e.stopPropagation();
-        if (opt.disabled) return;
-        this.setValue(opt.value, opt.label);
-        this.close();
-        if (this.onChange) this.onChange(opt.value, opt.label);
-      };
-      this.list.appendChild(div);
-      this.options.push({ ...opt, el: div });
-    }
-
-    setValue(value, label) {
-      this.value = value;
-      this.selected.querySelector('.cd-label').textContent = label || '— Select —';
-      this.options.forEach(o => o.el.classList.toggle('selected', o.value === value));
-    }
-
-    getValue() { return this.value; }
-  }
-
-  // Initialize all dropdowns after DOM loads
-  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame, ddNewTournamentGame, ddNewTournamentBracket, ddCoachGame, ddMyCoachGame;
-
-  function initDropdowns() {
-    // Platform dropdown
-    const platEl = document.getElementById('alert-platform');
-    if (platEl) {
-      ddPlatform = new CyberDropdown(platEl, (val) => onPlatformChange(val));
-      ddPlatform.setOptions([
-        { value: 'twitch', label: '🟣 Twitch' },
-        { value: 'youtube', label: '🔴 YouTube' },
-        { value: 'kick', label: '🟢 Kick' },
-        { value: 'tiktok', label: '⚫ TikTok' },
-      ]);
-      ddPlatform.setValue('twitch', '🟣 Twitch');
-    }
-
-    // Server select dropdown
-    const serverEl = document.getElementById('server-select');
-    if (serverEl) {
-      ddServerSelect = new CyberDropdown(serverEl, (val) => onServerChange(val));
-      ddServerSelect.setOptions([{ value: '', label: '— Select server —', disabled: true }]);
-    }
-
-    // Alert channel dropdown
-    const chanEl = document.getElementById('alert-channel');
-    if (chanEl) {
-      ddAlertChannel = new CyberDropdown(chanEl, () => {});
-      ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]);
-    }
-
-    // ✅ New tournament form game dropdown
-    const newGameEl = document.getElementById('new-t-game');
-    if (newGameEl) {
-      ddNewTournamentGame = new CyberDropdown(newGameEl, () => {});
-      ddNewTournamentGame.setOptions([
-        { value: 'overwatch', label: '🎮 Overwatch 2' },
-        { value: 'rivals',    label: '⚔️ Marvel Rivals' },
-        { value: 'destiny',   label: '🌌 Destiny 2' },
-      ]);
-      ddNewTournamentGame.setValue('overwatch', '🎮 Overwatch 2');
-    }
-
-    // ✅ My coach profile game dropdown
-    const myCoachGameEl = document.getElementById('my-coach-game');
-    if (myCoachGameEl) {
-      ddMyCoachGame = new CyberDropdown(myCoachGameEl, () => {});
-      ddMyCoachGame.setOptions([
-        { value: 'overwatch', label: '🎮 Overwatch 2' },
-        { value: 'rivals',    label: '⚔️ Marvel Rivals' },
-        { value: 'destiny',   label: '🌌 Destiny 2' },
-      ]);
-      ddMyCoachGame.setValue('overwatch', '🎮 Overwatch 2');
-    }
-
-    // ✅ Coach game dropdown
-    const coachGameEl = document.getElementById('coach-game');
-    if (coachGameEl) {
-      ddCoachGame = new CyberDropdown(coachGameEl, () => {});
-      ddCoachGame.setOptions([
-        { value: 'overwatch', label: '🎮 Overwatch 2' },
-        { value: 'rivals',    label: '⚔️ Marvel Rivals' },
-        { value: 'destiny',   label: '🌌 Destiny 2' },
-      ]);
-      ddCoachGame.setValue('overwatch', '🎮 Overwatch 2');
-    }
-
-    // ✅ New tournament bracket format dropdown
-    const bracketEl = document.getElementById('new-t-bracket');
-    if (bracketEl) {
-      ddNewTournamentBracket = new CyberDropdown(bracketEl, () => {});
-      ddNewTournamentBracket.setOptions([
-        { value: 'single_elim',  label: '⚡ Single Elimination' },
-        { value: 'double_elim',  label: '🔁 Double Elimination' },
-        { value: 'swiss',        label: '🔀 Swiss' },
-        { value: 'round_robin',  label: '🔄 Round Robin' },
-      ]);
-      ddNewTournamentBracket.setValue('single_elim', '⚡ Single Elimination');
-    }
-
-    // ✅ Default tournament game dropdown
-    const gameEl = document.getElementById('tournament-game');
-    if (gameEl) {
-      ddTournamentGame = new CyberDropdown(gameEl, () => {});
-      ddTournamentGame.setOptions([
-        { value: 'overwatch', label: '🎮 Overwatch 2' },
-        { value: 'rivals', label: '⚔️ Marvel Rivals' },
-        { value: 'destiny', label: '🌌 Destiny 2' },
-      ]);
-      ddTournamentGame.setValue('overwatch', '🎮 Overwatch 2');
-    }
-  }
-
-  // Override onPlatformChange to use custom dropdown value
-  function onPlatformChange(val) {
-    const platform = val || (ddPlatform ? ddPlatform.getValue() : 'twitch');
-    clearSelectedStreamer();
-    const searchEl = document.getElementById('alert-search');
-    const manualEl = document.getElementById('manual-entry');
-    const resultsEl = document.getElementById('search-results');
-    if (searchEl) searchEl.value = '';
-    if (resultsEl) resultsEl.style.display = 'none';
-    if (platform === 'tiktok' || platform === 'kick') {
-      if (searchEl) searchEl.style.display = 'none';
-      if (manualEl) manualEl.style.display = 'block';
-    } else {
-      if (searchEl) searchEl.style.display = 'block';
-      if (manualEl) manualEl.style.display = 'none';
-    }
-  }
-
-  function populateChannels(channels, selectEl) {
-    if (!ddAlertChannel) return;
-    const categories = channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position);
-    const others = channels.filter(c => c.type !== 4).sort((a,b) => a.position - b.position);
-    const groups = [];
-
-    categories.forEach(cat => {
-      const children = others.filter(c => c.parent_id === cat.id);
-      if (children.length > 0) {
-        groups.push({
-          label: '📁 ' + cat.name.toUpperCase(),
-          options: children.map(ch => ({
-            value: ch.id,
-            label: (ch.type === 2 ? '🔊 ' : '# ') + ch.name
-          }))
-        });
-      }
-    });
-
-    const uncategorized = others.filter(c => !c.parent_id);
-    if (uncategorized.length > 0) {
-      groups.push({
-        label: '— Uncategorized —',
-        options: uncategorized.map(ch => ({ value: ch.id, label: '# ' + ch.name }))
-      });
-    }
-
-    ddAlertChannel.setOptions([], groups);
-    ddAlertChannel.setValue('', '— Pick a channel —');
-  }
-
-  async function addAlert() {
-    const platform = ddPlatform ? ddPlatform.getValue() : 'twitch';
-    const channelId = ddAlertChannel ? ddAlertChannel.getValue() : '';
-    const errorEl = document.getElementById('alert-error');
-    errorEl.style.display = 'none';
-
-    let username = '';
-    if (platform === 'tiktok' || platform === 'kick') {
-      username = document.getElementById('alert-manual')?.value.trim() || '';
-    } else {
-      username = selectedStreamer?.username || document.getElementById('alert-search')?.value.trim() || '';
-    }
-
-    if (!username) { errorEl.textContent = '// Error: Please select or enter a streamer'; errorEl.style.display = 'block'; return; }
-    if (!channelId) { errorEl.textContent = '// Error: Please select an alert channel'; errorEl.style.display = 'block'; return; }
-
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    const { error } = await sb.from('social_alerts').insert({
-      discord_server_id: selectedGuildId || discordId,
-      platform,
-      username,
-      alert_channel_id: channelId,
-      enabled: true
-    });
-
-    if (error) { errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return; }
-    showSaved('alert-saved');
-    clearSelectedStreamer();
-    if (document.getElementById('alert-search')) document.getElementById('alert-search').value = '';
-    if (document.getElementById('alert-manual')) document.getElementById('alert-manual').value = '';
-    ddAlertChannel.setValue('', '— Pick a channel —');
-    loadAlerts();
-  }
-
-  async function loadUserServers() {
-    try {
-      const { data: { session } } = await sb.auth.getSession();
-      if (!session?.provider_token) return;
-      const res = await fetch('https://discord.com/api/users/@me/guilds', {
-        headers: { 'Authorization': `Bearer ${session.provider_token}` }
-      });
+      const res = await fetch('https://discord.com/api/users/@me/guilds', { headers: { 'Authorization': `Bearer ${session.provider_token}` } });
       if (!res.ok) return;
       const guilds = await res.json();
       userGuilds = guilds.filter(g => (parseInt(g.permissions) & 0x8) === 0x8);
       if (!ddServerSelect) return;
-      const opts = [{ value: '', label: '— Select server —', disabled: true },
-        ...userGuilds.map(g => ({ value: g.id, label: g.name }))];
+      const opts = [{ value: '', label: '— Select server —', disabled: true }, ...userGuilds.map(g => ({ value: g.id, label: g.name }))];
       ddServerSelect.setOptions(opts);
-      if (userGuilds.length === 1) {
-        ddServerSelect.setValue(userGuilds[0].id, userGuilds[0].name);
-        onServerChange(userGuilds[0].id);
-      }
-    } catch (err) {
-      console.error('Error loading servers:', err.message);
-    }
+      if (userGuilds.length === 1) { ddServerSelect.setValue(userGuilds[0].id, userGuilds[0].name); onServerChange(userGuilds[0].id); }
+    } catch (err) { console.error('Error loading servers:', err.message); }
   }
 
   async function onServerChange(guildId) {
     selectedGuildId = guildId;
-
-    // Update warning banner based on server selection
     const warning = document.getElementById('bot-config-server-warning');
     const warningIcon = document.getElementById('bot-warning-icon');
     const warningText = document.getElementById('bot-warning-text');
     if (warning) {
       if (guildId) {
-        // Server selected — switch to neon green
-        warning.style.border = '1px solid rgba(0,255,136,0.5)';
-        warning.style.background = 'rgba(0,255,136,0.07)';
-        warning.style.boxShadow = '0 0 12px rgba(0,255,136,0.15)';
+        warning.style.border = '1px solid rgba(0,255,136,0.5)'; warning.style.background = 'rgba(0,255,136,0.07)'; warning.style.boxShadow = '0 0 12px rgba(0,255,136,0.15)';
         if (warningIcon) warningIcon.textContent = '✅';
-        if (warningText) {
-          warningText.style.color = 'var(--green)';
-          warningText.style.textShadow = '0 0 8px rgba(0,255,136,0.5)';
-          const guild = userGuilds.find(g => g.id === guildId);
-          warningText.textContent = `Server selected: ${guild ? guild.name : guildId} — settings below are for this server.`;
-        }
+        if (warningText) { warningText.style.color = 'var(--green)'; warningText.style.textShadow = '0 0 8px rgba(0,255,136,0.5)'; const guild = userGuilds.find(g => g.id === guildId); warningText.textContent = `Server selected: ${guild ? guild.name : guildId} — settings below are for this server.`; }
       } else {
-        // No server — neon red/pink
-        warning.style.border = '1px solid rgba(255,45,120,0.5)';
-        warning.style.background = 'rgba(255,45,120,0.07)';
-        warning.style.boxShadow = '0 0 12px rgba(255,45,120,0.15)';
+        warning.style.border = '1px solid rgba(255,45,120,0.5)'; warning.style.background = 'rgba(255,45,120,0.07)'; warning.style.boxShadow = '0 0 12px rgba(255,45,120,0.15)';
         if (warningIcon) warningIcon.textContent = '⚠️';
-        if (warningText) {
-          warningText.style.color = 'var(--pink)';
-          warningText.style.textShadow = '0 0 8px rgba(255,45,120,0.5)';
-          warningText.textContent = 'No server selected — select your Discord server from the sidebar dropdown before editing any settings.';
-        }
+        if (warningText) { warningText.style.color = 'var(--pink)'; warningText.style.textShadow = '0 0 8px rgba(255,45,120,0.5)'; warningText.textContent = 'No server selected — select your Discord server from the sidebar dropdown before editing any settings.'; }
       }
     }
-
-    // Clear all Bot Config fields when server changes
     const fieldsToClear = ['ow-channel', 'rivals-channel', 'd2-channel', 'ow-role', 'rivals-role', 'd2-role', 'coaching-channel', 'coaching-log-channel'];
-    fieldsToClear.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
-    });
-
-    if (!guildId) {
-      if (ddAlertChannel) ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]);
-      return;
-    }
-
-    // Load this server's settings into Bot Config fields
+    fieldsToClear.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    if (!guildId) { if (ddAlertChannel) ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]); return; }
     try {
-      const { data: settings } = await sb
-        .from('server_settings')
-        .select('*')
-        .eq('discord_server_id', guildId)
-        .maybeSingle();
-
+      const { data: settings } = await sb.from('server_settings').select('*').eq('discord_server_id', guildId).maybeSingle();
       if (settings) {
         if (settings.ow_channel_id) document.getElementById('ow-channel').value = settings.ow_channel_id;
         if (settings.rivals_channel_id) document.getElementById('rivals-channel').value = settings.rivals_channel_id;
@@ -2128,326 +1355,249 @@
           if (f.coaching !== undefined) document.getElementById('toggle-coaching').checked = f.coaching;
         }
       }
-    } catch (err) {
-      console.error('Error loading server settings:', err.message);
-    }
-
-    // Load alert channels for this server
-    if (!ddAlertChannel) return;
-    ddAlertChannel.setOptions([{ value: '', label: 'Loading channels...', disabled: true }]);
+    } catch (err) { console.error('Error loading server settings:', err.message); }
+    if (ddAlertChannel) ddAlertChannel.setOptions([{ value: '', label: 'Loading channels...', disabled: true }]);
     try {
-      const edgeRes = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` },
-        body: JSON.stringify({ action: 'get_channels', guildId })
-      });
+      const edgeRes = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }, body: JSON.stringify({ action: 'get_channels', guildId }) });
       const edgeData = await edgeRes.json();
-      if (edgeData.channels && edgeData.channels.length > 0) {
-        populateChannels(edgeData.channels, null);
-      } else {
-        ddAlertChannel.setOptions([{ value: '', label: 'No channels found', disabled: true }]);
-      }
-    } catch (err) {
-      console.error('Error loading channels:', err.message);
-      ddAlertChannel.setOptions([{ value: '', label: 'Error loading channels', disabled: true }]);
-    }
-    loadAlerts();
-    loadCoachingSessions();
-    loadTournaments();
-
-    // Update coaching warning banner
+      if (edgeData.channels && edgeData.channels.length > 0) populateChannels(edgeData.channels, null);
+      else if (ddAlertChannel) ddAlertChannel.setOptions([{ value: '', label: 'No channels found', disabled: true }]);
+    } catch (err) { if (ddAlertChannel) ddAlertChannel.setOptions([{ value: '', label: 'Error loading channels', disabled: true }]); }
+    loadAlerts(); loadCoachingSessions(); loadTournaments();
     const coachingWarning = document.getElementById('coaching-server-warning');
     const coachingIcon = document.getElementById('coaching-warning-icon');
     const coachingText = document.getElementById('coaching-warning-text');
     if (coachingWarning && guildId) {
-      coachingWarning.style.border = '1px solid rgba(0,255,136,0.5)';
-      coachingWarning.style.background = 'rgba(0,255,136,0.07)';
-      coachingWarning.style.boxShadow = '0 0 12px rgba(0,255,136,0.15)';
+      coachingWarning.style.border = '1px solid rgba(0,255,136,0.5)'; coachingWarning.style.background = 'rgba(0,255,136,0.07)'; coachingWarning.style.boxShadow = '0 0 12px rgba(0,255,136,0.15)';
       if (coachingIcon) coachingIcon.textContent = '✅';
-      if (coachingText) {
-        coachingText.style.color = 'var(--green)';
-        coachingText.style.textShadow = '0 0 8px rgba(0,255,136,0.5)';
-        const guild = userGuilds.find(g => g.id === guildId);
-        coachingText.textContent = `Server selected: ${guild ? guild.name : guildId} — coaching settings below are for this server.`;
-      }
+      if (coachingText) { coachingText.style.color = 'var(--green)'; coachingText.style.textShadow = '0 0 8px rgba(0,255,136,0.5)'; const guild = userGuilds.find(g => g.id === guildId); coachingText.textContent = `Server selected: ${guild ? guild.name : guildId} — coaching settings below are for this server.`; }
     } else if (coachingWarning) {
-      coachingWarning.style.border = '1px solid rgba(255,45,120,0.5)';
-      coachingWarning.style.background = 'rgba(255,45,120,0.07)';
-      coachingWarning.style.boxShadow = '0 0 12px rgba(255,45,120,0.15)';
+      coachingWarning.style.border = '1px solid rgba(255,45,120,0.5)'; coachingWarning.style.background = 'rgba(255,45,120,0.07)'; coachingWarning.style.boxShadow = '0 0 12px rgba(255,45,120,0.15)';
       if (coachingIcon) coachingIcon.textContent = '⚠️';
-      if (coachingText) {
-        coachingText.style.color = 'var(--pink)';
-        coachingText.style.textShadow = '0 0 8px rgba(255,45,120,0.5)';
-        coachingText.textContent = 'No server selected — select your Discord server from the sidebar dropdown before editing coaching settings.';
-      }
+      if (coachingText) { coachingText.style.color = 'var(--pink)'; coachingText.style.textShadow = '0 0 8px rgba(255,45,120,0.5)'; coachingText.textContent = 'No server selected — select your Discord server from the sidebar dropdown before editing coaching settings.'; }
     }
   }
 
-  // ── Tournaments ──
-  // ── Coaching ──────────────────────────────────────────────────────────────
+  // ── SOCIAL ALERTS ─────────────────────────────────────────────────────────
+  let selectedStreamer = null;
+  let searchTimeout = null;
 
-  // ── Coach Profile ────────────────────────────────────────────────────────────
+  async function loadAlerts() {
+    const list = document.getElementById('alerts-list');
+    if (!list) return;
+    const serverId = selectedGuildId;
+    if (!serverId) { list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Select your server from the sidebar dropdown to view alerts.</p>'; return; }
+    const { data: alerts } = await sb.from('social_alerts').select('*').eq('discord_server_id', serverId);
+    if (!alerts || alerts.length === 0) { list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No alerts set up yet. Add one below.</p>'; return; }
+    const icons = { twitch: '🟣', youtube: '🔴', tiktok: '⚫', kick: '🟢' };
+    list.innerHTML = alerts.map(a => `<div class="platform-row" style="margin-bottom:8px"><div><p class="platform-name">${icons[a.platform] || '📡'} ${a.username}</p><p class="platform-sub">${a.platform} — channel ${a.alert_channel_id || 'not set'}</p></div><div style="display:flex;align-items:center;gap:8px"><span class="badge ${a.enabled ? 'badge-active' : 'badge-free'}">${a.enabled ? 'Active' : 'Paused'}</span><button onclick="removeAlert('${a.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
+  }
 
+  async function removeAlert(id) { await sb.from('social_alerts').delete().eq('id', id); loadAlerts(); }
+
+  function onPlatformChange(val) {
+    const platform = val || (ddPlatform ? ddPlatform.getValue() : 'twitch');
+    clearSelectedStreamer();
+    const searchEl = document.getElementById('alert-search'); const manualEl = document.getElementById('manual-entry'); const resultsEl = document.getElementById('search-results');
+    if (searchEl) searchEl.value = ''; if (resultsEl) resultsEl.style.display = 'none';
+    if (platform === 'tiktok' || platform === 'kick') { if (searchEl) searchEl.style.display = 'none'; if (manualEl) manualEl.style.display = 'block'; }
+    else { if (searchEl) searchEl.style.display = 'block'; if (manualEl) manualEl.style.display = 'none'; }
+  }
+
+  function onAlertSearch(value) {
+    clearTimeout(searchTimeout);
+    if (value.length < 2) { document.getElementById('search-results').style.display = 'none'; return; }
+    searchTimeout = setTimeout(() => searchStreamers(value), 400);
+  }
+
+  async function searchStreamers(query) {
+    const platform = ddPlatform ? ddPlatform.getValue() : 'twitch';
+    const resultsEl = document.getElementById('search-results');
+    resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Searching...</div>'; resultsEl.style.display = 'block';
+    try {
+      const res = await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }, body: JSON.stringify({ query, platform }) });
+      const data = await res.json();
+      if (!data.results || data.results.length === 0) { resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No results found</div>'; return; }
+      resultsEl.innerHTML = data.results.map(r => `<div onclick='selectStreamer(${JSON.stringify(r)})' style="display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(0,240,255,0.06)" onmouseover="this.style.background='rgba(0,240,255,0.06)'" onmouseout="this.style.background='none'">${r.avatar ? `<img src="${r.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover">` : '<div style="width:28px;height:28px;border-radius:50%;background:rgba(0,240,255,0.1)"></div>'}<div><p style="font-family:var(--font-display);font-size:0.65rem;font-weight:700;color:var(--white)">${r.displayName}</p><p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">@${r.username}${r.live ? ' 🔴 LIVE' : ''}${r.game ? ' — ' + r.game : ''}</p></div></div>`).join('');
+    } catch (err) { resultsEl.innerHTML = '<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--pink)">Search error — try entering username manually</div>'; }
+  }
+
+  function selectStreamer(streamer) {
+    selectedStreamer = streamer; document.getElementById('search-results').style.display = 'none'; document.getElementById('alert-search').value = streamer.displayName;
+    document.getElementById('selected-streamer').style.display = 'block'; document.getElementById('selected-avatar').src = streamer.avatar || '';
+    document.getElementById('selected-name').textContent = streamer.displayName; document.getElementById('selected-meta').textContent = `@${streamer.username}${streamer.live ? ' — 🔴 Currently Live' : ''}`;
+  }
+
+  function clearSelectedStreamer() { selectedStreamer = null; document.getElementById('selected-streamer').style.display = 'none'; }
+
+  async function addAlert() {
+    const platform = ddPlatform ? ddPlatform.getValue() : 'twitch';
+    const channelId = ddAlertChannel ? ddAlertChannel.getValue() : '';
+    const errorEl = document.getElementById('alert-error'); errorEl.style.display = 'none';
+    let username = '';
+    if (platform === 'tiktok' || platform === 'kick') username = document.getElementById('alert-manual')?.value.trim() || '';
+    else username = selectedStreamer?.username || document.getElementById('alert-search')?.value.trim() || '';
+    if (!username) { errorEl.textContent = '// Error: Please select or enter a streamer'; errorEl.style.display = 'block'; return; }
+    if (!channelId) { errorEl.textContent = '// Error: Please select an alert channel'; errorEl.style.display = 'block'; return; }
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const { error } = await sb.from('social_alerts').insert({ discord_server_id: selectedGuildId || discordId, platform, username, alert_channel_id: channelId, enabled: true });
+    if (error) { errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return; }
+    showSaved('alert-saved'); clearSelectedStreamer();
+    if (document.getElementById('alert-search')) document.getElementById('alert-search').value = '';
+    if (document.getElementById('alert-manual')) document.getElementById('alert-manual').value = '';
+    if (ddAlertChannel) ddAlertChannel.setValue('', '— Pick a channel —');
+    loadAlerts();
+  }
+
+  // ── CUSTOM DROPDOWN COMPONENT ─────────────────────────────────────────────
+  class CyberDropdown {
+    constructor(el, onChange) {
+      this.el = el; this.onChange = onChange; this.value = ''; this.options = []; this.isOpen = false;
+      this.wrap = document.createElement('div'); this.wrap.className = 'cd-wrap';
+      this.selected = document.createElement('div'); this.selected.className = 'cd-selected';
+      this.selected.innerHTML = '<span class="cd-label">— Select —</span><span class="cd-arrow">▼</span>';
+      this.selected.onclick = (e) => { e.stopPropagation(); this.toggle(); };
+      this.dropdown = document.createElement('div'); this.dropdown.className = 'cd-dropdown';
+      this.searchWrap = document.createElement('div'); this.searchWrap.className = 'cd-search-wrap';
+      this.searchInput = document.createElement('input'); this.searchInput.className = 'cd-search'; this.searchInput.placeholder = 'Type to filter...';
+      this.searchInput.oninput = () => this.filter(this.searchInput.value); this.searchInput.onclick = (e) => e.stopPropagation();
+      this.searchWrap.appendChild(this.searchInput);
+      this.list = document.createElement('div'); this.list.className = 'cd-list';
+      this.noResults = document.createElement('div'); this.noResults.className = 'cd-no-results'; this.noResults.textContent = 'No results found'; this.noResults.style.display = 'none';
+      this.dropdown.appendChild(this.searchWrap); this.dropdown.appendChild(this.list); this.dropdown.appendChild(this.noResults);
+      this.wrap.appendChild(this.selected); this.wrap.appendChild(this.dropdown);
+      el.parentNode.replaceChild(this.wrap, el);
+      document.addEventListener('click', () => this.close());
+    }
+    toggle() { this.isOpen ? this.close() : this.open(); }
+    open() { this.isOpen = true; this.selected.classList.add('open'); this.dropdown.classList.add('open'); this.searchInput.value = ''; this.filter(''); setTimeout(() => this.searchInput.focus(), 50); }
+    close() { this.isOpen = false; this.selected.classList.remove('open'); this.dropdown.classList.remove('open'); }
+    filter(query) {
+      const q = query.toLowerCase().trim(); let visibleCount = 0;
+      this.options.forEach(o => { const matches = !q || o.label.toLowerCase().includes(q); o.el.classList.toggle('hidden', !matches); if (matches) visibleCount++; });
+      this.list.querySelectorAll('.cd-group-label').forEach(lbl => { let hasVisible = false; let cur = lbl.nextElementSibling; while (cur && !cur.classList.contains('cd-group-label')) { if (!cur.classList.contains('hidden')) hasVisible = true; cur = cur.nextElementSibling; } lbl.style.display = hasVisible ? '' : 'none'; });
+      this.noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+    setOptions(options, groups) {
+      this.list.innerHTML = ''; this.options = [];
+      if (groups && groups.length > 0) { groups.forEach(group => { if (group.label) { const lbl = document.createElement('div'); lbl.className = 'cd-group-label'; lbl.textContent = group.label; this.list.appendChild(lbl); } group.options.forEach(opt => this._addOption(opt)); }); }
+      else { options.forEach(opt => this._addOption(opt)); }
+    }
+    _addOption(opt) {
+      const div = document.createElement('div'); div.className = 'cd-option' + (opt.disabled ? ' disabled' : ''); div.textContent = opt.label; div.dataset.value = opt.value || '';
+      div.onclick = (e) => { e.stopPropagation(); if (opt.disabled) return; this.setValue(opt.value, opt.label); this.close(); if (this.onChange) this.onChange(opt.value, opt.label); };
+      this.list.appendChild(div); this.options.push({ ...opt, el: div });
+    }
+    setValue(value, label) { this.value = value; this.selected.querySelector('.cd-label').textContent = label || '— Select —'; this.options.forEach(o => o.el.classList.toggle('selected', o.value === value)); }
+    getValue() { return this.value; }
+  }
+
+  let ddPlatform, ddServerSelect, ddAlertChannel, ddTournamentGame, ddNewTournamentGame, ddNewTournamentBracket, ddCoachGame, ddMyCoachGame;
+
+  function initDropdowns() {
+    const platEl = document.getElementById('alert-platform');
+    if (platEl) { ddPlatform = new CyberDropdown(platEl, (val) => onPlatformChange(val)); ddPlatform.setOptions([{ value: 'twitch', label: '🟣 Twitch' }, { value: 'youtube', label: '🔴 YouTube' }, { value: 'kick', label: '🟢 Kick' }, { value: 'tiktok', label: '⚫ TikTok' }]); ddPlatform.setValue('twitch', '🟣 Twitch'); }
+    const serverEl = document.getElementById('server-select');
+    if (serverEl) { ddServerSelect = new CyberDropdown(serverEl, (val) => onServerChange(val)); ddServerSelect.setOptions([{ value: '', label: '— Select server —', disabled: true }]); }
+    const chanEl = document.getElementById('alert-channel');
+    if (chanEl) { ddAlertChannel = new CyberDropdown(chanEl, () => {}); ddAlertChannel.setOptions([{ value: '', label: '— Select a server first —', disabled: true }]); }
+    const newGameEl = document.getElementById('new-t-game');
+    if (newGameEl) { ddNewTournamentGame = new CyberDropdown(newGameEl, () => {}); ddNewTournamentGame.setOptions([{ value: 'overwatch', label: '🎮 Overwatch 2' }, { value: 'rivals', label: '⚔️ Marvel Rivals' }, { value: 'destiny', label: '🌌 Destiny 2' }]); ddNewTournamentGame.setValue('overwatch', '🎮 Overwatch 2'); }
+    const myCoachGameEl = document.getElementById('my-coach-game');
+    if (myCoachGameEl) { ddMyCoachGame = new CyberDropdown(myCoachGameEl, () => {}); ddMyCoachGame.setOptions([{ value: 'overwatch', label: '🎮 Overwatch 2' }, { value: 'rivals', label: '⚔️ Marvel Rivals' }, { value: 'destiny', label: '🌌 Destiny 2' }]); ddMyCoachGame.setValue('overwatch', '🎮 Overwatch 2'); }
+    const coachGameEl = document.getElementById('coach-game');
+    if (coachGameEl) { ddCoachGame = new CyberDropdown(coachGameEl, () => {}); ddCoachGame.setOptions([{ value: 'overwatch', label: '🎮 Overwatch 2' }, { value: 'rivals', label: '⚔️ Marvel Rivals' }, { value: 'destiny', label: '🌌 Destiny 2' }]); ddCoachGame.setValue('overwatch', '🎮 Overwatch 2'); }
+    const bracketEl = document.getElementById('new-t-bracket');
+    if (bracketEl) { ddNewTournamentBracket = new CyberDropdown(bracketEl, () => {}); ddNewTournamentBracket.setOptions([{ value: 'single_elim', label: '⚡ Single Elimination' }, { value: 'double_elim', label: '🔁 Double Elimination' }, { value: 'swiss', label: '🔀 Swiss' }, { value: 'round_robin', label: '🔄 Round Robin' }]); ddNewTournamentBracket.setValue('single_elim', '⚡ Single Elimination'); }
+    const gameEl = document.getElementById('tournament-game');
+    if (gameEl) { ddTournamentGame = new CyberDropdown(gameEl, () => {}); ddTournamentGame.setOptions([{ value: 'overwatch', label: '🎮 Overwatch 2' }, { value: 'rivals', label: '⚔️ Marvel Rivals' }, { value: 'destiny', label: '🌌 Destiny 2' }]); ddTournamentGame.setValue('overwatch', '🎮 Overwatch 2'); }
+  }
+
+  function populateChannels(channels, selectEl) {
+    if (!ddAlertChannel) return;
+    const categories = channels.filter(c => c.type === 4).sort((a,b) => a.position - b.position);
+    const others = channels.filter(c => c.type !== 4).sort((a,b) => a.position - b.position);
+    const groups = [];
+    categories.forEach(cat => { const children = others.filter(c => c.parent_id === cat.id); if (children.length > 0) groups.push({ label: '📁 ' + cat.name.toUpperCase(), options: children.map(ch => ({ value: ch.id, label: (ch.type === 2 ? '🔊 ' : '# ') + ch.name })) }); });
+    const uncategorized = others.filter(c => !c.parent_id);
+    if (uncategorized.length > 0) groups.push({ label: '— Uncategorized —', options: uncategorized.map(ch => ({ value: ch.id, label: '# ' + ch.name })) });
+    ddAlertChannel.setOptions([], groups); ddAlertChannel.setValue('', '— Pick a channel —');
+  }
+
+  // ── COACH PROFILE ─────────────────────────────────────────────────────────
   async function loadMyCoachProfile() {
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
     if (!discordId) return;
-
-    const { data: profile } = await sb
-      .from('coaches')
-      .select('*')
-      .eq('discord_profile_id', discordId)
-      .maybeSingle();
-
+    const { data: profile } = await sb.from('coaches').select('*').eq('discord_profile_id', discordId).maybeSingle();
     if (profile) {
       if (profile.display_name) document.getElementById('my-coach-name').value = profile.display_name;
       if (profile.logo_url) document.getElementById('my-coach-logo').value = profile.logo_url;
-      if (profile.game) document.getElementById('my-coach-game').value = profile.game;
+      if (profile.game && ddMyCoachGame) ddMyCoachGame.setValue(profile.game, { overwatch: '🎮 Overwatch 2', rivals: '⚔️ Marvel Rivals', destiny: '🌌 Destiny 2' }[profile.game] || profile.game);
       if (profile.bio) document.getElementById('my-coach-bio').value = profile.bio;
       if (profile.strengths) document.getElementById('my-coach-strengths').value = profile.strengths;
       if (profile.cashapp_url) document.getElementById('my-coach-cashapp').value = profile.cashapp_url;
       if (profile.stripe_url) document.getElementById('my-coach-stripe').value = profile.stripe_url;
       updateCoachPreview(profile);
     }
-
-    // Load sessions
     await loadMyCoachingSessions(discordId);
   }
 
   async function saveMyCoachProfile() {
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    const errorEl = document.getElementById('my-coach-error');
-    errorEl.style.display = 'none';
-
+    const errorEl = document.getElementById('my-coach-error'); errorEl.style.display = 'none';
     const name = document.getElementById('my-coach-name').value.trim();
-    if (!name) {
-      errorEl.textContent = '// Error: Display name is required';
-      errorEl.style.display = 'block';
-      return;
-    }
-
+    if (!name) { errorEl.textContent = '// Error: Display name is required'; errorEl.style.display = 'block'; return; }
     const game = ddMyCoachGame ? ddMyCoachGame.getValue() : document.getElementById('my-coach-game').value;
-
-    const profileData = {
-      discord_profile_id: discordId,
-      discord_server_id: 'global',
-      display_name: name,
-      logo_url: document.getElementById('my-coach-logo').value.trim() || null,
-      game,
-      bio: document.getElementById('my-coach-bio').value.trim() || null,
-      strengths: document.getElementById('my-coach-strengths').value.trim() || null,
-      cashapp_url: document.getElementById('my-coach-cashapp').value.trim() || null,
-      stripe_url: document.getElementById('my-coach-stripe').value.trim() || null,
-      is_active: true,
-      discord_user_id: discordId,
-    };
-
+    const profileData = { discord_profile_id: discordId, discord_server_id: 'global', display_name: name, logo_url: document.getElementById('my-coach-logo').value.trim() || null, game, bio: document.getElementById('my-coach-bio').value.trim() || null, strengths: document.getElementById('my-coach-strengths').value.trim() || null, cashapp_url: document.getElementById('my-coach-cashapp').value.trim() || null, stripe_url: document.getElementById('my-coach-stripe').value.trim() || null, is_active: true, discord_user_id: discordId };
     const { error } = await sb.from('coaches').upsert(profileData, { onConflict: 'discord_profile_id' });
-
-    if (error) {
-      errorEl.textContent = '// Error: ' + error.message;
-      errorEl.style.display = 'block';
-      return;
-    }
-
-    updateCoachPreview(profileData);
-    showSaved('my-coach-saved');
+    if (error) { errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return; }
+    updateCoachPreview(profileData); showSaved('my-coach-saved');
   }
 
   function updateCoachPreview(profile) {
-    const preview = document.getElementById('coach-preview-card');
-    if (!preview) return;
+    const preview = document.getElementById('coach-preview-card'); if (!preview) return;
     const gameNames = { overwatch: 'Overwatch 2', rivals: 'Marvel Rivals', destiny: 'Destiny 2' };
     const gameIcons = { overwatch: '🎮', rivals: '⚔️', destiny: '🌌' };
-    preview.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        ${profile.logo_url ? `<img src="${profile.logo_url}" style="width:40px;height:40px;border-radius:50%;border:1px solid #00aaff;object-fit:cover" onerror="this.style.display='none'">` : `<div style="width:40px;height:40px;border-radius:50%;background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);display:flex;align-items:center;justify-content:center;font-size:18px">🎮</div>`}
-        <div>
-          <p style="font-family:var(--font-display);font-size:0.72rem;font-weight:700;color:#00aaff;text-shadow:0 0 8px #00aaff44">${profile.display_name || 'Coach'}</p>
-          <p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">${gameIcons[profile.game] || ''} ${gameNames[profile.game] || profile.game || ''}</p>
-        </div>
-      </div>
-      ${profile.bio ? `<p style="font-family:var(--font-mono);font-size:0.62rem;color:rgba(232,234,240,0.7);line-height:1.7;margin-bottom:8px">${profile.bio}</p>` : ''}
-      ${profile.strengths ? `<p style="font-family:var(--font-mono);font-size:0.6rem;color:#00aaff;margin-bottom:10px">💪 ${profile.strengths}</p>` : ''}
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-        ${profile.cashapp_url ? `<span style="font-family:var(--font-mono);font-size:0.58rem;color:#00d632;border:1px solid #00d632;padding:3px 8px">💵 CashApp</span>` : ''}
-        ${profile.stripe_url ? `<span style="font-family:var(--font-mono);font-size:0.58rem;color:#635bff;border:1px solid #635bff;padding:3px 8px">💳 Stripe</span>` : ''}
-      </div>
-    `;
+    preview.innerHTML = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">${profile.logo_url ? `<img src="${profile.logo_url}" style="width:40px;height:40px;border-radius:50%;border:1px solid #00aaff;object-fit:cover" onerror="this.style.display='none'">` : `<div style="width:40px;height:40px;border-radius:50%;background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);display:flex;align-items:center;justify-content:center;font-size:18px">🎮</div>`}<div><p style="font-family:var(--font-display);font-size:0.72rem;font-weight:700;color:#00aaff;text-shadow:0 0 8px #00aaff44">${profile.display_name || 'Coach'}</p><p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">${gameIcons[profile.game] || ''} ${gameNames[profile.game] || profile.game || ''}</p></div></div>${profile.bio ? `<p style="font-family:var(--font-mono);font-size:0.62rem;color:rgba(232,234,240,0.7);line-height:1.7;margin-bottom:8px">${profile.bio}</p>` : ''}${profile.strengths ? `<p style="font-family:var(--font-mono);font-size:0.6rem;color:#00aaff;margin-bottom:10px">💪 ${profile.strengths}</p>` : ''}<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${profile.cashapp_url ? `<span style="font-family:var(--font-mono);font-size:0.58rem;color:#00d632;border:1px solid #00d632;padding:3px 8px">💵 CashApp</span>` : ''}${profile.stripe_url ? `<span style="font-family:var(--font-mono);font-size:0.58rem;color:#635bff;border:1px solid #635bff;padding:3px 8px">💳 Stripe</span>` : ''}</div>`;
   }
 
   async function loadMyCoachingSessions(discordId) {
-    const list = document.getElementById('my-coaching-sessions');
-    if (!list) return;
-
-    const { data: sessions } = await sb
-      .from('coaching_sessions')
-      .select('*')
-      .eq('coach_discord_id', discordId)
-      .order('created_at', { ascending: false });
-
-    if (!sessions || sessions.length === 0) {
-      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No coaching sessions yet.</p>';
-      return;
-    }
-
-    const statusBadge = {
-      pending:   '<span class="badge badge-warning">Pending</span>',
-      active:    '<span class="badge badge-live">Active</span>',
-      completed: '<span class="badge badge-active">Completed</span>',
-      cancelled: '<span class="badge badge-free">Cancelled</span>',
-    };
-
-    list.innerHTML = sessions.map(s => `
-      <div class="platform-row" style="margin-bottom:8px">
-        <div>
-          <p class="platform-name">🎮 ${s.user_username || s.user_discord_id}</p>
-          <p class="platform-sub">${s.game || 'N/A'} — ${new Date(s.created_at).toLocaleDateString()}</p>
-        </div>
-        ${statusBadge[s.status] || statusBadge.pending}
-      </div>
-    `).join('');
+    const list = document.getElementById('my-coaching-sessions'); if (!list) return;
+    const { data: sessions } = await sb.from('coaching_sessions').select('*').eq('coach_discord_id', discordId).order('created_at', { ascending: false });
+    if (!sessions || sessions.length === 0) { list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No coaching sessions yet.</p>'; return; }
+    const statusBadge = { pending: '<span class="badge badge-warning">Pending</span>', active: '<span class="badge badge-live">Active</span>', completed: '<span class="badge badge-active">Completed</span>', cancelled: '<span class="badge badge-free">Cancelled</span>' };
+    list.innerHTML = sessions.map(s => `<div class="platform-row" style="margin-bottom:8px"><div><p class="platform-name">🎮 ${s.user_username || s.user_discord_id}</p><p class="platform-sub">${s.game || 'N/A'} — ${new Date(s.created_at).toLocaleDateString()}</p></div>${statusBadge[s.status] || statusBadge.pending}</div>`).join('');
   }
 
-  // ── Theme ──────────────────────────────────────────────────────────────────
-
-  async function setTheme(theme) {
-    // Apply theme to body
-    document.body.classList.remove('theme-red', 'theme-pink', 'theme-orange', 'theme-cyber');
-    if (theme === 'red') document.body.classList.add('theme-red');
-    if (theme === 'pink') document.body.classList.add('theme-pink');
-    if (theme === 'orange') document.body.classList.add('theme-orange');
-
-    // Update button states
-    document.getElementById('theme-btn-cyber').classList.toggle('active', theme === 'cyber');
-    document.getElementById('theme-btn-red').classList.toggle('active', theme === 'red');
-    document.getElementById('theme-btn-pink').classList.toggle('active', theme === 'pink');
-    document.getElementById('theme-btn-orange').classList.toggle('active', theme === 'orange');
-
-    // Save to Supabase
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    if (discordId) {
-      await sb.from('user_access').update({ theme }).eq('discord_id', discordId);
-    }
-
-    // Also save to localStorage as instant fallback
-    localStorage.setItem('auraai-theme', theme);
-    showSaved('theme-saved');
-  }
-
-  function applyTheme(theme) {
-    document.body.classList.remove('theme-red', 'theme-pink', 'theme-orange', 'theme-cyber');
-    if (theme === 'red') document.body.classList.add('theme-red');
-    if (theme === 'pink') document.body.classList.add('theme-pink');
-    if (theme === 'orange') document.body.classList.add('theme-orange');
-    const cyberBtn = document.getElementById('theme-btn-cyber');
-    const redBtn = document.getElementById('theme-btn-red');
-    const pinkBtn = document.getElementById('theme-btn-pink');
-    const orangeBtn = document.getElementById('theme-btn-orange');
-    if (cyberBtn) cyberBtn.classList.toggle('active', theme === 'cyber' || (!theme));
-    if (redBtn) redBtn.classList.toggle('active', theme === 'red');
-    if (pinkBtn) pinkBtn.classList.toggle('active', theme === 'pink');
-    if (orangeBtn) orangeBtn.classList.toggle('active', theme === 'orange');
-  }
-
+  // ── COACHING SESSIONS ─────────────────────────────────────────────────────
   async function loadCoachingSessions() {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    if (!discordId) return;
-
-    const { data: sessions } = await sb
-      .from('coaching_schedules')
-      .select('*')
-      .eq('discord_server_id', discordId)
-      .order('created_at', { ascending: false });
-
-    const list = document.getElementById('coaching-sessions-list');
-    if (!list) return;
-
-    if (!sessions || sessions.length === 0) {
-      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No sessions scheduled yet.</p>';
-      return;
-    }
-
-    const statusBadge = {
-      requested:  '<span class="badge badge-warning">Pending</span>',
-      confirmed:  '<span class="badge badge-active">Confirmed</span>',
-      completed:  '<span class="badge badge-free">Completed</span>',
-      cancelled:  '<span class="badge badge-free">Cancelled</span>',
-    };
-
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id; if (!discordId) return;
+    const { data: sessions } = await sb.from('coaching_schedules').select('*').eq('discord_server_id', discordId).order('created_at', { ascending: false });
+    const list = document.getElementById('coaching-sessions-list'); if (!list) return;
+    if (!sessions || sessions.length === 0) { list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No sessions scheduled yet.</p>'; return; }
+    const statusBadge = { requested: '<span class="badge badge-warning">Pending</span>', confirmed: '<span class="badge badge-active">Confirmed</span>', completed: '<span class="badge badge-free">Completed</span>', cancelled: '<span class="badge badge-free">Cancelled</span>' };
     const gameIcons = { overwatch: '🎮', rivals: '⚔️', destiny: '🌌' };
-
-    list.innerHTML = sessions.map(s => `
-      <div class="platform-row" style="margin-bottom:8px">
-        <div>
-          <p class="platform-name">${gameIcons[s.game] || '🎮'} ${s.username || s.player_discord_id}</p>
-          <p class="platform-sub">${s.game} — ${s.availability}${s.focus_areas ? ` — ${s.focus_areas}` : ''}</p>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          ${statusBadge[s.status] || statusBadge.requested}
-          <button onclick="deleteCoachingSession('${s.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button>
-        </div>
-      </div>
-    `).join('');
+    list.innerHTML = sessions.map(s => `<div class="platform-row" style="margin-bottom:8px"><div><p class="platform-name">${gameIcons[s.game] || '🎮'} ${s.username || s.player_discord_id}</p><p class="platform-sub">${s.game} — ${s.availability}${s.focus_areas ? ' — ' + s.focus_areas : ''}</p></div><div style="display:flex;align-items:center;gap:8px">${statusBadge[s.status] || statusBadge.requested}<button onclick="deleteCoachingSession('${s.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
   }
 
-  async function deleteCoachingSession(id) {
-    if (!confirm('Remove this coaching session?')) return;
-    await sb.from('coaching_schedules').delete().eq('id', id);
-    loadCoachingSessions();
-  }
+  async function deleteCoachingSession(id) { if (!confirm('Remove this coaching session?')) return; await sb.from('coaching_schedules').delete().eq('id', id); loadCoachingSessions(); }
 
+  // ── COACHES ───────────────────────────────────────────────────────────────
   async function loadCoaches() {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    if (!discordId) return;
-
-    const { data: coaches } = await sb
-      .from('coaches')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    const list = document.getElementById('coaches-list');
-    if (!list) return;
-
-    if (!coaches || coaches.length === 0) {
-      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No coaches added yet. Click + Add coach to add one.</p>';
-      return;
-    }
-
+    const { data: coaches } = await sb.from('coaches').select('*').order('created_at', { ascending: false });
+    const list = document.getElementById('coaches-list'); if (!list) return;
+    if (!coaches || coaches.length === 0) { list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No coaches added yet.</p>'; return; }
     const gameNames = { overwatch: 'Overwatch 2', rivals: 'Marvel Rivals', destiny: 'Destiny 2' };
     const gameIcons = { overwatch: '🎮', rivals: '⚔️', destiny: '🌌' };
-
-    list.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:4px">` +
-      coaches.map(c => `
-        <div style="background:var(--bg-2);border:1px solid rgba(0,240,255,0.15);padding:16px;position:relative;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-            ${c.logo_url ? `<img src="${c.logo_url}" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--cyan);object-fit:cover" onerror="this.style.display='none'">` : `<div style="width:40px;height:40px;border-radius:50%;background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.3);display:flex;align-items:center;justify-content:center;font-size:18px">🎮</div>`}
-            <div>
-              <p style="font-family:var(--font-display);font-size:0.72rem;font-weight:700;color:var(--cyan)">${c.display_name || 'Coach'}</p>
-              <p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">${gameIcons[c.game] || ''} ${gameNames[c.game] || c.game}</p>
-            </div>
-          </div>
-          ${c.bio ? `<p style="font-family:var(--font-mono);font-size:0.62rem;color:rgba(232,234,240,0.7);line-height:1.7;margin-bottom:8px">${c.bio}</p>` : ''}
-          ${c.strengths ? `<p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--purple);margin-bottom:10px">💪 ${c.strengths}</p>` : ''}
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-            ${c.cashapp_url ? `<a href="${c.cashapp_url}" target="_blank" style="font-family:var(--font-mono);font-size:0.58rem;color:#00d632;border:1px solid #00d632;padding:3px 8px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='rgba(0,214,50,0.1)'" onmouseout="this.style.background='none'">💵 CashApp</a>` : ''}
-            ${c.stripe_url ? `<a href="${c.stripe_url}" target="_blank" style="font-family:var(--font-mono);font-size:0.58rem;color:#635bff;border:1px solid #635bff;padding:3px 8px;text-decoration:none;transition:all 0.2s" onmouseover="this.style.background='rgba(99,91,255,0.1)'" onmouseout="this.style.background='none'">💳 Stripe</a>` : ''}
-          </div>
-          <button onclick="deleteCoach('${c.id}')" style="position:absolute;top:8px;right:8px;background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px">✕</button>
-        </div>
-      `).join('') + '</div>';
-
-    // Update payment links to first coach with links
-    const coachWithCashapp = coaches.find(c => c.cashapp_url);
-    const coachWithStripe = coaches.find(c => c.stripe_url);
+    list.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:4px">' + coaches.map(c => `<div style="background:var(--bg-2);border:1px solid rgba(0,240,255,0.15);padding:16px;position:relative;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))">${c.logo_url ? `<img src="${c.logo_url}" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--cyan);object-fit:cover;margin-bottom:8px" onerror="this.style.display='none'">` : `<div style="width:40px;height:40px;border-radius:50%;background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.3);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px">🎮</div>`}<p style="font-family:var(--font-display);font-size:0.72rem;font-weight:700;color:var(--cyan)">${c.display_name || 'Coach'}</p><p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey);margin-bottom:8px">${gameIcons[c.game] || ''} ${gameNames[c.game] || c.game}</p>${c.bio ? `<p style="font-family:var(--font-mono);font-size:0.62rem;color:rgba(232,234,240,0.7);line-height:1.7;margin-bottom:8px">${c.bio}</p>` : ''}${c.strengths ? `<p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--purple);margin-bottom:10px">💪 ${c.strengths}</p>` : ''}<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${c.cashapp_url ? `<a href="${c.cashapp_url}" target="_blank" style="font-family:var(--font-mono);font-size:0.58rem;color:#00d632;border:1px solid #00d632;padding:3px 8px;text-decoration:none">💵 CashApp</a>` : ''}${c.stripe_url ? `<a href="${c.stripe_url}" target="_blank" style="font-family:var(--font-mono);font-size:0.58rem;color:#635bff;border:1px solid #635bff;padding:3px 8px;text-decoration:none">💳 Stripe</a>` : ''}</div><button onclick="deleteCoach('${c.id}')" style="position:absolute;top:8px;right:8px;background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px">✕</button></div>`).join('') + '</div>';
+    const coachWithCashapp = coaches.find(c => c.cashapp_url); const coachWithStripe = coaches.find(c => c.stripe_url);
     if (coachWithCashapp) document.getElementById('cashapp-link').href = coachWithCashapp.cashapp_url;
     if (coachWithStripe) document.getElementById('stripe-link').href = coachWithStripe.stripe_url;
   }
 
   async function addCoach() {
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    const errorEl = document.getElementById('coach-error');
-    errorEl.style.display = 'none';
-
+    const errorEl = document.getElementById('coach-error'); errorEl.style.display = 'none';
     const name = document.getElementById('coach-name').value.trim();
     const coachDiscordId = document.getElementById('coach-discord-id').value.trim();
     const logo = document.getElementById('coach-logo').value.trim();
@@ -2456,180 +1606,83 @@
     const strengths = document.getElementById('coach-strengths').value.trim();
     const cashapp = document.getElementById('coach-cashapp').value.trim();
     const stripe = document.getElementById('coach-stripe').value.trim();
-
-    if (!name || !coachDiscordId) {
-      errorEl.textContent = '// Error: Display name and Discord ID are required';
-      errorEl.style.display = 'block';
-      return;
-    }
-
-    const { error } = await sb.from('coaches').insert({
-      discord_server_id: 'global',
-      discord_profile_id: coachDiscordId,
-      display_name: name,
-      logo_url: logo || null,
-      game,
-      bio: bio || null,
-      strengths: strengths || null,
-      cashapp_url: cashapp || null,
-      stripe_url: stripe || null,
-    });
-
-    if (error) {
-      errorEl.textContent = '// Error: ' + error.message;
-      errorEl.style.display = 'block';
-      return;
-    }
-
-    // Reset form
-    document.getElementById('coach-name').value = '';
-    document.getElementById('coach-discord-id').value = '';
-    document.getElementById('coach-logo').value = '';
-    document.getElementById('coach-bio').value = '';
-    document.getElementById('coach-strengths').value = '';
-    document.getElementById('coach-cashapp').value = '';
-    document.getElementById('coach-stripe').value = '';
-    document.getElementById('add-coach-form').style.display = 'none';
-    showSaved('coach-saved');
-    loadCoaches();
+    if (!name || !coachDiscordId) { errorEl.textContent = '// Error: Display name and Discord ID are required'; errorEl.style.display = 'block'; return; }
+    const { error } = await sb.from('coaches').insert({ discord_server_id: 'global', discord_profile_id: coachDiscordId, display_name: name, logo_url: logo || null, game, bio: bio || null, strengths: strengths || null, cashapp_url: cashapp || null, stripe_url: stripe || null });
+    if (error) { errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return; }
+    document.getElementById('coach-name').value = ''; document.getElementById('coach-discord-id').value = ''; document.getElementById('coach-logo').value = ''; document.getElementById('coach-bio').value = ''; document.getElementById('coach-strengths').value = ''; document.getElementById('coach-cashapp').value = ''; document.getElementById('coach-stripe').value = '';
+    document.getElementById('add-coach-form').style.display = 'none'; showSaved('coach-saved'); loadCoaches();
   }
 
-  async function deleteCoach(id) {
-    if (!confirm('Remove this coach?')) return;
-    await sb.from('coaches').delete().eq('id', id);
-    loadCoaches();
-  }
+  async function deleteCoach(id) { if (!confirm('Remove this coach?')) return; await sb.from('coaches').delete().eq('id', id); loadCoaches(); }
 
   async function saveCoachingSettings() {
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    await sb.from('server_settings').upsert({
-      owner_discord_id: discordId,
-      discord_server_id: selectedGuildId || discordId,
-      coaching_channel_id: document.getElementById('coaching-channel').value.trim() || null,
-      coaching_log_channel_id: document.getElementById('coaching-log-channel').value.trim() || null,
-      feature_flags: {
-        battletag: document.getElementById('toggle-battletag').checked,
-        ask_td: document.getElementById('toggle-td').checked,
-        scrims: document.getElementById('toggle-scrims').checked,
-        coaching: document.getElementById('toggle-coaching').checked,
-        coaching_allow: document.getElementById('toggle-coaching-allow').checked,
-        coaching_auto: document.getElementById('toggle-coaching-auto').checked,
-        coaching_max_sessions: parseInt(document.getElementById('coaching-max-sessions').value),
-      }
-    }, { onConflict: 'owner_discord_id' });
+    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId || discordId, coaching_channel_id: document.getElementById('coaching-channel').value.trim() || null, coaching_log_channel_id: document.getElementById('coaching-log-channel').value.trim() || null, feature_flags: { battletag: document.getElementById('toggle-battletag').checked, ask_td: document.getElementById('toggle-td').checked, scrims: document.getElementById('toggle-scrims').checked, coaching: document.getElementById('toggle-coaching').checked, coaching_allow: document.getElementById('toggle-coaching-allow').checked, coaching_auto: document.getElementById('toggle-coaching-auto').checked, coaching_max_sessions: parseInt(document.getElementById('coaching-max-sessions').value) } }, { onConflict: 'owner_discord_id' });
     showSaved('coaching-saved');
   }
 
+  // ── TOURNAMENTS ───────────────────────────────────────────────────────────
   async function loadTournaments() {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    if (!discordId) return;
-
-    const { data: tournaments } = await sb
-      .from('tournaments')
-      .select('*')
-      .eq('discord_server_id', discordId)
-      .order('created_at', { ascending: false });
-
-    const list = document.getElementById('tournaments-list');
-    if (!list) return;
-
-    if (!tournaments || tournaments.length === 0) {
-      list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No tournaments yet. Click + New tournament to create one.</p>';
-      return;
-    }
-
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id; if (!discordId) return;
+    const { data: tournaments } = await sb.from('tournaments').select('*').eq('discord_server_id', discordId).order('created_at', { ascending: false });
+    const list = document.getElementById('tournaments-list'); if (!list) return;
+    if (!tournaments || tournaments.length === 0) { list.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No tournaments yet. Click + New tournament to create one.</p>'; return; }
     const gameIcons = { overwatch: '🎮', rivals: '⚔️', destiny: '🌌' };
-    const statusBadge = {
-      registration: '<span class="badge badge-pro">Reg open</span>',
-      in_progress:  '<span class="badge badge-live">Live</span>',
-      completed:    '<span class="badge badge-active">Done</span>',
-      cancelled:    '<span class="badge badge-free">Cancelled</span>',
-    };
-
-    const bracketLabels = {
-      single_elim: 'Single Elim',
-      double_elim: 'Double Elim',
-      swiss:       'Swiss',
-      round_robin: 'Round Robin',
-    };
-
-    list.innerHTML = tournaments.map(t => `
-      <div class="platform-row" style="margin-bottom:8px">
-        <div>
-          <p class="platform-name">${gameIcons[t.game] || '🏆'} ${t.name}</p>
-          <p class="platform-sub">${t.max_players} players — ${t.game} — ${bracketLabels[t.bracket_type] || 'Single Elim'} — ${(t.status || 'registration').replace('_', ' ')}</p>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          ${statusBadge[t.status] || statusBadge.registration}
-          <button onclick="deleteTournament('${t.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button>
-        </div>
-      </div>
-    `).join('');
+    const statusBadge = { registration: '<span class="badge badge-pro">Reg open</span>', in_progress: '<span class="badge badge-live">Live</span>', completed: '<span class="badge badge-active">Done</span>', cancelled: '<span class="badge badge-free">Cancelled</span>' };
+    const bracketLabels = { single_elim: 'Single Elim', double_elim: 'Double Elim', swiss: 'Swiss', round_robin: 'Round Robin' };
+    list.innerHTML = tournaments.map(t => `<div class="platform-row" style="margin-bottom:8px"><div><p class="platform-name">${gameIcons[t.game] || '🏆'} ${t.name}</p><p class="platform-sub">${t.max_players} players — ${t.game} — ${bracketLabels[t.bracket_type] || 'Single Elim'} — ${(t.status || 'registration').replace('_', ' ')}</p></div><div style="display:flex;align-items:center;gap:8px">${statusBadge[t.status] || statusBadge.registration}<button onclick="deleteTournament('${t.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
   }
 
   async function createTournament() {
-    const name       = document.getElementById('new-t-name').value.trim();
-    const game       = ddNewTournamentGame ? ddNewTournamentGame.getValue() : document.getElementById('new-t-game').value;
-    const bracket    = ddNewTournamentBracket ? ddNewTournamentBracket.getValue() : document.getElementById('new-t-bracket').value;
+    const name = document.getElementById('new-t-name').value.trim();
+    const game = ddNewTournamentGame ? ddNewTournamentGame.getValue() : document.getElementById('new-t-game').value;
+    const bracket = ddNewTournamentBracket ? ddNewTournamentBracket.getValue() : document.getElementById('new-t-bracket').value;
     const maxPlayers = parseInt(document.getElementById('new-t-max').value);
-    const ruleset    = document.getElementById('new-t-ruleset').value.trim();
-    const errorEl    = document.getElementById('tournament-error');
-    errorEl.style.display = 'none';
-
-    if (!name) {
-      errorEl.textContent = '// Error: Please enter a tournament name';
-      errorEl.style.display = 'block';
-      return;
-    }
-
+    const ruleset = document.getElementById('new-t-ruleset').value.trim();
+    const errorEl = document.getElementById('tournament-error'); errorEl.style.display = 'none';
+    if (!name) { errorEl.textContent = '// Error: Please enter a tournament name'; errorEl.style.display = 'block'; return; }
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-
-    const { error } = await sb.from('tournaments').insert({
-      name,
-      game,
-      bracket_type: bracket,
-      max_players: maxPlayers,
-      ruleset: ruleset || null,
-      status: 'registration',
-      discord_server_id: selectedGuildId || discordId,
-    });
-
-    if (error) {
-      errorEl.textContent = '// Error: ' + error.message;
-      errorEl.style.display = 'block';
-      return;
-    }
-
-    document.getElementById('new-t-name').value = '';
-    document.getElementById('new-t-ruleset').value = '';
-    document.getElementById('new-tournament-form').style.display = 'none';
-    showSaved('tournament-created');
-    loadTournaments();
+    const { error } = await sb.from('tournaments').insert({ name, game, bracket_type: bracket, max_players: maxPlayers, ruleset: ruleset || null, status: 'registration', discord_server_id: selectedGuildId || discordId });
+    if (error) { errorEl.textContent = '// Error: ' + error.message; errorEl.style.display = 'block'; return; }
+    document.getElementById('new-t-name').value = ''; document.getElementById('new-t-ruleset').value = ''; document.getElementById('new-tournament-form').style.display = 'none';
+    showSaved('tournament-created'); loadTournaments();
   }
 
-  async function deleteTournament(id) {
-    if (!confirm('Are you sure you want to delete this tournament?')) return;
-    await sb.from('tournaments').delete().eq('id', id);
-    loadTournaments();
-  }
+  async function deleteTournament(id) { if (!confirm('Are you sure you want to delete this tournament?')) return; await sb.from('tournaments').delete().eq('id', id); loadTournaments(); }
 
   async function saveTournamentDefaults() {
-    const discordId  = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    const game       = ddTournamentGame ? ddTournamentGame.getValue() : document.getElementById('tournament-game').value;
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const game = ddTournamentGame ? ddTournamentGame.getValue() : document.getElementById('tournament-game').value;
     const maxPlayers = document.getElementById('default-max-players').value;
-    await sb.from('server_settings').upsert({
-      owner_discord_id: discordId,
-      discord_server_id: selectedGuildId || discordId,
-      feature_flags: {
-        battletag:                document.getElementById('toggle-battletag').checked,
-        ask_td:                   document.getElementById('toggle-td').checked,
-        scrims:                   document.getElementById('toggle-scrims').checked,
-        coaching:                 document.getElementById('toggle-coaching').checked,
-        default_tournament_game:  game,
-        default_max_players:      parseInt(maxPlayers),
-      }
-    }, { onConflict: 'owner_discord_id' });
+    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId || discordId, feature_flags: { battletag: document.getElementById('toggle-battletag').checked, ask_td: document.getElementById('toggle-td').checked, scrims: document.getElementById('toggle-scrims').checked, coaching: document.getElementById('toggle-coaching').checked, default_tournament_game: game, default_max_players: parseInt(maxPlayers) } }, { onConflict: 'owner_discord_id' });
     showSaved('tournament-saved');
+  }
+
+  // ── THEME ─────────────────────────────────────────────────────────────────
+  async function setTheme(theme) {
+    document.body.classList.remove('theme-red', 'theme-pink', 'theme-orange', 'theme-cyber');
+    if (theme === 'red') document.body.classList.add('theme-red');
+    if (theme === 'pink') document.body.classList.add('theme-pink');
+    if (theme === 'orange') document.body.classList.add('theme-orange');
+    document.getElementById('theme-btn-cyber').classList.toggle('active', theme === 'cyber');
+    document.getElementById('theme-btn-red').classList.toggle('active', theme === 'red');
+    document.getElementById('theme-btn-pink').classList.toggle('active', theme === 'pink');
+    document.getElementById('theme-btn-orange').classList.toggle('active', theme === 'orange');
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (discordId) await sb.from('user_access').update({ theme }).eq('discord_id', discordId);
+    localStorage.setItem('auraai-theme', theme); showSaved('theme-saved');
+  }
+
+  function applyTheme(theme) {
+    document.body.classList.remove('theme-red', 'theme-pink', 'theme-orange', 'theme-cyber');
+    if (theme === 'red') document.body.classList.add('theme-red');
+    if (theme === 'pink') document.body.classList.add('theme-pink');
+    if (theme === 'orange') document.body.classList.add('theme-orange');
+    const cyberBtn = document.getElementById('theme-btn-cyber'); const redBtn = document.getElementById('theme-btn-red'); const pinkBtn = document.getElementById('theme-btn-pink'); const orangeBtn = document.getElementById('theme-btn-orange');
+    if (cyberBtn) cyberBtn.classList.toggle('active', theme === 'cyber' || !theme);
+    if (redBtn) redBtn.classList.toggle('active', theme === 'red');
+    if (pinkBtn) pinkBtn.classList.toggle('active', theme === 'pink');
+    if (orangeBtn) orangeBtn.classList.toggle('active', theme === 'orange');
   }
 
   init();
