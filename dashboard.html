@@ -235,6 +235,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
       Overview
     </button>
+    <button class="sidebar-item" onclick="setTab('commands', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      Commands
+    </button>
     <button class="sidebar-item" onclick="setTab('bot', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
       Bot config
@@ -315,6 +319,251 @@
             Add to Server
           </a>
         </div>
+      </div>
+    </div>
+
+    <!-- COMMANDS -->
+    <div class="tab" id="tab-commands">
+      <p class="page-tag">// discord commands</p>
+      <p class="page-title">COMMANDS</p>
+
+      <style>
+        .cmd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .cmd-card { background: rgba(8,13,26,0.9); border: 1px solid rgba(0,240,255,0.1); padding: 16px 18px; position: relative; }
+        .cmd-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(0,240,255,0.3),transparent); }
+        .cmd-name { font-family: var(--font-mono); font-size: 0.78rem; color: var(--cyan); letter-spacing: 1px; margin-bottom: 6px; }
+        .cmd-name span { color: rgba(0,240,255,0.5); }
+        .cmd-desc { font-family: var(--font-mono); font-size: 0.62rem; color: rgba(232,234,240,0.65); line-height: 1.8; margin-bottom: 10px; }
+        .cmd-who { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 1px; padding: 3px 8px; text-transform: uppercase; }
+        .cmd-who.admin { color: var(--pink); border: 1px solid rgba(255,45,120,0.4); background: rgba(255,45,120,0.05); }
+        .cmd-who.captain { color: var(--yellow); border: 1px solid rgba(255,230,0,0.4); background: rgba(255,230,0,0.05); }
+        .cmd-who.anyone { color: var(--green); border: 1px solid rgba(0,255,136,0.4); background: rgba(0,255,136,0.05); }
+        .cmd-who.pro { color: var(--purple); border: 1px solid rgba(180,79,255,0.4); background: rgba(180,79,255,0.05); }
+        .cmd-section-label { font-family: var(--font-display); font-size: 0.62rem; font-weight: 700; letter-spacing: 3px; color: var(--cyan); text-transform: uppercase; margin-bottom: 12px; margin-top: 4px; padding-bottom: 8px; border-bottom: 1px solid rgba(0,240,255,0.1); }
+        .cmd-params { font-family: var(--font-mono); font-size: 0.6rem; color: var(--grey); margin-top: 6px; line-height: 1.7; }
+        .cmd-params b { color: var(--cyan); }
+      </style>
+
+      <!-- LEGEND -->
+      <div class="section-card" style="margin-bottom:20px">
+        <p class="card-title">// access levels</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <span class="cmd-who anyone">● Anyone in server</span>
+          <span class="cmd-who captain">● Team captain only</span>
+          <span class="cmd-who pro">● Pro tier + admin</span>
+          <span class="cmd-who admin">● Tournament admin only</span>
+        </div>
+      </div>
+
+      <!-- GENERAL -->
+      <p class="cmd-section-label">// General</p>
+      <div class="cmd-grid">
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>chat</p>
+          <p class="cmd-desc">Have a conversation with AuraAI. Ask anything — game tips, hero advice, tournament rules, or just chat.</p>
+          <div class="cmd-params"><b>message</b> — Your message to AuraAI</div>
+          <div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>stats</p>
+          <p class="cmd-desc">Look up a player's competitive stats. Use in the Overwatch channel for BattleTag lookup, or the Marvel Rivals channel for username lookup.</p>
+          <div class="cmd-params"><b>username</b> — BattleTag (OW: Name#1234) or username (Rivals)</div>
+          <div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>top-heroes</p>
+          <p class="cmd-desc">Shows the top 10 heroes ranked by win rate for the current patch. Use in the game's designated channel.</p>
+          <div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div>
+        </div>
+
+      </div>
+
+      <!-- TOURNAMENTS -->
+      <p class="cmd-section-label">// Tournaments</p>
+      <div class="cmd-grid">
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>tournament-create</p>
+          <p class="cmd-desc">Create a new tournament. Sets the game, format (Swiss, Single/Double Elim, Round Robin), max teams, ruleset, and results channel.</p>
+          <div class="cmd-params">
+            <b>name</b> — Tournament name<br>
+            <b>game</b> — OW2, Marvel Rivals, or Destiny 2<br>
+            <b>format</b> — Swiss / Single Elim / Double Elim / Round Robin<br>
+            <b>max_teams</b> — (optional) Max number of teams<br>
+            <b>ruleset</b> — (optional) Rules text<br>
+            <b>results_channel</b> — (optional) Channel ID for results
+          </div>
+          <div style="margin-top:10px"><span class="cmd-who pro">● Pro — Admin</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>tournament-end</p>
+          <p class="cmd-desc">End an active tournament and post final standings to the results channel.</p>
+          <div class="cmd-params"><b>tournament_name</b> — Name of the tournament to end</div>
+          <div style="margin-top:10px"><span class="cmd-who pro">● Pro — Admin</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>tournament-cancel</p>
+          <p class="cmd-desc">Cancel an active tournament. Optionally provide a reason that gets posted to the channel.</p>
+          <div class="cmd-params">
+            <b>tournament_name</b> — Name of the tournament<br>
+            <b>reason</b> — (optional) Reason for cancellation
+          </div>
+          <div style="margin-top:10px"><span class="cmd-who pro">● Pro — Admin</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>register</p>
+          <p class="cmd-desc">Register yourself for an active tournament. Requires your in-game tag and the game you're registering for.</p>
+          <div class="cmd-params">
+            <b>tournament_name</b> — Tournament to register for<br>
+            <b>game_tag</b> — Your BattleTag, Bungie ID, or username<br>
+            <b>game</b> — Game you're registering for
+          </div>
+          <div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>team-create</p>
+          <p class="cmd-desc">Create a team for a tournament. You become the team captain. Other players can be added with /roster-add.</p>
+          <div class="cmd-params">
+            <b>team_name</b> — Your team name<br>
+            <b>tournament_name</b> — Tournament to create the team for
+          </div>
+          <div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>roster-add</p>
+          <p class="cmd-desc">Add a player to your team roster. Must be a registered player. Only the team captain can add players.</p>
+          <div class="cmd-params">
+            <b>player</b> — @mention the player to add<br>
+            <b>tournament_name</b> — Tournament name
+          </div>
+          <div style="margin-top:10px"><span class="cmd-who captain">● Team Captain</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>report-score</p>
+          <p class="cmd-desc">Report your team's Swiss match result. Both captains must report. If scores match, the result is submitted for admin confirmation. If they conflict, an admin is notified to resolve the dispute.</p>
+          <div class="cmd-params">
+            <b>tournament_name</b> — Tournament name<br>
+            <b>your_score</b> — Your team's score (maps won)<br>
+            <b>opponent_score</b> — Opponent's score (maps won)
+          </div>
+          <div style="margin-top:10px"><span class="cmd-who captain">● Team Captain</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>ask-td</p>
+          <p class="cmd-desc">Ask the AI Tournament Director a question about rules, disputes, standings, or anything tournament-related. AuraAI will respond based on the tournament's ruleset.</p>
+          <div class="cmd-params">
+            <b>question</b> — Your question<br>
+            <b>tournament_name</b> — Tournament name
+          </div>
+          <div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>scrim-schedule</p>
+          <p class="cmd-desc">Schedule a scrim or find opponents to practice against. AuraAI will post your availability and help coordinate matchups.</p>
+          <div class="cmd-params">
+            <b>game</b> — Game for the scrim<br>
+            <b>availability</b> — When you're available<br>
+            <b>notes</b> — (optional) Additional info
+          </div>
+          <div style="margin-top:10px"><span class="cmd-who pro">● Pro</span></div>
+        </div>
+
+      </div>
+
+      <!-- MATCH SYSTEM -->
+      <p class="cmd-section-label">// FACEIT Match System</p>
+      <div class="cmd-grid">
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>match-start</p>
+          <p class="cmd-desc">Kicks off a FACEIT-style match. Creates a private thread for both teams, posts the full ruleset, and immediately begins the Map 1 hero ban phase. The team that sets up the lobby bans second.</p>
+          <div class="cmd-params">
+            <b>tournament</b> — Tournament name<br>
+            <b>team1</b> — First team name (lobby captain's team by default)<br>
+            <b>team2</b> — Second team name<br>
+            <b>lobby_team</b> — (optional) Which team is setting up the lobby<br>
+            <b>mode_rotation</b> — (optional) Comma-separated mode order e.g. Control,Flashpoint,Hybrid,Escort,Push
+          </div>
+          <div style="margin-top:10px"><span class="cmd-who admin">● Tournament Admin</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>ban-hero</p>
+          <p class="cmd-desc">Submit your hero ban for the current map. Rules enforced automatically: you cannot ban the same role twice in a map, and a hero can only be banned once per match. Use inside your match thread.</p>
+          <div class="cmd-params"><b>hero</b> — Hero name to ban (e.g. Mercy, Genji, Reinhardt)</div>
+          <div style="margin-top:10px"><span class="cmd-who captain">● Team Captain</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>match-code</p>
+          <p class="cmd-desc">Share the custom game match code with both teams inside the match thread. The code is posted cleanly so all players can join.</p>
+          <div class="cmd-params"><b>code</b> — The custom game match code</div>
+          <div style="margin-top:10px"><span class="cmd-who captain">● Team Captain</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>map-result</p>
+          <p class="cmd-desc">Report which team won the current map. The bot updates the series score, determines the next mode in the rotation, and prompts the losing team to pick the next map.</p>
+          <div class="cmd-params"><b>winner</b> — Name of the team that won the map</div>
+          <div style="margin-top:10px"><span class="cmd-who captain">● Either Captain</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>map-pick</p>
+          <p class="cmd-desc">Losing team picks the next map from the current mode's map pool. After picking, the ban phase begins — the team that picked bans second.</p>
+          <div class="cmd-params"><b>map</b> — Map name to play next (must be in the current mode pool)</div>
+          <div style="margin-top:10px"><span class="cmd-who captain">● Losing Team Captain</span></div>
+        </div>
+
+      </div>
+
+      <!-- COACHING -->
+      <p class="cmd-section-label">// Coaching</p>
+      <div class="cmd-grid">
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>coaching-schedule</p>
+          <p class="cmd-desc">Request a coaching session. AuraAI posts available coaches for your game. Reply with the coach's number to create a private session thread with your coach and AuraAI.</p>
+          <div class="cmd-params">
+            <b>game</b> — Game you want coaching for<br>
+            <b>availability</b> — When you're available<br>
+            <b>focus_areas</b> — (optional) What you want to work on<br>
+            <b>notes</b> — (optional) Additional notes
+          </div>
+          <div style="margin-top:10px"><span class="cmd-who pro">● Pro</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>coaching-end</p>
+          <p class="cmd-desc">End an active coaching session from inside the session thread. Posts the full transcript to the coaching log channel and archives the thread.</p>
+          <div style="margin-top:10px"><span class="cmd-who captain">● Coach or Player</span></div>
+        </div>
+
+        <div class="cmd-card">
+          <p class="cmd-name">/<span>/</span>coach-apply</p>
+          <p class="cmd-desc">Apply to become a coach on AuraAI. Submit your display name, game, bio, and specialties. You'll receive a Discord DM when your application is reviewed.</p>
+          <div class="cmd-params">
+            <b>display_name</b> — Your coach name shown to players<br>
+            <b>game</b> — Game you want to coach<br>
+            <b>bio</b> — Your background and experience<br>
+            <b>strengths</b> — (optional) Your specialties<br>
+            <b>cashapp</b> — (optional) Payment URL<br>
+            <b>stripe</b> — (optional) Payment URL
+          </div>
+          <div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div>
+        </div>
+
       </div>
     </div>
 
@@ -851,7 +1100,7 @@
         if (serverSelectWrap) serverSelectWrap.style.display = 'none';
         document.querySelectorAll('.sidebar-item').forEach(btn => {
           const tab = btn.getAttribute('onclick') || '';
-          if (tab.includes('tournaments') || tab.includes('alerts') || tab.includes('billing') || tab.includes('overview') || tab.includes('bot') || tab.includes('applications')) btn.style.display = 'none';
+          if (tab.includes('tournaments') || tab.includes('alerts') || tab.includes('billing') || tab.includes('overview') || tab.includes('bot') || tab.includes('applications') || tab.includes('commands')) btn.style.display = 'none';
         });
         document.querySelectorAll('.sidebar-section').forEach(section => {
           if (section.textContent.includes('Main') || section.textContent.includes('Features') || section.textContent.includes('Account')) section.style.display = 'none';
