@@ -286,10 +286,24 @@
         <span class="badge badge-active" id="overview-status">● PRO ACTIVE</span>
       </div>
       <div class="stats-grid">
-        <div class="stat-card"><p class="stat-label">Members served</p><p class="stat-val">1,284</p></div>
-        <div class="stat-card"><p class="stat-label">Tournaments run</p><p class="stat-val">47</p></div>
-        <div class="stat-card"><p class="stat-label">Commands today</p><p class="stat-val">312</p></div>
+        <div class="stat-card"><p class="stat-label">Servers</p><p class="stat-val" id="stat-servers">—</p></div>
+        <div class="stat-card"><p class="stat-label">Tournaments run</p><p class="stat-val" id="stat-tournaments">—</p></div>
+        <div class="stat-card"><p class="stat-label">Commands run</p><p class="stat-val" id="stat-commands">—</p></div>
       </div>
+
+      <!-- THEME SELECTOR -->
+      <div class="section-card">
+        <p class="card-title">// dashboard theme</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7;letter-spacing:0.5px">Choose your dashboard color scheme. Saved per account.</p>
+        <div class="theme-toggle-wrap">
+          <button class="theme-btn active" id="theme-btn-cyber" onclick="setTheme('cyber')">🔵 Cyber Blue</button>
+          <button class="theme-btn" id="theme-btn-red" onclick="setTheme('red')">🔴 Crimson Red</button>
+          <button class="theme-btn" id="theme-btn-pink" onclick="setTheme('pink')">🩷 Neon Pink</button>
+          <button class="theme-btn" id="theme-btn-orange" onclick="setTheme('orange')">🟠 Neon Orange</button>
+        </div>
+        <p class="save-msg" id="theme-saved" style="margin-top:10px">// Theme saved</p>
+      </div>
+
       <div class="section-card">
         <p class="card-title">// quick actions</p>
         <div style="display:flex;flex-wrap:wrap;gap:10px">
@@ -301,13 +315,6 @@
             Add to Server
           </a>
         </div>
-      </div>
-      <div class="section-card">
-        <p class="card-title">// recent activity</p>
-        <div class="activity-row"><span class="activity-text">Tournament "OW Spring Cup" created</span><span class="activity-time">2h ago</span></div>
-        <div class="activity-row"><span class="activity-text">Twitch alert — xAuraPlayer went live</span><span class="activity-time">5h ago</span></div>
-        <div class="activity-row"><span class="activity-text">12 players registered for Rivals bracket</span><span class="activity-time">1d ago</span></div>
-        <div class="activity-row"><span class="activity-text">Coaching session scheduled — Team Nova</span><span class="activity-time">2d ago</span></div>
       </div>
     </div>
 
@@ -729,16 +736,6 @@
         <button class="btn-secondary">Manage in Stripe</button>
       </div>
       <div class="section-card">
-        <p class="card-title">// dashboard theme</p>
-        <div class="theme-toggle-wrap">
-          <button class="theme-btn active" id="theme-btn-cyber" onclick="setTheme('cyber')">🔵 Cyber Blue</button>
-          <button class="theme-btn" id="theme-btn-red" onclick="setTheme('red')">🔴 Crimson Red</button>
-          <button class="theme-btn" id="theme-btn-pink" onclick="setTheme('pink')">🩷 Neon Pink</button>
-          <button class="theme-btn" id="theme-btn-orange" onclick="setTheme('orange')">🟠 Neon Orange</button>
-        </div>
-        <p class="save-msg" id="theme-saved" style="margin-top:10px">// Theme saved</p>
-      </div>
-      <div class="section-card">
         <p class="card-title">// grant access</p>
         <label class="field-label">Discord user ID</label>
         <input class="cyber-input" type="text" id="grant-id" placeholder="e.g. 123456789012345678">
@@ -802,6 +799,28 @@
   let currentUser = null, userAccess = null, isOwner = false, isDelegate = false, isCoach = false;
   let selectedGuildId = null, userGuilds = [];
   let activeTournamentId = null, activeSwissTab = 'standings';
+
+  // ── OVERVIEW STATS ────────────────────────────────────────────────────────
+  async function loadOverviewStats() {
+    try {
+      // Bot stats (servers + commands)
+      const { data: stats } = await sb.from('bot_stats').select('servers_count, commands_total').limit(1).maybeSingle();
+      const serversEl = document.getElementById('stat-servers');
+      const commandsEl = document.getElementById('stat-commands');
+      if (serversEl) serversEl.textContent = stats?.servers_count?.toLocaleString() ?? '0';
+      if (commandsEl) commandsEl.textContent = stats?.commands_total?.toLocaleString() ?? '0';
+    } catch (err) {
+      console.error('loadOverviewStats (bot_stats) error:', err.message);
+    }
+    try {
+      // Completed tournaments count
+      const { count } = await sb.from('tournaments').select('id', { count: 'exact', head: true }).eq('status', 'completed');
+      const tournamentsEl = document.getElementById('stat-tournaments');
+      if (tournamentsEl) tournamentsEl.textContent = (count ?? 0).toLocaleString();
+    } catch (err) {
+      console.error('loadOverviewStats (tournaments) error:', err.message);
+    }
+  }
 
   // ── INIT ──────────────────────────────────────────────────────────────────
   async function init() {
@@ -889,6 +908,7 @@
     }
     document.getElementById('loading').classList.add('hidden');
     loadAlerts(); loadTournaments(); loadCoachingSessions(); loadCoaches(); loadUserServers();
+    loadOverviewStats();
   }
 
   // ── SWISS TOURNAMENT SYSTEM ───────────────────────────────────────────────
