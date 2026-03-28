@@ -241,7 +241,11 @@
     </button>
     <button class="sidebar-item" onclick="setTab('bot', this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>
-      Bot config
+      Bot Config
+    </button>
+    <button class="sidebar-item" onclick="setTab('twitchbot', this); loadTwitchBotConfig()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 2H3v16h5v4l4-4h5l4-4V2z"/><line x1="11" y1="7" x2="11" y2="11"/><line x1="15" y1="7" x2="15" y2="11"/></svg>
+      Twitch Bot
     </button>
 
     <span class="sidebar-section">// Features</span>
@@ -565,6 +569,99 @@
         </div>
 
       </div>
+    </div>
+
+    <!-- TWITCH BOT -->
+    <div class="tab" id="tab-twitchbot">
+      <p class="page-tag">// twitch integration</p>
+      <p class="page-title">TWITCH BOT</p>
+
+      <div class="section-card">
+        <p class="card-title">// bot credentials</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7">
+          AuraAI will join your Twitch chat and respond to commands. Generate an OAuth token at
+          <a href="https://twitchapps.com/tmi/" target="_blank" style="color:var(--cyan)">twitchapps.com/tmi</a>
+          using the account you want the bot to post from.
+        </p>
+        <div class="form-group">
+          <label class="form-label">Twitch Channel (your channel name, no #)</label>
+          <input class="form-input" id="tb-channel" type="text" placeholder="e.g. nutritiousdeath" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bot OAuth Token</label>
+          <input class="form-input" id="tb-token" type="password" placeholder="oauth:xxxxxxxxxxxxxxxxxxxxxx" />
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
+          <label style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="tb-enabled" style="accent-color:var(--cyan)" />
+            Enable Twitch Bot
+          </label>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <p class="card-title">// command responses</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:16px;line-height:1.7">
+          Fill in the links and info that AuraAI will post when commands are triggered in your chat.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label">!discord — Discord invite link</label>
+          <input class="form-input" id="tb-discord" type="text" placeholder="https://discord.gg/yourserver" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">!youtube — YouTube channel URL</label>
+          <input class="form-input" id="tb-youtube" type="text" placeholder="https://youtube.com/@yourchannel" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">!tiktok — TikTok profile URL</label>
+          <input class="form-input" id="tb-tiktok" type="text" placeholder="https://tiktok.com/@yourusername" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">!socials — All your socials (one per line)</label>
+          <textarea class="form-input" id="tb-socials" rows="4" placeholder="🎮 Discord: https://discord.gg/...&#10;📺 YouTube: https://youtube.com/@...&#10;🎵 TikTok: https://tiktok.com/@..." style="resize:vertical"></textarea>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <p class="card-title">// available commands</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7">
+          These commands are automatically active once the bot is enabled.
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">
+          <div style="background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);padding:12px 14px">
+            <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--cyan);margin-bottom:4px">!discord</p>
+            <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);line-height:1.6">Posts your Discord invite link in chat</p>
+          </div>
+          <div style="background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);padding:12px 14px">
+            <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--cyan);margin-bottom:4px">!game</p>
+            <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);line-height:1.6">Fetches the current game live from Twitch and posts it</p>
+          </div>
+          <div style="background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);padding:12px 14px">
+            <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--cyan);margin-bottom:4px">!uptime</p>
+            <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);line-height:1.6">Posts how long the stream has been live</p>
+          </div>
+          <div style="background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);padding:12px 14px">
+            <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--cyan);margin-bottom:4px">!youtube</p>
+            <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);line-height:1.6">Posts your YouTube channel link</p>
+          </div>
+          <div style="background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);padding:12px 14px">
+            <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--cyan);margin-bottom:4px">!tiktok</p>
+            <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);line-height:1.6">Posts your TikTok profile link</p>
+          </div>
+          <div style="background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);padding:12px 14px">
+            <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--cyan);margin-bottom:4px">!socials</p>
+            <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);line-height:1.6">Posts all your social links at once</p>
+          </div>
+          <div style="background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);padding:12px 14px">
+            <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--cyan);margin-bottom:4px">!commands</p>
+            <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);line-height:1.6">Lists all available chat commands</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="saveTwitchBotConfig()">Save Twitch Bot Settings</button>
+      <p class="save-msg" id="twitchbot-saved">// Settings saved</p>
     </div>
 
     <!-- BOT CONFIG -->
@@ -1069,6 +1166,48 @@
     } catch (err) {
       console.error('loadOverviewStats (tournaments) error:', err.message);
     }
+  }
+
+  // ── TWITCH BOT CONFIG ─────────────────────────────────────────────────────
+  async function loadTwitchBotConfig() {
+    if (!currentUser) return;
+    try {
+      const { data } = await sb.from('twitch_bot_config').select('*').eq('owner_discord_id', currentUser.discord_id).maybeSingle();
+      if (!data) return;
+      document.getElementById('tb-channel').value = data.twitch_channel || '';
+      document.getElementById('tb-token').value = data.bot_oauth_token || '';
+      document.getElementById('tb-discord').value = data.discord_invite || '';
+      document.getElementById('tb-youtube').value = data.youtube_url || '';
+      document.getElementById('tb-tiktok').value = data.tiktok_url || '';
+      document.getElementById('tb-socials').value = data.custom_socials || '';
+      document.getElementById('tb-enabled').checked = data.enabled || false;
+    } catch (err) { console.error('loadTwitchBotConfig error:', err.message); }
+  }
+
+  async function saveTwitchBotConfig() {
+    if (!currentUser) return;
+    const config = {
+      owner_discord_id: currentUser.discord_id,
+      twitch_channel: document.getElementById('tb-channel').value.trim().replace('#',''),
+      bot_oauth_token: document.getElementById('tb-token').value.trim(),
+      discord_invite: document.getElementById('tb-discord').value.trim(),
+      youtube_url: document.getElementById('tb-youtube').value.trim(),
+      tiktok_url: document.getElementById('tb-tiktok').value.trim(),
+      custom_socials: document.getElementById('tb-socials').value.trim(),
+      enabled: document.getElementById('tb-enabled').checked,
+      updated_at: new Date().toISOString()
+    };
+    try {
+      const { data: existing } = await sb.from('twitch_bot_config').select('id').eq('owner_discord_id', currentUser.discord_id).maybeSingle();
+      if (existing) {
+        await sb.from('twitch_bot_config').update(config).eq('owner_discord_id', currentUser.discord_id);
+      } else {
+        await sb.from('twitch_bot_config').insert(config);
+      }
+      const saved = document.getElementById('twitchbot-saved');
+      saved.style.opacity = '1';
+      setTimeout(() => saved.style.opacity = '0', 2500);
+    } catch (err) { console.error('saveTwitchBotConfig error:', err.message); alert('Error saving config: ' + err.message); }
   }
 
   // ── INIT ──────────────────────────────────────────────────────────────────
