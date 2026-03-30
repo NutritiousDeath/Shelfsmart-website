@@ -46,8 +46,8 @@
     .nav-tier.coach-badge{border:1px solid #00aaff!important;color:#00aaff!important;box-shadow:0 0 10px #00aaff,0 0 30px #00aaff44!important}
     .btn-signout{font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);background:none;border:1px solid rgba(74,80,104,0.4);padding:4px 10px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s}
     .btn-signout:hover{color:var(--pink);border-color:var(--pink)}
-    .layout{display:grid;grid-template-columns:200px 1fr;min-height:100vh;padding-top:52px}
-    .sidebar{border-right:1px solid rgba(0,240,255,0.1);padding:24px 10px;background:rgba(8,13,26,0.6);position:sticky;top:52px;height:calc(100vh - 52px);display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+    .layout{display:grid;grid-template-columns:200px 1fr;min-height:100vh;padding-top:84px}
+    .sidebar{border-right:1px solid rgba(0,240,255,0.1);padding:24px 10px;background:rgba(8,13,26,0.6);position:sticky;top:84px;height:calc(100vh - 84px);display:flex;flex-direction:column;gap:2px;overflow-y:auto}
     .sidebar-section{font-family:var(--font-mono);font-size:0.58rem;color:var(--grey);letter-spacing:3px;text-transform:uppercase;padding:14px 12px 6px}
     .sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 12px;font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);cursor:pointer;border:none;background:none;width:100%;text-align:left;text-transform:uppercase;letter-spacing:1px;transition:all 0.2s;border-left:2px solid transparent}
     .sidebar-item:hover{color:var(--cyan);background:rgba(0,240,255,0.04)}
@@ -217,6 +217,106 @@
     <button class="btn-signout" onclick="signOut()">Sign out</button>
   </div>
 </nav>
+
+<style>
+  .founders-bar {
+    position: fixed;
+    top: 52px;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    height: 32px;
+    background: rgba(5,8,16,0.95);
+    border-bottom: 1px solid rgba(0,240,255,0.1);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    gap: 0;
+  }
+  .founders-label {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 2px;
+    color: rgba(0,240,255,0.4);
+    padding: 0 14px;
+    border-right: 1px solid rgba(0,240,255,0.1);
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+  .founders-marquee-wrap {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  .founders-marquee {
+    display: inline-flex;
+    gap: 0;
+    white-space: nowrap;
+    animation: founders-scroll 28s linear infinite;
+  }
+  .founders-marquee:hover { animation-play-state: paused; }
+  @keyframes founders-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .founder-name {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 0.62rem;
+    letter-spacing: 2px;
+    padding: 0 28px;
+    background: linear-gradient(90deg, #00e5ff, #ff3ea5, #ff4d4d, #ff8c00, #ff3ea5, #00e5ff);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 4s linear infinite;
+    filter: drop-shadow(0 0 8px rgba(0,229,255,0.4)) drop-shadow(0 0 20px rgba(255,62,165,0.25));
+  }
+  .founder-sep {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    color: rgba(0,240,255,0.2);
+    padding: 0 4px;
+    -webkit-text-fill-color: rgba(0,240,255,0.2);
+  }
+  @keyframes gradient-shift {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+</style>
+
+<div class="founders-bar">
+  <span class="founders-label">// Founders</span>
+  <div class="founders-marquee-wrap">
+    <div class="founders-marquee" id="founders-marquee">
+      <!-- Names injected by JS below — duplicated for seamless loop -->
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── FOUNDERS LIST — edit names here ──────────────────────────────────────
+  const FOUNDERS = [
+    'Founder Name 1',
+    'Founder Name 2',
+    'Founder Name 3',
+    'Founder Name 4',
+    'Founder Name 5',
+  ];
+  // ─────────────────────────────────────────────────────────────────────────
+
+  (function buildMarquee() {
+    const el = document.getElementById('founders-marquee');
+    if (!el) return;
+    // Build one set, then duplicate for seamless infinite scroll
+    const buildSet = () => FOUNDERS.map((name, i) =>
+      `<span class="founder-name">${name}</span><span class="founder-sep">✦</span>`
+    ).join('');
+    el.innerHTML = buildSet() + buildSet();
+  })();
+</script>
 
 <!-- LAYOUT -->
 <div class="layout">
