@@ -1157,9 +1157,15 @@
   async function loadTwitchBotConfig() {
     if (!currentUser) return;
 
-    // Pro gate check
-    const { data: access } = await sb.from('user_access').select('tier, status, expires_at').eq('discord_id', currentUser.discord_id).maybeSingle();
-    const isPro = access && access.status === 'active' && (access.tier === 'pro' || access.tier === 'lifetime') && (!access.expires_at || new Date(access.expires_at) > new Date());
+    // Owner always has access
+    let isPro = currentUser.discord_id === '176467159000678400';
+
+    if (!isPro) {
+      const { data: access } = await sb.from('user_access').select('tier, status, expires_at').eq('discord_id', currentUser.discord_id).maybeSingle();
+      isPro = !!(access && access.status === 'active' &&
+        (access.tier === 'pro' || access.tier === 'lifetime') &&
+        (!access.expires_at || new Date(access.expires_at) > new Date()));
+    }
 
     if (!isPro) {
       document.getElementById('twitchbot-pro-badge').style.display = 'inline';
