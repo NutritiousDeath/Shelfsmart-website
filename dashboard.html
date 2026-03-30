@@ -245,7 +245,7 @@
     </button>
     <button class="sidebar-item" onclick="setTab('twitchbot', this); loadTwitchBotConfig()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 2H3v16h5v4l4-4h5l4-4V2z"/><line x1="11" y1="7" x2="11" y2="11"/><line x1="15" y1="7" x2="15" y2="11"/></svg>
-      Twitch Bot
+      Twitch Bot <span id="twitchbot-pro-badge" style="display:none;font-size:0.5rem;color:var(--pink);letter-spacing:1px;margin-left:4px">PRO</span>
     </button>
 
     <span class="sidebar-section">// Features</span>
@@ -580,22 +580,16 @@
         <p class="card-title">// bot credentials</p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7">
           AuraAI will join your Twitch chat and respond to commands. Generate an OAuth token at
-          <a href="https://twitchapps.com/tmi/" target="_blank" style="color:var(--cyan)">twitchapps.com/tmi</a>
-          using the account you want the bot to post from.
+          <a href="https://twitchtokengenerator.com" target="_blank" style="color:var(--cyan)">twitchtokengenerator.com</a>
+          using the account you want the bot to post from. Select <b style="color:var(--cyan)">Chat Token</b> and check <b style="color:var(--cyan)">chat:read</b>, <b style="color:var(--cyan)">chat:edit</b>, <b style="color:var(--cyan)">user:read:chat</b>.
         </p>
-        <div class="form-group">
-          <label class="form-label">Twitch Channel (your channel name, no #)</label>
-          <input class="form-input" id="tb-channel" type="text" placeholder="e.g. nutritiousdeath" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Bot OAuth Token</label>
-          <input class="form-input" id="tb-token" type="password" placeholder="oauth:xxxxxxxxxxxxxxxxxxxxxx" />
-        </div>
-        <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
-          <label style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);display:flex;align-items:center;gap:8px;cursor:pointer">
-            <input type="checkbox" id="tb-enabled" style="accent-color:var(--cyan)" />
-            Enable Twitch Bot
-          </label>
+        <label class="field-label">Twitch Channel (your channel name, no #)</label>
+        <input class="cyber-input" id="tb-channel" type="text" placeholder="e.g. nutritiousdeath" autocomplete="off" />
+        <label class="field-label" style="margin-top:12px">Bot OAuth Token</label>
+        <input class="cyber-input" id="tb-token" type="password" placeholder="oauth:xxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+        <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
+          <input type="checkbox" id="tb-enabled" style="accent-color:var(--cyan);width:14px;height:14px;cursor:pointer" />
+          <label for="tb-enabled" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);cursor:pointer;letter-spacing:1px">Enable Twitch Bot</label>
         </div>
       </div>
 
@@ -604,23 +598,14 @@
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:16px;line-height:1.7">
           Fill in the links and info that AuraAI will post when commands are triggered in your chat.
         </p>
-
-        <div class="form-group">
-          <label class="form-label">!discord — Discord invite link</label>
-          <input class="form-input" id="tb-discord" type="text" placeholder="https://discord.gg/yourserver" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">!youtube — YouTube channel URL</label>
-          <input class="form-input" id="tb-youtube" type="text" placeholder="https://youtube.com/@yourchannel" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">!tiktok — TikTok profile URL</label>
-          <input class="form-input" id="tb-tiktok" type="text" placeholder="https://tiktok.com/@yourusername" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">!socials — All your socials (one per line)</label>
-          <textarea class="form-input" id="tb-socials" rows="4" placeholder="🎮 Discord: https://discord.gg/...&#10;📺 YouTube: https://youtube.com/@...&#10;🎵 TikTok: https://tiktok.com/@..." style="resize:vertical"></textarea>
-        </div>
+        <label class="field-label">!discord — Discord invite link</label>
+        <input class="cyber-input" id="tb-discord" type="text" placeholder="https://discord.gg/yourserver" autocomplete="off" />
+        <label class="field-label" style="margin-top:12px">!youtube — YouTube channel URL</label>
+        <input class="cyber-input" id="tb-youtube" type="text" placeholder="https://youtube.com/@yourchannel" autocomplete="off" />
+        <label class="field-label" style="margin-top:12px">!tiktok — TikTok profile URL</label>
+        <input class="cyber-input" id="tb-tiktok" type="text" placeholder="https://tiktok.com/@yourusername" autocomplete="off" />
+        <label class="field-label" style="margin-top:12px">!socials — All your socials (one per line)</label>
+        <textarea class="cyber-input" id="tb-socials" rows="4" placeholder="🎮 Discord: https://discord.gg/...&#10;📺 YouTube: https://youtube.com/@...&#10;🎵 TikTok: https://tiktok.com/@..." style="resize:vertical;min-height:90px;line-height:1.7"></textarea>
       </div>
 
       <div class="section-card">
@@ -1171,6 +1156,33 @@
   // ── TWITCH BOT CONFIG ─────────────────────────────────────────────────────
   async function loadTwitchBotConfig() {
     if (!currentUser) return;
+
+    // Pro gate check
+    const { data: access } = await sb.from('user_access').select('tier, status, expires_at').eq('discord_id', currentUser.discord_id).maybeSingle();
+    const isPro = access && access.status === 'active' && (access.tier === 'pro' || access.tier === 'lifetime') && (!access.expires_at || new Date(access.expires_at) > new Date());
+
+    if (!isPro) {
+      document.getElementById('twitchbot-pro-badge').style.display = 'inline';
+      document.getElementById('tab-twitchbot').innerHTML = `
+        <p class="page-tag">// twitch integration</p>
+        <p class="page-title">TWITCH BOT</p>
+        <div class="section-card" style="text-align:center;padding:40px 20px">
+          <p style="font-size:2rem;margin-bottom:12px">🔒</p>
+          <p style="font-family:var(--font-display);font-size:0.9rem;font-weight:700;letter-spacing:3px;color:var(--cyan);margin-bottom:10px">PRO FEATURE</p>
+          <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:20px">
+            The AuraAI Twitch Bot is available on the Pro plan.<br>
+            Add AuraAI to your Twitch chat — respond to commands,<br>
+            post your Discord, socials, game info, and more.
+          </p>
+          <a href="https://uptight-shelf-smart-flow.com/login.html" style="font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;padding:10px 24px;background:transparent;color:var(--cyan);border:1px solid var(--cyan);cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:all 0.2s;text-transform:uppercase;text-decoration:none;display:inline-block">
+            ⚡ Upgrade to Pro
+          </a>
+        </div>
+      `;
+      return;
+    }
+
+    // Pro user — load config
     try {
       const { data } = await sb.from('twitch_bot_config').select('*').eq('owner_discord_id', currentUser.discord_id).maybeSingle();
       if (!data) return;
