@@ -1156,12 +1156,13 @@
   // ── TWITCH BOT CONFIG ─────────────────────────────────────────────────────
   async function loadTwitchBotConfig() {
     if (!currentUser) return;
+    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
 
     // Owner always has access
-    let isPro = currentUser.discord_id === '176467159000678400';
+    let isPro = discordId === '176467159000678400';
 
     if (!isPro) {
-      const { data: access } = await sb.from('user_access').select('tier, status, expires_at').eq('discord_id', currentUser.discord_id).maybeSingle();
+      const { data: access } = await sb.from('user_access').select('tier, status, expires_at').eq('discord_id', discordId).maybeSingle();
       isPro = !!(access && access.status === 'active' &&
         (access.tier === 'pro' || access.tier === 'lifetime') &&
         (!access.expires_at || new Date(access.expires_at) > new Date()));
@@ -1190,7 +1191,7 @@
 
     // Pro user — load config
     try {
-      const { data } = await sb.from('twitch_bot_config').select('*').eq('owner_discord_id', currentUser.discord_id).maybeSingle();
+      const { data } = await sb.from('twitch_bot_config').select('*').eq('owner_discord_id', discordId).maybeSingle();
       if (!data) return;
       document.getElementById('tb-channel').value = data.twitch_channel || '';
       document.getElementById('tb-token').value = data.bot_oauth_token || '';
@@ -1204,8 +1205,9 @@
 
   async function saveTwitchBotConfig() {
     if (!currentUser) return;
+    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
     const config = {
-      owner_discord_id: currentUser.discord_id,
+      owner_discord_id: discordId,
       twitch_channel: document.getElementById('tb-channel').value.trim().replace('#',''),
       bot_oauth_token: document.getElementById('tb-token').value.trim(),
       discord_invite: document.getElementById('tb-discord').value.trim(),
@@ -1216,9 +1218,9 @@
       updated_at: new Date().toISOString()
     };
     try {
-      const { data: existing } = await sb.from('twitch_bot_config').select('id').eq('owner_discord_id', currentUser.discord_id).maybeSingle();
+      const { data: existing } = await sb.from('twitch_bot_config').select('id').eq('owner_discord_id', discordId).maybeSingle();
       if (existing) {
-        await sb.from('twitch_bot_config').update(config).eq('owner_discord_id', currentUser.discord_id);
+        await sb.from('twitch_bot_config').update(config).eq('owner_discord_id', discordId);
       } else {
         await sb.from('twitch_bot_config').insert(config);
       }
