@@ -943,6 +943,9 @@
           <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);margin-top:8px">Search not available — enter username manually</p>
           <input class="cyber-input" type="text" id="alert-manual" placeholder="Enter exact username" style="margin-top:6px">
         </div>
+        <label class="field-label">Custom alert message <span style="color:var(--grey)">(optional)</span></label>
+        <textarea class="cyber-input" id="alert-custom-message" rows="3" placeholder="Hey @everyone, {streamer} is now live on {link} ! Go check it out!" style="resize:vertical;min-height:70px;line-height:1.7"></textarea>
+        <p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey);margin-top:4px;line-height:1.8;letter-spacing:0.5px">Variables: <span style="color:var(--cyan)">{streamer}</span> <span style="color:var(--cyan)">{link}</span> <span style="color:var(--cyan)">{platform}</span> <span style="color:var(--cyan)">{title}</span> <span style="color:var(--cyan)">{game}</span> <span style="color:var(--cyan)">{viewers}</span> <span style="color:var(--cyan)">{icon}</span> — Leave blank for default message.</p>
         <label class="field-label">Alert channel</label>
         <select class="cyber-input" id="alert-channel" style="cursor:pointer"><option value="">— Select a server first —</option></select>
         <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn-primary" onclick="addAlert()">Add alert</button></div>
@@ -2007,7 +2010,7 @@
     const {data:alerts}=await sb.from('social_alerts').select('*').eq('discord_server_id',selectedGuildId);
     if(!alerts||alerts.length===0) { list.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No alerts set up yet.</p>'; return; }
     const icons={twitch:'🟣',youtube:'🔴',tiktok:'⚫',kick:'🟢'};
-    list.innerHTML=alerts.map(a=>`<div class="platform-row" style="margin-bottom:8px"><div><p class="platform-name">${icons[a.platform]||'📡'} ${a.username}</p><p class="platform-sub">${a.platform} — channel ${a.alert_channel_id||'not set'}</p></div><div style="display:flex;align-items:center;gap:8px"><span class="badge ${a.enabled?'badge-active':'badge-free'}">${a.enabled?'Active':'Paused'}</span><button onclick="removeAlert('${a.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
+    list.innerHTML=alerts.map(a=>`<div class="platform-row" style="margin-bottom:8px"><div><p class="platform-name">${icons[a.platform]||'📡'} ${a.username}</p><p class="platform-sub">${a.platform} — channel ${a.alert_channel_id||'not set'}${a.custom_message?' — ✉️ Custom message set':''}</p></div><div style="display:flex;align-items:center;gap:8px"><span class="badge ${a.enabled?'badge-active':'badge-free'}">${a.enabled?'Active':'Paused'}</span><button onclick="removeAlert('${a.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
   }
 
   async function removeAlert(id) { await sb.from('social_alerts').delete().eq('id',id); loadAlerts(); }
@@ -2049,11 +2052,13 @@
     if(!username) { errorEl.textContent='// Error: Please select or enter a streamer'; errorEl.style.display='block'; return; }
     if(!channelId) { errorEl.textContent='// Error: Please select an alert channel'; errorEl.style.display='block'; return; }
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    const {error}=await sb.from('social_alerts').insert({discord_server_id:selectedGuildId||discordId,platform,username,alert_channel_id:channelId,enabled:true});
+    const customMessage=document.getElementById('alert-custom-message')?.value.trim()||null;
+    const {error}=await sb.from('social_alerts').insert({discord_server_id:selectedGuildId||discordId,platform,username,alert_channel_id:channelId,enabled:true,custom_message:customMessage});
     if(error) { errorEl.textContent='// Error: '+error.message; errorEl.style.display='block'; return; }
     showSaved('alert-saved'); clearSelectedStreamer();
     if(document.getElementById('alert-search')) document.getElementById('alert-search').value='';
     if(document.getElementById('alert-manual')) document.getElementById('alert-manual').value='';
+    if(document.getElementById('alert-custom-message')) document.getElementById('alert-custom-message').value='';
     if(ddAlertChannel) ddAlertChannel.setValue('','— Pick a channel —');
     loadAlerts();
   }
