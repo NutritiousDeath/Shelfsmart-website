@@ -159,7 +159,10 @@
     .round-badge.confirmed{color:var(--green);border:1px solid var(--green)}
     .round-badge.pending{color:var(--grey);border:1px solid var(--grey)}
 
-    /* ── CyberDropdown ────────────────────────────────────────────────────── */
+    /* Channel picker hint shown below dropdowns */
+    .channel-hint{font-family:var(--font-mono);font-size:0.58rem;color:var(--grey);margin-top:4px;letter-spacing:0.5px;line-height:1.6}
+
+    /* ── CyberDropdown (channel pickers) ─────────────────────────────────── */
     .cd-wrap{position:relative;width:100%}
     .cd-selected{width:100%;font-family:var(--font-mono);font-size:0.72rem;padding:9px 32px 9px 12px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.18);color:var(--cyan);letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color 0.2s;user-select:none}
     .cd-selected:hover{border-color:var(--cyan)}
@@ -172,7 +175,7 @@
     .cd-search{width:100%;font-family:var(--font-mono);font-size:0.68rem;padding:7px 10px;background:rgba(0,240,255,0.05);border:1px solid rgba(0,240,255,0.2);color:var(--cyan);letter-spacing:1px;outline:none}
     .cd-search:focus{border-color:var(--cyan)}
     .cd-search::placeholder{color:var(--grey)}
-    .cd-list{max-height:380px;overflow-y:auto}
+    .cd-list{max-height:320px;overflow-y:auto}
     .cd-list::-webkit-scrollbar{width:4px}
     .cd-list::-webkit-scrollbar-track{background:var(--bg-2)}
     .cd-list::-webkit-scrollbar-thumb{background:rgba(0,240,255,0.3)}
@@ -183,8 +186,6 @@
     .cd-option.selected{color:var(--cyan);background:rgba(0,240,255,0.04);border-left-color:var(--cyan)}
     .cd-option.hidden{display:none}
     .cd-no-results{font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);padding:12px 14px;text-align:center}
-    /* Channel picker hint shown below dropdowns */
-    .channel-hint{font-family:var(--font-mono);font-size:0.58rem;color:var(--grey);margin-top:4px;letter-spacing:0.5px;line-height:1.6}
 
     @media(max-width:700px){.layout{grid-template-columns:1fr}.sidebar{display:none}.stats-grid{grid-template-columns:1fr 1fr}.plans-grid{grid-template-columns:1fr}}
   </style>
@@ -457,15 +458,15 @@
         </p>
 
         <label class="field-label">Overwatch tournament channel</label>
-        <select id="ow-channel-picker" class="cyber-input" style="cursor:pointer"><option value="">— Select a server first —</option></select>
+        <div id="ow-channel-picker"></div>
         <p class="channel-hint" id="ow-channel-current"></p>
 
         <label class="field-label">Marvel Rivals tournament channel</label>
-        <select id="rivals-channel-picker" class="cyber-input" style="cursor:pointer"><option value="">— Select a server first —</option></select>
+        <div id="rivals-channel-picker"></div>
         <p class="channel-hint" id="rivals-channel-current"></p>
 
         <label class="field-label">Destiny 2 tournament channel</label>
-        <select id="d2-channel-picker" class="cyber-input" style="cursor:pointer"><option value="">— Select a server first —</option></select>
+        <div id="d2-channel-picker"></div>
         <p class="channel-hint" id="d2-channel-current"></p>
 
         <div style="margin-top:16px">
@@ -621,7 +622,7 @@
 
         <!-- Alert channel — point-and-click dropdown -->
         <label class="field-label">Alert channel</label>
-        <select class="cyber-input" id="alert-channel" style="cursor:pointer"><option value="">— Select a server first —</option></select>
+        <div id="alert-channel"></div>
 
         <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn-primary" onclick="addAlert()">Add alert</button></div>
         <p class="save-msg" id="alert-saved">// Alert added successfully</p>
@@ -707,12 +708,12 @@
         </div>
 
         <label class="field-label">Coaching channel <span style="color:var(--pink)">*required</span></label>
-        <select class="cyber-input" id="coaching-channel-picker" style="cursor:pointer"><option value="">— Select a server first —</option></select>
+        <div id="coaching-channel-picker"></div>
         <p class="channel-hint" id="coaching-channel-current"></p>
         <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px;margin-bottom:14px">Players will select their coach and receive session threads in this channel.</p>
 
         <label class="field-label">Coaching log channel <span style="color:var(--pink)">*required</span></label>
-        <select class="cyber-input" id="coaching-log-channel-picker" style="cursor:pointer"><option value="">— Select a server first —</option></select>
+        <div id="coaching-log-channel-picker"></div>
         <p class="channel-hint" id="coaching-log-channel-current"></p>
         <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px;margin-bottom:14px">Full session transcripts will be posted here when a session ends.</p>
 
@@ -846,76 +847,207 @@
   // Cached channel list for the selected guild — used by all channel pickers
   let guildChannelCache = [];
 
-  // ── CHANNEL PICKER HELPERS ────────────────────────────────────────────────
-  // Builds <option> groups for a <select> from the cached channel list.
-  // textChannels = include only type 0 (text) and type 5 (announcement).
-  function buildChannelOptions(selectEl, savedId, savedName, placeholderText) {
-    if (!selectEl) return;
-    selectEl.innerHTML = '';
-    const placeholder = document.createElement('option');
-    placeholder.value = '';
-    placeholder.textContent = placeholderText || '— Pick a channel —';
-    selectEl.appendChild(placeholder);
+  // ── CYBERDROPDOWN CLASS ───────────────────────────────────────────────────
+  // Fully custom channel picker — dark cyberpunk background, searchable,
+  // grouped by Discord category. Replaces native <select> for channel fields.
+  class CyberDropdown {
+    constructor(mountId, onChange) {
+      this.onChange = onChange;
+      this.value = '';
+      this.label = '— Select a server first —';
+      this.options = [];
+      this.isOpen = false;
 
-    if (guildChannelCache.length === 0) {
-      placeholder.textContent = 'No channels loaded — select a server first';
-      return;
+      // Build DOM
+      this.wrap = document.createElement('div');
+      this.wrap.className = 'cd-wrap';
+
+      this.selected = document.createElement('div');
+      this.selected.className = 'cd-selected';
+      this.selected.innerHTML = '<span class="cd-label">— Select a server first —</span><span class="cd-arrow">▼</span>';
+      this.selected.onclick = (e) => { e.stopPropagation(); this.toggle(); };
+
+      this.dropdown = document.createElement('div');
+      this.dropdown.className = 'cd-dropdown';
+
+      this.searchWrap = document.createElement('div');
+      this.searchWrap.className = 'cd-search-wrap';
+      this.searchInput = document.createElement('input');
+      this.searchInput.className = 'cd-search';
+      this.searchInput.placeholder = 'Search channels...';
+      this.searchInput.oninput = () => this.filter(this.searchInput.value);
+      this.searchInput.onclick = (e) => e.stopPropagation();
+      this.searchWrap.appendChild(this.searchInput);
+
+      this.list = document.createElement('div');
+      this.list.className = 'cd-list';
+
+      this.noResults = document.createElement('div');
+      this.noResults.className = 'cd-no-results';
+      this.noResults.textContent = 'No channels found';
+      this.noResults.style.display = 'none';
+
+      this.dropdown.appendChild(this.searchWrap);
+      this.dropdown.appendChild(this.list);
+      this.dropdown.appendChild(this.noResults);
+      this.wrap.appendChild(this.selected);
+      this.wrap.appendChild(this.dropdown);
+
+      const mountEl = document.getElementById(mountId);
+      if (mountEl) mountEl.appendChild(this.wrap);
+
+      document.addEventListener('click', () => this.close());
     }
 
-    // Text + announcement channels only (type 0 = text, type 5 = announcement)
-    const textChannels = guildChannelCache.filter(c => c.type === 0 || c.type === 5);
-    const categories = guildChannelCache.filter(c => c.type === 4).sort((a, b) => a.position - b.position);
+    toggle() { this.isOpen ? this.close() : this.open(); }
 
-    // Add channels grouped by category
-    const usedIds = new Set();
-    categories.forEach(cat => {
-      const children = textChannels.filter(c => c.parent_id === cat.id).sort((a, b) => a.position - b.position);
-      if (children.length === 0) return;
-      const og = document.createElement('optgroup');
-      og.label = '📁 ' + cat.name.toUpperCase();
-      children.forEach(ch => {
-        const opt = document.createElement('option');
-        opt.value = ch.id;
-        opt.textContent = (ch.type === 5 ? '📢 ' : '# ') + ch.name;
-        if (ch.id === savedId) opt.selected = true;
-        og.appendChild(opt);
-        usedIds.add(ch.id);
-      });
-      selectEl.appendChild(og);
-    });
+    open() {
+      this.isOpen = true;
+      this.selected.classList.add('open');
+      this.dropdown.classList.add('open');
+      this.searchInput.value = '';
+      this.filter('');
+      setTimeout(() => this.searchInput.focus(), 50);
+    }
 
-    // Uncategorized channels
-    const uncategorized = textChannels.filter(c => !c.parent_id && !usedIds.has(c.id)).sort((a, b) => a.position - b.position);
-    if (uncategorized.length > 0) {
-      const og = document.createElement('optgroup');
-      og.label = '— Uncategorized —';
-      uncategorized.forEach(ch => {
-        const opt = document.createElement('option');
-        opt.value = ch.id;
-        opt.textContent = '# ' + ch.name;
-        if (ch.id === savedId) opt.selected = true;
-        og.appendChild(opt);
+    close() {
+      this.isOpen = false;
+      this.selected.classList.remove('open');
+      this.dropdown.classList.remove('open');
+    }
+
+    filter(query) {
+      const q = query.toLowerCase().trim();
+      let visible = 0;
+      this.options.forEach(o => {
+        const match = !q || o.label.toLowerCase().includes(q);
+        o.el.classList.toggle('hidden', !match);
+        if (match) visible++;
       });
-      selectEl.appendChild(og);
+      // Hide group labels if all their children are hidden
+      this.list.querySelectorAll('.cd-group-label').forEach(lbl => {
+        let anyVisible = false;
+        let cur = lbl.nextElementSibling;
+        while (cur && !cur.classList.contains('cd-group-label')) {
+          if (!cur.classList.contains('hidden')) anyVisible = true;
+          cur = cur.nextElementSibling;
+        }
+        lbl.style.display = anyVisible ? '' : 'none';
+      });
+      this.noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+
+    // Build the list from channel data grouped by category
+    setChannels(channels, savedId) {
+      this.list.innerHTML = '';
+      this.options = [];
+
+      if (!channels || channels.length === 0) {
+        this.selected.querySelector('.cd-label').textContent = '⚠️ No channels loaded';
+        return;
+      }
+
+      const textChannels = channels.filter(c => c.type === 0 || c.type === 5).sort((a, b) => a.position - b.position);
+      const categories = channels.filter(c => c.type === 4).sort((a, b) => a.position - b.position);
+      const usedIds = new Set();
+
+      // Grouped by category
+      categories.forEach(cat => {
+        const children = textChannels.filter(c => c.parent_id === cat.id).sort((a, b) => a.position - b.position);
+        if (children.length === 0) return;
+        const lbl = document.createElement('div');
+        lbl.className = 'cd-group-label';
+        lbl.textContent = '📁 ' + cat.name.toUpperCase();
+        this.list.appendChild(lbl);
+        children.forEach(ch => { this._addOption(ch, savedId); usedIds.add(ch.id); });
+      });
+
+      // Uncategorized
+      const uncategorized = textChannels.filter(c => !c.parent_id && !usedIds.has(c.id));
+      if (uncategorized.length > 0) {
+        const lbl = document.createElement('div');
+        lbl.className = 'cd-group-label';
+        lbl.textContent = '— Uncategorized —';
+        this.list.appendChild(lbl);
+        uncategorized.forEach(ch => this._addOption(ch, savedId));
+      }
+
+      // Restore saved selection label
+      if (savedId) {
+        const saved = channels.find(c => c.id === savedId);
+        if (saved) {
+          this.value = savedId;
+          this.selected.querySelector('.cd-label').textContent = (saved.type === 5 ? '📢 ' : '# ') + saved.name;
+        }
+      } else {
+        this.selected.querySelector('.cd-label').textContent = '— Pick a channel —';
+      }
+    }
+
+    _addOption(ch, savedId) {
+      const div = document.createElement('div');
+      div.className = 'cd-option' + (ch.id === savedId ? ' selected' : '');
+      div.textContent = (ch.type === 5 ? '📢 ' : '# ') + ch.name;
+      div.dataset.value = ch.id;
+      div.onclick = (e) => {
+        e.stopPropagation();
+        this.setValue(ch.id, (ch.type === 5 ? '📢 ' : '# ') + ch.name);
+        this.close();
+        if (this.onChange) this.onChange(ch.id);
+      };
+      this.list.appendChild(div);
+      this.options.push({ value: ch.id, label: ch.name, el: div });
+    }
+
+    setValue(value, label) {
+      this.value = value;
+      this.selected.querySelector('.cd-label').textContent = label || '— Pick a channel —';
+      this.options.forEach(o => o.el.classList.toggle('selected', o.value === value));
+    }
+
+    getValue() { return this.value; }
+
+    setPlaceholder(text) {
+      this.value = '';
+      this.selected.querySelector('.cd-label').textContent = text;
+      this.list.innerHTML = '';
+      this.options = [];
     }
   }
 
+  // Registry of all channel picker instances
+  const channelPickers = {};
+
   // Show the currently-saved channel name as a small hint below the picker
-  function setChannelHint(hintEl, channelId) {
-    if (!hintEl) return;
-    if (!channelId) { hintEl.textContent = ''; return; }
+  function setChannelHint(hintId, channelId) {
+    const el = document.getElementById(hintId);
+    if (!el) return;
+    if (!channelId) { el.textContent = ''; return; }
     const ch = guildChannelCache.find(c => c.id === channelId);
-    hintEl.textContent = ch ? '// currently: #' + ch.name + ' (' + channelId + ')' : '// currently: ' + channelId;
+    el.textContent = ch ? '// currently: #' + ch.name + ' (' + channelId + ')' : '// currently: ' + channelId;
+  }
+
+  // Initialise all channel picker CyberDropdown instances (called once on page load)
+  function initChannelPickers() {
+    const pickerDefs = [
+      { id: 'ow-channel-picker' },
+      { id: 'rivals-channel-picker' },
+      { id: 'd2-channel-picker' },
+      { id: 'coaching-channel-picker' },
+      { id: 'coaching-log-channel-picker' },
+      { id: 'alert-channel' },
+    ];
+    pickerDefs.forEach(def => {
+      channelPickers[def.id] = new CyberDropdown(def.id, () => {});
+    });
   }
 
   // Fetch channels from the bot endpoint and populate all pickers
   async function loadGuildChannels(guildId, savedSettings) {
     guildChannelCache = [];
-    const pickers = ['ow-channel-picker','rivals-channel-picker','d2-channel-picker','coaching-channel-picker','coaching-log-channel-picker','alert-channel'];
-    pickers.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { el.innerHTML = '<option value="">Loading channels...</option>'; }
-    });
+
+    // Show loading state on all pickers
+    Object.values(channelPickers).forEach(p => p.setPlaceholder('Loading channels...'));
 
     try {
       const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-channels?guildId=${guildId}`);
@@ -924,32 +1056,28 @@
       guildChannelCache = data.channels || [];
     } catch (err) {
       console.error('loadGuildChannels error:', err.message);
-      pickers.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = '<option value="">⚠️ Could not load channels — is the bot in this server?</option>';
-      });
+      Object.values(channelPickers).forEach(p => p.setPlaceholder('⚠️ Could not load channels — is the bot in this server?'));
       return;
     }
 
-    // Populate all channel pickers with the fresh channel list + restore saved values
     const s = savedSettings || {};
-    buildChannelOptions(document.getElementById('ow-channel-picker'), s.ow_channel_id, null);
-    setChannelHint(document.getElementById('ow-channel-current'), s.ow_channel_id);
 
-    buildChannelOptions(document.getElementById('rivals-channel-picker'), s.rivals_channel_id, null);
-    setChannelHint(document.getElementById('rivals-channel-current'), s.rivals_channel_id);
+    channelPickers['ow-channel-picker'].setChannels(guildChannelCache, s.ow_channel_id);
+    setChannelHint('ow-channel-current', s.ow_channel_id);
 
-    buildChannelOptions(document.getElementById('d2-channel-picker'), s.d2_channel_id, null);
-    setChannelHint(document.getElementById('d2-channel-current'), s.d2_channel_id);
+    channelPickers['rivals-channel-picker'].setChannels(guildChannelCache, s.rivals_channel_id);
+    setChannelHint('rivals-channel-current', s.rivals_channel_id);
 
-    buildChannelOptions(document.getElementById('coaching-channel-picker'), s.coaching_channel_id, null);
-    setChannelHint(document.getElementById('coaching-channel-current'), s.coaching_channel_id);
+    channelPickers['d2-channel-picker'].setChannels(guildChannelCache, s.d2_channel_id);
+    setChannelHint('d2-channel-current', s.d2_channel_id);
 
-    buildChannelOptions(document.getElementById('coaching-log-channel-picker'), s.coaching_log_channel_id, null);
-    setChannelHint(document.getElementById('coaching-log-channel-current'), s.coaching_log_channel_id);
+    channelPickers['coaching-channel-picker'].setChannels(guildChannelCache, s.coaching_channel_id);
+    setChannelHint('coaching-channel-current', s.coaching_channel_id);
 
-    // Alert channel picker (in Social Alerts tab)
-    buildChannelOptions(document.getElementById('alert-channel'), null, null, '— Pick a channel —');
+    channelPickers['coaching-log-channel-picker'].setChannels(guildChannelCache, s.coaching_log_channel_id);
+    setChannelHint('coaching-log-channel-current', s.coaching_log_channel_id);
+
+    channelPickers['alert-channel'].setChannels(guildChannelCache, null);
   }
 
   // ── OVERVIEW STATS ────────────────────────────────────────────────────────
@@ -1132,9 +1260,7 @@
 
     if (!guildId) {
       guildChannelCache = [];
-      ['ow-channel-picker','rivals-channel-picker','d2-channel-picker','coaching-channel-picker','coaching-log-channel-picker','alert-channel'].forEach(id => {
-        const el=document.getElementById(id);if(el)el.innerHTML='<option value="">— Select a server first —</option>';
-      });
+      Object.values(channelPickers).forEach(p => p.setPlaceholder('— Select a server first —'));
       return;
     }
 
@@ -1181,14 +1307,14 @@
   async function saveChannels() {
     const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
     if (!selectedGuildId) { const e=document.getElementById('channels-error');if(e){e.style.display='block';setTimeout(()=>e.style.display='none',4000);}return; }
-    const owId = document.getElementById('ow-channel-picker').value;
-    const rivalsId = document.getElementById('rivals-channel-picker').value;
-    const d2Id = document.getElementById('d2-channel-picker').value;
+    const owId = channelPickers['ow-channel-picker'].getValue();
+    const rivalsId = channelPickers['rivals-channel-picker'].getValue();
+    const d2Id = channelPickers['d2-channel-picker'].getValue();
     await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_channel_id: owId||null, rivals_channel_id: rivalsId||null, d2_channel_id: d2Id||null }, { onConflict: 'owner_discord_id' });
     // Refresh hints
-    setChannelHint(document.getElementById('ow-channel-current'), owId);
-    setChannelHint(document.getElementById('rivals-channel-current'), rivalsId);
-    setChannelHint(document.getElementById('d2-channel-current'), d2Id);
+    setChannelHint('ow-channel-current', owId);
+    setChannelHint('rivals-channel-current', rivalsId);
+    setChannelHint('d2-channel-current', d2Id);
     showSaved('channels-saved');
   }
 
@@ -1271,7 +1397,7 @@
 
   async function addAlert(){
     const platform=document.getElementById('alert-platform').value;
-    const channelId=document.getElementById('alert-channel').value;
+    const channelId=channelPickers['alert-channel'].getValue();
     const errorEl=document.getElementById('alert-error');errorEl.style.display='none';
     let username='';
     if(platform==='tiktok'||platform==='kick') username=document.getElementById('alert-manual')?.value.trim()||'';
@@ -1286,7 +1412,7 @@
     if(document.getElementById('alert-search'))document.getElementById('alert-search').value='';
     if(document.getElementById('alert-manual'))document.getElementById('alert-manual').value='';
     if(document.getElementById('alert-custom-message'))document.getElementById('alert-custom-message').value='';
-    document.getElementById('alert-channel').value='';
+    channelPickers['alert-channel'].setValue('','— Pick a channel —');
     loadAlerts();
   }
 
@@ -1546,11 +1672,11 @@
   // ── COACHING ──────────────────────────────────────────────────────────────
   async function saveCoachingSettings(){
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    const coachChId=document.getElementById('coaching-channel-picker').value||null;
-    const coachLogChId=document.getElementById('coaching-log-channel-picker').value||null;
+    const coachChId=channelPickers['coaching-channel-picker'].getValue()||null;
+    const coachLogChId=channelPickers['coaching-log-channel-picker'].getValue()||null;
     await sb.from('server_settings').upsert({owner_discord_id:discordId,discord_server_id:selectedGuildId||discordId,coaching_channel_id:coachChId,coaching_log_channel_id:coachLogChId,feature_flags:{battletag:document.getElementById('toggle-battletag').checked,ask_td:document.getElementById('toggle-td').checked,scrims:document.getElementById('toggle-scrims').checked,coaching:document.getElementById('toggle-coaching').checked,coaching_allow:document.getElementById('toggle-coaching-allow').checked,coaching_auto:document.getElementById('toggle-coaching-auto').checked,coaching_max_sessions:parseInt(document.getElementById('coaching-max-sessions').value)}},{onConflict:'owner_discord_id'});
-    setChannelHint(document.getElementById('coaching-channel-current'),coachChId);
-    setChannelHint(document.getElementById('coaching-log-channel-current'),coachLogChId);
+    setChannelHint('coaching-channel-current',coachChId);
+    setChannelHint('coaching-log-channel-current',coachLogChId);
     showSaved('coaching-saved');
   }
 
@@ -1657,6 +1783,7 @@
     if(orangeBtn)orangeBtn.classList.toggle('active',theme==='orange');
   }
 
+  initChannelPickers();
   init();
 </script>
 </body>
