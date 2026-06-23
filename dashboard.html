@@ -254,10 +254,8 @@
     <div style="padding:14px 12px 10px;border-bottom:1px solid rgba(0,240,255,0.08);margin-bottom:8px">
       <div style="font-family:var(--font-display);font-size:0.8rem;font-weight:900;letter-spacing:2px"><span style="color:var(--cyan);text-shadow:var(--glow-cyan)">AURA</span><span style="color:var(--white)">AI</span></div>
       <div style="margin-top:8px">
-        <!-- Server picker — replaced by CyberDropdown in JS -->
-        <select id="server-select" class="cyber-input" style="font-size:0.62rem;padding:6px 8px;cursor:pointer">
-          <option value="">— Select server —</option>
-        </select>
+        <!-- Server picker — CyberDropdown mounted here by JS -->
+        <div id="server-select"></div>
       </div>
     </div>
 
@@ -479,13 +477,16 @@
       <!-- Role Pings -->
       <div class="section-card">
         <p class="card-title">// role pings</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.7;margin-bottom:14px">Paste role IDs for game-specific ping notifications. Get them via Server Settings → Roles → right-click → Copy Role ID (needs Developer Mode).</p>
-        <label class="field-label">Overwatch role ID</label>
-        <input class="cyber-input" type="text" id="ow-role" placeholder="Paste your Overwatch role ID here">
-        <label class="field-label">Marvel Rivals role ID</label>
-        <input class="cyber-input" type="text" id="rivals-role" placeholder="Paste your Marvel Rivals role ID here">
-        <label class="field-label">Destiny 2 role ID</label>
-        <input class="cyber-input" type="text" id="d2-role" placeholder="Paste your Destiny 2 role ID here">
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.7;margin-bottom:14px">Select the roles AuraAI should ping for game-specific notifications. Pick from your server's role list — no IDs needed.</p>
+        <label class="field-label">Overwatch role</label>
+        <div id="ow-role-picker"></div>
+        <p class="channel-hint" id="ow-role-current"></p>
+        <label class="field-label">Marvel Rivals role</label>
+        <div id="rivals-role-picker"></div>
+        <p class="channel-hint" id="rivals-role-current"></p>
+        <label class="field-label">Destiny 2 role</label>
+        <div id="d2-role-picker"></div>
+        <p class="channel-hint" id="d2-role-current"></p>
         <div style="margin-top:16px">
           <button class="btn-primary" onclick="saveRoles()">Save roles</button>
           <p class="save-msg" id="roles-saved">// Settings saved successfully</p>
@@ -1018,16 +1019,19 @@
   // Registry of all channel picker instances
   const channelPickers = {};
 
-  // Show the currently-saved channel name as a small hint below the picker
-  function setChannelHint(hintId, channelId) {
+  // Show the currently-saved channel or role name as a small hint below the picker
+  function setChannelHint(hintId, itemId) {
     const el = document.getElementById(hintId);
     if (!el) return;
-    if (!channelId) { el.textContent = ''; return; }
-    const ch = guildChannelCache.find(c => c.id === channelId);
-    el.textContent = ch ? '// currently: #' + ch.name + ' (' + channelId + ')' : '// currently: ' + channelId;
+    if (!itemId) { el.textContent = ''; return; }
+    const ch = guildChannelCache.find(c => c.id === itemId);
+    if (ch) { el.textContent = '// currently: #' + ch.name + ' (' + itemId + ')'; return; }
+    const role = guildRoleCache.find(r => r.id === itemId);
+    if (role) { el.textContent = '// currently: @' + role.name + ' (' + itemId + ')'; return; }
+    el.textContent = '// currently: ' + itemId;
   }
 
-  // Initialise all channel picker CyberDropdown instances (called once on page load)
+  // Initialise all channel + role picker CyberDropdown instances (called once on page load)
   function initChannelPickers() {
     const pickerDefs = [
       { id: 'ow-channel-picker' },
@@ -1036,10 +1040,88 @@
       { id: 'coaching-channel-picker' },
       { id: 'coaching-log-channel-picker' },
       { id: 'alert-channel' },
+      { id: 'ow-role-picker' },
+      { id: 'rivals-role-picker' },
+      { id: 'd2-role-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
     });
+  }
+
+  // Cached role list for selected guild
+  let guildRoleCache = [];
+
+  // Fetch roles from the bot endpoint and populate role pickers
+  async function loadGuildRoles(guildId, savedSettings) {
+    guildRoleCache = [];
+    ['ow-role-picker','rivals-role-picker','d2-role-picker'].forEach(id => {
+      channelPickers[id].setPlaceholder('Loading roles...');
+    });
+
+    try {
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-roles?guildId=${guildId}`);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      guildRoleCache = data.roles || [];
+    } catch (err) {
+      console.error('loadGuildRoles error:', err.message);
+      ['ow-role-picker','rivals-role-picker','d2-role-picker'].forEach(id => {
+        channelPickers[id].setPlaceholder('⚠️ Could not load roles');
+      });
+      return;
+    }
+
+    const s = savedSettings || {};
+    _populateRolePicker('ow-role-picker', s.ow_role_id);
+    setChannelHint('ow-role-current', s.ow_role_id);
+    _populateRolePicker('rivals-role-picker', s.rivals_role_id);
+    setChannelHint('rivals-role-current', s.rivals_role_id);
+    _populateRolePicker('d2-role-picker', s.d2_role_id);
+    setChannelHint('d2-role-current', s.d2_role_id);
+  }
+
+  // Build role options into a CyberDropdown using the guildRoleCache
+  function _populateRolePicker(pickerId, savedId) {
+    const picker = channelPickers[pickerId];
+    if (!picker) return;
+    picker.list.innerHTML = '';
+    picker.options = [];
+
+    if (guildRoleCache.length === 0) {
+      picker.setPlaceholder('No roles found');
+      return;
+    }
+
+    guildRoleCache.forEach(role => {
+      const div = document.createElement('div');
+      div.className = 'cd-option' + (role.id === savedId ? ' selected' : '');
+      // Show a colour dot if the role has a colour
+      const hex = role.color ? '#' + role.color.toString(16).padStart(6, '0') : null;
+      div.innerHTML = hex && role.color !== 0
+        ? `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${hex};margin-right:8px;flex-shrink:0"></span>@${role.name}`
+        : `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--grey);margin-right:8px;flex-shrink:0"></span>@${role.name}`;
+      div.dataset.value = role.id;
+      div.onclick = (e) => {
+        e.stopPropagation();
+        picker.setValue(role.id, '@' + role.name);
+        picker.close();
+      };
+      picker.list.appendChild(div);
+      picker.options.push({ value: role.id, label: role.name, el: div });
+    });
+
+    if (savedId) {
+      const saved = guildRoleCache.find(r => r.id === savedId);
+      if (saved) {
+        picker.value = savedId;
+        picker.selected.querySelector('.cd-label').textContent = '@' + saved.name;
+      } else {
+        picker.selected.querySelector('.cd-label').textContent = '— Pick a role —';
+      }
+    } else {
+      picker.selected.querySelector('.cd-label').textContent = '— Pick a role —';
+    }
   }
 
   // Fetch channels from the bot endpoint and populate all pickers
@@ -1214,6 +1296,8 @@
   }
 
   // ── SERVER SELECTION ──────────────────────────────────────────────────────
+  let ddServerSelect = null;
+
   async function loadUserServers() {
     try {
       const { data: { session } } = await sb.auth.getSession();
@@ -1222,17 +1306,42 @@
       if (!res.ok) return;
       const guilds = await res.json();
       userGuilds = guilds.filter(g => (parseInt(g.permissions) & 0x8) === 0x8);
-      const serverSelect = document.getElementById('server-select');
-      if (!serverSelect) return;
-      // Rebuild the native select (used as our server picker here)
-      serverSelect.innerHTML = '<option value="">— Select server —</option>';
+
+      // Build a CyberDropdown for the server picker (sidebar is narrow so font is slightly smaller)
+      const mountEl = document.getElementById('server-select');
+      if (!mountEl) return;
+
+      // Create wrapper with smaller font to fit sidebar
+      ddServerSelect = new CyberDropdown('server-select', (val) => onServerChange(val));
+      // Override font size for sidebar fit
+      ddServerSelect.selected.style.fontSize = '0.62rem';
+      ddServerSelect.selected.style.padding = '7px 28px 7px 10px';
+
+      // Build options — no groups needed, just server names
+      ddServerSelect.list.innerHTML = '';
+      ddServerSelect.options = [];
       userGuilds.forEach(g => {
-        const opt = document.createElement('option');
-        opt.value = g.id; opt.textContent = g.name;
-        serverSelect.appendChild(opt);
+        const div = document.createElement('div');
+        div.className = 'cd-option';
+        div.textContent = g.name;
+        div.dataset.value = g.id;
+        div.onclick = (e) => {
+          e.stopPropagation();
+          ddServerSelect.setValue(g.id, g.name);
+          ddServerSelect.close();
+          onServerChange(g.id);
+        };
+        ddServerSelect.list.appendChild(div);
+        ddServerSelect.options.push({ value: g.id, label: g.name, el: div });
       });
-      serverSelect.onchange = () => onServerChange(serverSelect.value);
-      if (userGuilds.length === 1) { serverSelect.value = userGuilds[0].id; onServerChange(userGuilds[0].id); }
+
+      ddServerSelect.selected.querySelector('.cd-label').textContent = '— Select server —';
+      ddServerSelect.searchInput.placeholder = 'Search servers...';
+
+      if (userGuilds.length === 1) {
+        ddServerSelect.setValue(userGuilds[0].id, userGuilds[0].name);
+        onServerChange(userGuilds[0].id);
+      }
     } catch (err) { console.error('Error loading servers:', err.message); }
   }
 
@@ -1255,11 +1364,9 @@
       }
     }
 
-    // Clear role inputs
-    ['ow-role','rivals-role','d2-role'].forEach(id => { const el=document.getElementById(id);if(el)el.value=''; });
-
     if (!guildId) {
       guildChannelCache = [];
+      guildRoleCache = [];
       Object.values(channelPickers).forEach(p => p.setPlaceholder('— Select a server first —'));
       return;
     }
@@ -1270,9 +1377,6 @@
       const { data: settings } = await sb.from('server_settings').select('*').eq('discord_server_id', guildId).maybeSingle();
       savedSettings = settings;
       if (settings) {
-        if (settings.ow_role_id) document.getElementById('ow-role').value = settings.ow_role_id;
-        if (settings.rivals_role_id) document.getElementById('rivals-role').value = settings.rivals_role_id;
-        if (settings.d2_role_id) document.getElementById('d2-role').value = settings.d2_role_id;
         if (settings.feature_flags) {
           const f=settings.feature_flags;
           if(f.battletag!==undefined) document.getElementById('toggle-battletag').checked=f.battletag;
@@ -1283,8 +1387,11 @@
       }
     } catch (err) { console.error('Error loading server settings:', err.message); }
 
-    // Now load channels from bot and populate all pickers (with saved IDs pre-selected)
-    await loadGuildChannels(guildId, savedSettings);
+    // Load channels and roles from bot in parallel, populating all pickers
+    await Promise.all([
+      loadGuildChannels(guildId, savedSettings),
+      loadGuildRoles(guildId, savedSettings)
+    ]);
 
     // Update coaching warning banner
     const coachingWarning=document.getElementById('coaching-server-warning');
@@ -1321,7 +1428,13 @@
   async function saveRoles() {
     const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
     if (!selectedGuildId) { const e=document.getElementById('roles-error');if(e){e.style.display='block';setTimeout(()=>e.style.display='none',4000);}return; }
-    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_role_id: document.getElementById('ow-role').value, rivals_role_id: document.getElementById('rivals-role').value, d2_role_id: document.getElementById('d2-role').value }, { onConflict: 'owner_discord_id' });
+    const owRoleId = channelPickers['ow-role-picker'].getValue() || null;
+    const rivalsRoleId = channelPickers['rivals-role-picker'].getValue() || null;
+    const d2RoleId = channelPickers['d2-role-picker'].getValue() || null;
+    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_role_id: owRoleId, rivals_role_id: rivalsRoleId, d2_role_id: d2RoleId }, { onConflict: 'owner_discord_id' });
+    setChannelHint('ow-role-current', owRoleId);
+    setChannelHint('rivals-role-current', rivalsRoleId);
+    setChannelHint('d2-role-current', d2RoleId);
     showSaved('roles-saved');
   }
 
