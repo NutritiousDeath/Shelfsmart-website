@@ -506,6 +506,22 @@
           <p class="save-msg" id="toggles-saved">// Settings saved successfully</p>
         </div>
       </div>
+
+      <!-- Welcome Channel -->
+      <div class="section-card">
+        <p class="card-title">// welcome channel</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          When a new member joins your server, AuraAI will post a cyberpunk welcome card with their username and member number. Select the channel to post welcome cards in — leave unset to disable.
+        </p>
+        <label class="field-label">Welcome card channel</label>
+        <div id="welcome-channel-picker"></div>
+        <p class="channel-hint" id="welcome-channel-current"></p>
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveWelcomeChannel()">Save welcome channel</button>
+          <p class="save-msg" id="welcome-channel-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="welcome-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+      </div>
     </div>
 
     <!-- ══════════════════════════════════ TOURNAMENTS ══════════════════════════════════ -->
@@ -1043,6 +1059,7 @@
       { id: 'ow-role-picker' },
       { id: 'rivals-role-picker' },
       { id: 'd2-role-picker' },
+      { id: 'welcome-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -1160,6 +1177,9 @@
     setChannelHint('coaching-log-channel-current', s.coaching_log_channel_id);
 
     channelPickers['alert-channel'].setChannels(guildChannelCache, null);
+
+    channelPickers['welcome-channel-picker'].setChannels(guildChannelCache, s.welcome_channel_id || null);
+    setChannelHint('welcome-channel-current', s.welcome_channel_id);
   }
 
   // ── OVERVIEW STATS ────────────────────────────────────────────────────────
@@ -1894,6 +1914,22 @@
     if(redBtn)redBtn.classList.toggle('active',theme==='red');
     if(pinkBtn)pinkBtn.classList.toggle('active',theme==='pink');
     if(orangeBtn)orangeBtn.classList.toggle('active',theme==='orange');
+  }
+
+  async function saveWelcomeChannel() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('welcome-channel-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const welcomeId = channelPickers['welcome-channel-picker'].getValue() || null;
+    await sb.from('server_settings').upsert(
+      { owner_discord_id: discordId, discord_server_id: selectedGuildId, welcome_channel_id: welcomeId },
+      { onConflict: 'owner_discord_id' }
+    );
+    setChannelHint('welcome-channel-current', welcomeId);
+    showSaved('welcome-channel-saved');
   }
 
   initChannelPickers();
