@@ -573,6 +573,22 @@
           <p class="save-msg" id="welcome-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
       </div>
+
+      <!-- Fun Channel -->
+      <div class="section-card">
+        <p class="card-title">// fun channel</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          The channel where fun commands like <span style="color:var(--cyan)">/hitman</span> post their output. Set this to a general or off-topic channel.
+        </p>
+        <label class="field-label">Fun channel</label>
+        <div id="fun-channel-picker"></div>
+        <p class="channel-hint" id="fun-channel-current"></p>
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveFunChannel()">Save fun channel</button>
+          <p class="save-msg" id="fun-channel-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="fun-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+      </div>
     </div>
 
     <!-- ══════════════════════════════════ TOURNAMENTS ══════════════════════════════════ -->
@@ -1111,6 +1127,7 @@
       { id: 'rivals-role-picker' },
       { id: 'd2-role-picker' },
       { id: 'welcome-channel-picker' },
+      { id: 'fun-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -1231,6 +1248,9 @@
 
     channelPickers['welcome-channel-picker'].setChannels(guildChannelCache, s.welcome_channel_id || null);
     setChannelHint('welcome-channel-current', s.welcome_channel_id);
+
+    channelPickers['fun-channel-picker'].setChannels(guildChannelCache, s.fun_channel_id || null);
+    setChannelHint('fun-channel-current', s.fun_channel_id);
   }
 
   // ── OVERVIEW STATS ────────────────────────────────────────────────────────
@@ -2037,6 +2057,22 @@
       if(msg)msg.textContent="You don't have an active plan. Upgrade to Pro to unlock the full AuraAI dashboard, or apply to become a coach.";
     }
     if(overlay)overlay.classList.remove('hidden');
+  }
+
+  async function saveFunChannel() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('fun-channel-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const funId = channelPickers['fun-channel-picker'].getValue() || null;
+    await sb.from('server_settings').upsert(
+      { owner_discord_id: discordId, discord_server_id: selectedGuildId, fun_channel_id: funId },
+      { onConflict: 'owner_discord_id' }
+    );
+    setChannelHint('fun-channel-current', funId);
+    showSaved('fun-channel-saved');
   }
 
   initChannelPickers();
