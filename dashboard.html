@@ -202,12 +202,63 @@
 
 <!-- PAYWALL -->
 <div id="paywall-overlay" class="hidden">
-  <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--cyan);letter-spacing:3px;margin-bottom:16px">// ACCESS DENIED</p>
-  <h2 style="font-family:var(--font-display);font-size:1.8rem;font-weight:900;letter-spacing:4px;margin-bottom:8px"><span style="color:var(--cyan);text-shadow:var(--glow-cyan)">UPGRADE</span> REQUIRED</h2>
-  <div style="width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:16px auto"></div>
-  <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--grey);max-width:380px;line-height:1.8;margin-bottom:28px">Your account does not have an active Pro subscription.</p>
-  <a href="/pricing.html" style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:2px;padding:12px 28px;background:var(--cyan);color:var(--bg);text-decoration:none;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%)">View Plans</a>
-  <button onclick="signOut()" style="margin-top:14px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);background:none;border:none;cursor:pointer;letter-spacing:1px;text-decoration:underline">Sign out</button>
+  <div style="position:relative;max-width:480px;width:100%;padding:0 20px;text-align:center">
+    <!-- Corner decorations -->
+    <div style="position:absolute;top:0;left:20px;width:24px;height:24px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan)"></div>
+    <div style="position:absolute;top:0;right:20px;width:24px;height:24px;border-top:2px solid var(--cyan);border-right:2px solid var(--cyan)"></div>
+    <div style="position:absolute;bottom:0;left:20px;width:24px;height:24px;border-bottom:2px solid var(--cyan);border-left:2px solid var(--cyan)"></div>
+    <div style="position:absolute;bottom:0;right:20px;width:24px;height:24px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan)"></div>
+
+    <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--cyan);letter-spacing:4px;text-transform:uppercase;margin-bottom:16px;opacity:0.7">// access restricted</p>
+    <div style="font-family:var(--font-display);font-size:2rem;font-weight:900;letter-spacing:4px;margin-bottom:8px">
+      <span style="color:var(--cyan);text-shadow:var(--glow-cyan)">AURA</span><span style="color:var(--white)">AI</span>
+    </div>
+    <div style="width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:16px 0"></div>
+
+    <p id="paywall-title" style="font-family:var(--font-display);font-size:1rem;font-weight:700;letter-spacing:3px;color:var(--white);margin-bottom:8px">ACCESS REQUIRED</p>
+    <p id="paywall-message" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:1.9;margin-bottom:28px">You don't have an active plan. Upgrade to Pro to unlock the full AuraAI dashboard, or apply to become a coach.</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px;align-items:center">
+      <!-- Upgrade to Pro -->
+      <a id="paywall-stripe-btn" href="https://buy.stripe.com/test" style="width:100%;max-width:320px;font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:2px;padding:13px 24px;background:var(--cyan);color:var(--bg);text-decoration:none;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);display:block;text-align:center;transition:all 0.2s" onmouseover="this.style.background='#fff'" onmouseout="this.style.background='var(--cyan)'">
+        ⚡ UPGRADE TO PRO — $9/mo
+      </a>
+
+      <!-- Apply to Coach -->
+      <button onclick="showCoachApplyPaywall()" style="width:100%;max-width:320px;font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:2px;padding:13px 24px;background:transparent;color:#00aaff;border:1px solid #00aaff;cursor:pointer;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:all 0.2s" onmouseover="this.style.background='rgba(0,170,255,0.1)'" onmouseout="this.style.background='transparent'">
+        🎓 APPLY TO BECOME A COACH
+      </button>
+
+      <!-- Add to Discord -->
+      <a href="https://discord.com/oauth2/authorize?client_id=1479991514351538350&permissions=215056&integration_type=0&scope=bot+applications.commands" target="_blank" style="width:100%;max-width:320px;font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:2px;padding:13px 24px;background:transparent;color:var(--grey);border:1px solid rgba(74,80,104,0.4);text-decoration:none;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);display:block;text-align:center;transition:all 0.2s" onmouseover="this.style.borderColor='var(--cyan)';this.style.color='var(--cyan)'" onmouseout="this.style.borderColor='rgba(74,80,104,0.4)';this.style.color='var(--grey)'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.055a19.85 19.85 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        ADD AURAAI TO YOUR SERVER (FREE)
+      </a>
+    </div>
+
+    <div style="width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,240,255,0.2),transparent);margin:20px 0"></div>
+    <button onclick="signOut()" style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);background:none;border:none;cursor:pointer;letter-spacing:1px;text-decoration:underline">Sign out</button>
+  </div>
+
+  <!-- Coach apply sub-panel -->
+  <div id="paywall-coach-apply" style="display:none;position:fixed;inset:0;background:rgba(5,8,16,0.98);z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column">
+    <div style="max-width:480px;width:100%;padding:32px 24px;background:rgba(8,13,26,0.95);border:1px solid rgba(0,170,255,0.3);position:relative">
+      <button onclick="hideCoachApplyPaywall()" style="position:absolute;top:12px;right:12px;background:none;border:none;color:var(--grey);cursor:pointer;font-size:18px">✕</button>
+      <p style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:3px;color:#00aaff;margin-bottom:20px">// APPLY TO COACH</p>
+      <label class="field-label" style="margin-top:0">Display name</label><input class="cyber-input" type="text" id="pw-apply-name" placeholder="e.g. CoachAura">
+      <label class="field-label">Game you coach</label>
+      <select class="cyber-input" id="pw-apply-game" style="cursor:pointer"><option value="Overwatch 2">🎮 Overwatch 2</option><option value="Marvel Rivals">⚔️ Marvel Rivals</option><option value="Destiny 2">🌌 Destiny 2</option></select>
+      <label class="field-label">Bio</label><textarea class="cyber-input" id="pw-apply-bio" rows="3" placeholder="Your rank, experience, why you'd be a great coach..."></textarea>
+      <label class="field-label">Strengths <span style="color:var(--grey)">(optional)</span></label><input class="cyber-input" type="text" id="pw-apply-strengths" placeholder="e.g. Support positioning, mechanical aim">
+      <label class="field-label">CashApp URL <span style="color:var(--grey)">(optional)</span></label><input class="cyber-input" type="text" id="pw-apply-cashapp" placeholder="https://cash.app/$username">
+      <label class="field-label">Stripe URL <span style="color:var(--grey)">(optional)</span></label><input class="cyber-input" type="text" id="pw-apply-stripe" placeholder="https://buy.stripe.com/...">
+      <div style="margin-top:16px;display:flex;gap:10px">
+        <button onclick="submitPaywallCoachApp()" style="font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;padding:10px 20px;background:#00aaff;color:var(--bg);border:none;cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)">Submit Application</button>
+      </div>
+      <p id="pw-apply-saved" style="font-family:var(--font-mono);font-size:0.65rem;color:#00aaff;margin-top:10px;display:none">// Application submitted! You'll receive a Discord DM when reviewed.</p>
+      <p id="pw-apply-error" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--pink);margin-top:10px;display:none"></p>
+    </div>
+  </div>
 </div>
 
 <!-- NAV -->
@@ -1312,10 +1363,10 @@
         if (planEl) planEl.textContent = 'Pro — $9/month';
         if (renewEl) { if (access.expires_at) renewEl.textContent = `Renews ${new Date(access.expires_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`; else renewEl.textContent = '★ Manually granted — no expiry date set'; }
       }
-      if (tier === 'free') document.getElementById('paywall-overlay').classList.remove('hidden');
+      if (tier === 'free') { const wasCoach = access.is_coach === false && access.granted_by === 'coach_approval'; showPaywall(wasCoach ? 'revoked' : 'default'); }
     } else {
       await sb.from('user_access').insert({ discord_id: discordId, discord_tag: discordName, email: currentUser.email, tier: 'free', status: 'active', granted_by: 'self' });
-      document.getElementById('paywall-overlay').classList.remove('hidden');
+      showPaywall('default');
     }
     document.getElementById('loading').classList.add('hidden');
     loadAlerts(); loadTournaments(); loadCoachingSessions(); loadCoaches(); loadUserServers();
@@ -1853,7 +1904,17 @@
     document.getElementById('add-coach-form').style.display='none';showSaved('coach-saved');loadCoaches();
   }
 
-  async function deleteCoach(id){if(!confirm('Remove this coach?'))return;await sb.from('coaches').delete().eq('id',id);loadCoaches();}
+  async function deleteCoach(id){
+    if(!confirm('Remove this coach? This will also revoke their coach access.'))return;
+    // Get the coach's discord_profile_id before deleting
+    const{data:coach}=await sb.from('coaches').select('discord_profile_id').eq('id',id).maybeSingle();
+    await sb.from('coaches').delete().eq('id',id);
+    // Revoke coach status in user_access
+    if(coach?.discord_profile_id){
+      await sb.from('user_access').update({is_coach:false,tier:'free'}).eq('discord_id',coach.discord_profile_id);
+    }
+    loadCoaches();
+  }
 
   // ── COACH PROFILE ─────────────────────────────────────────────────────────
   async function loadMyCoachProfile(){
@@ -1937,6 +1998,45 @@
     );
     setChannelHint('welcome-channel-current', welcomeId);
     showSaved('welcome-channel-saved');
+  }
+
+  function showCoachApplyPaywall(){const el=document.getElementById('paywall-coach-apply');if(el){el.style.display='flex';}}
+  function hideCoachApplyPaywall(){const el=document.getElementById('paywall-coach-apply');if(el){el.style.display='none';}}
+
+  async function submitPaywallCoachApp(){
+    if(!currentUser)return;
+    const discordId=currentUser.user_metadata?.provider_id||currentUser.id;
+    const discordTag=currentUser.user_metadata?.full_name||currentUser.user_metadata?.name||discordId;
+    const name=document.getElementById('pw-apply-name').value.trim();
+    const game=document.getElementById('pw-apply-game').value;
+    const bio=document.getElementById('pw-apply-bio').value.trim();
+    const strengths=document.getElementById('pw-apply-strengths').value.trim()||null;
+    const cashapp=document.getElementById('pw-apply-cashapp').value.trim()||null;
+    const stripe=document.getElementById('pw-apply-stripe').value.trim()||null;
+    const errEl=document.getElementById('pw-apply-error');errEl.style.display='none';
+    if(!name){errEl.textContent='// Display name is required';errEl.style.display='block';return;}
+    if(!bio){errEl.textContent='// Bio is required';errEl.style.display='block';return;}
+    const{data:existing}=await sb.from('coach_applications').select('status').eq('discord_id',discordId).eq('status','pending').maybeSingle();
+    if(existing){errEl.textContent='// You already have a pending application';errEl.style.display='block';return;}
+    const{error}=await sb.from('coach_applications').insert({discord_id:discordId,discord_tag:discordTag,display_name:name,game,bio,strengths,cashapp_url:cashapp,stripe_url:stripe,status:'pending'});
+    if(error){errEl.textContent='// Error: '+error.message;errEl.style.display='block';return;}
+    document.getElementById('pw-apply-saved').style.display='block';
+    setTimeout(()=>hideCoachApplyPaywall(),3000);
+  }
+
+  // Update paywall message based on why access was denied
+  function showPaywall(reason){
+    const overlay=document.getElementById('paywall-overlay');
+    const title=document.getElementById('paywall-title');
+    const msg=document.getElementById('paywall-message');
+    if(reason==='revoked'){
+      if(title)title.textContent='COACH ACCESS REVOKED';
+      if(msg)msg.textContent='Your coach status has been removed. You can reapply to become a coach, upgrade to a Pro plan for full dashboard access, or add AuraAI to your server to use the free bot features.';
+    } else {
+      if(title)title.textContent='ACCESS REQUIRED';
+      if(msg)msg.textContent="You don't have an active plan. Upgrade to Pro to unlock the full AuraAI dashboard, or apply to become a coach.";
+    }
+    if(overlay)overlay.classList.remove('hidden');
   }
 
   initChannelPickers();
