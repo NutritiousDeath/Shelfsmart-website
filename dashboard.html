@@ -518,6 +518,10 @@
         <div id="d2-channel-picker"></div>
         <p class="channel-hint" id="d2-channel-current"></p>
 
+        <label class="field-label">Rainbow Six Siege tournament channel</label>
+        <div id="r6-channel-picker"></div>
+        <p class="channel-hint" id="r6-channel-current"></p>
+
         <div style="margin-top:16px">
           <button class="btn-primary" onclick="saveChannels()">Save channels</button>
           <p class="save-msg" id="channels-saved">// Settings saved successfully</p>
@@ -1120,6 +1124,7 @@
       { id: 'ow-channel-picker' },
       { id: 'rivals-channel-picker' },
       { id: 'd2-channel-picker' },
+      { id: 'r6-channel-picker' },
       { id: 'coaching-channel-picker' },
       { id: 'coaching-log-channel-picker' },
       { id: 'alert-channel' },
@@ -1237,6 +1242,9 @@
 
     channelPickers['d2-channel-picker'].setChannels(guildChannelCache, s.d2_channel_id);
     setChannelHint('d2-channel-current', s.d2_channel_id);
+
+    channelPickers['r6-channel-picker'].setChannels(guildChannelCache, s.r6_channel_id || null);
+    setChannelHint('r6-channel-current', s.r6_channel_id);
 
     channelPickers['coaching-channel-picker'].setChannels(guildChannelCache, s.coaching_channel_id);
     setChannelHint('coaching-channel-current', s.coaching_channel_id);
@@ -1515,11 +1523,13 @@
     const owId = channelPickers['ow-channel-picker'].getValue();
     const rivalsId = channelPickers['rivals-channel-picker'].getValue();
     const d2Id = channelPickers['d2-channel-picker'].getValue();
-    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_channel_id: owId||null, rivals_channel_id: rivalsId||null, d2_channel_id: d2Id||null }, { onConflict: 'owner_discord_id' });
+    const r6Id = channelPickers['r6-channel-picker'].getValue();
+    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_channel_id: owId||null, rivals_channel_id: rivalsId||null, d2_channel_id: d2Id||null, r6_channel_id: r6Id||null }, { onConflict: 'owner_discord_id' });
     // Refresh hints
     setChannelHint('ow-channel-current', owId);
     setChannelHint('rivals-channel-current', rivalsId);
     setChannelHint('d2-channel-current', d2Id);
+    setChannelHint('r6-channel-current', r6Id);
     showSaved('channels-saved');
   }
 
