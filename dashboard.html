@@ -648,12 +648,7 @@
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
           <p class="card-title" style="margin-bottom:0">// active tournaments</p>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <select id="tournament-game-filter" class="cyber-input" style="width:auto;font-size:0.62rem;padding:6px 10px;cursor:pointer" onchange="loadTournaments()">
-              <option value="overwatch">🎮 Overwatch 2</option>
-              <option value="rivals">⚔️ Marvel Rivals</option>
-              <option value="destiny">🌌 Destiny 2</option>
-              <option value="r6siege">🛡️ Rainbow Six Siege</option>
-            </select>
+            <div id="tournament-game-filter-wrap" style="width:180px"></div>
             <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px" onclick="document.getElementById('new-tournament-form').style.display='block';document.getElementById('new-t-name').focus()">+ New tournament</button>
           </div>
         </div>
@@ -696,9 +691,7 @@
       <div class="section-card">
         <p class="card-title">// add new alert</p>
         <label class="field-label">Platform</label>
-        <select class="cyber-input" id="alert-platform" style="cursor:pointer" onchange="onPlatformChange(this.value)">
-          <option value="twitch">Twitch</option><option value="youtube">YouTube</option><option value="kick">Kick</option><option value="tiktok">TikTok</option>
-        </select>
+        <div id="alert-platform-wrap"></div>
         <label class="field-label">Search for streamer / channel</label>
         <div style="position:relative">
           <input class="cyber-input" type="text" id="alert-search" placeholder="Type a name to search..." oninput="onAlertSearch(this.value)" autocomplete="off">
@@ -1618,7 +1611,7 @@
   }
 
   async function searchStreamers(query){
-    const platform=document.getElementById('alert-platform').value;
+    const platform=window.getAlertPlatform ? window.getAlertPlatform() : 'twitch';
     const resultsEl=document.getElementById('search-results');
     resultsEl.innerHTML='<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Searching...</div>';resultsEl.style.display='block';
     try{
@@ -1633,7 +1626,7 @@
   function clearSelectedStreamer(){selectedStreamer=null;document.getElementById('selected-streamer').style.display='none';}
 
   async function addAlert(){
-    const platform=document.getElementById('alert-platform').value;
+    const platform=window.getAlertPlatform ? window.getAlertPlatform() : 'twitch';
     const channelId=channelPickers['alert-channel'].getValue();
     const errorEl=document.getElementById('alert-error');errorEl.style.display='none';
     let username='';
@@ -1670,7 +1663,7 @@
   async function loadTournamentTab(){await loadTournaments();}
   async function loadTournaments(){
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;if(!discordId)return;
-    const game=document.getElementById('tournament-game-filter')?.value||'overwatch';
+    const game=_origGetTournamentGame();
     const tables=getTournamentTables(game);
     const{data:tournaments}=await sb.from(tables.tournaments).select('*').eq('discord_server_id',selectedGuildId||discordId).order('created_at',{ascending:false});
     const list=document.getElementById('tournaments-list');if(!list)return;
@@ -1819,7 +1812,7 @@
     const errEl=document.getElementById('tournament-error');errEl.style.display='none';
     if(!name){errEl.textContent='// Error: Please enter a tournament name';errEl.style.display='block';return;}
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    const newGame=document.getElementById('tournament-game-filter')?.value||'overwatch';
+    const newGame=_origGetTournamentGame();
     const newTables=getTournamentTables(newGame);
     const{error}=await sb.from(newTables.tournaments).insert({name,bracket_type:'swiss',max_players:maxTeams,ruleset:ruleset||null,status:'registration',discord_server_id:selectedGuildId||discordId});
     if(error){errEl.textContent='// Error: '+error.message;errEl.style.display='block';return;}
@@ -2120,7 +2113,68 @@
     showSaved('fun-channel-saved');
   }
 
+  // Tournament game filter CyberDropdown
+  let ddTournamentGame = null;
+  function initGameDropdowns() {
+    // Tournament game filter
+    ddTournamentGame = new CyberDropdown('tournament-game-filter-wrap', (val) => { loadTournaments(); });
+    ddTournamentGame.searchInput.placeholder = 'Search games...';
+    const gameOptions = [
+      { value: 'overwatch', label: '🎮 Overwatch 2' },
+      { value: 'rivals', label: '⚔️ Marvel Rivals' },
+      { value: 'destiny', label: '🌌 Destiny 2' },
+      { value: 'r6siege', label: '🛡️ Rainbow Six Siege' },
+    ];
+    gameOptions.forEach(g => {
+      const div = document.createElement('div');
+      div.className = 'cd-option' + (g.value === 'overwatch' ? ' selected' : '');
+      div.textContent = g.label;
+      div.dataset.value = g.value;
+      div.onclick = (e) => {
+        e.stopPropagation();
+        ddTournamentGame.setValue(g.value, g.label);
+        ddTournamentGame.close();
+        loadTournaments();
+      };
+      ddTournamentGame.list.appendChild(div);
+      ddTournamentGame.options.push({ value: g.value, label: g.label, el: div });
+    });
+    ddTournamentGame.setValue('overwatch', '🎮 Overwatch 2');
+
+    // Alert platform dropdown
+    const ddAlertPlatform = new CyberDropdown('alert-platform-wrap', (val) => { onPlatformChange(val); });
+    ddAlertPlatform.searchInput.placeholder = 'Search platforms...';
+    const platformOptions = [
+      { value: 'twitch', label: '🟣 Twitch' },
+      { value: 'youtube', label: '🔴 YouTube' },
+      { value: 'kick', label: '🟢 Kick' },
+      { value: 'tiktok', label: '⚫ TikTok' },
+    ];
+    platformOptions.forEach(p => {
+      const div = document.createElement('div');
+      div.className = 'cd-option' + (p.value === 'twitch' ? ' selected' : '');
+      div.textContent = p.label;
+      div.dataset.value = p.value;
+      div.onclick = (e) => {
+        e.stopPropagation();
+        ddAlertPlatform.setValue(p.value, p.label);
+        ddAlertPlatform.close();
+        onPlatformChange(p.value);
+      };
+      ddAlertPlatform.list.appendChild(div);
+      ddAlertPlatform.options.push({ value: p.value, label: p.label, el: div });
+    });
+    ddAlertPlatform.setValue('twitch', '🟣 Twitch');
+    // Override alert-platform value getter for compatibility
+    window.getAlertPlatform = () => ddAlertPlatform.getValue();
+    channelPickers['alert-platform-wrap'] = ddAlertPlatform;
+  }
+
+  // Patch loadTournaments to read from CyberDropdown
+  const _origGetTournamentGame = () => ddTournamentGame?.getValue() || 'overwatch';
+
   initChannelPickers();
+  initGameDropdowns();
   init();
 </script>
 </body>
