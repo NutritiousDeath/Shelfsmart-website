@@ -103,8 +103,9 @@
     .cyber-input{width:100%;font-family:var(--font-mono);font-size:0.72rem;padding:9px 12px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.18);color:var(--cyan);letter-spacing:1px;outline:none;transition:border-color 0.2s}
     .cyber-input:focus{border-color:var(--cyan);box-shadow:var(--glow-cyan)}
     .cyber-input::placeholder{color:var(--grey)}
-    select.cyber-input{background:#020408;color:var(--cyan);-webkit-appearance:none;appearance:none;background-image:none;}
-    select.cyber-input option{background:#020408;color:var(--cyan);}
+    select.cyber-input{background:#020408 !important;color:var(--cyan) !important;-webkit-appearance:none !important;appearance:none !important;background-image:none !important;border-color:rgba(0,240,255,0.18) !important;}
+    select.cyber-input option{background:#020408 !important;color:var(--cyan) !important;}
+    select.cyber-input:focus{border-color:var(--cyan) !important;box-shadow:var(--glow-cyan) !important;}
     textarea.cyber-input{resize:vertical;line-height:1.7}
     .field-label{font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;margin-top:14px;display:block}
     .field-label:first-child{margin-top:0}
