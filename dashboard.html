@@ -644,7 +644,15 @@
       <div class="section-card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
           <p class="card-title" style="margin-bottom:0">// active tournaments</p>
-          <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px" onclick="document.getElementById('new-tournament-form').style.display='block';document.getElementById('new-t-name').focus()">+ New tournament</button>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <select id="tournament-game-filter" class="cyber-input" style="width:auto;font-size:0.62rem;padding:6px 10px;cursor:pointer" onchange="loadTournaments()">
+              <option value="overwatch">🎮 Overwatch 2</option>
+              <option value="rivals">⚔️ Marvel Rivals</option>
+              <option value="destiny">🌌 Destiny 2</option>
+              <option value="r6siege">🛡️ Rainbow Six Siege</option>
+            </select>
+            <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px" onclick="document.getElementById('new-tournament-form').style.display='block';document.getElementById('new-t-name').focus()">+ New tournament</button>
+          </div>
         </div>
         <div id="tournaments-list"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading tournaments...</p></div>
       </div>
@@ -1271,7 +1279,12 @@
       if (commandsEl) commandsEl.textContent = stats?.commands_total?.toLocaleString() ?? '0';
     } catch (err) { console.error('loadOverviewStats error:', err.message); }
     try {
-      const { count } = await sb.from('tournaments').select('id', { count: 'exact', head: true }).eq('status', 'completed');
+      let totalCompleted = 0;
+      for (const suffix of ['ow','rivals','destiny','r6']) {
+        const { count: c } = await sb.from(`tournaments_${suffix}`).select('id', { count: 'exact', head: true }).eq('status', 'completed');
+        totalCompleted += c || 0;
+      }
+      const count = totalCompleted;
       const tournamentsEl = document.getElementById('stat-tournaments');
       if (tournamentsEl) tournamentsEl.textContent = (count ?? 0).toLocaleString();
     } catch (err) { console.error('loadOverviewStats (tournaments) error:', err.message); }
@@ -1639,18 +1652,34 @@
 
   // ── SWISS TOURNAMENT SYSTEM ───────────────────────────────────────────────
   let selectedTournament = null;
+  let selectedTournamentGame = 'overwatch'; // track which game the active tournament is for
+
+  function getTournamentTables(game) {
+    const g = (game || 'overwatch').toLowerCase();
+    const suffix = g === 'r6siege' ? 'r6' : g === 'rivals' ? 'rivals' : g === 'destiny' ? 'destiny' : 'ow';
+    return {
+      tournaments: `tournaments_${suffix}`,
+      teams: `tournament_teams_${suffix}`,
+      rounds: `tournament_rounds_${suffix}`,
+      matches: `tournament_matches_${suffix}`,
+    };
+  }
   async function loadTournamentTab(){await loadTournaments();}
   async function loadTournaments(){
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;if(!discordId)return;
-    const{data:tournaments}=await sb.from('tournaments').select('*').eq('discord_server_id',selectedGuildId||discordId).order('created_at',{ascending:false});
+    const game=document.getElementById('tournament-game-filter')?.value||'overwatch';
+    const tables=getTournamentTables(game);
+    const{data:tournaments}=await sb.from(tables.tournaments).select('*').eq('discord_server_id',selectedGuildId||discordId).order('created_at',{ascending:false});
     const list=document.getElementById('tournaments-list');if(!list)return;
     if(!tournaments||tournaments.length===0){list.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No tournaments yet. Click + New tournament to create one.</p>';return;}
     const statusBadge={registration:'<span class="badge badge-pro">Reg open</span>',in_progress:'<span class="badge badge-live">Live</span>',completed:'<span class="badge badge-active">Done</span>',cancelled:'<span class="badge badge-free">Cancelled</span>'};
-    list.innerHTML=tournaments.map(t=>`<div class="platform-row" style="margin-bottom:8px;cursor:pointer" onclick="openTournament('${t.id}','${t.name.replace(/'/g,"\\'")}')"><div><p class="platform-name">🎮 ${t.name}</p><p class="platform-sub">Swiss · Overwatch 2 · ${(t.status||'registration').replace('_',' ')} · Click to manage</p></div><div style="display:flex;align-items:center;gap:8px">${statusBadge[t.status]||statusBadge.registration}<button onclick="event.stopPropagation();deleteTournament('${t.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
+    const gameLabels={'overwatch':'Overwatch 2','rivals':'Marvel Rivals','destiny':'Destiny 2','r6siege':'Rainbow Six Siege'};
+    const gameIcons={'overwatch':'🎮','rivals':'⚔️','destiny':'🌌','r6siege':'🛡️'};
+    list.innerHTML=tournaments.map(t=>`<div class="platform-row" style="margin-bottom:8px;cursor:pointer" onclick="openTournament('${t.id}','${t.name.replace(/'/g,"\\'")}')"><div><p class="platform-name">${gameIcons[game]||'🎮'} ${t.name}</p><p class="platform-sub">Swiss · ${gameLabels[game]||game} · ${(t.status||'registration').replace('_',' ')} · Click to manage</p></div><div style="display:flex;align-items:center;gap:8px">${statusBadge[t.status]||statusBadge.registration}<button onclick="event.stopPropagation();deleteTournament('${t.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
   }
 
-  async function openTournament(id,name){
-    activeTournamentId=id;selectedTournament={id,name};
+  async function openTournament(id,name,game){
+    activeTournamentId=id;selectedTournament={id,name};selectedTournamentGame=game||'overwatch';
     document.getElementById('swiss-panel').style.display='block';
     document.getElementById('swiss-tournament-name').textContent=`// ${name}`;
     document.getElementById('team-registration-card').style.display='block';
@@ -1670,21 +1699,21 @@
   async function refreshSwissData(){if(!activeTournamentId)return;await Promise.all([loadStandings(),loadRoundMatches(1),loadRoundMatches(2),loadRoundMatches(3),loadRoundBadges(),loadRegisteredTeams(),loadRoundManagement()]);}
 
   async function loadRoundBadges(){
-    const{data:rounds}=await sb.from('tournament_rounds').select('*').eq('tournament_id',activeTournamentId).order('round_number');
+    const{data:rounds}=await sb.from(getTournamentTables(selectedTournamentGame).rounds).select('*').eq('tournament_id',activeTournamentId).order('round_number');
     const badgeEl=document.getElementById('swiss-round-badges');if(!badgeEl)return;
     const labels=[1,2,3].map(r=>{const round=rounds?.find(x=>x.round_number===r);const status=round?.status||'pending';return`<span class="round-badge ${status}">R${r} ${status}</span>`;});
     badgeEl.innerHTML=labels.join('');
   }
 
   async function loadStandings(){
-    const{data:teams}=await sb.from('tournament_teams').select('*').eq('tournament_id',activeTournamentId).eq('status','active').order('wins',{ascending:false});
+    const{data:teams}=await sb.from(getTournamentTables(selectedTournamentGame).teams).select('*').eq('tournament_id',activeTournamentId).eq('status','active').order('wins',{ascending:false});
     const el=document.getElementById('standings-content');if(!el)return;
     if(!teams||teams.length===0){el.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No teams registered yet.</p>';return;}
     el.innerHTML=`<table class="standings-table"><thead><tr><th>#</th><th>Team</th><th>Captain</th><th>W</th><th>L</th></tr></thead><tbody>${teams.map((t,i)=>`<tr><td><span class="standings-rank ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</span></td><td style="color:var(--cyan);font-family:var(--font-display);font-size:0.65rem;letter-spacing:1px">${t.team_name}</td><td>${t.captain_username}</td><td style="color:var(--green)">${t.wins}</td><td style="color:var(--pink)">${t.losses}</td></tr>`).join('')}</tbody></table>`;
   }
 
   async function loadRoundMatches(roundNum){
-    const{data:matches}=await sb.from('tournament_matches').select('*').eq('tournament_id',activeTournamentId).eq('round',roundNum).order('created_at');
+    const{data:matches}=await sb.from(getTournamentTables(selectedTournamentGame).matches).select('*').eq('tournament_id',activeTournamentId).eq('round',roundNum).order('created_at');
     const el=document.getElementById(`round${roundNum}-content`);if(!el)return;
     if(!matches||matches.length===0){el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No matches for Round ${roundNum} yet.</p>`;return;}
     el.innerHTML=matches.map(m=>{
@@ -1698,7 +1727,7 @@
   }
 
   async function loadRegisteredTeams(){
-    const{data:teams}=await sb.from('tournament_teams').select('*').eq('tournament_id',activeTournamentId).order('created_at');
+    const{data:teams}=await sb.from(getTournamentTables(selectedTournamentGame).teams).select('*').eq('tournament_id',activeTournamentId).order('created_at');
     const el=document.getElementById('registered-teams-list');if(!el)return;
     if(!teams||teams.length===0){el.innerHTML='<p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No teams registered yet.</p>';return;}
     el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);letter-spacing:2px;margin-bottom:8px;text-transform:uppercase">Registered teams (${teams.length})</p>`+teams.map(t=>`<div class="platform-row" style="margin-bottom:6px"><div><p class="platform-name" style="font-size:0.65rem">${t.team_name}</p><p class="platform-sub">${t.captain_username}${t.captain_battletag?' · '+t.captain_battletag:''}</p></div><div style="display:flex;gap:6px;align-items:center"><span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--green)">${t.wins}W</span><span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--pink)">${t.losses}L</span><button onclick="removeTeam('${t.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:13px">✕</button></div></div>`).join('');
@@ -1706,8 +1735,8 @@
 
   async function loadRoundManagement(){
     const el=document.getElementById('round-management-content');if(!el||!activeTournamentId)return;
-    const{data:rounds}=await sb.from('tournament_rounds').select('*').eq('tournament_id',activeTournamentId).order('round_number');
-    const{data:teams}=await sb.from('tournament_teams').select('id').eq('tournament_id',activeTournamentId).eq('status','active');
+    const{data:rounds}=await sb.from(getTournamentTables(selectedTournamentGame).rounds).select('*').eq('tournament_id',activeTournamentId).order('round_number');
+    const{data:teams}=await sb.from(getTournamentTables(selectedTournamentGame).teams).select('id').eq('tournament_id',activeTournamentId).eq('status','active');
     const teamCount=teams?.length||0;const confirmedRounds=rounds?.filter(r=>r.status==='confirmed').length||0;const activeRound=rounds?.find(r=>r.status==='active');const nextRound=confirmedRounds+1;
     if(confirmedRounds>=3){el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--green)">✅ Tournament complete — all 3 rounds finished.</p>`;return;}
     if(activeRound){el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--yellow);margin-bottom:12px">⚡ Round ${activeRound.round_number} is active — waiting for all match results.</p><button class="btn-confirm" onclick="confirmRound()">✓ Confirm Round ${activeRound.round_number} & Generate Next Pairings</button>`;return;}
@@ -1721,38 +1750,38 @@
     const errEl=document.getElementById('reg-error');errEl.style.display='none';
     if(!teamName||!captainId||!captainUsername){errEl.textContent='// Error: Team name, captain ID, and username are required';errEl.style.display='block';return;}
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    const{error}=await sb.from('tournament_teams').insert({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||discordId,team_name:teamName,captain_discord_id:captainId,captain_username:captainUsername,captain_battletag:captainBT||null,wins:0,losses:0,status:'active'});
+    const{error}=await sb.from(getTournamentTables(selectedTournamentGame).teams).insert({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||discordId,team_name:teamName,captain_discord_id:captainId,captain_username:captainUsername,captain_battletag:captainBT||null,wins:0,losses:0,status:'active'});
     if(error){errEl.textContent='// Error: '+error.message;errEl.style.display='block';return;}
     document.getElementById('reg-team-name').value='';document.getElementById('reg-captain-id').value='';document.getElementById('reg-captain-username').value='';document.getElementById('reg-captain-battletag').value='';
     showSaved('reg-saved');await refreshSwissData();
   }
 
-  async function removeTeam(id){if(!confirm('Remove this team from the tournament?'))return;await sb.from('tournament_teams').delete().eq('id',id);await refreshSwissData();}
+  async function removeTeam(id){if(!confirm('Remove this team from the tournament?'))return;await sb.from(getTournamentTables(selectedTournamentGame).teams).delete().eq('id',id);await refreshSwissData();}
 
   async function startRound(roundNum){
     if(!activeTournamentId)return;
     const btn=event.target;btn.disabled=true;btn.textContent='Generating pairings...';
     try{
-      const{data:teams}=await sb.from('tournament_teams').select('*').eq('tournament_id',activeTournamentId).eq('status','active').order('wins',{ascending:false});
+      const{data:teams}=await sb.from(getTournamentTables(selectedTournamentGame).teams).select('*').eq('tournament_id',activeTournamentId).eq('status','active').order('wins',{ascending:false});
       if(!teams||teams.length<2){alert('Need at least 2 teams to start a round');btn.disabled=false;btn.textContent=`▶ Start Round ${roundNum} — Generate Pairings`;return;}
-      await sb.from('tournament_rounds').upsert({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||(currentUser?.user_metadata?.provider_id||currentUser?.id),round_number:roundNum,status:'active',pairings_posted:false},{onConflict:'tournament_id,round_number'});
+      await sb.from(getTournamentTables(selectedTournamentGame).rounds).upsert({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||(currentUser?.user_metadata?.provider_id||currentUser?.id),round_number:roundNum,status:'active',pairings_posted:false},{onConflict:'tournament_id,round_number'});
       const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
       const matches=[];const paired=new Set();
       for(let i=0;i<teams.length;i++){
         if(paired.has(teams[i].id))continue;
         for(let j=i+1;j<teams.length;j++){
           if(paired.has(teams[j].id))continue;
-          const{data:prev}=await sb.from('tournament_matches').select('id').eq('tournament_id',activeTournamentId).or(`and(team1_id.eq.${teams[i].id},team2_id.eq.${teams[j].id}),and(team1_id.eq.${teams[j].id},team2_id.eq.${teams[i].id})`).maybeSingle();
+          const{data:prev}=await sb.from(getTournamentTables(selectedTournamentGame).matches).select('id').eq('tournament_id',activeTournamentId).or(`and(team1_id.eq.${teams[i].id},team2_id.eq.${teams[j].id}),and(team1_id.eq.${teams[j].id},team2_id.eq.${teams[i].id})`).maybeSingle();
           if(!prev){matches.push({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||discordId,round:roundNum,team1_id:teams[i].id,team2_id:teams[j].id,team1_name:teams[i].team_name,team2_name:teams[j].team_name,status:'pending'});paired.add(teams[i].id);paired.add(teams[j].id);break;}
         }
         if(!paired.has(teams[i].id)){
           matches.push({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||discordId,round:roundNum,team1_id:teams[i].id,team2_id:null,team1_name:teams[i].team_name,team2_name:'BYE',status:'confirmed',team1_score:1,team2_score:0,winner_id:teams[i].id,winner_name:teams[i].team_name});
           paired.add(teams[i].id);
-          await sb.from('tournament_teams').update({wins:teams[i].wins+1}).eq('id',teams[i].id);
+          await sb.from(getTournamentTables(selectedTournamentGame).teams).update({wins:teams[i].wins+1}).eq('id',teams[i].id);
         }
       }
-      if(matches.length>0){const{error}=await sb.from('tournament_matches').insert(matches);if(error){alert('Error creating matches: '+error.message);btn.disabled=false;return;}}
-      await sb.from('tournaments').update({status:'in_progress'}).eq('id',activeTournamentId);
+      if(matches.length>0){const{error}=await sb.from(getTournamentTables(selectedTournamentGame).matches).insert(matches);if(error){alert('Error creating matches: '+error.message);btn.disabled=false;return;}}
+      await sb.from(getTournamentTables(selectedTournamentGame).tournaments).update({status:'in_progress'}).eq('id',activeTournamentId);
       showSwissTab(`round${roundNum}`);await refreshSwissData();
     }catch(err){console.error('startRound error:',err.message);alert('Error starting round: '+err.message);}
     btn.disabled=false;
@@ -1760,16 +1789,16 @@
 
   async function confirmRound(){
     if(!activeTournamentId)return;
-    const{data:activeRound}=await sb.from('tournament_rounds').select('*').eq('tournament_id',activeTournamentId).eq('status','active').maybeSingle();
+    const{data:activeRound}=await sb.from(getTournamentTables(selectedTournamentGame).rounds).select('*').eq('tournament_id',activeTournamentId).eq('status','active').maybeSingle();
     if(!activeRound){alert('No active round found');return;}
     const roundNum=activeRound.round_number;
-    const{data:matches}=await sb.from('tournament_matches').select('*').eq('tournament_id',activeTournamentId).eq('round',roundNum);
+    const{data:matches}=await sb.from(getTournamentTables(selectedTournamentGame).matches).select('*').eq('tournament_id',activeTournamentId).eq('round',roundNum);
     const unreported=matches?.filter(m=>m.status==='pending'&&m.team2_name!=='BYE');
     if(unreported&&unreported.length>0){if(!confirm(`${unreported.length} match(es) still pending. Confirm anyway and mark them as no-contest?`))return;}
     const reviewerTag=currentUser?.user_metadata?.full_name||currentUser?.user_metadata?.name||'admin';
-    await sb.from('tournament_rounds').update({status:'confirmed',confirmed_by:reviewerTag,confirmed_at:new Date().toISOString()}).eq('id',activeRound.id);
-    await sb.from('tournament_matches').update({status:'confirmed'}).eq('tournament_id',activeTournamentId).eq('round',roundNum).eq('status','pending');
-    if(roundNum>=3)await sb.from('tournaments').update({status:'completed'}).eq('id',activeTournamentId);
+    await sb.from(getTournamentTables(selectedTournamentGame).rounds).update({status:'confirmed',confirmed_by:reviewerTag,confirmed_at:new Date().toISOString()}).eq('id',activeRound.id);
+    await sb.from(getTournamentTables(selectedTournamentGame).matches).update({status:'confirmed'}).eq('tournament_id',activeTournamentId).eq('round',roundNum).eq('status','pending');
+    if(roundNum>=3)await sb.from(getTournamentTables(selectedTournamentGame).tournaments).update({status:'completed'}).eq('id',activeTournamentId);
     await refreshSwissData();showSaved('tournament-created');
   }
 
@@ -1787,7 +1816,9 @@
     const errEl=document.getElementById('tournament-error');errEl.style.display='none';
     if(!name){errEl.textContent='// Error: Please enter a tournament name';errEl.style.display='block';return;}
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    const{error}=await sb.from('tournaments').insert({name,game:'overwatch',bracket_type:'swiss',max_players:maxTeams,ruleset:ruleset||null,status:'registration',discord_server_id:selectedGuildId||discordId});
+    const newGame=document.getElementById('tournament-game-filter')?.value||'overwatch';
+    const newTables=getTournamentTables(newGame);
+    const{error}=await sb.from(newTables.tournaments).insert({name,bracket_type:'swiss',max_players:maxTeams,ruleset:ruleset||null,status:'registration',discord_server_id:selectedGuildId||discordId});
     if(error){errEl.textContent='// Error: '+error.message;errEl.style.display='block';return;}
     document.getElementById('new-t-name').value='';document.getElementById('new-t-ruleset').value='';
     document.getElementById('new-tournament-form').style.display='none';showSaved('tournament-created');await loadTournaments();
@@ -1795,10 +1826,11 @@
 
   async function deleteTournament(id){
     if(!confirm('Delete this tournament? This will also delete all teams and matches.'))return;
-    await sb.from('tournament_matches').delete().eq('tournament_id',id);
-    await sb.from('tournament_rounds').delete().eq('tournament_id',id);
-    await sb.from('tournament_teams').delete().eq('tournament_id',id);
-    await sb.from('tournaments').delete().eq('id',id);
+    const delTables=getTournamentTables(selectedTournamentGame);
+    await sb.from(delTables.matches).delete().eq('tournament_id',id);
+    await sb.from(delTables.rounds).delete().eq('tournament_id',id);
+    await sb.from(delTables.teams).delete().eq('tournament_id',id);
+    await sb.from(delTables.tournaments).delete().eq('id',id);
     if(activeTournamentId===id)closeSwissPanel();
     await loadTournaments();
   }
