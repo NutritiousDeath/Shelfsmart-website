@@ -294,7 +294,7 @@
 </div>
 
 <script>
-  const FOUNDERS = ['Founder NutritiousDeath','Founder Dovahik','Founder NovaFide','Founder Name 4','Founder Name 5'];
+  const FOUNDERS = ['Founder NutritiousDeath','Founder Dovahik','Founder Name 3','Founder Name 4','Founder Name 5'];
   (function buildMarquee(){
     const el=document.getElementById('founders-marquee');if(!el)return;
     const buildSet=()=>FOUNDERS.map(name=>`<span class="founder-name">${name}</span><span class="founder-sep">✦</span>`).join('');
@@ -2167,7 +2167,7 @@
     ddAlertPlatform.setValue('twitch', '🟣 Twitch');
     // Override alert-platform value getter for compatibility
     window.getAlertPlatform = () => ddAlertPlatform.getValue();
-    channelPickers['alert-platform-wrap'] = ddAlertPlatform;
+    // Note: alert-platform-wrap is NOT added to channelPickers to avoid being reset by loadGuildChannels
   }
 
   // Patch loadTournaments to read from CyberDropdown
