@@ -348,7 +348,7 @@
     </button>
 
     <span class="sidebar-section" id="coaching-sidebar-section">// Coaching</span>
-    <button class="sidebar-item" id="coaching-sidebar-btn" onclick="setTab('coaching',this);loadCoachingTab()">
+    <button class="sidebar-item" id="coaching-sidebar-btn" onclick="setTab('coaching',this);loadCoachingTab();resetCoachingSettingsView()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Coaching
     </button>
     <button class="sidebar-item" id="applications-sidebar-btn" onclick="setTab('applications',this);loadApplicationsTab()">
@@ -846,7 +846,16 @@
         </div>
       </div>
 
-      <!-- Coaching channel settings — point-and-click dropdowns -->
+      <!-- Coaching Settings — clickable card entry point, matches Bot Config pattern -->
+      <div class="config-card" id="coaching-settings-entry" onclick="showCoachingSettings()" style="margin-bottom:14px">
+        <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <p class="config-card-title">Coaching Settings</p>
+        <p class="config-card-desc">Coaching channel, log channel, request behavior, and session limits.</p>
+        <p class="config-card-status" id="status-coaching-settings">// checking...</p>
+      </div>
+
+      <div class="config-detail" id="config-detail-coaching-settings">
+        <button class="config-back-btn" onclick="hideCoachingSettings()">‹ Back</button>
       <div class="section-card">
         <p class="card-title">// coaching settings</p>
         <div id="coaching-server-warning" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid rgba(255,45,120,0.5);background:rgba(255,45,120,0.07);box-shadow:0 0 12px rgba(255,45,120,0.15);margin-bottom:14px;transition:all 0.4s">
@@ -873,6 +882,7 @@
           <button class="btn-primary" onclick="saveCoachingSettings()">Save settings</button>
           <p class="save-msg" id="coaching-saved">// Settings saved successfully</p>
         </div>
+      </div>
       </div>
     </div>
 
@@ -1675,6 +1685,42 @@
 
     setStatus('status-welcome', !!s.welcome_channel_id);
     setStatus('status-fun', !!s.fun_channel_id);
+
+    updateCoachingSettingsStatus();
+  }
+
+  // ── COACHING — same card/detail pattern, reuses lastBotConfigSettings (same server_settings row) ──
+  function showCoachingSettings() {
+    const entry = document.getElementById('coaching-settings-entry');
+    const detail = document.getElementById('config-detail-coaching-settings');
+    if (entry) entry.style.display = 'none';
+    if (detail) detail.classList.add('active');
+  }
+
+  function hideCoachingSettings() {
+    const entry = document.getElementById('coaching-settings-entry');
+    const detail = document.getElementById('config-detail-coaching-settings');
+    if (detail) detail.classList.remove('active');
+    if (entry) entry.style.display = 'block';
+    updateCoachingSettingsStatus();
+  }
+
+  function updateCoachingSettingsStatus() {
+    const s = lastBotConfigSettings || {};
+    const el = document.getElementById('status-coaching-settings');
+    if (!el) return;
+    if (!selectedGuildId) { el.textContent = '// select a server'; el.className = 'config-card-status unset'; return; }
+    const isSet = !!(s.coaching_channel_id && s.coaching_log_channel_id);
+    el.textContent = isSet ? '✓ Configured' : '// Required channels not set';
+    el.className = 'config-card-status ' + (isSet ? 'set' : 'unset');
+  }
+
+  function resetCoachingSettingsView() {
+    const entry = document.getElementById('coaching-settings-entry');
+    const detail = document.getElementById('config-detail-coaching-settings');
+    if (detail) detail.classList.remove('active');
+    if (entry) entry.style.display = 'block';
+    updateCoachingSettingsStatus();
   }
   async function signOut(){await sb.auth.signOut();window.location.href='/login.html';}
   function updateClock(){document.getElementById('clock').textContent=new Date().toUTCString().replace('GMT','UTC');}
