@@ -63,6 +63,20 @@
     .section-card{background:rgba(8,13,26,0.8);border:1px solid rgba(0,240,255,0.1);padding:20px 22px;margin-bottom:14px;position:relative;overflow:visible}
     .section-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,240,255,0.4),transparent)}
     .card-title{font-family:var(--font-display);font-size:0.65rem;font-weight:700;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:14px}
+    .config-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:20px}
+    .config-card{background:rgba(8,13,26,0.8);border:1px solid rgba(0,240,255,0.1);padding:20px 18px;cursor:pointer;position:relative;transition:all 0.2s;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
+    .config-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,240,255,0.4),transparent)}
+    .config-card:hover{border-color:var(--cyan);box-shadow:var(--glow-cyan);transform:translateY(-2px)}
+    .config-card-icon{width:26px;height:26px;color:var(--cyan);margin-bottom:12px}
+    .config-card-title{font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:var(--white);text-transform:uppercase;margin-bottom:6px}
+    .config-card-desc{font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);line-height:1.6}
+    .config-card-status{font-family:var(--font-mono);font-size:0.58rem;letter-spacing:1px;margin-top:10px;text-transform:uppercase}
+    .config-card-status.set{color:var(--green)}
+    .config-card-status.unset{color:var(--grey)}
+    .config-back-btn{font-family:var(--font-mono);font-size:0.62rem;letter-spacing:1.5px;color:var(--cyan);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;margin-bottom:16px;text-transform:uppercase;padding:0}
+    .config-back-btn:hover{text-shadow:var(--glow-cyan)}
+    .config-detail{display:none}
+    .config-detail.active{display:block}
     .stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
     .stat-card{background:var(--bg-2);border:1px solid rgba(0,240,255,0.12);padding:14px 16px;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
     .stat-label{font-family:var(--font-mono);font-size:0.58rem;color:var(--grey);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
@@ -103,9 +117,6 @@
     .cyber-input{width:100%;font-family:var(--font-mono);font-size:0.72rem;padding:9px 12px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.18);color:var(--cyan);letter-spacing:1px;outline:none;transition:border-color 0.2s}
     .cyber-input:focus{border-color:var(--cyan);box-shadow:var(--glow-cyan)}
     .cyber-input::placeholder{color:var(--grey)}
-    select.cyber-input{background:#020408 !important;color:var(--cyan) !important;-webkit-appearance:none !important;appearance:none !important;background-image:none !important;border-color:rgba(0,240,255,0.18) !important;}
-    select.cyber-input option{background:#020408 !important;color:var(--cyan) !important;}
-    select.cyber-input:focus{border-color:var(--cyan) !important;box-shadow:var(--glow-cyan) !important;}
     textarea.cyber-input{resize:vertical;line-height:1.7}
     .field-label{font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;margin-top:14px;display:block}
     .field-label:first-child{margin-top:0}
@@ -294,7 +305,7 @@
 </div>
 
 <script>
-  const FOUNDERS = ['Founder NutritiousDeath','Founder NovaFide','Founder Name 3','Founder Name 4','Founder Name 5'];
+  const FOUNDERS = ['Founder NutritiousDeath','Founder Dovahik','Founder Name 3','Founder Name 4','Founder Name 5'];
   (function buildMarquee(){
     const el=document.getElementById('founders-marquee');if(!el)return;
     const buildSet=()=>FOUNDERS.map(name=>`<span class="founder-name">${name}</span><span class="founder-sep">✦</span>`).join('');
@@ -320,7 +331,7 @@
     <button class="sidebar-item" onclick="setTab('commands',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>Commands
     </button>
-    <button class="sidebar-item" onclick="setTab('bot',this)">
+    <button class="sidebar-item" onclick="setTab('bot',this);showConfigGrid()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg>Bot Config
     </button>
     <button class="sidebar-item" onclick="setTab('twitchbot',this);loadTwitchBotConfig()">
@@ -494,7 +505,7 @@
     <!-- ══════════════════════════════════ BOT CONFIG ══════════════════════════════════ -->
     <div class="tab" id="tab-bot">
       <p class="page-tag">// configuration</p>
-      <p class="page-title">BOT CONFIG</p>
+      <p class="page-title" id="bot-config-page-title">BOT CONFIG</p>
 
       <!-- Server warning banner -->
       <div id="bot-config-server-warning" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid rgba(255,45,120,0.5);background:rgba(255,45,120,0.07);box-shadow:0 0 12px rgba(255,45,120,0.15);margin-bottom:14px;transition:all 0.4s">
@@ -502,7 +513,43 @@
         <p id="bot-warning-text" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--pink);letter-spacing:0.5px;line-height:1.7;text-shadow:0 0 8px rgba(255,45,120,0.5)">No server selected — select your Discord server from the sidebar dropdown first.</p>
       </div>
 
-      <!-- Channel Bindings — point-and-click dropdowns -->
+      <!-- ══════════ LANDING GRID — click a card to configure that section ══════════ -->
+      <div class="config-grid" id="bot-config-grid">
+        <div class="config-card" onclick="showConfigPage('channels')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+          <p class="config-card-title">Game Channels</p>
+          <p class="config-card-desc">Tournament channels for OW2, Rivals, Destiny 2, and R6 Siege.</p>
+          <p class="config-card-status" id="status-channels">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('roles')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <p class="config-card-title">Role Pings</p>
+          <p class="config-card-desc">Roles AuraAI pings for game-specific notifications.</p>
+          <p class="config-card-status" id="status-roles">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('welcome')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <p class="config-card-title">Welcome Channel</p>
+          <p class="config-card-desc">Cyberpunk welcome card posted when a member joins.</p>
+          <p class="config-card-status" id="status-welcome">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('fun')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+          <p class="config-card-title">Fun Channel</p>
+          <p class="config-card-desc">Where /hitman and other fun commands post.</p>
+          <p class="config-card-status" id="status-fun">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('features')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+          <p class="config-card-title">Feature Toggles</p>
+          <p class="config-card-desc">Enable or disable BattleTag lookup, AI Tournament Director, scrims, coaching.</p>
+        </div>
+      </div>
+
+      <!-- ══════════ DETAIL PAGES — hidden until a card above is clicked ══════════ -->
+
+      <div class="config-detail" id="config-detail-channels">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
       <div class="section-card">
         <p class="card-title">// channel bindings</p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
@@ -531,8 +578,10 @@
           <p class="save-msg" id="channels-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
       </div>
+      </div>
 
-      <!-- Role Pings -->
+      <div class="config-detail" id="config-detail-roles">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
       <div class="section-card">
         <p class="card-title">// role pings</p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.7;margin-bottom:14px">Select the roles AuraAI should ping for game-specific notifications. Pick from your server's role list — no IDs needed.</p>
@@ -551,8 +600,10 @@
           <p class="save-msg" id="roles-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
       </div>
+      </div>
 
-      <!-- Feature Toggles -->
+      <div class="config-detail" id="config-detail-features">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
       <div class="section-card">
         <p class="card-title">// feature toggles</p>
         <div class="toggle-row"><span class="toggle-label">BattleTag auto-lookup</span><label class="toggle"><input type="checkbox" checked id="toggle-battletag"><div class="t-track"></div><div class="t-thumb"></div></label></div>
@@ -564,8 +615,10 @@
           <p class="save-msg" id="toggles-saved">// Settings saved successfully</p>
         </div>
       </div>
+      </div>
 
-      <!-- Welcome Channel -->
+      <div class="config-detail" id="config-detail-welcome">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
       <div class="section-card">
         <p class="card-title">// welcome channel</p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
@@ -580,8 +633,10 @@
           <p class="save-msg" id="welcome-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
       </div>
+      </div>
 
-      <!-- Fun Channel -->
+      <div class="config-detail" id="config-detail-fun">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
       <div class="section-card">
         <p class="card-title">// fun channel</p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
@@ -595,6 +650,7 @@
           <p class="save-msg" id="fun-channel-saved">// Settings saved successfully</p>
           <p class="save-msg" id="fun-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
+      </div>
       </div>
     </div>
 
@@ -647,10 +703,7 @@
       <div class="section-card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
           <p class="card-title" style="margin-bottom:0">// active tournaments</p>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <div id="tournament-game-filter-wrap" style="width:180px"></div>
-            <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px" onclick="document.getElementById('new-tournament-form').style.display='block';document.getElementById('new-t-name').focus()">+ New tournament</button>
-          </div>
+          <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px" onclick="document.getElementById('new-tournament-form').style.display='block';document.getElementById('new-t-name').focus()">+ New tournament</button>
         </div>
         <div id="tournaments-list"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading tournaments...</p></div>
       </div>
@@ -691,7 +744,9 @@
       <div class="section-card">
         <p class="card-title">// add new alert</p>
         <label class="field-label">Platform</label>
-        <div id="alert-platform-wrap"></div>
+        <select class="cyber-input" id="alert-platform" style="cursor:pointer" onchange="onPlatformChange(this.value)">
+          <option value="twitch">Twitch</option><option value="youtube">YouTube</option><option value="kick">Kick</option><option value="tiktok">TikTok</option>
+        </select>
         <label class="field-label">Search for streamer / channel</label>
         <div style="position:relative">
           <input class="cyber-input" type="text" id="alert-search" placeholder="Type a name to search..." oninput="onAlertSearch(this.value)" autocomplete="off">
@@ -935,6 +990,7 @@
 
   let currentUser = null, userAccess = null, isOwner = false, isDelegate = false, isCoach = false;
   let selectedGuildId = null, userGuilds = [];
+  let lastBotConfigSettings = null;
   let activeTournamentId = null, activeSwissTab = 'standings';
   // Cached channel list for the selected guild — used by all channel pickers
   let guildChannelCache = [];
@@ -1275,12 +1331,7 @@
       if (commandsEl) commandsEl.textContent = stats?.commands_total?.toLocaleString() ?? '0';
     } catch (err) { console.error('loadOverviewStats error:', err.message); }
     try {
-      let totalCompleted = 0;
-      for (const suffix of ['ow','rivals','destiny','r6']) {
-        const { count: c } = await sb.from(`tournaments_${suffix}`).select('id', { count: 'exact', head: true }).eq('status', 'completed');
-        totalCompleted += c || 0;
-      }
-      const count = totalCompleted;
+      const { count } = await sb.from('tournaments').select('id', { count: 'exact', head: true }).eq('status', 'completed');
       const tournamentsEl = document.getElementById('stat-tournaments');
       if (tournamentsEl) tournamentsEl.textContent = (count ?? 0).toLocaleString();
     } catch (err) { console.error('loadOverviewStats (tournaments) error:', err.message); }
@@ -1482,7 +1533,9 @@
     if (!guildId) {
       guildChannelCache = [];
       guildRoleCache = [];
+      lastBotConfigSettings = null;
       Object.values(channelPickers).forEach(p => p.setPlaceholder('— Select a server first —'));
+      updateConfigCardStatuses();
       return;
     }
 
@@ -1491,6 +1544,7 @@
     try {
       const { data: settings } = await sb.from('server_settings').select('*').eq('discord_server_id', guildId).maybeSingle();
       savedSettings = settings;
+      lastBotConfigSettings = settings;
       if (settings) {
         if (settings.feature_flags) {
           const f=settings.feature_flags;
@@ -1507,6 +1561,7 @@
       loadGuildChannels(guildId, savedSettings),
       loadGuildRoles(guildId, savedSettings)
     ]);
+    updateConfigCardStatuses();
 
     // Update coaching warning banner
     const coachingWarning=document.getElementById('coaching-server-warning');
@@ -1577,6 +1632,50 @@
 
   function showSaved(id){const el=document.getElementById(id);if(!el)return;el.style.display='block';setTimeout(()=>el.style.display='none',3000);}
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
+
+  // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES' };
+
+  function showConfigPage(name) {
+    const grid = document.getElementById('bot-config-grid');
+    if (grid) grid.style.display = 'none';
+    document.querySelectorAll('.config-detail').forEach(el => el.classList.remove('active'));
+    const target = document.getElementById('config-detail-' + name);
+    if (target) target.classList.add('active');
+    const title = document.getElementById('bot-config-page-title');
+    if (title) title.textContent = CONFIG_PAGE_TITLES[name] || 'BOT CONFIG';
+  }
+
+  function showConfigGrid() {
+    document.querySelectorAll('.config-detail').forEach(el => el.classList.remove('active'));
+    const grid = document.getElementById('bot-config-grid');
+    if (grid) grid.style.display = 'grid';
+    const title = document.getElementById('bot-config-page-title');
+    if (title) title.textContent = 'BOT CONFIG';
+    updateConfigCardStatuses();
+  }
+
+  function updateConfigCardStatuses() {
+    const s = lastBotConfigSettings || {};
+    const hasServer = !!selectedGuildId;
+
+    const setStatus = (id, isSet) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!hasServer) { el.textContent = '// select a server'; el.className = 'config-card-status unset'; return; }
+      el.textContent = isSet ? '✓ Configured' : '// Not set';
+      el.className = 'config-card-status ' + (isSet ? 'set' : 'unset');
+    };
+
+    const channelsSet = !!(s.ow_channel_id || s.rivals_channel_id || s.d2_channel_id || s.r6_channel_id);
+    setStatus('status-channels', channelsSet);
+
+    const rolesSet = !!(s.ow_role_id || s.rivals_role_id || s.d2_role_id);
+    setStatus('status-roles', rolesSet);
+
+    setStatus('status-welcome', !!s.welcome_channel_id);
+    setStatus('status-fun', !!s.fun_channel_id);
+  }
   async function signOut(){await sb.auth.signOut();window.location.href='/login.html';}
   function updateClock(){document.getElementById('clock').textContent=new Date().toUTCString().replace('GMT','UTC');}
   updateClock();setInterval(updateClock,1000);
@@ -1611,7 +1710,7 @@
   }
 
   async function searchStreamers(query){
-    const platform=window.getAlertPlatform ? window.getAlertPlatform() : 'twitch';
+    const platform=document.getElementById('alert-platform').value;
     const resultsEl=document.getElementById('search-results');
     resultsEl.innerHTML='<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Searching...</div>';resultsEl.style.display='block';
     try{
@@ -1626,7 +1725,7 @@
   function clearSelectedStreamer(){selectedStreamer=null;document.getElementById('selected-streamer').style.display='none';}
 
   async function addAlert(){
-    const platform=window.getAlertPlatform ? window.getAlertPlatform() : 'twitch';
+    const platform=document.getElementById('alert-platform').value;
     const channelId=channelPickers['alert-channel'].getValue();
     const errorEl=document.getElementById('alert-error');errorEl.style.display='none';
     let username='';
@@ -1648,34 +1747,18 @@
 
   // ── SWISS TOURNAMENT SYSTEM ───────────────────────────────────────────────
   let selectedTournament = null;
-  let selectedTournamentGame = 'overwatch'; // track which game the active tournament is for
-
-  function getTournamentTables(game) {
-    const g = (game || 'overwatch').toLowerCase();
-    const suffix = g === 'r6siege' ? 'r6' : g === 'rivals' ? 'rivals' : g === 'destiny' ? 'destiny' : 'ow';
-    return {
-      tournaments: `tournaments_${suffix}`,
-      teams: `tournament_teams_${suffix}`,
-      rounds: `tournament_rounds_${suffix}`,
-      matches: `tournament_matches_${suffix}`,
-    };
-  }
   async function loadTournamentTab(){await loadTournaments();}
   async function loadTournaments(){
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;if(!discordId)return;
-    const game=_origGetTournamentGame();
-    const tables=getTournamentTables(game);
-    const{data:tournaments}=await sb.from(tables.tournaments).select('*').eq('discord_server_id',selectedGuildId||discordId).order('created_at',{ascending:false});
+    const{data:tournaments}=await sb.from('tournaments').select('*').eq('discord_server_id',selectedGuildId||discordId).order('created_at',{ascending:false});
     const list=document.getElementById('tournaments-list');if(!list)return;
     if(!tournaments||tournaments.length===0){list.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No tournaments yet. Click + New tournament to create one.</p>';return;}
     const statusBadge={registration:'<span class="badge badge-pro">Reg open</span>',in_progress:'<span class="badge badge-live">Live</span>',completed:'<span class="badge badge-active">Done</span>',cancelled:'<span class="badge badge-free">Cancelled</span>'};
-    const gameLabels={'overwatch':'Overwatch 2','rivals':'Marvel Rivals','destiny':'Destiny 2','r6siege':'Rainbow Six Siege'};
-    const gameIcons={'overwatch':'🎮','rivals':'⚔️','destiny':'🌌','r6siege':'🛡️'};
-    list.innerHTML=tournaments.map(t=>`<div class="platform-row" style="margin-bottom:8px;cursor:pointer" onclick="openTournament('${t.id}','${t.name.replace(/'/g,"\\'")}')"><div><p class="platform-name">${gameIcons[game]||'🎮'} ${t.name}</p><p class="platform-sub">Swiss · ${gameLabels[game]||game} · ${(t.status||'registration').replace('_',' ')} · Click to manage</p></div><div style="display:flex;align-items:center;gap:8px">${statusBadge[t.status]||statusBadge.registration}<button onclick="event.stopPropagation();deleteTournament('${t.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
+    list.innerHTML=tournaments.map(t=>`<div class="platform-row" style="margin-bottom:8px;cursor:pointer" onclick="openTournament('${t.id}','${t.name.replace(/'/g,"\\'")}')"><div><p class="platform-name">🎮 ${t.name}</p><p class="platform-sub">Swiss · Overwatch 2 · ${(t.status||'registration').replace('_',' ')} · Click to manage</p></div><div style="display:flex;align-items:center;gap:8px">${statusBadge[t.status]||statusBadge.registration}<button onclick="event.stopPropagation();deleteTournament('${t.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
   }
 
-  async function openTournament(id,name,game){
-    activeTournamentId=id;selectedTournament={id,name};selectedTournamentGame=game||'overwatch';
+  async function openTournament(id,name){
+    activeTournamentId=id;selectedTournament={id,name};
     document.getElementById('swiss-panel').style.display='block';
     document.getElementById('swiss-tournament-name').textContent=`// ${name}`;
     document.getElementById('team-registration-card').style.display='block';
@@ -1695,21 +1778,21 @@
   async function refreshSwissData(){if(!activeTournamentId)return;await Promise.all([loadStandings(),loadRoundMatches(1),loadRoundMatches(2),loadRoundMatches(3),loadRoundBadges(),loadRegisteredTeams(),loadRoundManagement()]);}
 
   async function loadRoundBadges(){
-    const{data:rounds}=await sb.from(getTournamentTables(selectedTournamentGame).rounds).select('*').eq('tournament_id',activeTournamentId).order('round_number');
+    const{data:rounds}=await sb.from('tournament_rounds').select('*').eq('tournament_id',activeTournamentId).order('round_number');
     const badgeEl=document.getElementById('swiss-round-badges');if(!badgeEl)return;
     const labels=[1,2,3].map(r=>{const round=rounds?.find(x=>x.round_number===r);const status=round?.status||'pending';return`<span class="round-badge ${status}">R${r} ${status}</span>`;});
     badgeEl.innerHTML=labels.join('');
   }
 
   async function loadStandings(){
-    const{data:teams}=await sb.from(getTournamentTables(selectedTournamentGame).teams).select('*').eq('tournament_id',activeTournamentId).eq('status','active').order('wins',{ascending:false});
+    const{data:teams}=await sb.from('tournament_teams').select('*').eq('tournament_id',activeTournamentId).eq('status','active').order('wins',{ascending:false});
     const el=document.getElementById('standings-content');if(!el)return;
     if(!teams||teams.length===0){el.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No teams registered yet.</p>';return;}
     el.innerHTML=`<table class="standings-table"><thead><tr><th>#</th><th>Team</th><th>Captain</th><th>W</th><th>L</th></tr></thead><tbody>${teams.map((t,i)=>`<tr><td><span class="standings-rank ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</span></td><td style="color:var(--cyan);font-family:var(--font-display);font-size:0.65rem;letter-spacing:1px">${t.team_name}</td><td>${t.captain_username}</td><td style="color:var(--green)">${t.wins}</td><td style="color:var(--pink)">${t.losses}</td></tr>`).join('')}</tbody></table>`;
   }
 
   async function loadRoundMatches(roundNum){
-    const{data:matches}=await sb.from(getTournamentTables(selectedTournamentGame).matches).select('*').eq('tournament_id',activeTournamentId).eq('round',roundNum).order('created_at');
+    const{data:matches}=await sb.from('tournament_matches').select('*').eq('tournament_id',activeTournamentId).eq('round',roundNum).order('created_at');
     const el=document.getElementById(`round${roundNum}-content`);if(!el)return;
     if(!matches||matches.length===0){el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No matches for Round ${roundNum} yet.</p>`;return;}
     el.innerHTML=matches.map(m=>{
@@ -1723,7 +1806,7 @@
   }
 
   async function loadRegisteredTeams(){
-    const{data:teams}=await sb.from(getTournamentTables(selectedTournamentGame).teams).select('*').eq('tournament_id',activeTournamentId).order('created_at');
+    const{data:teams}=await sb.from('tournament_teams').select('*').eq('tournament_id',activeTournamentId).order('created_at');
     const el=document.getElementById('registered-teams-list');if(!el)return;
     if(!teams||teams.length===0){el.innerHTML='<p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No teams registered yet.</p>';return;}
     el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);letter-spacing:2px;margin-bottom:8px;text-transform:uppercase">Registered teams (${teams.length})</p>`+teams.map(t=>`<div class="platform-row" style="margin-bottom:6px"><div><p class="platform-name" style="font-size:0.65rem">${t.team_name}</p><p class="platform-sub">${t.captain_username}${t.captain_battletag?' · '+t.captain_battletag:''}</p></div><div style="display:flex;gap:6px;align-items:center"><span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--green)">${t.wins}W</span><span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--pink)">${t.losses}L</span><button onclick="removeTeam('${t.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:13px">✕</button></div></div>`).join('');
@@ -1731,8 +1814,8 @@
 
   async function loadRoundManagement(){
     const el=document.getElementById('round-management-content');if(!el||!activeTournamentId)return;
-    const{data:rounds}=await sb.from(getTournamentTables(selectedTournamentGame).rounds).select('*').eq('tournament_id',activeTournamentId).order('round_number');
-    const{data:teams}=await sb.from(getTournamentTables(selectedTournamentGame).teams).select('id').eq('tournament_id',activeTournamentId).eq('status','active');
+    const{data:rounds}=await sb.from('tournament_rounds').select('*').eq('tournament_id',activeTournamentId).order('round_number');
+    const{data:teams}=await sb.from('tournament_teams').select('id').eq('tournament_id',activeTournamentId).eq('status','active');
     const teamCount=teams?.length||0;const confirmedRounds=rounds?.filter(r=>r.status==='confirmed').length||0;const activeRound=rounds?.find(r=>r.status==='active');const nextRound=confirmedRounds+1;
     if(confirmedRounds>=3){el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--green)">✅ Tournament complete — all 3 rounds finished.</p>`;return;}
     if(activeRound){el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--yellow);margin-bottom:12px">⚡ Round ${activeRound.round_number} is active — waiting for all match results.</p><button class="btn-confirm" onclick="confirmRound()">✓ Confirm Round ${activeRound.round_number} & Generate Next Pairings</button>`;return;}
@@ -1746,38 +1829,38 @@
     const errEl=document.getElementById('reg-error');errEl.style.display='none';
     if(!teamName||!captainId||!captainUsername){errEl.textContent='// Error: Team name, captain ID, and username are required';errEl.style.display='block';return;}
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    const{error}=await sb.from(getTournamentTables(selectedTournamentGame).teams).insert({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||discordId,team_name:teamName,captain_discord_id:captainId,captain_username:captainUsername,captain_battletag:captainBT||null,wins:0,losses:0,status:'active'});
+    const{error}=await sb.from('tournament_teams').insert({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||discordId,team_name:teamName,captain_discord_id:captainId,captain_username:captainUsername,captain_battletag:captainBT||null,wins:0,losses:0,status:'active'});
     if(error){errEl.textContent='// Error: '+error.message;errEl.style.display='block';return;}
     document.getElementById('reg-team-name').value='';document.getElementById('reg-captain-id').value='';document.getElementById('reg-captain-username').value='';document.getElementById('reg-captain-battletag').value='';
     showSaved('reg-saved');await refreshSwissData();
   }
 
-  async function removeTeam(id){if(!confirm('Remove this team from the tournament?'))return;await sb.from(getTournamentTables(selectedTournamentGame).teams).delete().eq('id',id);await refreshSwissData();}
+  async function removeTeam(id){if(!confirm('Remove this team from the tournament?'))return;await sb.from('tournament_teams').delete().eq('id',id);await refreshSwissData();}
 
   async function startRound(roundNum){
     if(!activeTournamentId)return;
     const btn=event.target;btn.disabled=true;btn.textContent='Generating pairings...';
     try{
-      const{data:teams}=await sb.from(getTournamentTables(selectedTournamentGame).teams).select('*').eq('tournament_id',activeTournamentId).eq('status','active').order('wins',{ascending:false});
+      const{data:teams}=await sb.from('tournament_teams').select('*').eq('tournament_id',activeTournamentId).eq('status','active').order('wins',{ascending:false});
       if(!teams||teams.length<2){alert('Need at least 2 teams to start a round');btn.disabled=false;btn.textContent=`▶ Start Round ${roundNum} — Generate Pairings`;return;}
-      await sb.from(getTournamentTables(selectedTournamentGame).rounds).upsert({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||(currentUser?.user_metadata?.provider_id||currentUser?.id),round_number:roundNum,status:'active',pairings_posted:false},{onConflict:'tournament_id,round_number'});
+      await sb.from('tournament_rounds').upsert({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||(currentUser?.user_metadata?.provider_id||currentUser?.id),round_number:roundNum,status:'active',pairings_posted:false},{onConflict:'tournament_id,round_number'});
       const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
       const matches=[];const paired=new Set();
       for(let i=0;i<teams.length;i++){
         if(paired.has(teams[i].id))continue;
         for(let j=i+1;j<teams.length;j++){
           if(paired.has(teams[j].id))continue;
-          const{data:prev}=await sb.from(getTournamentTables(selectedTournamentGame).matches).select('id').eq('tournament_id',activeTournamentId).or(`and(team1_id.eq.${teams[i].id},team2_id.eq.${teams[j].id}),and(team1_id.eq.${teams[j].id},team2_id.eq.${teams[i].id})`).maybeSingle();
+          const{data:prev}=await sb.from('tournament_matches').select('id').eq('tournament_id',activeTournamentId).or(`and(team1_id.eq.${teams[i].id},team2_id.eq.${teams[j].id}),and(team1_id.eq.${teams[j].id},team2_id.eq.${teams[i].id})`).maybeSingle();
           if(!prev){matches.push({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||discordId,round:roundNum,team1_id:teams[i].id,team2_id:teams[j].id,team1_name:teams[i].team_name,team2_name:teams[j].team_name,status:'pending'});paired.add(teams[i].id);paired.add(teams[j].id);break;}
         }
         if(!paired.has(teams[i].id)){
           matches.push({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||discordId,round:roundNum,team1_id:teams[i].id,team2_id:null,team1_name:teams[i].team_name,team2_name:'BYE',status:'confirmed',team1_score:1,team2_score:0,winner_id:teams[i].id,winner_name:teams[i].team_name});
           paired.add(teams[i].id);
-          await sb.from(getTournamentTables(selectedTournamentGame).teams).update({wins:teams[i].wins+1}).eq('id',teams[i].id);
+          await sb.from('tournament_teams').update({wins:teams[i].wins+1}).eq('id',teams[i].id);
         }
       }
-      if(matches.length>0){const{error}=await sb.from(getTournamentTables(selectedTournamentGame).matches).insert(matches);if(error){alert('Error creating matches: '+error.message);btn.disabled=false;return;}}
-      await sb.from(getTournamentTables(selectedTournamentGame).tournaments).update({status:'in_progress'}).eq('id',activeTournamentId);
+      if(matches.length>0){const{error}=await sb.from('tournament_matches').insert(matches);if(error){alert('Error creating matches: '+error.message);btn.disabled=false;return;}}
+      await sb.from('tournaments').update({status:'in_progress'}).eq('id',activeTournamentId);
       showSwissTab(`round${roundNum}`);await refreshSwissData();
     }catch(err){console.error('startRound error:',err.message);alert('Error starting round: '+err.message);}
     btn.disabled=false;
@@ -1785,16 +1868,16 @@
 
   async function confirmRound(){
     if(!activeTournamentId)return;
-    const{data:activeRound}=await sb.from(getTournamentTables(selectedTournamentGame).rounds).select('*').eq('tournament_id',activeTournamentId).eq('status','active').maybeSingle();
+    const{data:activeRound}=await sb.from('tournament_rounds').select('*').eq('tournament_id',activeTournamentId).eq('status','active').maybeSingle();
     if(!activeRound){alert('No active round found');return;}
     const roundNum=activeRound.round_number;
-    const{data:matches}=await sb.from(getTournamentTables(selectedTournamentGame).matches).select('*').eq('tournament_id',activeTournamentId).eq('round',roundNum);
+    const{data:matches}=await sb.from('tournament_matches').select('*').eq('tournament_id',activeTournamentId).eq('round',roundNum);
     const unreported=matches?.filter(m=>m.status==='pending'&&m.team2_name!=='BYE');
     if(unreported&&unreported.length>0){if(!confirm(`${unreported.length} match(es) still pending. Confirm anyway and mark them as no-contest?`))return;}
     const reviewerTag=currentUser?.user_metadata?.full_name||currentUser?.user_metadata?.name||'admin';
-    await sb.from(getTournamentTables(selectedTournamentGame).rounds).update({status:'confirmed',confirmed_by:reviewerTag,confirmed_at:new Date().toISOString()}).eq('id',activeRound.id);
-    await sb.from(getTournamentTables(selectedTournamentGame).matches).update({status:'confirmed'}).eq('tournament_id',activeTournamentId).eq('round',roundNum).eq('status','pending');
-    if(roundNum>=3)await sb.from(getTournamentTables(selectedTournamentGame).tournaments).update({status:'completed'}).eq('id',activeTournamentId);
+    await sb.from('tournament_rounds').update({status:'confirmed',confirmed_by:reviewerTag,confirmed_at:new Date().toISOString()}).eq('id',activeRound.id);
+    await sb.from('tournament_matches').update({status:'confirmed'}).eq('tournament_id',activeTournamentId).eq('round',roundNum).eq('status','pending');
+    if(roundNum>=3)await sb.from('tournaments').update({status:'completed'}).eq('id',activeTournamentId);
     await refreshSwissData();showSaved('tournament-created');
   }
 
@@ -1812,9 +1895,7 @@
     const errEl=document.getElementById('tournament-error');errEl.style.display='none';
     if(!name){errEl.textContent='// Error: Please enter a tournament name';errEl.style.display='block';return;}
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    const newGame=_origGetTournamentGame();
-    const newTables=getTournamentTables(newGame);
-    const{error}=await sb.from(newTables.tournaments).insert({name,bracket_type:'swiss',max_players:maxTeams,ruleset:ruleset||null,status:'registration',discord_server_id:selectedGuildId||discordId});
+    const{error}=await sb.from('tournaments').insert({name,game:'overwatch',bracket_type:'swiss',max_players:maxTeams,ruleset:ruleset||null,status:'registration',discord_server_id:selectedGuildId||discordId});
     if(error){errEl.textContent='// Error: '+error.message;errEl.style.display='block';return;}
     document.getElementById('new-t-name').value='';document.getElementById('new-t-ruleset').value='';
     document.getElementById('new-tournament-form').style.display='none';showSaved('tournament-created');await loadTournaments();
@@ -1822,11 +1903,10 @@
 
   async function deleteTournament(id){
     if(!confirm('Delete this tournament? This will also delete all teams and matches.'))return;
-    const delTables=getTournamentTables(selectedTournamentGame);
-    await sb.from(delTables.matches).delete().eq('tournament_id',id);
-    await sb.from(delTables.rounds).delete().eq('tournament_id',id);
-    await sb.from(delTables.teams).delete().eq('tournament_id',id);
-    await sb.from(delTables.tournaments).delete().eq('id',id);
+    await sb.from('tournament_matches').delete().eq('tournament_id',id);
+    await sb.from('tournament_rounds').delete().eq('tournament_id',id);
+    await sb.from('tournament_teams').delete().eq('tournament_id',id);
+    await sb.from('tournaments').delete().eq('id',id);
     if(activeTournamentId===id)closeSwissPanel();
     await loadTournaments();
   }
@@ -2113,68 +2193,7 @@
     showSaved('fun-channel-saved');
   }
 
-  // Tournament game filter CyberDropdown
-  let ddTournamentGame = null;
-  function initGameDropdowns() {
-    // Tournament game filter
-    ddTournamentGame = new CyberDropdown('tournament-game-filter-wrap', (val) => { loadTournaments(); });
-    ddTournamentGame.searchInput.placeholder = 'Search games...';
-    const gameOptions = [
-      { value: 'overwatch', label: '🎮 Overwatch 2' },
-      { value: 'rivals', label: '⚔️ Marvel Rivals' },
-      { value: 'destiny', label: '🌌 Destiny 2' },
-      { value: 'r6siege', label: '🛡️ Rainbow Six Siege' },
-    ];
-    gameOptions.forEach(g => {
-      const div = document.createElement('div');
-      div.className = 'cd-option' + (g.value === 'overwatch' ? ' selected' : '');
-      div.textContent = g.label;
-      div.dataset.value = g.value;
-      div.onclick = (e) => {
-        e.stopPropagation();
-        ddTournamentGame.setValue(g.value, g.label);
-        ddTournamentGame.close();
-        loadTournaments();
-      };
-      ddTournamentGame.list.appendChild(div);
-      ddTournamentGame.options.push({ value: g.value, label: g.label, el: div });
-    });
-    ddTournamentGame.setValue('overwatch', '🎮 Overwatch 2');
-
-    // Alert platform dropdown
-    const ddAlertPlatform = new CyberDropdown('alert-platform-wrap', (val) => { onPlatformChange(val); });
-    ddAlertPlatform.searchInput.placeholder = 'Search platforms...';
-    const platformOptions = [
-      { value: 'twitch', label: '🟣 Twitch' },
-      { value: 'youtube', label: '🔴 YouTube' },
-      { value: 'kick', label: '🟢 Kick' },
-      { value: 'tiktok', label: '⚫ TikTok' },
-    ];
-    platformOptions.forEach(p => {
-      const div = document.createElement('div');
-      div.className = 'cd-option' + (p.value === 'twitch' ? ' selected' : '');
-      div.textContent = p.label;
-      div.dataset.value = p.value;
-      div.onclick = (e) => {
-        e.stopPropagation();
-        ddAlertPlatform.setValue(p.value, p.label);
-        ddAlertPlatform.close();
-        onPlatformChange(p.value);
-      };
-      ddAlertPlatform.list.appendChild(div);
-      ddAlertPlatform.options.push({ value: p.value, label: p.label, el: div });
-    });
-    ddAlertPlatform.setValue('twitch', '🟣 Twitch');
-    // Override alert-platform value getter for compatibility
-    window.getAlertPlatform = () => ddAlertPlatform.getValue();
-    // Note: alert-platform-wrap is NOT added to channelPickers to avoid being reset by loadGuildChannels
-  }
-
-  // Patch loadTournaments to read from CyberDropdown
-  const _origGetTournamentGame = () => ddTournamentGame?.getValue() || 'overwatch';
-
   initChannelPickers();
-  initGameDropdowns();
   init();
 </script>
 </body>
