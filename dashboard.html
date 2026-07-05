@@ -1598,7 +1598,7 @@
     const rivalsId = channelPickers['rivals-channel-picker'].getValue();
     const d2Id = channelPickers['d2-channel-picker'].getValue();
     const r6Id = channelPickers['r6-channel-picker'].getValue();
-    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_channel_id: owId||null, rivals_channel_id: rivalsId||null, d2_channel_id: d2Id||null, r6_channel_id: r6Id||null }, { onConflict: 'owner_discord_id' });
+    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_channel_id: owId||null, rivals_channel_id: rivalsId||null, d2_channel_id: d2Id||null, r6_channel_id: r6Id||null }, { onConflict: 'discord_server_id' });
     // Refresh hints
     setChannelHint('ow-channel-current', owId);
     setChannelHint('rivals-channel-current', rivalsId);
@@ -1613,7 +1613,7 @@
     const owRoleId = channelPickers['ow-role-picker'].getValue() || null;
     const rivalsRoleId = channelPickers['rivals-role-picker'].getValue() || null;
     const d2RoleId = channelPickers['d2-role-picker'].getValue() || null;
-    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_role_id: owRoleId, rivals_role_id: rivalsRoleId, d2_role_id: d2RoleId }, { onConflict: 'owner_discord_id' });
+    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_role_id: owRoleId, rivals_role_id: rivalsRoleId, d2_role_id: d2RoleId }, { onConflict: 'discord_server_id' });
     setChannelHint('ow-role-current', owRoleId);
     setChannelHint('rivals-role-current', rivalsRoleId);
     setChannelHint('d2-role-current', d2RoleId);
@@ -1622,7 +1622,7 @@
 
   async function saveToggles() {
     const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
-    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId||discordId, feature_flags: { battletag: document.getElementById('toggle-battletag').checked, ask_td: document.getElementById('toggle-td').checked, scrims: document.getElementById('toggle-scrims').checked, coaching: document.getElementById('toggle-coaching').checked } }, { onConflict: 'owner_discord_id' });
+    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId||discordId, feature_flags: { battletag: document.getElementById('toggle-battletag').checked, ask_td: document.getElementById('toggle-td').checked, scrims: document.getElementById('toggle-scrims').checked, coaching: document.getElementById('toggle-coaching').checked } }, { onConflict: 'discord_server_id' });
     showSaved('toggles-saved');
   }
 
@@ -2049,7 +2049,7 @@
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
     const coachChId=channelPickers['coaching-channel-picker'].getValue()||null;
     const coachLogChId=channelPickers['coaching-log-channel-picker'].getValue()||null;
-    await sb.from('server_settings').upsert({owner_discord_id:discordId,discord_server_id:selectedGuildId||discordId,coaching_channel_id:coachChId,coaching_log_channel_id:coachLogChId,feature_flags:{battletag:document.getElementById('toggle-battletag').checked,ask_td:document.getElementById('toggle-td').checked,scrims:document.getElementById('toggle-scrims').checked,coaching:document.getElementById('toggle-coaching').checked,coaching_allow:document.getElementById('toggle-coaching-allow').checked,coaching_auto:document.getElementById('toggle-coaching-auto').checked,coaching_max_sessions:parseInt(document.getElementById('coaching-max-sessions').value)}},{onConflict:'owner_discord_id'});
+    await sb.from('server_settings').upsert({owner_discord_id:discordId,discord_server_id:selectedGuildId||discordId,coaching_channel_id:coachChId,coaching_log_channel_id:coachLogChId,feature_flags:{battletag:document.getElementById('toggle-battletag').checked,ask_td:document.getElementById('toggle-td').checked,scrims:document.getElementById('toggle-scrims').checked,coaching:document.getElementById('toggle-coaching').checked,coaching_allow:document.getElementById('toggle-coaching-allow').checked,coaching_auto:document.getElementById('toggle-coaching-auto').checked,coaching_max_sessions:parseInt(document.getElementById('coaching-max-sessions').value)}},{onConflict:'discord_server_id'});
     setChannelHint('coaching-channel-current',coachChId);
     setChannelHint('coaching-log-channel-current',coachLogChId);
     showSaved('coaching-saved');
@@ -2178,7 +2178,7 @@
     const welcomeId = channelPickers['welcome-channel-picker'].getValue() || null;
     await sb.from('server_settings').upsert(
       { owner_discord_id: discordId, discord_server_id: selectedGuildId, welcome_channel_id: welcomeId },
-      { onConflict: 'owner_discord_id' }
+      { onConflict: 'discord_server_id' }
     );
     setChannelHint('welcome-channel-current', welcomeId);
     showSaved('welcome-channel-saved');
@@ -2233,7 +2233,7 @@
     const funId = channelPickers['fun-channel-picker'].getValue() || null;
     await sb.from('server_settings').upsert(
       { owner_discord_id: discordId, discord_server_id: selectedGuildId, fun_channel_id: funId },
-      { onConflict: 'owner_discord_id' }
+      { onConflict: 'discord_server_id' }
     );
     setChannelHint('fun-channel-current', funId);
     showSaved('fun-channel-saved');
