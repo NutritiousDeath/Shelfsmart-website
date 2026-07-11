@@ -289,9 +289,9 @@
   .founders-bar{position:fixed;top:52px;left:0;right:0;z-index:999;height:32px;background:rgba(5,8,16,0.95);border-bottom:1px solid rgba(0,240,255,0.1);display:flex;align-items:center;overflow:hidden;gap:0}
   .founders-label{flex-shrink:0;font-family:var(--font-mono);font-size:0.58rem;letter-spacing:2px;color:rgba(0,240,255,0.4);padding:0 14px;border-right:1px solid rgba(0,240,255,0.1);white-space:nowrap;text-transform:uppercase}
   .founders-marquee-wrap{flex:1;overflow:hidden;position:relative}
-  .founders-marquee{display:inline-flex;gap:0;white-space:nowrap;animation:founders-scroll 28s linear infinite}
+  .founders-marquee{display:inline-flex;gap:0;white-space:nowrap;animation:founders-scroll 28s linear infinite;animation-play-state:paused;will-change:transform;backface-visibility:hidden}
   .founders-marquee:hover{animation-play-state:paused}
-  @keyframes founders-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  @keyframes founders-scroll{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-50%,0,0)}}
   .founder-name{font-family:'Orbitron',sans-serif;font-weight:900;font-size:0.62rem;letter-spacing:2px;padding:0 28px;background:linear-gradient(90deg,#00e5ff,#ff3ea5,#ff4d4d,#ff8c00,#ff3ea5,#00e5ff);background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradient-shift 4s linear infinite;filter:drop-shadow(0 0 8px rgba(0,229,255,0.4)) drop-shadow(0 0 20px rgba(255,62,165,0.25))}
   .founder-sep{font-family:var(--font-mono);font-size:0.5rem;color:rgba(0,240,255,0.2);padding:0 4px;-webkit-text-fill-color:rgba(0,240,255,0.2)}
   @keyframes gradient-shift{0%{background-position:0% 50%}100%{background-position:300% 50%}}
@@ -310,6 +310,11 @@
     const el=document.getElementById('founders-marquee');if(!el)return;
     const buildSet=()=>FOUNDERS.map(name=>`<span class="founder-name">${name}</span><span class="founder-sep">✦</span>`).join('');
     el.innerHTML=buildSet()+buildSet();
+    // Don't start scrolling until Orbitron has actually loaded — starting before that
+    // lets the text reflow mid-animation when the font swaps in, causing a visible jump.
+    const start=()=>{el.style.animationPlayState='running';};
+    if(document.fonts && document.fonts.ready){document.fonts.ready.then(start).catch(start);}
+    else{start();}
   })();
 </script>
 
