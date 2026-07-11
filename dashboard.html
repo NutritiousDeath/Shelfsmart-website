@@ -960,9 +960,20 @@
         <label class="field-label">Discord user ID</label>
         <input class="cyber-input" type="text" id="grant-id" placeholder="e.g. 123456789012345678">
         <label class="field-label">Access duration</label>
-        <select class="cyber-input" id="grant-duration" style="cursor:pointer">
-          <option value="30">1 month (30 days)</option><option value="90">3 months (90 days)</option><option value="365">1 year</option><option value="0">Lifetime</option>
-        </select>
+        <div class="cd-wrap" id="grant-duration-wrap">
+          <div class="cd-selected" onclick="event.stopPropagation();toggleGrantDuration()">
+            <span class="cd-label" id="grant-duration-label">1 month (30 days)</span>
+            <span class="cd-arrow">▼</span>
+          </div>
+          <div class="cd-dropdown" id="grant-duration-dropdown">
+            <div class="cd-list">
+              <div class="cd-option selected" data-value="30" onclick="event.stopPropagation();selectGrantDuration(30,'1 month (30 days)')">1 month (30 days)</div>
+              <div class="cd-option" data-value="90" onclick="event.stopPropagation();selectGrantDuration(90,'3 months (90 days)')">3 months (90 days)</div>
+              <div class="cd-option" data-value="365" onclick="event.stopPropagation();selectGrantDuration(365,'1 year')">1 year</div>
+              <div class="cd-option" data-value="0" onclick="event.stopPropagation();selectGrantDuration(0,'Lifetime')">Lifetime</div>
+            </div>
+          </div>
+        </div>
         <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn-primary" onclick="grantAccess()">Grant access</button>
           <button class="btn-danger" onclick="revokeAccess()">Revoke access</button>
@@ -1626,8 +1637,29 @@
     showSaved('toggles-saved');
   }
 
+  let grantDurationValue = 30;
+  function toggleGrantDuration() {
+    const dd = document.getElementById('grant-duration-dropdown');
+    const sel = document.querySelector('#grant-duration-wrap .cd-selected');
+    const isOpen = dd.classList.contains('open');
+    document.querySelectorAll('.cd-dropdown.open').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.cd-selected.open').forEach(s => s.classList.remove('open'));
+    if (!isOpen) { dd.classList.add('open'); sel.classList.add('open'); }
+  }
+  function selectGrantDuration(value, label) {
+    grantDurationValue = value;
+    document.getElementById('grant-duration-label').textContent = label;
+    document.querySelectorAll('#grant-duration-dropdown .cd-option').forEach(o => o.classList.toggle('selected', parseInt(o.dataset.value) === value));
+    document.getElementById('grant-duration-dropdown').classList.remove('open');
+    document.querySelector('#grant-duration-wrap .cd-selected').classList.remove('open');
+  }
+  document.addEventListener('click', () => {
+    document.getElementById('grant-duration-dropdown')?.classList.remove('open');
+    document.querySelector('#grant-duration-wrap .cd-selected')?.classList.remove('open');
+  });
+
   async function grantAccess() {
-    const id=document.getElementById('grant-id').value.trim();const days=parseInt(document.getElementById('grant-duration').value);
+    const id=document.getElementById('grant-id').value.trim();const days=grantDurationValue;
     if(!id)return;
     const expires=days===0?null:new Date(Date.now()+days*86400000).toISOString();
     await sb.from('user_access').upsert({ discord_id:id,tier:'pro',status:'active',granted_by:'admin',expires_at:expires },{ onConflict:'discord_id' });
