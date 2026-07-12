@@ -538,6 +538,12 @@
           <p class="config-card-desc">Cyberpunk welcome card posted when a member joins.</p>
           <p class="config-card-status" id="status-welcome">// checking...</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('goodbye')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          <p class="config-card-title">Goodbye Channel</p>
+          <p class="config-card-desc">Message posted when a member leaves.</p>
+          <p class="config-card-status" id="status-goodbye">// checking...</p>
+        </div>
         <div class="config-card" onclick="showConfigPage('fun')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
           <p class="config-card-title">Fun Channel</p>
@@ -636,6 +642,24 @@
           <button class="btn-primary" onclick="saveWelcomeChannel()">Save welcome channel</button>
           <p class="save-msg" id="welcome-channel-saved">// Settings saved successfully</p>
           <p class="save-msg" id="welcome-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-goodbye">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// goodbye channel</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          When a member leaves your server, AuraAI will post a one-line message showing both their username and display name (since those aren't always the same). Select the channel to post in — leave unset to disable.
+        </p>
+        <label class="field-label">Goodbye message channel</label>
+        <div id="goodbye-channel-picker"></div>
+        <p class="channel-hint" id="goodbye-channel-current"></p>
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveGoodbyeChannel()">Save goodbye channel</button>
+          <p class="save-msg" id="goodbye-channel-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="goodbye-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
       </div>
       </div>
@@ -1218,6 +1242,7 @@
       { id: 'rivals-role-picker' },
       { id: 'd2-role-picker' },
       { id: 'welcome-channel-picker' },
+      { id: 'goodbye-channel-picker' },
       { id: 'fun-channel-picker' },
     ];
     pickerDefs.forEach(def => {
@@ -1342,6 +1367,9 @@
 
     channelPickers['welcome-channel-picker'].setChannels(guildChannelCache, s.welcome_channel_id || null);
     setChannelHint('welcome-channel-current', s.welcome_channel_id);
+
+    channelPickers['goodbye-channel-picker'].setChannels(guildChannelCache, s.goodbye_channel_id || null);
+    setChannelHint('goodbye-channel-current', s.goodbye_channel_id);
 
     channelPickers['fun-channel-picker'].setChannels(guildChannelCache, s.fun_channel_id || null);
     setChannelHint('fun-channel-current', s.fun_channel_id);
@@ -1681,7 +1709,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
@@ -1721,6 +1749,7 @@
     setStatus('status-roles', rolesSet);
 
     setStatus('status-welcome', !!s.welcome_channel_id);
+    setStatus('status-goodbye', !!s.goodbye_channel_id);
     setStatus('status-fun', !!s.fun_channel_id);
 
     updateCoachingSettingsStatus();
@@ -2220,6 +2249,23 @@
     setChannelHint('welcome-channel-current', welcomeId);
     showSaved('welcome-channel-saved');
   }
+
+  async function saveGoodbyeChannel() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('goodbye-channel-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const goodbyeId = channelPickers['goodbye-channel-picker'].getValue() || null;
+    await sb.from('server_settings').upsert(
+      { owner_discord_id: discordId, discord_server_id: selectedGuildId, goodbye_channel_id: goodbyeId },
+      { onConflict: 'discord_server_id' }
+    );
+    setChannelHint('goodbye-channel-current', goodbyeId);
+    showSaved('goodbye-channel-saved');
+  }
+
 
   function showCoachApplyPaywall(){const el=document.getElementById('paywall-coach-apply');if(el){el.style.display='flex';}}
   function hideCoachApplyPaywall(){const el=document.getElementById('paywall-coach-apply');if(el){el.style.display='none';}}
