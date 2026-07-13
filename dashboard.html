@@ -550,6 +550,12 @@
           <p class="config-card-desc">Where /hitman and other fun commands post.</p>
           <p class="config-card-status" id="status-fun">// checking...</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('voice')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>
+          <p class="config-card-title">Temp Voice Channels</p>
+          <p class="config-card-desc">Join-to-Create: auto-spawns a temp VC with /voice-rename, /voice-transfer, etc.</p>
+          <p class="config-card-status" id="status-voice">// checking...</p>
+        </div>
         <div class="config-card" onclick="showConfigPage('features')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
           <p class="config-card-title">Feature Toggles</p>
@@ -642,6 +648,24 @@
           <button class="btn-primary" onclick="saveWelcomeChannel()">Save welcome channel</button>
           <p class="save-msg" id="welcome-channel-saved">// Settings saved successfully</p>
           <p class="save-msg" id="welcome-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-voice">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// temp voice channels</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          Pick a "Join to Create" voice channel. When someone joins it, AuraAI moves them into a brand-new temp VC named after them, and deletes it automatically once it's empty. The owner can use <span style="color:var(--cyan)">/voice-rename</span>, <span style="color:var(--cyan)">/voice-userlimit</span>, <span style="color:var(--cyan)">/voice-transfer</span>, <span style="color:var(--cyan)">/voice-lock</span>/<span style="color:var(--cyan)">unlock</span>, <span style="color:var(--cyan)">/voice-hide</span>/<span style="color:var(--cyan)">unhide</span>, <span style="color:var(--cyan)">/voice-kick</span>, and <span style="color:var(--cyan)">/voice-invite</span> on it. If MEE6 or another bot already uses a "Join to Create" channel in this server, pick a <em>different</em> voice channel here — two bots reacting to the same channel will conflict. Leave unset to disable.
+        </p>
+        <label class="field-label">Join to Create channel</label>
+        <div id="voice-channel-picker"></div>
+        <p class="channel-hint" id="voice-channel-current"></p>
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveVoiceChannel()">Save voice channel</button>
+          <p class="save-msg" id="voice-channel-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="voice-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
       </div>
       </div>
@@ -1244,6 +1268,7 @@
       { id: 'welcome-channel-picker' },
       { id: 'goodbye-channel-picker' },
       { id: 'fun-channel-picker' },
+      { id: 'voice-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -1373,6 +1398,9 @@
 
     channelPickers['fun-channel-picker'].setChannels(guildChannelCache, s.fun_channel_id || null);
     setChannelHint('fun-channel-current', s.fun_channel_id);
+
+    channelPickers['voice-channel-picker'].setChannels(guildChannelCache, s.jtc_channel_id || null);
+    setChannelHint('voice-channel-current', s.jtc_channel_id);
   }
 
   // ── OVERVIEW STATS ────────────────────────────────────────────────────────
@@ -1709,7 +1737,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', voice:'TEMP VOICE CHANNELS', features:'FEATURE TOGGLES' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
@@ -1751,6 +1779,7 @@
     setStatus('status-welcome', !!s.welcome_channel_id);
     setStatus('status-goodbye', !!s.goodbye_channel_id);
     setStatus('status-fun', !!s.fun_channel_id);
+    setStatus('status-voice', !!s.jtc_channel_id);
 
     updateCoachingSettingsStatus();
   }
@@ -2264,6 +2293,22 @@
     );
     setChannelHint('goodbye-channel-current', goodbyeId);
     showSaved('goodbye-channel-saved');
+  }
+
+  async function saveVoiceChannel() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('voice-channel-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const voiceId = channelPickers['voice-channel-picker'].getValue() || null;
+    await sb.from('server_settings').upsert(
+      { owner_discord_id: discordId, discord_server_id: selectedGuildId, jtc_channel_id: voiceId },
+      { onConflict: 'discord_server_id' }
+    );
+    setChannelHint('voice-channel-current', voiceId);
+    showSaved('voice-channel-saved');
   }
 
 
