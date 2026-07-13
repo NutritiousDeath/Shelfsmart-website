@@ -1160,16 +1160,17 @@
     }
 
     // Build the list from channel data grouped by category
-    setChannels(channels, savedId) {
+    setChannels(channels, savedId, wantedTypes = [0, 5]) {
       this.list.innerHTML = '';
       this.options = [];
+      this._iconFor = (t) => (t === 5 ? '📢 ' : t === 2 ? '🔊 ' : '# ');
 
       if (!channels || channels.length === 0) {
         this.selected.querySelector('.cd-label').textContent = '⚠️ No channels loaded';
         return;
       }
 
-      const textChannels = channels.filter(c => c.type === 0 || c.type === 5).sort((a, b) => a.position - b.position);
+      const textChannels = channels.filter(c => wantedTypes.includes(c.type)).sort((a, b) => a.position - b.position);
       const categories = channels.filter(c => c.type === 4).sort((a, b) => a.position - b.position);
       const usedIds = new Set();
 
@@ -1199,7 +1200,7 @@
         const saved = channels.find(c => c.id === savedId);
         if (saved) {
           this.value = savedId;
-          this.selected.querySelector('.cd-label').textContent = (saved.type === 5 ? '📢 ' : '# ') + saved.name;
+          this.selected.querySelector('.cd-label').textContent = this._iconFor(saved.type) + saved.name;
         }
       } else {
         this.selected.querySelector('.cd-label').textContent = '— Pick a channel —';
@@ -1209,11 +1210,12 @@
     _addOption(ch, savedId) {
       const div = document.createElement('div');
       div.className = 'cd-option' + (ch.id === savedId ? ' selected' : '');
-      div.textContent = (ch.type === 5 ? '📢 ' : '# ') + ch.name;
+      const icon = this._iconFor ? this._iconFor(ch.type) : (ch.type === 5 ? '📢 ' : '# ');
+      div.textContent = icon + ch.name;
       div.dataset.value = ch.id;
       div.onclick = (e) => {
         e.stopPropagation();
-        this.setValue(ch.id, (ch.type === 5 ? '📢 ' : '# ') + ch.name);
+        this.setValue(ch.id, icon + ch.name);
         this.close();
         if (this.onChange) this.onChange(ch.id);
       };
@@ -1246,7 +1248,7 @@
     if (!el) return;
     if (!itemId) { el.textContent = ''; return; }
     const ch = guildChannelCache.find(c => c.id === itemId);
-    if (ch) { el.textContent = '// currently: #' + ch.name + ' (' + itemId + ')'; return; }
+    if (ch) { const icon = ch.type === 5 ? '📢' : ch.type === 2 ? '🔊' : '#'; el.textContent = '// currently: ' + icon + ch.name + ' (' + itemId + ')'; return; }
     const role = guildRoleCache.find(r => r.id === itemId);
     if (role) { el.textContent = '// currently: @' + role.name + ' (' + itemId + ')'; return; }
     el.textContent = '// currently: ' + itemId;
@@ -1399,7 +1401,7 @@
     channelPickers['fun-channel-picker'].setChannels(guildChannelCache, s.fun_channel_id || null);
     setChannelHint('fun-channel-current', s.fun_channel_id);
 
-    channelPickers['voice-channel-picker'].setChannels(guildChannelCache, s.jtc_channel_id || null);
+    channelPickers['voice-channel-picker'].setChannels(guildChannelCache, s.jtc_channel_id || null, [2]);
     setChannelHint('voice-channel-current', s.jtc_channel_id);
   }
 
