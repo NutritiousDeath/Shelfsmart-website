@@ -636,16 +636,31 @@
       <div class="section-card">
         <p class="card-title">// reaction role menu</p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          Build a self-role dropdown menu. Any Admin can configure this. Pick a channel, write a title/description, check the roles you want included, then post it. Members can select multiple roles at once — picking one adds it, deselecting removes it. Only pulls from roles that already exist in this server.
+          Build a self-role button menu. Any Admin can configure this. Pick a channel, write your message, check the roles you want included, give each one a label/emoji/color, then post it. Clicking a button toggles that role on or off. Only pulls from roles that already exist in this server.
         </p>
         <label class="field-label">Channel to post in</label>
         <div id="rr-channel-picker"></div>
-        <label class="field-label" style="margin-top:14px">Menu title</label>
-        <input class="cyber-input" type="text" id="rr-title" placeholder="Pick Your Roles" maxlength="256">
-        <label class="field-label" style="margin-top:14px">Menu description <span style="color:var(--grey)">(optional)</span></label>
-        <input class="cyber-input" type="text" id="rr-description" placeholder="Select any roles you'd like below." maxlength="500">
-        <label class="field-label" style="margin-top:14px">Roles to include <span style="color:var(--grey)">(max 25)</span></label>
-        <div id="rr-role-checklist" style="max-height:280px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);padding:10px;display:flex;flex-direction:column;gap:6px;font-family:var(--font-mono);font-size:0.72rem"></div>
+
+        <label class="field-label" style="margin-top:14px">Message text <span style="color:var(--grey)">(shown above the embed, optional)</span></label>
+        <input class="cyber-input" type="text" id="rr-message-text" placeholder="Chose Your Game!" maxlength="256">
+
+        <label class="field-label" style="margin-top:14px">Embed title</label>
+        <input class="cyber-input" type="text" id="rr-title" placeholder="Game Selection" maxlength="256">
+
+        <label class="field-label" style="margin-top:14px">Embed subtitle <span style="color:var(--grey)">(bold line, optional)</span></label>
+        <input class="cyber-input" type="text" id="rr-embed-subtitle" placeholder="Choose your game to unlock the server!" maxlength="256">
+
+        <label class="field-label" style="margin-top:14px">Embed body text <span style="color:var(--grey)">(optional)</span></label>
+        <input class="cyber-input" type="text" id="rr-description" placeholder="React to this message to get your roles!" maxlength="500">
+
+        <label class="field-label" style="margin-top:14px">Embed image <span style="color:var(--grey)">(optional)</span></label>
+        <input type="file" id="rr-image-upload" accept="image/*" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">
+        <img id="rr-image-preview" style="display:none;max-width:240px;margin-top:8px;border:1px solid rgba(0,240,255,0.2)">
+        <p class="save-msg" id="rr-image-uploading" style="display:none;color:var(--cyan)">// Uploading image...</p>
+
+        <label class="field-label" style="margin-top:18px">Roles to include <span style="color:var(--grey)">(max 25 — label, emoji, and button color per role)</span></label>
+        <div id="rr-role-checklist" style="max-height:400px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);padding:10px;display:flex;flex-direction:column;gap:8px;font-family:var(--font-mono);font-size:0.72rem"></div>
+
         <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn-primary" onclick="saveAndPostReactionRoleMenu()">Save &amp; Post to Discord</button>
           <button class="btn-secondary" onclick="deleteReactionRoleMenu()" id="rr-delete-btn" style="display:none">Delete Menu</button>
@@ -1851,9 +1866,19 @@
     // Populate form fields if a menu already exists
     const titleEl = document.getElementById('rr-title');
     const descEl = document.getElementById('rr-description');
+    const msgEl = document.getElementById('rr-message-text');
+    const subtitleEl = document.getElementById('rr-embed-subtitle');
+    const previewEl = document.getElementById('rr-image-preview');
     const deleteBtn = document.getElementById('rr-delete-btn');
     if (titleEl) titleEl.value = currentReactionRoleMenu?.title || '';
     if (descEl) descEl.value = currentReactionRoleMenu?.description || '';
+    if (msgEl) msgEl.value = currentReactionRoleMenu?.message_text || '';
+    if (subtitleEl) subtitleEl.value = currentReactionRoleMenu?.embed_subtitle || '';
+    rrUploadedImageUrl = currentReactionRoleMenu?.image_url || null;
+    if (previewEl) {
+      if (rrUploadedImageUrl) { previewEl.src = rrUploadedImageUrl; previewEl.style.display = 'block'; }
+      else { previewEl.style.display = 'none'; previewEl.src = ''; }
+    }
     if (deleteBtn) deleteBtn.style.display = currentReactionRoleMenu ? 'inline-block' : 'none';
     if (currentReactionRoleMenu?.channel_id) {
       channelPickers['rr-channel-picker'].setValue(currentReactionRoleMenu.channel_id,
@@ -1880,23 +1905,87 @@
     if (!selectedGuildId) { box.innerHTML = '<p style="color:var(--grey)">// select a server first</p>'; return; }
     if (guildRoleCache.length === 0) { box.innerHTML = '<p style="color:var(--grey)">// no roles found</p>'; return; }
 
-    const selectedRoleIds = new Set((currentReactionRoleMenu?.options || []).map(o => o.role_id));
+    const savedByRoleId = {};
+    (currentReactionRoleMenu?.options || []).forEach(o => { savedByRoleId[o.role_id] = o; });
+
     guildRoleCache.forEach(role => {
-      const row = document.createElement('label');
-      row.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--white)';
+      const saved = savedByRoleId[role.id];
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px;border-bottom:1px solid rgba(0,240,255,0.06)';
+      row.dataset.roleId = role.id;
+      row.dataset.roleName = role.name;
+
       const cb = document.createElement('input');
       cb.type = 'checkbox';
-      cb.value = role.id;
-      cb.checked = selectedRoleIds.has(role.id);
-      cb.dataset.roleName = role.name;
+      cb.className = 'rr-role-include';
+      cb.checked = !!saved;
+
+      const roleLabel = document.createElement('span');
+      roleLabel.textContent = role.name;
+      roleLabel.style.minWidth = '110px';
+      if (role.color) roleLabel.style.color = '#' + role.color.toString(16).padStart(6, '0');
+
+      const labelInput = document.createElement('input');
+      labelInput.type = 'text';
+      labelInput.className = 'cyber-input rr-role-label';
+      labelInput.placeholder = 'Button label';
+      labelInput.maxLength = 80;
+      labelInput.style.cssText = 'width:130px;padding:4px 8px';
+      labelInput.value = saved?.label || role.name;
+
+      const emojiInput = document.createElement('input');
+      emojiInput.type = 'text';
+      emojiInput.className = 'cyber-input rr-role-emoji';
+      emojiInput.placeholder = '🎮';
+      emojiInput.style.cssText = 'width:60px;padding:4px 8px;text-align:center';
+      emojiInput.value = saved?.emoji || '';
+
+      const styleSelect = document.createElement('select');
+      styleSelect.className = 'cyber-input rr-role-style';
+      styleSelect.style.cssText = 'width:100px;padding:4px 8px';
+      [['blurple', 'Blurple'], ['grey', 'Grey'], ['green', 'Green'], ['red', 'Red']].forEach(([val, label]) => {
+        const opt = document.createElement('option');
+        opt.value = val; opt.textContent = label;
+        if ((saved?.button_style || 'blurple') === val) opt.selected = true;
+        styleSelect.appendChild(opt);
+      });
+
       row.appendChild(cb);
-      const span = document.createElement('span');
-      span.textContent = role.name;
-      if (role.color) span.style.color = '#' + role.color.toString(16).padStart(6, '0');
-      row.appendChild(span);
+      row.appendChild(roleLabel);
+      row.appendChild(labelInput);
+      row.appendChild(emojiInput);
+      row.appendChild(styleSelect);
       box.appendChild(row);
     });
   }
+
+  // ── Image upload to Supabase Storage ──────────────────────────────────────
+  let rrUploadedImageUrl = null;
+  document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('rr-image-upload');
+    if (!fileInput) return;
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      const uploading = document.getElementById('rr-image-uploading');
+      const preview = document.getElementById('rr-image-preview');
+      if (uploading) uploading.style.display = 'block';
+      try {
+        const path = `${selectedGuildId || 'unassigned'}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+        const { error: uploadErr } = await sb.storage.from('reaction-role-images').upload(path, file);
+        if (uploadErr) throw uploadErr;
+        const { data: urlData } = sb.storage.from('reaction-role-images').getPublicUrl(path);
+        rrUploadedImageUrl = urlData.publicUrl;
+        if (preview) { preview.src = rrUploadedImageUrl; preview.style.display = 'block'; }
+      } catch (err) {
+        console.error('Image upload error:', err.message);
+        const errEl = document.getElementById('rr-error');
+        if (errEl) { errEl.textContent = '// Error uploading image: ' + err.message; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 5000); }
+      } finally {
+        if (uploading) uploading.style.display = 'none';
+      }
+    });
+  });
 
   async function saveAndPostReactionRoleMenu() {
     const errEl = document.getElementById('rr-error');
@@ -1906,14 +1995,17 @@
     const channelId = channelPickers['rr-channel-picker'].getValue();
     const title = document.getElementById('rr-title').value.trim();
     const description = document.getElementById('rr-description').value.trim();
-    const checked = Array.from(document.querySelectorAll('#rr-role-checklist input[type=checkbox]:checked'));
+    const messageText = document.getElementById('rr-message-text').value.trim();
+    const embedSubtitle = document.getElementById('rr-embed-subtitle').value.trim();
 
-    if (!channelId || !title || checked.length === 0) {
-      if (errEl) { errEl.textContent = '// Error: Pick a channel, a title, and at least one role.'; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
+    const rows = Array.from(document.querySelectorAll('#rr-role-checklist > div')).filter(row => row.querySelector('.rr-role-include').checked);
+
+    if (!channelId || !title || rows.length === 0) {
+      if (errEl) { errEl.textContent = '// Error: Pick a channel, an embed title, and at least one role.'; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
       return;
     }
-    if (checked.length > 25) {
-      if (errEl) { errEl.textContent = '// Error: Discord allows a maximum of 25 roles per menu.'; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
+    if (rows.length > 25) {
+      if (errEl) { errEl.textContent = '// Error: Discord allows a maximum of 25 buttons per menu.'; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
       return;
     }
 
@@ -1921,16 +2013,29 @@
 
     try {
       let menuId = currentReactionRoleMenu?.id;
+      const menuFields = {
+        channel_id: channelId, title, description: description || null,
+        message_text: messageText || null, embed_subtitle: embedSubtitle || null,
+        image_url: rrUploadedImageUrl || null, updated_at: new Date().toISOString()
+      };
+
       if (menuId) {
-        await sb.from('reaction_role_menus').update({ channel_id: channelId, title, description: description || null, updated_at: new Date().toISOString() }).eq('id', menuId);
+        await sb.from('reaction_role_menus').update(menuFields).eq('id', menuId);
         await sb.from('reaction_role_options').delete().eq('menu_id', menuId);
       } else {
-        const { data: inserted, error: insertErr } = await sb.from('reaction_role_menus').insert({ guild_id: selectedGuildId, channel_id: channelId, title, description: description || null, created_by: discordId }).select().single();
+        const { data: inserted, error: insertErr } = await sb.from('reaction_role_menus').insert({ guild_id: selectedGuildId, created_by: discordId, ...menuFields }).select().single();
         if (insertErr) throw insertErr;
         menuId = inserted.id;
       }
 
-      const optionRows = checked.map((cb, i) => ({ menu_id: menuId, role_id: cb.value, label: cb.dataset.roleName, position: i }));
+      const optionRows = rows.map((row, i) => ({
+        menu_id: menuId,
+        role_id: row.dataset.roleId,
+        label: (row.querySelector('.rr-role-label').value.trim() || row.dataset.roleName).slice(0, 80),
+        emoji: row.querySelector('.rr-role-emoji').value.trim() || null,
+        button_style: row.querySelector('.rr-role-style').value,
+        position: i
+      }));
       await sb.from('reaction_role_options').insert(optionRows);
 
       // Ask the bot to actually post/update the Discord message
@@ -1955,6 +2060,10 @@
     await sb.from('reaction_role_menus').delete().eq('id', currentReactionRoleMenu.id);
     document.getElementById('rr-title').value = '';
     document.getElementById('rr-description').value = '';
+    document.getElementById('rr-message-text').value = '';
+    document.getElementById('rr-embed-subtitle').value = '';
+    document.getElementById('rr-image-preview').style.display = 'none';
+    rrUploadedImageUrl = null;
     await loadReactionRoleMenus(selectedGuildId);
   }
 
