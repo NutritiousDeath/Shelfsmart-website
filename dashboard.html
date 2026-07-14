@@ -1685,6 +1685,10 @@
       loadGuildRoles(guildId, savedSettings),
       loadReactionRoleMenus(guildId)
     ]);
+    // loadReactionRoleMenus and loadGuildRoles run concurrently above, so the role
+    // checklist may have rendered before guildRoleCache was actually populated —
+    // re-render now that everything above has settled.
+    renderRoleChecklist();
     updateConfigCardStatuses();
 
     // Update coaching warning banner
