@@ -562,6 +562,12 @@
           <p class="config-card-desc">Join-to-Create: auto-spawns a temp VC with /voice-rename, /voice-transfer, etc.</p>
           <p class="config-card-status" id="status-voice">// checking...</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('reactionroles')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
+          <p class="config-card-title">Reaction Roles</p>
+          <p class="config-card-desc">Post a self-role menu — members pick roles from a dropdown, no emoji needed.</p>
+          <p class="config-card-status" id="status-reactionroles">// checking...</p>
+        </div>
         <div class="config-card" onclick="showConfigPage('features')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
           <p class="config-card-title">Feature Toggles</p>
@@ -622,6 +628,30 @@
           <p class="save-msg" id="roles-saved">// Settings saved successfully</p>
           <p class="save-msg" id="roles-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-reactionroles">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// reaction role menu</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          Build a self-role dropdown menu. Any Admin can configure this. Pick a channel, write a title/description, check the roles you want included, then post it. Members can select multiple roles at once — picking one adds it, deselecting removes it. Only pulls from roles that already exist in this server.
+        </p>
+        <label class="field-label">Channel to post in</label>
+        <div id="rr-channel-picker"></div>
+        <label class="field-label" style="margin-top:14px">Menu title</label>
+        <input class="cyber-input" type="text" id="rr-title" placeholder="Pick Your Roles" maxlength="256">
+        <label class="field-label" style="margin-top:14px">Menu description <span style="color:var(--grey)">(optional)</span></label>
+        <input class="cyber-input" type="text" id="rr-description" placeholder="Select any roles you'd like below." maxlength="500">
+        <label class="field-label" style="margin-top:14px">Roles to include <span style="color:var(--grey)">(max 25)</span></label>
+        <div id="rr-role-checklist" style="max-height:280px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);padding:10px;display:flex;flex-direction:column;gap:6px;font-family:var(--font-mono);font-size:0.72rem"></div>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-primary" onclick="saveAndPostReactionRoleMenu()">Save &amp; Post to Discord</button>
+          <button class="btn-secondary" onclick="deleteReactionRoleMenu()" id="rr-delete-btn" style="display:none">Delete Menu</button>
+        </div>
+        <p class="save-msg" id="rr-saved">// Settings saved successfully</p>
+        <p class="save-msg" id="rr-error" style="color:var(--pink)">// Error saving menu</p>
       </div>
       </div>
 
@@ -1277,6 +1307,7 @@
       { id: 'goodbye-channel-picker' },
       { id: 'fun-channel-picker' },
       { id: 'voice-channel-picker' },
+      { id: 'rr-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -1409,6 +1440,8 @@
 
     channelPickers['voice-channel-picker'].setChannels(guildChannelCache, s.jtc_channel_id || null, [2]);
     setChannelHint('voice-channel-current', s.jtc_channel_id);
+
+    channelPickers['rr-channel-picker'].setChannels(guildChannelCache, null);
   }
 
   // ── OVERVIEW STATS ────────────────────────────────────────────────────────
@@ -1649,7 +1682,8 @@
     // Load channels and roles from bot in parallel, populating all pickers
     await Promise.all([
       loadGuildChannels(guildId, savedSettings),
-      loadGuildRoles(guildId, savedSettings)
+      loadGuildRoles(guildId, savedSettings),
+      loadReactionRoleMenus(guildId)
     ]);
     updateConfigCardStatuses();
 
@@ -1745,7 +1779,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', voice:'TEMP VOICE CHANNELS', features:'FEATURE TOGGLES' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', voice:'TEMP VOICE CHANNELS', reactionroles:'REACTION ROLES', features:'FEATURE TOGGLES' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
@@ -1790,6 +1824,134 @@
     setStatus('status-voice', !!s.jtc_channel_id);
 
     updateCoachingSettingsStatus();
+  }
+
+  // ── REACTION ROLES ────────────────────────────────────────────────────────
+  let currentReactionRoleMenu = null; // the single menu row for this guild, or null
+
+  async function loadReactionRoleMenus(guildId) {
+    currentReactionRoleMenu = null;
+    if (!guildId) { renderRoleChecklist(); return; }
+    try {
+      const { data: menus } = await sb.from('reaction_role_menus').select('*').eq('guild_id', guildId).order('created_at', { ascending: false }).limit(1);
+      currentReactionRoleMenu = (menus && menus[0]) || null;
+
+      if (currentReactionRoleMenu) {
+        const { data: opts } = await sb.from('reaction_role_options').select('*').eq('menu_id', currentReactionRoleMenu.id).order('position');
+        currentReactionRoleMenu.options = opts || [];
+      }
+    } catch (err) {
+      console.error('loadReactionRoleMenus error:', err.message);
+    }
+
+    // Populate form fields if a menu already exists
+    const titleEl = document.getElementById('rr-title');
+    const descEl = document.getElementById('rr-description');
+    const deleteBtn = document.getElementById('rr-delete-btn');
+    if (titleEl) titleEl.value = currentReactionRoleMenu?.title || '';
+    if (descEl) descEl.value = currentReactionRoleMenu?.description || '';
+    if (deleteBtn) deleteBtn.style.display = currentReactionRoleMenu ? 'inline-block' : 'none';
+    if (currentReactionRoleMenu?.channel_id) {
+      channelPickers['rr-channel-picker'].setValue(currentReactionRoleMenu.channel_id,
+        (guildChannelCache.find(c => c.id === currentReactionRoleMenu.channel_id)?.name ? '# ' + guildChannelCache.find(c => c.id === currentReactionRoleMenu.channel_id).name : 'Unknown channel'));
+    }
+
+    renderRoleChecklist();
+    setStatus_reactionRoles();
+  }
+
+  function setStatus_reactionRoles() {
+    const el = document.getElementById('status-reactionroles');
+    if (!el) return;
+    if (!selectedGuildId) { el.textContent = '// select a server'; el.className = 'config-card-status unset'; return; }
+    const posted = currentReactionRoleMenu && currentReactionRoleMenu.message_id;
+    el.textContent = posted ? '✓ Posted' : (currentReactionRoleMenu ? '// Draft (not posted)' : '// Not set');
+    el.className = 'config-card-status ' + (posted ? 'set' : 'unset');
+  }
+
+  function renderRoleChecklist() {
+    const box = document.getElementById('rr-role-checklist');
+    if (!box) return;
+    box.innerHTML = '';
+    if (!selectedGuildId) { box.innerHTML = '<p style="color:var(--grey)">// select a server first</p>'; return; }
+    if (guildRoleCache.length === 0) { box.innerHTML = '<p style="color:var(--grey)">// no roles found</p>'; return; }
+
+    const selectedRoleIds = new Set((currentReactionRoleMenu?.options || []).map(o => o.role_id));
+    guildRoleCache.forEach(role => {
+      const row = document.createElement('label');
+      row.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--white)';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = role.id;
+      cb.checked = selectedRoleIds.has(role.id);
+      cb.dataset.roleName = role.name;
+      row.appendChild(cb);
+      const span = document.createElement('span');
+      span.textContent = role.name;
+      if (role.color) span.style.color = '#' + role.color.toString(16).padStart(6, '0');
+      row.appendChild(span);
+      box.appendChild(row);
+    });
+  }
+
+  async function saveAndPostReactionRoleMenu() {
+    const errEl = document.getElementById('rr-error');
+    const savedEl = document.getElementById('rr-saved');
+    if (!selectedGuildId) { if (errEl) { errEl.textContent = '// Error: Please select your Discord server first!'; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); } return; }
+
+    const channelId = channelPickers['rr-channel-picker'].getValue();
+    const title = document.getElementById('rr-title').value.trim();
+    const description = document.getElementById('rr-description').value.trim();
+    const checked = Array.from(document.querySelectorAll('#rr-role-checklist input[type=checkbox]:checked'));
+
+    if (!channelId || !title || checked.length === 0) {
+      if (errEl) { errEl.textContent = '// Error: Pick a channel, a title, and at least one role.'; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
+      return;
+    }
+    if (checked.length > 25) {
+      if (errEl) { errEl.textContent = '// Error: Discord allows a maximum of 25 roles per menu.'; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
+      return;
+    }
+
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+
+    try {
+      let menuId = currentReactionRoleMenu?.id;
+      if (menuId) {
+        await sb.from('reaction_role_menus').update({ channel_id: channelId, title, description: description || null, updated_at: new Date().toISOString() }).eq('id', menuId);
+        await sb.from('reaction_role_options').delete().eq('menu_id', menuId);
+      } else {
+        const { data: inserted, error: insertErr } = await sb.from('reaction_role_menus').insert({ guild_id: selectedGuildId, channel_id: channelId, title, description: description || null, created_by: discordId }).select().single();
+        if (insertErr) throw insertErr;
+        menuId = inserted.id;
+      }
+
+      const optionRows = checked.map((cb, i) => ({ menu_id: menuId, role_id: cb.value, label: cb.dataset.roleName, position: i }));
+      await sb.from('reaction_role_options').insert(optionRows);
+
+      // Ask the bot to actually post/update the Discord message
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/reaction-roles/post`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ menuId })
+      });
+      if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || 'Bot failed to post the menu'); }
+
+      await loadReactionRoleMenus(selectedGuildId);
+      if (savedEl) { savedEl.style.display = 'block'; setTimeout(() => savedEl.style.display = 'none', 3000); }
+    } catch (err) {
+      console.error('saveAndPostReactionRoleMenu error:', err.message);
+      if (errEl) { errEl.textContent = '// Error: ' + err.message; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 5000); }
+    }
+  }
+
+  async function deleteReactionRoleMenu() {
+    if (!currentReactionRoleMenu) return;
+    if (!confirm('Delete this reaction role menu? The posted Discord message will be left behind (you can delete it manually), but the menu will stop working.')) return;
+    await sb.from('reaction_role_menus').delete().eq('id', currentReactionRoleMenu.id);
+    document.getElementById('rr-title').value = '';
+    document.getElementById('rr-description').value = '';
+    await loadReactionRoleMenus(selectedGuildId);
   }
 
   // ── COACHING — same card/detail pattern, reuses lastBotConfigSettings (same server_settings row) ──
