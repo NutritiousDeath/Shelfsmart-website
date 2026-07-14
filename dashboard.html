@@ -867,6 +867,11 @@
         <div id="manual-entry" style="display:none">
           <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);margin-top:8px">Search not available — enter username manually</p>
           <input class="cyber-input" type="text" id="alert-manual" placeholder="Enter exact username" style="margin-top:6px">
+          <div id="tiktok-verify-row" style="display:none;margin-top:8px">
+            <p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey);line-height:1.7;margin-bottom:6px">Paste a full TikTok profile URL or just the @username — then verify to confirm it's the right account.</p>
+            <button class="btn-secondary" onclick="verifyTikTokUsername()" type="button">Verify Account</button>
+            <p class="save-msg" id="tiktok-verify-error" style="color:var(--pink)"></p>
+          </div>
         </div>
         <label class="field-label">Custom alert message <span style="color:var(--grey)">(optional)</span></label>
         <textarea class="cyber-input" id="alert-custom-message" rows="2" placeholder="e.g. Hey @everyone, go check it out!" style="resize:vertical;min-height:50px;line-height:1.7"></textarea>
@@ -2124,9 +2129,44 @@
   function onPlatformChange(val){
     clearSelectedStreamer();
     const searchEl=document.getElementById('alert-search');const manualEl=document.getElementById('manual-entry');const resultsEl=document.getElementById('search-results');
+    const tiktokVerifyEl=document.getElementById('tiktok-verify-row');
     if(searchEl)searchEl.value='';if(resultsEl)resultsEl.style.display='none';
     if(val==='tiktok'||val==='kick'){if(searchEl)searchEl.style.display='none';if(manualEl)manualEl.style.display='block';}
     else{if(searchEl)searchEl.style.display='block';if(manualEl)manualEl.style.display='none';}
+    if(tiktokVerifyEl)tiktokVerifyEl.style.display=(val==='tiktok')?'block':'none';
+  }
+
+  // Accepts a full TikTok profile URL (any of the common forms) or a bare
+  // username/@handle, and returns just the bare username either way.
+  function extractTikTokUsername(input){
+    if(!input) return '';
+    let s=input.trim();
+    const urlMatch=s.match(/tiktok\.com\/@([\w.]+)/i);
+    if(urlMatch) return urlMatch[1];
+    return s.replace(/^@/,'');
+  }
+
+  async function verifyTikTokUsername(){
+    const raw=document.getElementById('alert-manual')?.value||'';
+    const username=extractTikTokUsername(raw);
+    const errEl=document.getElementById('tiktok-verify-error');
+    if(errEl){errEl.style.display='none';errEl.textContent='';}
+    if(!username){if(errEl){errEl.textContent='// Enter a username or profile URL first';errEl.style.display='block';}return;}
+    if(errEl){errEl.textContent='// Verifying... (this can take several seconds)';errEl.style.display='block';errEl.style.color='var(--cyan)';}
+    try{
+      const res=await fetch(`${RAILWAY_BOT_URL}/api/tiktok-verify?username=${encodeURIComponent(username)}`);
+      const data=await res.json();
+      if(!res.ok||data.error){throw new Error(data.error||'Verification failed');}
+      selectedStreamer={username:data.username,displayName:data.displayName,avatar:data.avatar,live:data.live};
+      document.getElementById('alert-manual').value=data.username;
+      document.getElementById('selected-streamer').style.display='block';
+      document.getElementById('selected-avatar').src=data.avatar||'';
+      document.getElementById('selected-name').textContent=data.displayName;
+      document.getElementById('selected-meta').textContent=`@${data.username}${data.live?' — 🔴 Currently Live':''}`;
+      if(errEl)errEl.style.display='none';
+    }catch(err){
+      if(errEl){errEl.textContent='// Error: '+err.message;errEl.style.display='block';errEl.style.color='var(--pink)';}
+    }
   }
 
   function onAlertSearch(value){
@@ -2154,7 +2194,8 @@
     const channelId=channelPickers['alert-channel'].getValue();
     const errorEl=document.getElementById('alert-error');errorEl.style.display='none';
     let username='';
-    if(platform==='tiktok'||platform==='kick') username=document.getElementById('alert-manual')?.value.trim()||'';
+    if(platform==='tiktok') username=selectedStreamer?.username||extractTikTokUsername(document.getElementById('alert-manual')?.value||'');
+    else if(platform==='kick') username=document.getElementById('alert-manual')?.value.trim()||'';
     else username=selectedStreamer?.username||document.getElementById('alert-search')?.value.trim()||'';
     if(!username){errorEl.textContent='// Error: Please select or enter a streamer';errorEl.style.display='block';return;}
     if(!channelId){errorEl.textContent='// Error: Please select an alert channel';errorEl.style.display='block';return;}
