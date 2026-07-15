@@ -1119,6 +1119,15 @@
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  // Attaches the real, Supabase-verified session token to a request so the
+  // Railway backend can confirm who's actually asking — the backend re-verifies
+  // this token itself rather than trusting any discordId the browser sends.
+  async function authHeaders() {
+    const { data } = await sb.auth.getSession();
+    const token = data?.session?.access_token;
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+  }
+
   let currentUser = null, userAccess = null, isOwner = false, isDelegate = false, isCoach = false;
   let selectedGuildId = null, userGuilds = [];
   let lastBotConfigSettings = null;
@@ -1346,7 +1355,7 @@
     });
 
     try {
-      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-roles?guildId=${guildId}`);
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-roles?guildId=${guildId}`, { headers: await authHeaders() });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       guildRoleCache = data.roles || [];
@@ -1418,7 +1427,7 @@
     Object.values(channelPickers).forEach(p => p.setPlaceholder('Loading channels...'));
 
     try {
-      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-channels?guildId=${guildId}`);
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-channels?guildId=${guildId}`, { headers: await authHeaders() });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       guildChannelCache = data.channels || [];
@@ -1687,6 +1696,17 @@
       return;
     }
 
+    // Refresh the guild-admin cache FIRST — RLS policies on server_settings,
+    // reaction_role_menus, etc. check this cache table, so it needs to be
+    // current before any of those reads/writes below happen for this guild.
+    try {
+      await fetch(`${RAILWAY_BOT_URL}/api/guild-admin-sync`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+        body: JSON.stringify({ guildId })
+      });
+    } catch (err) { console.error('guild-admin-sync error:', err.message); }
+
     // Load server_settings from Supabase first, then load channels
     let savedSettings = null;
     try {
@@ -1795,16 +1815,33 @@
     const id=document.getElementById('grant-id').value.trim();const days=grantDurationValue;
     if(!id)return;
     const isLifetime=days===0;
-    const expires=isLifetime?null:new Date(Date.now()+days*86400000).toISOString();
-    await sb.from('user_access').upsert({ discord_id:id,tier:isLifetime?'lifetime':'pro',status:'active',granted_by:'admin',expires_at:expires },{ onConflict:'discord_id' });
-    document.getElementById('grant-id').value='';showSaved('grant-saved');
+    try {
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/admin/grant-access`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+        body: JSON.stringify({ discordId: id, tier: isLifetime ? 'lifetime' : 'pro', days: isLifetime ? null : days })
+      });
+      if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || 'Grant failed'); }
+      document.getElementById('grant-id').value='';showSaved('grant-saved');
+    } catch (err) {
+      console.error('grantAccess error:', err.message);
+    }
   }
 
   async function revokeAccess() {
     if (!isOwner) return;
     const id=document.getElementById('grant-id').value.trim();if(!id)return;
-    await sb.from('user_access').update({ tier:'free',status:'cancelled' }).eq('discord_id',id);
-    document.getElementById('grant-id').value='';showSaved('grant-revoked');
+    try {
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/admin/revoke-access`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
+        body: JSON.stringify({ discordId: id })
+      });
+      if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || 'Revoke failed'); }
+      document.getElementById('grant-id').value='';showSaved('grant-revoked');
+    } catch (err) {
+      console.error('revokeAccess error:', err.message);
+    }
   }
 
   function showSaved(id){const el=document.getElementById(id);if(!el)return;el.style.display='block';setTimeout(()=>el.style.display='none',3000);}
@@ -2054,7 +2091,7 @@
       // Ask the bot to actually post/update the Discord message
       const res = await fetch(`${RAILWAY_BOT_URL}/api/reaction-roles/post`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
         body: JSON.stringify({ menuId })
       });
       if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || 'Bot failed to post the menu'); }
@@ -2579,7 +2616,7 @@
     document.getElementById('theme-btn-pink').classList.toggle('active',theme==='pink');
     document.getElementById('theme-btn-orange').classList.toggle('active',theme==='orange');
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    if(discordId)await sb.from('user_access').update({theme}).eq('discord_id',discordId);
+    if(discordId)await sb.rpc('update_own_theme',{new_theme:theme});
     localStorage.setItem('auraai-theme',theme);showSaved('theme-saved');
   }
 
