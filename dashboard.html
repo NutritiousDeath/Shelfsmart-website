@@ -2769,12 +2769,17 @@
         lines.push(`${passed ? '✅' : '❌'} Granting yourself Lifetime access was ${passed ? 'correctly blocked' : 'NOT blocked — this is a problem'}`);
       } catch (err) { lines.push('⚠️ Test 1 could not run: ' + err.message); }
 
-      // Test 2: try writing directly to the access table
+      // Test 2: try writing directly to your OWN row in the access table.
+      // (Testing a fake ID that doesn't exist would "pass" either way, since
+      // updating zero matching rows never throws an error — checking your
+      // own real row and looking at how many rows actually changed is the
+      // only reliable way to tell if RLS silently blocked it.)
       try {
-        const { error } = await sb.from('user_access').update({ tier: 'lifetime', status: 'active' }).eq('discord_id', '000000000000000000');
-        const passed = !!error;
-        lines.push(`${passed ? '✅' : '❌'} Directly editing the access database was ${passed ? 'correctly blocked' : 'NOT blocked — this is a problem'}`);
-      } catch (err) { lines.push('✅ Directly editing the access database was correctly blocked'); }
+        const ownId = sessionData?.session?.user?.user_metadata?.provider_id;
+        const { data, error } = await sb.from('user_access').update({ tier: 'lifetime', status: 'active' }).eq('discord_id', ownId).select();
+        const blocked = !!error || !data || data.length === 0;
+        lines.push(`${blocked ? '✅' : '❌'} Directly editing your own access record was ${blocked ? 'correctly blocked' : 'NOT blocked — this is a problem'}`);
+      } catch (err) { lines.push('✅ Directly editing your own access record was correctly blocked'); }
 
       // Test 3: try loading channel/role info for a server you don't administer
       try {
