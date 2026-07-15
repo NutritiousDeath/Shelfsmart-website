@@ -1065,7 +1065,7 @@
         </div>
         <button class="btn-secondary">Manage in Stripe</button>
       </div>
-      <div class="section-card">
+      <div class="section-card" id="grant-access-card" style="display:none">
         <p class="card-title">// grant access</p>
         <label class="field-label">Discord user ID</label>
         <input class="cyber-input" type="text" id="grant-id" placeholder="e.g. 123456789012345678">
@@ -1541,6 +1541,8 @@
     const { data: access } = await sb.from('user_access').select('*').eq('discord_id', discordId).maybeSingle();
     userAccess = access;
     isOwner = (discordId === OWNER_DISCORD_ID);
+    const grantCard = document.getElementById('grant-access-card');
+    if (grantCard) grantCard.style.display = isOwner ? 'block' : 'none';
     if (!isOwner) {
       const { data: delegateRow } = await sb.from('approval_delegates').select('id').eq('discord_id', discordId).maybeSingle();
       isDelegate = !!delegateRow;
@@ -1787,6 +1789,7 @@
   });
 
   async function grantAccess() {
+    if (!isOwner) return;
     const id=document.getElementById('grant-id').value.trim();const days=grantDurationValue;
     if(!id)return;
     const isLifetime=days===0;
@@ -1796,6 +1799,7 @@
   }
 
   async function revokeAccess() {
+    if (!isOwner) return;
     const id=document.getElementById('grant-id').value.trim();if(!id)return;
     await sb.from('user_access').update({ tier:'free',status:'cancelled' }).eq('discord_id',id);
     document.getElementById('grant-id').value='';showSaved('grant-revoked');
