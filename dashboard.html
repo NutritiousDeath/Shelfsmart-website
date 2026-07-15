@@ -1789,8 +1789,9 @@
   async function grantAccess() {
     const id=document.getElementById('grant-id').value.trim();const days=grantDurationValue;
     if(!id)return;
-    const expires=days===0?null:new Date(Date.now()+days*86400000).toISOString();
-    await sb.from('user_access').upsert({ discord_id:id,tier:'pro',status:'active',granted_by:'admin',expires_at:expires },{ onConflict:'discord_id' });
+    const isLifetime=days===0;
+    const expires=isLifetime?null:new Date(Date.now()+days*86400000).toISOString();
+    await sb.from('user_access').upsert({ discord_id:id,tier:isLifetime?'lifetime':'pro',status:'active',granted_by:'admin',expires_at:expires },{ onConflict:'discord_id' });
     document.getElementById('grant-id').value='';showSaved('grant-saved');
   }
 
