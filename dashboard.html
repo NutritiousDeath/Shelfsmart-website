@@ -720,14 +720,20 @@
       <div class="section-card">
         <p class="card-title">// audit log <span style="color:var(--grey);font-size:0.7em">(free)</span></p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          Pick a channel where AuraAI posts a record of message edits, message deletes, voice channel joins/leaves (not counting temp Join-to-Create channels), and Discord's own AutoMod actions.
+          Pick a channel for each category you want logged. Leaving one unset simply disables that category — nothing gets forced into a shared channel.
         </p>
-        <label class="field-label">Log channel</label>
-        <div id="modlog-channel-picker"></div>
-        <p class="channel-hint" id="modlog-channel-current"></p>
-        <label style="display:flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer;font-family:var(--font-mono);font-size:0.72rem">
-          <input type="checkbox" id="modlog-automod-toggle" checked> Also log Discord AutoMod actions here
-        </label>
+        <label class="field-label">Message edits &amp; deletes</label>
+        <div id="msglog-channel-picker"></div>
+        <p class="channel-hint" id="msglog-channel-current"></p>
+
+        <label class="field-label" style="margin-top:16px">Voice channel joins/leaves <span style="color:var(--grey)">(not counting temp Join-to-Create channels)</span></label>
+        <div id="voicelog-channel-picker"></div>
+        <p class="channel-hint" id="voicelog-channel-current"></p>
+
+        <label class="field-label" style="margin-top:16px">Discord AutoMod actions</label>
+        <div id="automodlog-channel-picker"></div>
+        <p class="channel-hint" id="automodlog-channel-current"></p>
+
         <div style="margin-top:16px">
           <button class="btn-primary" onclick="saveModLogSettings()">Save audit log settings</button>
           <p class="save-msg" id="modlog-saved">// Settings saved successfully</p>
@@ -741,19 +747,34 @@
       <div class="section-card">
         <p class="card-title">// advanced mod tools <span style="color:var(--purple)">PRO</span></p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          These use the same log channel configured in Audit Log above. Only takes effect on servers where the owner has an active Pro or Lifetime subscription — everyone can configure the settings below, but they'll only actually run for Pro servers.
+          Pick exactly which categories you want and where each one goes — leave any unset to disable it. Only takes effect on servers where the owner has an active Pro or Lifetime subscription; everyone can configure these, but they'll only actually run for Pro servers.
         </p>
-        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--cyan);line-height:2;margin-bottom:16px">
-          ✓ Ban / Kick / Timeout logging (with real moderator + reason)<br>
-          ✓ Bulk delete (purge) logging<br>
-          ✓ Role change logging<br>
-          ✓ Invite tracking (which invite a new member used)<br>
-          ✓ Warn system — <span style="color:var(--white)">/warn</span> and <span style="color:var(--white)">/warnings</span> commands
-        </p>
-        <label class="field-label">Auto-timeout after this many warnings <span style="color:var(--grey)">(0 = disabled)</span></label>
+
+        <label class="field-label">Ban / Kick / Timeout log</label>
+        <div id="banlog-channel-picker"></div>
+        <p class="channel-hint" id="banlog-channel-current"></p>
+
+        <label class="field-label" style="margin-top:16px">Bulk delete (purge) log</label>
+        <div id="purgelog-channel-picker"></div>
+        <p class="channel-hint" id="purgelog-channel-current"></p>
+
+        <label class="field-label" style="margin-top:16px">Role change log</label>
+        <div id="rolelog-channel-picker"></div>
+        <p class="channel-hint" id="rolelog-channel-current"></p>
+
+        <label class="field-label" style="margin-top:16px">Invite tracking log</label>
+        <div id="invitelog-channel-picker"></div>
+        <p class="channel-hint" id="invitelog-channel-current"></p>
+
+        <label class="field-label" style="margin-top:16px">Warn system log <span style="color:var(--grey)">(/warn and /warnings commands work regardless — this just logs each warning to a channel too)</span></label>
+        <div id="warnlog-channel-picker"></div>
+        <p class="channel-hint" id="warnlog-channel-current"></p>
+
+        <label class="field-label" style="margin-top:20px">Auto-timeout after this many warnings <span style="color:var(--grey)">(0 = disabled)</span></label>
         <input class="cyber-input" type="number" id="advmod-warn-threshold" min="0" max="20" placeholder="0" style="max-width:120px">
         <label class="field-label" style="margin-top:14px">Auto-timeout duration <span style="color:var(--grey)">(minutes)</span></label>
         <input class="cyber-input" type="number" id="advmod-warn-minutes" min="1" max="10080" placeholder="60" style="max-width:120px">
+
         <div style="margin-top:16px">
           <button class="btn-primary" onclick="saveAdvModSettings()">Save advanced mod settings</button>
           <p class="save-msg" id="advmod-saved">// Settings saved successfully</p>
@@ -1400,7 +1421,14 @@
       { id: 'fun-channel-picker' },
       { id: 'voice-channel-picker' },
       { id: 'rr-channel-picker' },
-      { id: 'modlog-channel-picker' },
+      { id: 'msglog-channel-picker' },
+      { id: 'voicelog-channel-picker' },
+      { id: 'automodlog-channel-picker' },
+      { id: 'banlog-channel-picker' },
+      { id: 'purgelog-channel-picker' },
+      { id: 'rolelog-channel-picker' },
+      { id: 'invitelog-channel-picker' },
+      { id: 'warnlog-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -1538,10 +1566,30 @@
 
     channelPickers['rr-channel-picker'].setChannels(guildChannelCache, null);
 
-    channelPickers['modlog-channel-picker'].setChannels(guildChannelCache, s.mod_log_channel_id || null);
-    setChannelHint('modlog-channel-current', s.mod_log_channel_id);
-    const automodToggle = document.getElementById('modlog-automod-toggle');
-    if (automodToggle) automodToggle.checked = s.automod_log_enabled !== false;
+    channelPickers['msglog-channel-picker'].setChannels(guildChannelCache, s.message_log_channel_id || null);
+    setChannelHint('msglog-channel-current', s.message_log_channel_id);
+
+    channelPickers['voicelog-channel-picker'].setChannels(guildChannelCache, s.voice_log_channel_id || null);
+    setChannelHint('voicelog-channel-current', s.voice_log_channel_id);
+
+    channelPickers['automodlog-channel-picker'].setChannels(guildChannelCache, s.automod_log_channel_id || null);
+    setChannelHint('automodlog-channel-current', s.automod_log_channel_id);
+
+    channelPickers['banlog-channel-picker'].setChannels(guildChannelCache, s.ban_log_channel_id || null);
+    setChannelHint('banlog-channel-current', s.ban_log_channel_id);
+
+    channelPickers['purgelog-channel-picker'].setChannels(guildChannelCache, s.purge_log_channel_id || null);
+    setChannelHint('purgelog-channel-current', s.purge_log_channel_id);
+
+    channelPickers['rolelog-channel-picker'].setChannels(guildChannelCache, s.role_log_channel_id || null);
+    setChannelHint('rolelog-channel-current', s.role_log_channel_id);
+
+    channelPickers['invitelog-channel-picker'].setChannels(guildChannelCache, s.invite_log_channel_id || null);
+    setChannelHint('invitelog-channel-current', s.invite_log_channel_id);
+
+    channelPickers['warnlog-channel-picker'].setChannels(guildChannelCache, s.warn_log_channel_id || null);
+    setChannelHint('warnlog-channel-current', s.warn_log_channel_id);
+
     const warnThresholdEl = document.getElementById('advmod-warn-threshold');
     if (warnThresholdEl) warnThresholdEl.value = s.warn_auto_action_threshold || 0;
     const warnMinutesEl = document.getElementById('advmod-warn-minutes');
@@ -1965,7 +2013,7 @@
     setStatus('status-goodbye', !!s.goodbye_channel_id);
     setStatus('status-fun', !!s.fun_channel_id);
     setStatus('status-voice', !!s.jtc_channel_id);
-    setStatus('status-modlog', !!s.mod_log_channel_id);
+    setStatus('status-modlog', !!(s.message_log_channel_id || s.voice_log_channel_id || s.automod_log_channel_id));
 
     updateCoachingSettingsStatus();
   }
@@ -2746,13 +2794,16 @@
       if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
       return;
     }
-    const channelId = channelPickers['modlog-channel-picker'].getValue() || null;
-    const automodEnabled = document.getElementById('modlog-automod-toggle')?.checked ?? true;
+    const messageLogId = channelPickers['msglog-channel-picker'].getValue() || null;
+    const voiceLogId = channelPickers['voicelog-channel-picker'].getValue() || null;
+    const automodLogId = channelPickers['automodlog-channel-picker'].getValue() || null;
     await sb.from('server_settings').upsert(
-      { owner_discord_id: discordId, discord_server_id: selectedGuildId, mod_log_channel_id: channelId, automod_log_enabled: automodEnabled },
+      { owner_discord_id: discordId, discord_server_id: selectedGuildId, message_log_channel_id: messageLogId, voice_log_channel_id: voiceLogId, automod_log_channel_id: automodLogId },
       { onConflict: 'discord_server_id' }
     );
-    setChannelHint('modlog-channel-current', channelId);
+    setChannelHint('msglog-channel-current', messageLogId);
+    setChannelHint('voicelog-channel-current', voiceLogId);
+    setChannelHint('automodlog-channel-current', automodLogId);
     showSaved('modlog-saved');
   }
 
@@ -2763,14 +2814,29 @@
       if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
       return;
     }
+    const banLogId = channelPickers['banlog-channel-picker'].getValue() || null;
+    const purgeLogId = channelPickers['purgelog-channel-picker'].getValue() || null;
+    const roleLogId = channelPickers['rolelog-channel-picker'].getValue() || null;
+    const inviteLogId = channelPickers['invitelog-channel-picker'].getValue() || null;
+    const warnLogId = channelPickers['warnlog-channel-picker'].getValue() || null;
     const thresholdRaw = parseInt(document.getElementById('advmod-warn-threshold')?.value, 10);
     const minutesRaw = parseInt(document.getElementById('advmod-warn-minutes')?.value, 10);
     const threshold = isNaN(thresholdRaw) || thresholdRaw < 0 ? 0 : Math.min(thresholdRaw, 20);
     const minutes = isNaN(minutesRaw) || minutesRaw < 1 ? 60 : Math.min(minutesRaw, 10080);
     await sb.from('server_settings').upsert(
-      { owner_discord_id: discordId, discord_server_id: selectedGuildId, warn_auto_action_threshold: threshold, warn_auto_action_minutes: minutes },
+      {
+        owner_discord_id: discordId, discord_server_id: selectedGuildId,
+        ban_log_channel_id: banLogId, purge_log_channel_id: purgeLogId, role_log_channel_id: roleLogId,
+        invite_log_channel_id: inviteLogId, warn_log_channel_id: warnLogId,
+        warn_auto_action_threshold: threshold, warn_auto_action_minutes: minutes
+      },
       { onConflict: 'discord_server_id' }
     );
+    setChannelHint('banlog-channel-current', banLogId);
+    setChannelHint('purgelog-channel-current', purgeLogId);
+    setChannelHint('rolelog-channel-current', roleLogId);
+    setChannelHint('invitelog-channel-current', inviteLogId);
+    setChannelHint('warnlog-channel-current', warnLogId);
     showSaved('advmod-saved');
   }
 
