@@ -714,6 +714,10 @@
         <label class="field-label">Join to Create channel</label>
         <div id="voice-channel-picker"></div>
         <p class="channel-hint" id="voice-channel-current"></p>
+
+        <label class="field-label" style="margin-top:14px">Default user limit for new VCs <span style="color:var(--grey)">(0 = unlimited)</span></label>
+        <input class="cyber-input" type="number" id="voice-default-limit" min="0" max="99" placeholder="0" style="max-width:120px">
+
         <div style="margin-top:16px">
           <button class="btn-primary" onclick="saveVoiceChannel()">Save voice channel</button>
           <p class="save-msg" id="voice-channel-saved">// Settings saved successfully</p>
@@ -1470,6 +1474,8 @@
 
     channelPickers['voice-channel-picker'].setChannels(guildChannelCache, s.jtc_channel_id || null, [2]);
     setChannelHint('voice-channel-current', s.jtc_channel_id);
+    const voiceLimitEl = document.getElementById('voice-default-limit');
+    if (voiceLimitEl) voiceLimitEl.value = s.jtc_default_user_limit || 0;
 
     channelPickers['rr-channel-picker'].setChannels(guildChannelCache, null);
   }
@@ -2672,8 +2678,10 @@
       return;
     }
     const voiceId = channelPickers['voice-channel-picker'].getValue() || null;
+    const defaultLimitRaw = parseInt(document.getElementById('voice-default-limit')?.value, 10);
+    const defaultLimit = (isNaN(defaultLimitRaw) || defaultLimitRaw < 0) ? 0 : Math.min(defaultLimitRaw, 99);
     await sb.from('server_settings').upsert(
-      { owner_discord_id: discordId, discord_server_id: selectedGuildId, jtc_channel_id: voiceId },
+      { owner_discord_id: discordId, discord_server_id: selectedGuildId, jtc_channel_id: voiceId, jtc_default_user_limit: defaultLimit },
       { onConflict: 'discord_server_id' }
     );
     setChannelHint('voice-channel-current', voiceId);
