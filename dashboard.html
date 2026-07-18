@@ -557,6 +557,17 @@
           <p class="config-card-desc">Where /hitman and other fun commands post.</p>
           <p class="config-card-status" id="status-fun">// checking...</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('modlog')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+          <p class="config-card-title">Audit Log</p>
+          <p class="config-card-desc">Free — logs message edits/deletes, voice channel activity, and AutoMod actions.</p>
+          <p class="config-card-status" id="status-modlog">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('advmod')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 4 6v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
+          <p class="config-card-title">Advanced Mod Tools <span style="color:var(--purple)">PRO</span></p>
+          <p class="config-card-desc">Ban/kick/timeout log, purge log, role change log, invite tracking, and the warn system.</p>
+        </div>
         <div class="config-card" onclick="showConfigPage('voice')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>
           <p class="config-card-title">Temp Voice Channels</p>
@@ -700,6 +711,53 @@
           <button class="btn-primary" onclick="saveWelcomeChannel()">Save welcome channel</button>
           <p class="save-msg" id="welcome-channel-saved">// Settings saved successfully</p>
           <p class="save-msg" id="welcome-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-modlog">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// audit log <span style="color:var(--grey);font-size:0.7em">(free)</span></p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          Pick a channel where AuraAI posts a record of message edits, message deletes, voice channel joins/leaves (not counting temp Join-to-Create channels), and Discord's own AutoMod actions.
+        </p>
+        <label class="field-label">Log channel</label>
+        <div id="modlog-channel-picker"></div>
+        <p class="channel-hint" id="modlog-channel-current"></p>
+        <label style="display:flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer;font-family:var(--font-mono);font-size:0.72rem">
+          <input type="checkbox" id="modlog-automod-toggle" checked> Also log Discord AutoMod actions here
+        </label>
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveModLogSettings()">Save audit log settings</button>
+          <p class="save-msg" id="modlog-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="modlog-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-advmod">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// advanced mod tools <span style="color:var(--purple)">PRO</span></p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          These use the same log channel configured in Audit Log above. Only takes effect on servers where the owner has an active Pro or Lifetime subscription — everyone can configure the settings below, but they'll only actually run for Pro servers.
+        </p>
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--cyan);line-height:2;margin-bottom:16px">
+          ✓ Ban / Kick / Timeout logging (with real moderator + reason)<br>
+          ✓ Bulk delete (purge) logging<br>
+          ✓ Role change logging<br>
+          ✓ Invite tracking (which invite a new member used)<br>
+          ✓ Warn system — <span style="color:var(--white)">/warn</span> and <span style="color:var(--white)">/warnings</span> commands
+        </p>
+        <label class="field-label">Auto-timeout after this many warnings <span style="color:var(--grey)">(0 = disabled)</span></label>
+        <input class="cyber-input" type="number" id="advmod-warn-threshold" min="0" max="20" placeholder="0" style="max-width:120px">
+        <label class="field-label" style="margin-top:14px">Auto-timeout duration <span style="color:var(--grey)">(minutes)</span></label>
+        <input class="cyber-input" type="number" id="advmod-warn-minutes" min="1" max="10080" placeholder="60" style="max-width:120px">
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveAdvModSettings()">Save advanced mod settings</button>
+          <p class="save-msg" id="advmod-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="advmod-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
       </div>
       </div>
@@ -1342,6 +1400,7 @@
       { id: 'fun-channel-picker' },
       { id: 'voice-channel-picker' },
       { id: 'rr-channel-picker' },
+      { id: 'modlog-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -1478,6 +1537,15 @@
     if (voiceLimitEl) voiceLimitEl.value = s.jtc_default_user_limit || 0;
 
     channelPickers['rr-channel-picker'].setChannels(guildChannelCache, null);
+
+    channelPickers['modlog-channel-picker'].setChannels(guildChannelCache, s.mod_log_channel_id || null);
+    setChannelHint('modlog-channel-current', s.mod_log_channel_id);
+    const automodToggle = document.getElementById('modlog-automod-toggle');
+    if (automodToggle) automodToggle.checked = s.automod_log_enabled !== false;
+    const warnThresholdEl = document.getElementById('advmod-warn-threshold');
+    if (warnThresholdEl) warnThresholdEl.value = s.warn_auto_action_threshold || 0;
+    const warnMinutesEl = document.getElementById('advmod-warn-minutes');
+    if (warnMinutesEl) warnMinutesEl.value = s.warn_auto_action_minutes || 60;
   }
 
   // ── OVERVIEW STATS ────────────────────────────────────────────────────────
@@ -1854,7 +1922,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', voice:'TEMP VOICE CHANNELS', reactionroles:'REACTION ROLES', features:'FEATURE TOGGLES' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', voice:'TEMP VOICE CHANNELS', reactionroles:'REACTION ROLES', modlog:'AUDIT LOG', advmod:'ADVANCED MOD TOOLS', features:'FEATURE TOGGLES' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
@@ -1897,6 +1965,7 @@
     setStatus('status-goodbye', !!s.goodbye_channel_id);
     setStatus('status-fun', !!s.fun_channel_id);
     setStatus('status-voice', !!s.jtc_channel_id);
+    setStatus('status-modlog', !!s.mod_log_channel_id);
 
     updateCoachingSettingsStatus();
   }
@@ -2668,6 +2737,41 @@
     );
     setChannelHint('goodbye-channel-current', goodbyeId);
     showSaved('goodbye-channel-saved');
+  }
+
+  async function saveModLogSettings() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('modlog-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const channelId = channelPickers['modlog-channel-picker'].getValue() || null;
+    const automodEnabled = document.getElementById('modlog-automod-toggle')?.checked ?? true;
+    await sb.from('server_settings').upsert(
+      { owner_discord_id: discordId, discord_server_id: selectedGuildId, mod_log_channel_id: channelId, automod_log_enabled: automodEnabled },
+      { onConflict: 'discord_server_id' }
+    );
+    setChannelHint('modlog-channel-current', channelId);
+    showSaved('modlog-saved');
+  }
+
+  async function saveAdvModSettings() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('advmod-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const thresholdRaw = parseInt(document.getElementById('advmod-warn-threshold')?.value, 10);
+    const minutesRaw = parseInt(document.getElementById('advmod-warn-minutes')?.value, 10);
+    const threshold = isNaN(thresholdRaw) || thresholdRaw < 0 ? 0 : Math.min(thresholdRaw, 20);
+    const minutes = isNaN(minutesRaw) || minutesRaw < 1 ? 60 : Math.min(minutesRaw, 10080);
+    await sb.from('server_settings').upsert(
+      { owner_discord_id: discordId, discord_server_id: selectedGuildId, warn_auto_action_threshold: threshold, warn_auto_action_minutes: minutes },
+      { onConflict: 'discord_server_id' }
+    );
+    showSaved('advmod-saved');
   }
 
   async function saveVoiceChannel() {
