@@ -114,9 +114,7 @@
     .toggle input:checked+.t-track{background:rgba(0,240,255,0.15);border-color:var(--cyan);box-shadow:var(--glow-cyan)}
     .t-thumb{position:absolute;width:12px;height:12px;background:var(--grey);top:3px;left:3px;transition:all 0.2s;pointer-events:none}
     .toggle input:checked~.t-thumb{transform:translateX(18px);background:var(--cyan);box-shadow:var(--glow-cyan)}
-    .log-category-disabled{opacity:0.35;pointer-events:none;filter:grayscale(1)}
-    .cyber-input{width:100%;font-family:var(--font-mono);font-size:0.72rem;padding:9px 12px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.18);color:var(--cyan);letter-spacing:1px;outline:none;transition:border-color 0.2s;color-scheme:dark}
-    select.cyber-input option{background:var(--bg-2);color:var(--white)}
+    .cyber-input{width:100%;font-family:var(--font-mono);font-size:0.72rem;padding:9px 12px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.18);color:var(--cyan);letter-spacing:1px;outline:none;transition:border-color 0.2s}
     .cyber-input:focus{border-color:var(--cyan);box-shadow:var(--glow-cyan)}
     .cyber-input::placeholder{color:var(--grey)}
     textarea.cyber-input{resize:vertical;line-height:1.7}
@@ -307,7 +305,7 @@
 </div>
 
 <script>
-  const FOUNDERS = ['Founder NutritiousDeath','Founder NovaFide','Founder GreatGrapefruit','Founder Name 4','Founder Name 5'];
+  const FOUNDERS = ['Founder NutritiousDeath','Founder Name 2','Founder Name 3','Founder Name 4','Founder Name 5'];
   (function buildMarquee(){
     const el=document.getElementById('founders-marquee');if(!el)return;
     const buildSet=()=>FOUNDERS.map(name=>`<span class="founder-name">${name}</span><span class="founder-sep">✦</span>`).join('');
@@ -369,12 +367,6 @@
     <button class="sidebar-item" onclick="setTab('billing',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="1"/><path d="M2 10h20"/></svg>Billing
     </button>
-    <button class="sidebar-item" onclick="window.open('https://nutritiousdeath.github.io/auraai-legal/terms.html','_blank')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6M9 9h1"/></svg>Terms of Service
-    </button>
-    <button class="sidebar-item" onclick="window.open('https://nutritiousdeath.github.io/auraai-legal/privacy.html','_blank')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 4 6v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V6z"/></svg>Privacy Policy
-    </button>
 
     <div class="status-indicator">
       <div class="status-row"><div class="dot-green"></div>Bot online</div>
@@ -412,7 +404,7 @@
         <div style="display:flex;flex-wrap:wrap;gap:10px">
           <button class="btn-secondary" onclick="setTab('tournaments',document.querySelector('[onclick*=tournaments]'))">New tournament</button>
           <button class="btn-secondary" onclick="setTab('alerts',document.querySelector('[onclick*=alerts]'))">Add social alert</button>
-          <button class="btn-secondary" id="quick-grant-access-btn" onclick="setTab('billing',document.querySelector('[onclick*=billing]'))">Grant access</button>
+          <button class="btn-secondary" onclick="setTab('billing',document.querySelector('[onclick*=billing]'))">Grant access</button>
           <a href="https://discord.com/oauth2/authorize?client_id=1479991514351538350&permissions=215056&integration_type=0&scope=bot+applications.commands" target="_blank" style="font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;padding:9px 18px;background:transparent;color:var(--cyan);border:1px solid var(--cyan);cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:all 0.2s;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(0,240,255,0.08)'" onmouseout="this.style.background='transparent'">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.055a19.85 19.85 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
             Add to Server
@@ -558,35 +550,6 @@
           <p class="config-card-desc">Where /hitman and other fun commands post.</p>
           <p class="config-card-status" id="status-fun">// checking...</p>
         </div>
-        <div class="config-card" onclick="showConfigPage('starboard')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 15 9l7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-          <p class="config-card-title">Convergence</p>
-          <p class="config-card-desc">Popular messages get archived to a channel once they hit a star threshold. Upload your own emoji or use the default ⭐.</p>
-          <p class="config-card-status" id="status-starboard">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('modlog')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
-          <p class="config-card-title">Audit Log</p>
-          <p class="config-card-desc">Free — logs message edits/deletes, voice channel activity, and AutoMod actions.</p>
-          <p class="config-card-status" id="status-modlog">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('advmod')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 4 6v6c0 5 3.4 8.7 8 10 4.6-1.3 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
-          <p class="config-card-title">Advanced Mod Tools <span style="color:var(--purple)">PRO</span></p>
-          <p class="config-card-desc">Ban/kick/timeout log, purge log, role change log, invite tracking, and the warn system.</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('voice')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>
-          <p class="config-card-title">Temp Voice Channels</p>
-          <p class="config-card-desc">Join-to-Create: auto-spawns a temp VC with /voice-rename, /voice-transfer, etc.</p>
-          <p class="config-card-status" id="status-voice">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('reactionroles')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
-          <p class="config-card-title">Reaction Roles</p>
-          <p class="config-card-desc">Post a self-role menu — members pick roles from a dropdown, no emoji needed.</p>
-          <p class="config-card-status" id="status-reactionroles">// checking...</p>
-        </div>
         <div class="config-card" onclick="showConfigPage('features')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
           <p class="config-card-title">Feature Toggles</p>
@@ -650,45 +613,6 @@
       </div>
       </div>
 
-      <div class="config-detail" id="config-detail-reactionroles">
-        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
-      <div class="section-card">
-        <p class="card-title">// reaction role menu</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          Build a self-role button menu. Any Admin can configure this. Pick a channel, write your message, check the roles you want included, give each one a label/emoji/color, then post it. Clicking a button toggles that role on or off. Only pulls from roles that already exist in this server.
-        </p>
-        <label class="field-label">Channel to post in</label>
-        <div id="rr-channel-picker"></div>
-
-        <label class="field-label" style="margin-top:14px">Message text <span style="color:var(--grey)">(shown above the embed, optional)</span></label>
-        <input class="cyber-input" type="text" id="rr-message-text" placeholder="Chose Your Game!" maxlength="256">
-
-        <label class="field-label" style="margin-top:14px">Embed title</label>
-        <input class="cyber-input" type="text" id="rr-title" placeholder="Game Selection" maxlength="256">
-
-        <label class="field-label" style="margin-top:14px">Embed subtitle <span style="color:var(--grey)">(bold line, optional)</span></label>
-        <input class="cyber-input" type="text" id="rr-embed-subtitle" placeholder="Choose your game to unlock the server!" maxlength="256">
-
-        <label class="field-label" style="margin-top:14px">Embed body text <span style="color:var(--grey)">(optional)</span></label>
-        <input class="cyber-input" type="text" id="rr-description" placeholder="React to this message to get your roles!" maxlength="500">
-
-        <label class="field-label" style="margin-top:14px">Embed image <span style="color:var(--grey)">(optional)</span></label>
-        <input type="file" id="rr-image-upload" accept="image/*" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">
-        <img id="rr-image-preview" style="display:none;max-width:240px;margin-top:8px;border:1px solid rgba(0,240,255,0.2)">
-        <p class="save-msg" id="rr-image-uploading" style="display:none;color:var(--cyan)">// Uploading image...</p>
-
-        <label class="field-label" style="margin-top:18px">Roles to include <span style="color:var(--grey)">(max 25 — label, emoji, and button color per role)</span></label>
-        <div id="rr-role-checklist" style="max-height:400px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);padding:10px;display:flex;flex-direction:column;gap:8px;font-family:var(--font-mono);font-size:0.72rem"></div>
-
-        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn-primary" onclick="saveAndPostReactionRoleMenu()">Save &amp; Post to Discord</button>
-          <button class="btn-secondary" onclick="deleteReactionRoleMenu()" id="rr-delete-btn" style="display:none">Delete Menu</button>
-        </div>
-        <p class="save-msg" id="rr-saved">// Settings saved successfully</p>
-        <p class="save-msg" id="rr-error" style="color:var(--pink)">// Error saving menu</p>
-      </div>
-      </div>
-
       <div class="config-detail" id="config-detail-features">
         <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
       <div class="section-card">
@@ -718,172 +642,6 @@
           <button class="btn-primary" onclick="saveWelcomeChannel()">Save welcome channel</button>
           <p class="save-msg" id="welcome-channel-saved">// Settings saved successfully</p>
           <p class="save-msg" id="welcome-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
-        </div>
-      </div>
-      </div>
-
-      <div class="config-detail" id="config-detail-starboard">
-        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
-      <div class="section-card">
-        <p class="card-title">// convergence</p>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;letter-spacing:0.5px;margin:0;padding-right:16px">
-            When a message gets enough reactions with the configured emoji, it gets posted (and kept updated) in the Convergence channel. Upload your own custom emoji, or leave it as the default ⭐.
-          </p>
-          <label class="toggle" style="flex-shrink:0"><input type="checkbox" checked id="starboard-toggle" onchange="onLogToggleChange('starboard-toggle','starboard-wrapper')"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div id="starboard-wrapper">
-        <label class="field-label">Convergence channel</label>
-        <div id="starboard-channel-picker"></div>
-        <p class="channel-hint" id="starboard-channel-current"></p>
-
-        <label class="field-label" style="margin-top:14px">Star threshold <span style="color:var(--grey)">(reactions needed to post)</span></label>
-        <input class="cyber-input" type="number" id="starboard-threshold" min="1" max="100" placeholder="3" style="max-width:120px">
-
-        <label style="display:flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer;font-family:var(--font-mono);font-size:0.72rem">
-          <input type="checkbox" id="starboard-allow-self"> Allow a message's own author to count toward the threshold
-        </label>
-
-        <label class="field-label" style="margin-top:18px">Trigger emoji</label>
-        <select class="cyber-input" id="starboard-emoji-select" style="max-width:280px"></select>
-        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:6px">Pulled from this server's existing custom emoji, plus the default ⭐.</p>
-        </div>
-
-        <div style="margin-top:16px">
-          <button class="btn-primary" onclick="saveStarboardSettings()">Save Convergence settings</button>
-          <p class="save-msg" id="starboard-saved">// Settings saved successfully</p>
-          <p class="save-msg" id="starboard-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
-        </div>
-      </div>
-      </div>
-
-      <div class="config-detail" id="config-detail-modlog">
-        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
-      <div class="section-card">
-        <p class="card-title">// audit log <span style="color:var(--grey);font-size:0.7em">(free)</span></p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          Pick a channel for each category, and flip its switch off any time to pause it — the channel stays remembered, nothing gets lost.
-        </p>
-
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
-          <label class="field-label" style="margin:0">Message edits &amp; deletes</label>
-          <label class="toggle"><input type="checkbox" checked id="msglog-toggle" onchange="onLogToggleChange('msglog-toggle','msglog-wrapper')"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div id="msglog-wrapper">
-          <div id="msglog-channel-picker"></div>
-          <p class="channel-hint" id="msglog-channel-current"></p>
-        </div>
-
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px">
-          <label class="field-label" style="margin:0">Voice channel joins/leaves</label>
-          <label class="toggle"><input type="checkbox" checked id="voicelog-toggle" onchange="onLogToggleChange('voicelog-toggle','voicelog-wrapper')"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div id="voicelog-wrapper">
-          <div id="voicelog-channel-picker"></div>
-          <p class="channel-hint" id="voicelog-channel-current"></p>
-        </div>
-
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px">
-          <label class="field-label" style="margin:0">Discord AutoMod actions</label>
-          <label class="toggle"><input type="checkbox" checked id="automodlog-toggle" onchange="onLogToggleChange('automodlog-toggle','automodlog-wrapper')"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div id="automodlog-wrapper">
-          <div id="automodlog-channel-picker"></div>
-          <p class="channel-hint" id="automodlog-channel-current"></p>
-        </div>
-
-        <div style="margin-top:16px">
-          <button class="btn-primary" onclick="saveModLogSettings()">Save audit log settings</button>
-          <p class="save-msg" id="modlog-saved">// Settings saved successfully</p>
-          <p class="save-msg" id="modlog-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
-        </div>
-      </div>
-      </div>
-
-      <div class="config-detail" id="config-detail-advmod">
-        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
-      <div class="section-card">
-        <p class="card-title">// advanced mod tools <span style="color:var(--purple)">PRO</span></p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          Pick a channel and flip a category's switch off any time to pause it — the channel stays remembered. Only takes effect on servers where the owner has an active Pro or Lifetime subscription; everyone can configure these, but they'll only actually run for Pro servers.
-        </p>
-
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <label class="field-label" style="margin:0">Ban / Kick / Timeout log</label>
-          <label class="toggle"><input type="checkbox" checked id="banlog-toggle" onchange="onLogToggleChange('banlog-toggle','banlog-wrapper')"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div id="banlog-wrapper">
-          <div id="banlog-channel-picker"></div>
-          <p class="channel-hint" id="banlog-channel-current"></p>
-        </div>
-
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px">
-          <label class="field-label" style="margin:0">Bulk delete (purge) log</label>
-          <label class="toggle"><input type="checkbox" checked id="purgelog-toggle" onchange="onLogToggleChange('purgelog-toggle','purgelog-wrapper')"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div id="purgelog-wrapper">
-          <div id="purgelog-channel-picker"></div>
-          <p class="channel-hint" id="purgelog-channel-current"></p>
-        </div>
-
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px">
-          <label class="field-label" style="margin:0">Role change log</label>
-          <label class="toggle"><input type="checkbox" checked id="rolelog-toggle" onchange="onLogToggleChange('rolelog-toggle','rolelog-wrapper')"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div id="rolelog-wrapper">
-          <div id="rolelog-channel-picker"></div>
-          <p class="channel-hint" id="rolelog-channel-current"></p>
-        </div>
-
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px">
-          <label class="field-label" style="margin:0">Invite tracking log</label>
-          <label class="toggle"><input type="checkbox" checked id="invitelog-toggle" onchange="onLogToggleChange('invitelog-toggle','invitelog-wrapper')"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div id="invitelog-wrapper">
-          <div id="invitelog-channel-picker"></div>
-          <p class="channel-hint" id="invitelog-channel-current"></p>
-        </div>
-
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px">
-          <label class="field-label" style="margin:0">Warn system log <span style="color:var(--grey)">(/warn still works either way — this just toggles logging it to a channel)</span></label>
-          <label class="toggle"><input type="checkbox" checked id="warnlog-toggle" onchange="onLogToggleChange('warnlog-toggle','warnlog-wrapper')"><div class="t-track"></div><div class="t-thumb"></div></label>
-        </div>
-        <div id="warnlog-wrapper">
-          <div id="warnlog-channel-picker"></div>
-          <p class="channel-hint" id="warnlog-channel-current"></p>
-        </div>
-
-        <label class="field-label" style="margin-top:20px">Auto-timeout after this many warnings <span style="color:var(--grey)">(0 = disabled)</span></label>
-        <input class="cyber-input" type="number" id="advmod-warn-threshold" min="0" max="20" placeholder="0" style="max-width:120px">
-        <label class="field-label" style="margin-top:14px">Auto-timeout duration <span style="color:var(--grey)">(minutes)</span></label>
-        <input class="cyber-input" type="number" id="advmod-warn-minutes" min="1" max="10080" placeholder="60" style="max-width:120px">
-
-        <div style="margin-top:16px">
-          <button class="btn-primary" onclick="saveAdvModSettings()">Save advanced mod settings</button>
-          <p class="save-msg" id="advmod-saved">// Settings saved successfully</p>
-          <p class="save-msg" id="advmod-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
-        </div>
-      </div>
-      </div>
-
-      <div class="config-detail" id="config-detail-voice">
-        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
-      <div class="section-card">
-        <p class="card-title">// temp voice channels</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          Pick a "Join to Create" voice channel. When someone joins it, AuraAI moves them into a brand-new temp VC named after them, and deletes it automatically once it's empty. The owner can use <span style="color:var(--cyan)">/voice-rename</span>, <span style="color:var(--cyan)">/voice-userlimit</span>, <span style="color:var(--cyan)">/voice-transfer</span>, <span style="color:var(--cyan)">/voice-lock</span>/<span style="color:var(--cyan)">unlock</span>, <span style="color:var(--cyan)">/voice-hide</span>/<span style="color:var(--cyan)">unhide</span>, <span style="color:var(--cyan)">/voice-kick</span>, and <span style="color:var(--cyan)">/voice-invite</span> on it. If MEE6 or another bot already uses a "Join to Create" channel in this server, pick a <em>different</em> voice channel here — two bots reacting to the same channel will conflict. Leave unset to disable.
-        </p>
-        <label class="field-label">Join to Create channel</label>
-        <div id="voice-channel-picker"></div>
-        <p class="channel-hint" id="voice-channel-current"></p>
-
-        <label class="field-label" style="margin-top:14px">Default user limit for new VCs <span style="color:var(--grey)">(0 = unlimited)</span></label>
-        <input class="cyber-input" type="number" id="voice-default-limit" min="0" max="99" placeholder="0" style="max-width:120px">
-
-        <div style="margin-top:16px">
-          <button class="btn-primary" onclick="saveVoiceChannel()">Save voice channel</button>
-          <p class="save-msg" id="voice-channel-saved">// Settings saved successfully</p>
-          <p class="save-msg" id="voice-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
       </div>
       </div>
@@ -1033,11 +791,6 @@
         <div id="manual-entry" style="display:none">
           <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);margin-top:8px">Search not available — enter username manually</p>
           <input class="cyber-input" type="text" id="alert-manual" placeholder="Enter exact username" style="margin-top:6px">
-          <div id="tiktok-verify-row" style="display:none;margin-top:8px">
-            <p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey);line-height:1.7;margin-bottom:6px">Paste a full TikTok profile URL or just the @username — then verify to confirm it's the right account.</p>
-            <button class="btn-secondary" onclick="verifyTikTokUsername()" type="button">Verify Account</button>
-            <p class="save-msg" id="tiktok-verify-error" style="color:var(--pink)"></p>
-          </div>
         </div>
         <label class="field-label">Custom alert message <span style="color:var(--grey)">(optional)</span></label>
         <textarea class="cyber-input" id="alert-custom-message" rows="2" placeholder="e.g. Hey @everyone, go check it out!" style="resize:vertical;min-height:50px;line-height:1.7"></textarea>
@@ -1231,7 +984,7 @@
         </div>
         <button class="btn-secondary">Manage in Stripe</button>
       </div>
-      <div class="section-card" id="grant-access-card" style="display:none">
+      <div class="section-card">
         <p class="card-title">// grant access</p>
         <label class="field-label">Discord user ID</label>
         <input class="cyber-input" type="text" id="grant-id" placeholder="e.g. 123456789012345678">
@@ -1276,6 +1029,17 @@
   <span id="clock"></span>
 </div>
 
+<div id="security-test-panel" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);overflow-y:auto;padding:40px 24px">
+  <div style="max-width:640px;margin:0 auto">
+    <p style="font-family:var(--font-display);font-size:1.2rem;color:var(--cyan);margin-bottom:8px">// SECURITY TEST</p>
+    <p style="font-family:var(--font-mono);font-size:0.7rem;color:var(--grey);line-height:1.8;margin-bottom:20px">
+      This checks whether your account is properly blocked from doing things only the bot owner should be able to do. Just click the button below — you don't need to understand what it's doing. Each line will show ✅ (correctly blocked, good) or ❌ (something's wrong, tell Andrew).
+    </p>
+    <button class="btn-primary" onclick="runSecurityTest()">Run Security Test</button>
+    <div id="security-test-results" style="margin-top:20px;font-family:var(--font-mono);font-size:0.78rem;line-height:2.2;color:var(--white)"></div>
+  </div>
+</div>
+
 <script>
   const SUPABASE_URL = 'https://uptxufmqqwjytffhbcdd.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwdHh1Zm1xcXdqeXRmZmhiY2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NDUzNzMsImV4cCI6MjA4OTQyMTM3M30.Wkol9oWQwZePmfduJIteUnAxvP_SmDTiRfvWPU5JYGU';
@@ -1284,15 +1048,6 @@
 
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  // Attaches the real, Supabase-verified session token to a request so the
-  // Railway backend can confirm who's actually asking — the backend re-verifies
-  // this token itself rather than trusting any discordId the browser sends.
-  async function authHeaders() {
-    const { data } = await sb.auth.getSession();
-    const token = data?.session?.access_token;
-    return token ? { 'Authorization': `Bearer ${token}` } : {};
-  }
 
   let currentUser = null, userAccess = null, isOwner = false, isDelegate = false, isCoach = false;
   let selectedGuildId = null, userGuilds = [];
@@ -1392,17 +1147,16 @@
     }
 
     // Build the list from channel data grouped by category
-    setChannels(channels, savedId, wantedTypes = [0, 5]) {
+    setChannels(channels, savedId) {
       this.list.innerHTML = '';
       this.options = [];
-      this._iconFor = (t) => (t === 5 ? '📢 ' : t === 2 ? '🔊 ' : '# ');
 
       if (!channels || channels.length === 0) {
         this.selected.querySelector('.cd-label').textContent = '⚠️ No channels loaded';
         return;
       }
 
-      const textChannels = channels.filter(c => wantedTypes.includes(c.type)).sort((a, b) => a.position - b.position);
+      const textChannels = channels.filter(c => c.type === 0 || c.type === 5).sort((a, b) => a.position - b.position);
       const categories = channels.filter(c => c.type === 4).sort((a, b) => a.position - b.position);
       const usedIds = new Set();
 
@@ -1432,7 +1186,7 @@
         const saved = channels.find(c => c.id === savedId);
         if (saved) {
           this.value = savedId;
-          this.selected.querySelector('.cd-label').textContent = this._iconFor(saved.type) + saved.name;
+          this.selected.querySelector('.cd-label').textContent = (saved.type === 5 ? '📢 ' : '# ') + saved.name;
         }
       } else {
         this.selected.querySelector('.cd-label').textContent = '— Pick a channel —';
@@ -1442,12 +1196,11 @@
     _addOption(ch, savedId) {
       const div = document.createElement('div');
       div.className = 'cd-option' + (ch.id === savedId ? ' selected' : '');
-      const icon = this._iconFor ? this._iconFor(ch.type) : (ch.type === 5 ? '📢 ' : '# ');
-      div.textContent = icon + ch.name;
+      div.textContent = (ch.type === 5 ? '📢 ' : '# ') + ch.name;
       div.dataset.value = ch.id;
       div.onclick = (e) => {
         e.stopPropagation();
-        this.setValue(ch.id, icon + ch.name);
+        this.setValue(ch.id, (ch.type === 5 ? '📢 ' : '# ') + ch.name);
         this.close();
         if (this.onChange) this.onChange(ch.id);
       };
@@ -1480,7 +1233,7 @@
     if (!el) return;
     if (!itemId) { el.textContent = ''; return; }
     const ch = guildChannelCache.find(c => c.id === itemId);
-    if (ch) { const icon = ch.type === 5 ? '📢' : ch.type === 2 ? '🔊' : '#'; el.textContent = '// currently: ' + icon + ch.name + ' (' + itemId + ')'; return; }
+    if (ch) { el.textContent = '// currently: #' + ch.name + ' (' + itemId + ')'; return; }
     const role = guildRoleCache.find(r => r.id === itemId);
     if (role) { el.textContent = '// currently: @' + role.name + ' (' + itemId + ')'; return; }
     el.textContent = '// currently: ' + itemId;
@@ -1502,17 +1255,6 @@
       { id: 'welcome-channel-picker' },
       { id: 'goodbye-channel-picker' },
       { id: 'fun-channel-picker' },
-      { id: 'voice-channel-picker' },
-      { id: 'rr-channel-picker' },
-      { id: 'starboard-channel-picker' },
-      { id: 'msglog-channel-picker' },
-      { id: 'voicelog-channel-picker' },
-      { id: 'automodlog-channel-picker' },
-      { id: 'banlog-channel-picker' },
-      { id: 'purgelog-channel-picker' },
-      { id: 'rolelog-channel-picker' },
-      { id: 'invitelog-channel-picker' },
-      { id: 'warnlog-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -1530,7 +1272,7 @@
     });
 
     try {
-      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-roles?guildId=${guildId}`, { headers: await authHeaders() });
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-roles?guildId=${guildId}`);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       guildRoleCache = data.roles || [];
@@ -1602,7 +1344,7 @@
     Object.values(channelPickers).forEach(p => p.setPlaceholder('Loading channels...'));
 
     try {
-      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-channels?guildId=${guildId}`, { headers: await authHeaders() });
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-channels?guildId=${guildId}`);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       guildChannelCache = data.channels || [];
@@ -1642,59 +1384,6 @@
 
     channelPickers['fun-channel-picker'].setChannels(guildChannelCache, s.fun_channel_id || null);
     setChannelHint('fun-channel-current', s.fun_channel_id);
-
-    channelPickers['voice-channel-picker'].setChannels(guildChannelCache, s.jtc_channel_id || null, [2]);
-    setChannelHint('voice-channel-current', s.jtc_channel_id);
-    const voiceLimitEl = document.getElementById('voice-default-limit');
-    if (voiceLimitEl) voiceLimitEl.value = s.jtc_default_user_limit || 0;
-
-    channelPickers['rr-channel-picker'].setChannels(guildChannelCache, null);
-
-    channelPickers['starboard-channel-picker'].setChannels(guildChannelCache, s.starboard_channel_id || null);
-    setChannelHint('starboard-channel-current', s.starboard_channel_id);
-    applyLogToggleState('starboard-toggle', 'starboard-wrapper', s.starboard_enabled);
-    const starThresholdEl = document.getElementById('starboard-threshold');
-    if (starThresholdEl) starThresholdEl.value = s.starboard_threshold || 3;
-    const starSelfEl = document.getElementById('starboard-allow-self');
-    if (starSelfEl) starSelfEl.checked = !!s.starboard_allow_self;
-    loadStarboardEmojiOptions(guildId, s.starboard_emoji || '⭐');
-
-    channelPickers['msglog-channel-picker'].setChannels(guildChannelCache, s.message_log_channel_id || null);
-    setChannelHint('msglog-channel-current', s.message_log_channel_id);
-    applyLogToggleState('msglog-toggle', 'msglog-wrapper', s.message_log_enabled);
-
-    channelPickers['voicelog-channel-picker'].setChannels(guildChannelCache, s.voice_log_channel_id || null);
-    setChannelHint('voicelog-channel-current', s.voice_log_channel_id);
-    applyLogToggleState('voicelog-toggle', 'voicelog-wrapper', s.voice_log_enabled);
-
-    channelPickers['automodlog-channel-picker'].setChannels(guildChannelCache, s.automod_log_channel_id || null);
-    setChannelHint('automodlog-channel-current', s.automod_log_channel_id);
-    applyLogToggleState('automodlog-toggle', 'automodlog-wrapper', s.automod_log_enabled);
-
-    channelPickers['banlog-channel-picker'].setChannels(guildChannelCache, s.ban_log_channel_id || null);
-    setChannelHint('banlog-channel-current', s.ban_log_channel_id);
-    applyLogToggleState('banlog-toggle', 'banlog-wrapper', s.ban_log_enabled);
-
-    channelPickers['purgelog-channel-picker'].setChannels(guildChannelCache, s.purge_log_channel_id || null);
-    setChannelHint('purgelog-channel-current', s.purge_log_channel_id);
-    applyLogToggleState('purgelog-toggle', 'purgelog-wrapper', s.purge_log_enabled);
-
-    channelPickers['rolelog-channel-picker'].setChannels(guildChannelCache, s.role_log_channel_id || null);
-    setChannelHint('rolelog-channel-current', s.role_log_channel_id);
-    applyLogToggleState('rolelog-toggle', 'rolelog-wrapper', s.role_log_enabled);
-
-    channelPickers['invitelog-channel-picker'].setChannels(guildChannelCache, s.invite_log_channel_id || null);
-    setChannelHint('invitelog-channel-current', s.invite_log_channel_id);
-    applyLogToggleState('invitelog-toggle', 'invitelog-wrapper', s.invite_log_enabled);
-
-    channelPickers['warnlog-channel-picker'].setChannels(guildChannelCache, s.warn_log_channel_id || null);
-    setChannelHint('warnlog-channel-current', s.warn_log_channel_id);
-    applyLogToggleState('warnlog-toggle', 'warnlog-wrapper', s.warn_log_enabled);
-
-    const warnThresholdEl = document.getElementById('advmod-warn-threshold');
-    if (warnThresholdEl) warnThresholdEl.value = s.warn_auto_action_threshold || 0;
-    const warnMinutesEl = document.getElementById('advmod-warn-minutes');
-    if (warnMinutesEl) warnMinutesEl.value = s.warn_auto_action_minutes || 60;
   }
 
   // ── OVERVIEW STATS ────────────────────────────────────────────────────────
@@ -1773,10 +1462,6 @@
     const { data: access } = await sb.from('user_access').select('*').eq('discord_id', discordId).maybeSingle();
     userAccess = access;
     isOwner = (discordId === OWNER_DISCORD_ID);
-    const grantCard = document.getElementById('grant-access-card');
-    if (grantCard) grantCard.style.display = isOwner ? 'block' : 'none';
-    const quickGrantBtn = document.getElementById('quick-grant-access-btn');
-    if (quickGrantBtn) quickGrantBtn.style.display = isOwner ? 'inline-block' : 'none';
     if (!isOwner) {
       const { data: delegateRow } = await sb.from('approval_delegates').select('id').eq('discord_id', discordId).maybeSingle();
       isDelegate = !!delegateRow;
@@ -1919,17 +1604,6 @@
       return;
     }
 
-    // Refresh the guild-admin cache FIRST — RLS policies on server_settings,
-    // reaction_role_menus, etc. check this cache table, so it needs to be
-    // current before any of those reads/writes below happen for this guild.
-    try {
-      await fetch(`${RAILWAY_BOT_URL}/api/guild-admin-sync`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
-        body: JSON.stringify({ guildId })
-      });
-    } catch (err) { console.error('guild-admin-sync error:', err.message); }
-
     // Load server_settings from Supabase first, then load channels
     let savedSettings = null;
     try {
@@ -1950,13 +1624,8 @@
     // Load channels and roles from bot in parallel, populating all pickers
     await Promise.all([
       loadGuildChannels(guildId, savedSettings),
-      loadGuildRoles(guildId, savedSettings),
-      loadReactionRoleMenus(guildId)
+      loadGuildRoles(guildId, savedSettings)
     ]);
-    // loadReactionRoleMenus and loadGuildRoles run concurrently above, so the role
-    // checklist may have rendered before guildRoleCache was actually populated —
-    // re-render now that everything above has settled.
-    renderRoleChecklist();
     updateConfigCardStatuses();
 
     // Update coaching warning banner
@@ -2034,78 +1703,24 @@
   });
 
   async function grantAccess() {
-    if (!isOwner) return;
     const id=document.getElementById('grant-id').value.trim();const days=grantDurationValue;
     if(!id)return;
-    const isLifetime=days===0;
-    try {
-      const res = await fetch(`${RAILWAY_BOT_URL}/api/admin/grant-access`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
-        body: JSON.stringify({ discordId: id, tier: isLifetime ? 'lifetime' : 'pro', days: isLifetime ? null : days })
-      });
-      if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || 'Grant failed'); }
-      document.getElementById('grant-id').value='';showSaved('grant-saved');
-    } catch (err) {
-      console.error('grantAccess error:', err.message);
-    }
+    const expires=days===0?null:new Date(Date.now()+days*86400000).toISOString();
+    await sb.from('user_access').upsert({ discord_id:id,tier:'pro',status:'active',granted_by:'admin',expires_at:expires },{ onConflict:'discord_id' });
+    document.getElementById('grant-id').value='';showSaved('grant-saved');
   }
 
   async function revokeAccess() {
-    if (!isOwner) return;
     const id=document.getElementById('grant-id').value.trim();if(!id)return;
-    try {
-      const res = await fetch(`${RAILWAY_BOT_URL}/api/admin/revoke-access`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
-        body: JSON.stringify({ discordId: id })
-      });
-      if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || 'Revoke failed'); }
-      document.getElementById('grant-id').value='';showSaved('grant-revoked');
-    } catch (err) {
-      console.error('revokeAccess error:', err.message);
-    }
+    await sb.from('user_access').update({ tier:'free',status:'cancelled' }).eq('discord_id',id);
+    document.getElementById('grant-id').value='';showSaved('grant-revoked');
   }
 
   function showSaved(id){const el=document.getElementById(id);if(!el)return;el.style.display='block';setTimeout(()=>el.style.display='none',3000);}
-
-  async function loadStarboardEmojiOptions(guildId, currentValue) {
-    const select = document.getElementById('starboard-emoji-select');
-    if (!select || !guildId) return;
-    select.innerHTML = '<option value="⭐">⭐ Default</option>';
-    try {
-      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-emojis?guildId=${guildId}`, { headers: await authHeaders() });
-      const data = await res.json();
-      (data.emojis || []).forEach(e => {
-        const opt = document.createElement('option');
-        opt.value = e.formatted;
-        opt.textContent = `:${e.name}:`;
-        select.appendChild(opt);
-      });
-      select.value = currentValue || '⭐';
-      if (select.selectedIndex === -1) select.value = '⭐'; // saved emoji no longer exists in the server
-    } catch (err) {
-      console.error('loadStarboardEmojiOptions error:', err.message);
-    }
-  }
-
-  // Generic on/off toggle for any log category — grays out its settings
-  // wrapper without touching the channel/value already configured there.
-  function onLogToggleChange(toggleId, wrapperId) {
-    const toggle = document.getElementById(toggleId);
-    const wrapper = document.getElementById(wrapperId);
-    if (!toggle || !wrapper) return;
-    wrapper.classList.toggle('log-category-disabled', !toggle.checked);
-  }
-  function applyLogToggleState(toggleId, wrapperId, enabled) {
-    const toggle = document.getElementById(toggleId);
-    if (toggle) toggle.checked = enabled !== false;
-    onLogToggleChange(toggleId, wrapperId);
-  }
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', voice:'TEMP VOICE CHANNELS', reactionroles:'REACTION ROLES', modlog:'AUDIT LOG', advmod:'ADVANCED MOD TOOLS', starboard:'CONVERGENCE', features:'FEATURE TOGGLES' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
@@ -2147,233 +1762,8 @@
     setStatus('status-welcome', !!s.welcome_channel_id);
     setStatus('status-goodbye', !!s.goodbye_channel_id);
     setStatus('status-fun', !!s.fun_channel_id);
-    setStatus('status-voice', !!s.jtc_channel_id);
-    setStatus('status-starboard', !!s.starboard_channel_id);
-    setStatus('status-modlog', !!(s.message_log_channel_id || s.voice_log_channel_id || s.automod_log_channel_id));
 
     updateCoachingSettingsStatus();
-  }
-
-  // ── REACTION ROLES ────────────────────────────────────────────────────────
-  let currentReactionRoleMenu = null; // the single menu row for this guild, or null
-
-  async function loadReactionRoleMenus(guildId) {
-    currentReactionRoleMenu = null;
-    if (!guildId) { renderRoleChecklist(); return; }
-    try {
-      const { data: menus } = await sb.from('reaction_role_menus').select('*').eq('guild_id', guildId).order('created_at', { ascending: false }).limit(1);
-      currentReactionRoleMenu = (menus && menus[0]) || null;
-
-      if (currentReactionRoleMenu) {
-        const { data: opts } = await sb.from('reaction_role_options').select('*').eq('menu_id', currentReactionRoleMenu.id).order('position');
-        currentReactionRoleMenu.options = opts || [];
-      }
-    } catch (err) {
-      console.error('loadReactionRoleMenus error:', err.message);
-    }
-
-    // Populate form fields if a menu already exists
-    const titleEl = document.getElementById('rr-title');
-    const descEl = document.getElementById('rr-description');
-    const msgEl = document.getElementById('rr-message-text');
-    const subtitleEl = document.getElementById('rr-embed-subtitle');
-    const previewEl = document.getElementById('rr-image-preview');
-    const deleteBtn = document.getElementById('rr-delete-btn');
-    if (titleEl) titleEl.value = currentReactionRoleMenu?.title || '';
-    if (descEl) descEl.value = currentReactionRoleMenu?.description || '';
-    if (msgEl) msgEl.value = currentReactionRoleMenu?.message_text || '';
-    if (subtitleEl) subtitleEl.value = currentReactionRoleMenu?.embed_subtitle || '';
-    rrUploadedImageUrl = currentReactionRoleMenu?.image_url || null;
-    if (previewEl) {
-      if (rrUploadedImageUrl) { previewEl.src = rrUploadedImageUrl; previewEl.style.display = 'block'; }
-      else { previewEl.style.display = 'none'; previewEl.src = ''; }
-    }
-    if (deleteBtn) deleteBtn.style.display = currentReactionRoleMenu ? 'inline-block' : 'none';
-    if (currentReactionRoleMenu?.channel_id) {
-      channelPickers['rr-channel-picker'].setValue(currentReactionRoleMenu.channel_id,
-        (guildChannelCache.find(c => c.id === currentReactionRoleMenu.channel_id)?.name ? '# ' + guildChannelCache.find(c => c.id === currentReactionRoleMenu.channel_id).name : 'Unknown channel'));
-    }
-
-    renderRoleChecklist();
-    setStatus_reactionRoles();
-  }
-
-  function setStatus_reactionRoles() {
-    const el = document.getElementById('status-reactionroles');
-    if (!el) return;
-    if (!selectedGuildId) { el.textContent = '// select a server'; el.className = 'config-card-status unset'; return; }
-    const posted = currentReactionRoleMenu && currentReactionRoleMenu.message_id;
-    el.textContent = posted ? '✓ Posted' : (currentReactionRoleMenu ? '// Draft (not posted)' : '// Not set');
-    el.className = 'config-card-status ' + (posted ? 'set' : 'unset');
-  }
-
-  function renderRoleChecklist() {
-    const box = document.getElementById('rr-role-checklist');
-    if (!box) return;
-    box.innerHTML = '';
-    if (!selectedGuildId) { box.innerHTML = '<p style="color:var(--grey)">// select a server first</p>'; return; }
-    if (guildRoleCache.length === 0) { box.innerHTML = '<p style="color:var(--grey)">// no roles found</p>'; return; }
-
-    const savedByRoleId = {};
-    (currentReactionRoleMenu?.options || []).forEach(o => { savedByRoleId[o.role_id] = o; });
-
-    guildRoleCache.forEach(role => {
-      const saved = savedByRoleId[role.id];
-      const row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px;border-bottom:1px solid rgba(0,240,255,0.06)';
-      row.dataset.roleId = role.id;
-      row.dataset.roleName = role.name;
-
-      const cb = document.createElement('input');
-      cb.type = 'checkbox';
-      cb.className = 'rr-role-include';
-      cb.checked = !!saved;
-
-      const roleLabel = document.createElement('span');
-      roleLabel.textContent = role.name;
-      roleLabel.style.minWidth = '110px';
-      if (role.color) roleLabel.style.color = '#' + role.color.toString(16).padStart(6, '0');
-
-      const labelInput = document.createElement('input');
-      labelInput.type = 'text';
-      labelInput.className = 'cyber-input rr-role-label';
-      labelInput.placeholder = 'Button label';
-      labelInput.maxLength = 80;
-      labelInput.style.cssText = 'width:130px;padding:4px 8px';
-      labelInput.value = saved?.label || role.name;
-
-      const emojiInput = document.createElement('input');
-      emojiInput.type = 'text';
-      emojiInput.className = 'cyber-input rr-role-emoji';
-      emojiInput.placeholder = '🎮';
-      emojiInput.style.cssText = 'width:60px;padding:4px 8px;text-align:center';
-      emojiInput.value = saved?.emoji || '';
-
-      const styleSelect = document.createElement('select');
-      styleSelect.className = 'cyber-input rr-role-style';
-      styleSelect.style.cssText = 'width:100px;padding:4px 8px';
-      [['blurple', 'Blurple'], ['grey', 'Grey'], ['green', 'Green'], ['red', 'Red']].forEach(([val, label]) => {
-        const opt = document.createElement('option');
-        opt.value = val; opt.textContent = label;
-        if ((saved?.button_style || 'blurple') === val) opt.selected = true;
-        styleSelect.appendChild(opt);
-      });
-
-      row.appendChild(cb);
-      row.appendChild(roleLabel);
-      row.appendChild(labelInput);
-      row.appendChild(emojiInput);
-      row.appendChild(styleSelect);
-      box.appendChild(row);
-    });
-  }
-
-  // ── Image upload to Supabase Storage ──────────────────────────────────────
-  let rrUploadedImageUrl = null;
-  document.addEventListener('DOMContentLoaded', () => {
-    const fileInput = document.getElementById('rr-image-upload');
-    if (!fileInput) return;
-    fileInput.addEventListener('change', async () => {
-      const file = fileInput.files[0];
-      if (!file) return;
-      const uploading = document.getElementById('rr-image-uploading');
-      const preview = document.getElementById('rr-image-preview');
-      if (uploading) uploading.style.display = 'block';
-      try {
-        const path = `${selectedGuildId || 'unassigned'}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-        const { error: uploadErr } = await sb.storage.from('reaction-role-images').upload(path, file);
-        if (uploadErr) throw uploadErr;
-        const { data: urlData } = sb.storage.from('reaction-role-images').getPublicUrl(path);
-        rrUploadedImageUrl = urlData.publicUrl;
-        if (preview) { preview.src = rrUploadedImageUrl; preview.style.display = 'block'; }
-      } catch (err) {
-        console.error('Image upload error:', err.message);
-        const errEl = document.getElementById('rr-error');
-        if (errEl) { errEl.textContent = '// Error uploading image: ' + err.message; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 5000); }
-      } finally {
-        if (uploading) uploading.style.display = 'none';
-      }
-    });
-  });
-
-  async function saveAndPostReactionRoleMenu() {
-    const errEl = document.getElementById('rr-error');
-    const savedEl = document.getElementById('rr-saved');
-    if (!selectedGuildId) { if (errEl) { errEl.textContent = '// Error: Please select your Discord server first!'; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); } return; }
-
-    const channelId = channelPickers['rr-channel-picker'].getValue();
-    const title = document.getElementById('rr-title').value.trim();
-    const description = document.getElementById('rr-description').value.trim();
-    const messageText = document.getElementById('rr-message-text').value.trim();
-    const embedSubtitle = document.getElementById('rr-embed-subtitle').value.trim();
-
-    const rows = Array.from(document.querySelectorAll('#rr-role-checklist > div')).filter(row => row.querySelector('.rr-role-include').checked);
-
-    if (!channelId || !title || rows.length === 0) {
-      if (errEl) { errEl.textContent = '// Error: Pick a channel, an embed title, and at least one role.'; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
-      return;
-    }
-    if (rows.length > 25) {
-      if (errEl) { errEl.textContent = '// Error: Discord allows a maximum of 25 buttons per menu.'; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
-      return;
-    }
-
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-
-    try {
-      let menuId = currentReactionRoleMenu?.id;
-      const menuFields = {
-        channel_id: channelId, title, description: description || null,
-        message_text: messageText || null, embed_subtitle: embedSubtitle || null,
-        image_url: rrUploadedImageUrl || null, updated_at: new Date().toISOString()
-      };
-
-      if (menuId) {
-        await sb.from('reaction_role_menus').update(menuFields).eq('id', menuId);
-        await sb.from('reaction_role_options').delete().eq('menu_id', menuId);
-      } else {
-        const { data: inserted, error: insertErr } = await sb.from('reaction_role_menus').insert({ guild_id: selectedGuildId, created_by: discordId, ...menuFields }).select().single();
-        if (insertErr) throw insertErr;
-        menuId = inserted.id;
-      }
-
-      const optionRows = rows.map((row, i) => ({
-        menu_id: menuId,
-        role_id: row.dataset.roleId,
-        label: (row.querySelector('.rr-role-label').value.trim() || row.dataset.roleName).slice(0, 80),
-        emoji: row.querySelector('.rr-role-emoji').value.trim() || null,
-        button_style: row.querySelector('.rr-role-style').value,
-        position: i
-      }));
-      await sb.from('reaction_role_options').insert(optionRows);
-
-      // Ask the bot to actually post/update the Discord message
-      const res = await fetch(`${RAILWAY_BOT_URL}/api/reaction-roles/post`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(await authHeaders()) },
-        body: JSON.stringify({ menuId })
-      });
-      if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || 'Bot failed to post the menu'); }
-
-      await loadReactionRoleMenus(selectedGuildId);
-      if (savedEl) { savedEl.style.display = 'block'; setTimeout(() => savedEl.style.display = 'none', 3000); }
-    } catch (err) {
-      console.error('saveAndPostReactionRoleMenu error:', err.message);
-      if (errEl) { errEl.textContent = '// Error: ' + err.message; errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 5000); }
-    }
-  }
-
-  async function deleteReactionRoleMenu() {
-    if (!currentReactionRoleMenu) return;
-    if (!confirm('Delete this reaction role menu? The posted Discord message will be left behind (you can delete it manually), but the menu will stop working.')) return;
-    await sb.from('reaction_role_menus').delete().eq('id', currentReactionRoleMenu.id);
-    document.getElementById('rr-title').value = '';
-    document.getElementById('rr-description').value = '';
-    document.getElementById('rr-message-text').value = '';
-    document.getElementById('rr-embed-subtitle').value = '';
-    document.getElementById('rr-image-preview').style.display = 'none';
-    rrUploadedImageUrl = null;
-    await loadReactionRoleMenus(selectedGuildId);
   }
 
   // ── COACHING — same card/detail pattern, reuses lastBotConfigSettings (same server_settings row) ──
@@ -2432,44 +1822,9 @@
   function onPlatformChange(val){
     clearSelectedStreamer();
     const searchEl=document.getElementById('alert-search');const manualEl=document.getElementById('manual-entry');const resultsEl=document.getElementById('search-results');
-    const tiktokVerifyEl=document.getElementById('tiktok-verify-row');
     if(searchEl)searchEl.value='';if(resultsEl)resultsEl.style.display='none';
     if(val==='tiktok'||val==='kick'){if(searchEl)searchEl.style.display='none';if(manualEl)manualEl.style.display='block';}
     else{if(searchEl)searchEl.style.display='block';if(manualEl)manualEl.style.display='none';}
-    if(tiktokVerifyEl)tiktokVerifyEl.style.display=(val==='tiktok')?'block':'none';
-  }
-
-  // Accepts a full TikTok profile URL (any of the common forms) or a bare
-  // username/@handle, and returns just the bare username either way.
-  function extractTikTokUsername(input){
-    if(!input) return '';
-    let s=input.trim();
-    const urlMatch=s.match(/tiktok\.com\/@([\w.]+)/i);
-    if(urlMatch) return urlMatch[1];
-    return s.replace(/^@/,'');
-  }
-
-  async function verifyTikTokUsername(){
-    const raw=document.getElementById('alert-manual')?.value||'';
-    const username=extractTikTokUsername(raw);
-    const errEl=document.getElementById('tiktok-verify-error');
-    if(errEl){errEl.style.display='none';errEl.textContent='';}
-    if(!username){if(errEl){errEl.textContent='// Enter a username or profile URL first';errEl.style.display='block';}return;}
-    if(errEl){errEl.textContent='// Verifying... (this can take several seconds)';errEl.style.display='block';errEl.style.color='var(--cyan)';}
-    try{
-      const res=await fetch(`${RAILWAY_BOT_URL}/api/tiktok-verify?username=${encodeURIComponent(username)}`);
-      const data=await res.json();
-      if(!res.ok||data.error){throw new Error(data.error||'Verification failed');}
-      selectedStreamer={username:data.username,displayName:data.displayName,avatar:data.avatar,live:data.live};
-      document.getElementById('alert-manual').value=data.username;
-      document.getElementById('selected-streamer').style.display='block';
-      document.getElementById('selected-avatar').src=data.avatar||'';
-      document.getElementById('selected-name').textContent=data.displayName;
-      document.getElementById('selected-meta').textContent=`@${data.username}${data.live?' — 🔴 Currently Live':''}`;
-      if(errEl)errEl.style.display='none';
-    }catch(err){
-      if(errEl){errEl.textContent='// Error: '+err.message;errEl.style.display='block';errEl.style.color='var(--pink)';}
-    }
   }
 
   function onAlertSearch(value){
@@ -2497,8 +1852,7 @@
     const channelId=channelPickers['alert-channel'].getValue();
     const errorEl=document.getElementById('alert-error');errorEl.style.display='none';
     let username='';
-    if(platform==='tiktok') username=selectedStreamer?.username||extractTikTokUsername(document.getElementById('alert-manual')?.value||'');
-    else if(platform==='kick') username=document.getElementById('alert-manual')?.value.trim()||'';
+    if(platform==='tiktok'||platform==='kick') username=document.getElementById('alert-manual')?.value.trim()||'';
     else username=selectedStreamer?.username||document.getElementById('alert-search')?.value.trim()||'';
     if(!username){errorEl.textContent='// Error: Please select or enter a streamer';errorEl.style.display='block';return;}
     if(!channelId){errorEl.textContent='// Error: Please select an alert channel';errorEl.style.display='block';return;}
@@ -2875,7 +2229,7 @@
     document.getElementById('theme-btn-pink').classList.toggle('active',theme==='pink');
     document.getElementById('theme-btn-orange').classList.toggle('active',theme==='orange');
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    if(discordId)await sb.rpc('update_own_theme',{new_theme:theme});
+    if(discordId)await sb.from('user_access').update({theme}).eq('discord_id',discordId);
     localStorage.setItem('auraai-theme',theme);showSaved('theme-saved');
   }
 
@@ -2921,112 +2275,6 @@
     );
     setChannelHint('goodbye-channel-current', goodbyeId);
     showSaved('goodbye-channel-saved');
-  }
-
-  async function saveStarboardSettings() {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    if (!selectedGuildId) {
-      const e = document.getElementById('starboard-error');
-      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
-      return;
-    }
-    const channelId = channelPickers['starboard-channel-picker'].getValue() || null;
-    const thresholdRaw = parseInt(document.getElementById('starboard-threshold')?.value, 10);
-    const threshold = isNaN(thresholdRaw) || thresholdRaw < 1 ? 3 : Math.min(thresholdRaw, 100);
-    const allowSelf = document.getElementById('starboard-allow-self')?.checked || false;
-    const enabled = document.getElementById('starboard-toggle')?.checked ?? true;
-    const emoji = document.getElementById('starboard-emoji-select')?.value || '⭐';
-    await sb.from('server_settings').upsert(
-      { owner_discord_id: discordId, discord_server_id: selectedGuildId, starboard_channel_id: channelId, starboard_threshold: threshold, starboard_allow_self: allowSelf, starboard_enabled: enabled, starboard_emoji: emoji },
-      { onConflict: 'discord_server_id' }
-    );
-    setChannelHint('starboard-channel-current', channelId);
-    showSaved('starboard-saved');
-  }
-
-  async function saveModLogSettings() {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    if (!selectedGuildId) {
-      const e = document.getElementById('modlog-error');
-      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
-      return;
-    }
-    const messageLogId = channelPickers['msglog-channel-picker'].getValue() || null;
-    const voiceLogId = channelPickers['voicelog-channel-picker'].getValue() || null;
-    const automodLogId = channelPickers['automodlog-channel-picker'].getValue() || null;
-    const messageLogEnabled = document.getElementById('msglog-toggle')?.checked ?? true;
-    const voiceLogEnabled = document.getElementById('voicelog-toggle')?.checked ?? true;
-    const automodLogEnabled = document.getElementById('automodlog-toggle')?.checked ?? true;
-    await sb.from('server_settings').upsert(
-      {
-        owner_discord_id: discordId, discord_server_id: selectedGuildId,
-        message_log_channel_id: messageLogId, voice_log_channel_id: voiceLogId, automod_log_channel_id: automodLogId,
-        message_log_enabled: messageLogEnabled, voice_log_enabled: voiceLogEnabled, automod_log_enabled: automodLogEnabled
-      },
-      { onConflict: 'discord_server_id' }
-    );
-    setChannelHint('msglog-channel-current', messageLogId);
-    setChannelHint('voicelog-channel-current', voiceLogId);
-    setChannelHint('automodlog-channel-current', automodLogId);
-    showSaved('modlog-saved');
-  }
-
-  async function saveAdvModSettings() {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    if (!selectedGuildId) {
-      const e = document.getElementById('advmod-error');
-      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
-      return;
-    }
-    const banLogId = channelPickers['banlog-channel-picker'].getValue() || null;
-    const purgeLogId = channelPickers['purgelog-channel-picker'].getValue() || null;
-    const roleLogId = channelPickers['rolelog-channel-picker'].getValue() || null;
-    const inviteLogId = channelPickers['invitelog-channel-picker'].getValue() || null;
-    const warnLogId = channelPickers['warnlog-channel-picker'].getValue() || null;
-    const banLogEnabled = document.getElementById('banlog-toggle')?.checked ?? true;
-    const purgeLogEnabled = document.getElementById('purgelog-toggle')?.checked ?? true;
-    const roleLogEnabled = document.getElementById('rolelog-toggle')?.checked ?? true;
-    const inviteLogEnabled = document.getElementById('invitelog-toggle')?.checked ?? true;
-    const warnLogEnabled = document.getElementById('warnlog-toggle')?.checked ?? true;
-    const thresholdRaw = parseInt(document.getElementById('advmod-warn-threshold')?.value, 10);
-    const minutesRaw = parseInt(document.getElementById('advmod-warn-minutes')?.value, 10);
-    const threshold = isNaN(thresholdRaw) || thresholdRaw < 0 ? 0 : Math.min(thresholdRaw, 20);
-    const minutes = isNaN(minutesRaw) || minutesRaw < 1 ? 60 : Math.min(minutesRaw, 10080);
-    await sb.from('server_settings').upsert(
-      {
-        owner_discord_id: discordId, discord_server_id: selectedGuildId,
-        ban_log_channel_id: banLogId, purge_log_channel_id: purgeLogId, role_log_channel_id: roleLogId,
-        invite_log_channel_id: inviteLogId, warn_log_channel_id: warnLogId,
-        ban_log_enabled: banLogEnabled, purge_log_enabled: purgeLogEnabled, role_log_enabled: roleLogEnabled,
-        invite_log_enabled: inviteLogEnabled, warn_log_enabled: warnLogEnabled,
-        warn_auto_action_threshold: threshold, warn_auto_action_minutes: minutes
-      },
-      { onConflict: 'discord_server_id' }
-    );
-    setChannelHint('banlog-channel-current', banLogId);
-    setChannelHint('purgelog-channel-current', purgeLogId);
-    setChannelHint('rolelog-channel-current', roleLogId);
-    setChannelHint('invitelog-channel-current', inviteLogId);
-    setChannelHint('warnlog-channel-current', warnLogId);
-    showSaved('advmod-saved');
-  }
-
-  async function saveVoiceChannel() {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    if (!selectedGuildId) {
-      const e = document.getElementById('voice-channel-error');
-      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
-      return;
-    }
-    const voiceId = channelPickers['voice-channel-picker'].getValue() || null;
-    const defaultLimitRaw = parseInt(document.getElementById('voice-default-limit')?.value, 10);
-    const defaultLimit = (isNaN(defaultLimitRaw) || defaultLimitRaw < 0) ? 0 : Math.min(defaultLimitRaw, 99);
-    await sb.from('server_settings').upsert(
-      { owner_discord_id: discordId, discord_server_id: selectedGuildId, jtc_channel_id: voiceId, jtc_default_user_limit: defaultLimit },
-      { onConflict: 'discord_server_id' }
-    );
-    setChannelHint('voice-channel-current', voiceId);
-    showSaved('voice-channel-saved');
   }
 
 
@@ -3087,66 +2335,73 @@
 
   initChannelPickers();
   init();
-</script>
-  <div id="security-test-panel" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);overflow-y:auto;padding:40px 24px">
-    <div style="max-width:640px;margin:0 auto">
-      <p style="font-family:var(--font-display);font-size:1.2rem;color:var(--cyan);margin-bottom:8px">// SECURITY TEST</p>
-      <p style="font-family:var(--font-mono);font-size:0.7rem;color:var(--grey);line-height:1.8;margin-bottom:20px">
-        This checks whether your account is properly blocked from doing things only the bot owner should be able to do. Just click the button below — you don't need to understand what it's doing. Each line will show ✅ (correctly blocked, good) or ❌ (something's wrong, tell Andrew).
-      </p>
-      <button class="btn-primary" onclick="runSecurityTest()">Run Security Test</button>
-      <div id="security-test-results" style="margin-top:20px;font-family:var(--font-mono);font-size:0.78rem;line-height:2.2;color:var(--white)"></div>
-    </div>
-  </div>
 
-  <script>
-    async function runSecurityTest() {
-      const out = document.getElementById('security-test-results');
-      out.innerHTML = '<p style="color:var(--grey)">// Running checks...</p>';
-      const lines = [];
-      const { data: sessionData } = await sb.auth.getSession();
-      const token = sessionData?.session?.access_token;
+  // ── SECURITY TEST PANEL ─────────────────────────────────────────────────
+  // Reached via #securitytest. Must be run by a NON-owner account — the
+  // owner passes every check by design, so testing on Andrew's own account
+  // would show all ❌ and mean nothing.
+  async function runSecurityTest() {
+    const out = document.getElementById('security-test-results');
+    out.innerHTML = '<p style="color:var(--grey)">// Running checks...</p>';
+    const lines = [];
+    const { data: sessionData } = await sb.auth.getSession();
+    const token = sessionData?.session?.access_token;
+    const myDiscordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
 
-      // Test 1: try the owner-only grant-access endpoint
-      try {
-        const res = await fetch(`${RAILWAY_BOT_URL}/api/admin/grant-access`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ discordId: '000000000000000000', tier: 'lifetime' })
-        });
-        const passed = res.status === 403;
-        lines.push(`${passed ? '✅' : '❌'} Granting yourself Lifetime access was ${passed ? 'correctly blocked' : 'NOT blocked — this is a problem'}`);
-      } catch (err) { lines.push('⚠️ Test 1 could not run: ' + err.message); }
-
-      // Test 2: try writing directly to your OWN row in the access table.
-      // (Testing a fake ID that doesn't exist would "pass" either way, since
-      // updating zero matching rows never throws an error — checking your
-      // own real row and looking at how many rows actually changed is the
-      // only reliable way to tell if RLS silently blocked it.)
-      try {
-        const ownId = sessionData?.session?.user?.user_metadata?.provider_id;
-        const { data, error } = await sb.from('user_access').update({ tier: 'lifetime', status: 'active' }).eq('discord_id', ownId).select();
-        const blocked = !!error || !data || data.length === 0;
-        lines.push(`${blocked ? '✅' : '❌'} Directly editing your own access record was ${blocked ? 'correctly blocked' : 'NOT blocked — this is a problem'}`);
-      } catch (err) { lines.push('✅ Directly editing your own access record was correctly blocked'); }
-
-      // Test 3: try loading channel/role info for a server you don't administer
-      try {
-        const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-channels?guildId=999999999999999999`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const passed = res.status === 403 || res.status === 401;
-        lines.push(`${passed ? '✅' : '❌'} Viewing another server's setup was ${passed ? 'correctly blocked' : 'NOT blocked — this is a problem'}`);
-      } catch (err) { lines.push('⚠️ Test 3 could not run: ' + err.message); }
-
-      out.innerHTML = lines.map(l => `<p>${l}</p>`).join('') + '<p style="color:var(--grey);margin-top:16px">// Done — screenshot this and send it to Andrew.</p>';
-    }
-
-    if (location.hash === '#securitytest') {
-      window.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('security-test-panel').style.display = 'block';
+    // Test 1: try the owner-only grant-access endpoint (targets a harmless
+    // placeholder ID — we only care whether the endpoint itself lets a
+    // non-owner in, not whether any real account gets modified).
+    try {
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/admin/grant-access`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ discordId: '000000000000000000', tier: 'lifetime' })
       });
+      const passed = res.status === 403;
+      lines.push(`${passed ? '✅' : '❌'} Granting yourself Lifetime access was ${passed ? 'correctly blocked' : 'NOT blocked — this is a problem'}`);
+    } catch (err) { lines.push('⚠️ Test 1 could not run: ' + err.message); }
+
+    // Test 2 (corrected): try to self-escalate tier by writing directly to
+    // YOUR OWN existing row. A fake/nonexistent ID can't tell us anything —
+    // Postgres returns "0 rows changed, no error" for both "blocked by RLS"
+    // and "row doesn't exist," so the old version of this test was
+    // meaningless. Targeting your own real row and asking Supabase to
+    // .select() the result back removes that ambiguity: your row
+    // definitely exists, so an empty result can only mean RLS blocked it.
+    try {
+      if (!myDiscordId) {
+        lines.push('⚠️ Test 2 could not run: no logged-in Discord ID found');
+      } else {
+        const { data, error } = await sb
+          .from('user_access')
+          .update({ tier: 'lifetime', status: 'active' })
+          .eq('discord_id', myDiscordId)
+          .select();
+        const blocked = !!error || !data || data.length === 0;
+        lines.push(`${blocked ? '✅' : '❌'} Upgrading your own account tier by editing the database directly was ${blocked ? 'correctly blocked' : 'NOT blocked — this is a problem'}`);
+      }
+    } catch (err) {
+      lines.push('✅ Upgrading your own account tier by editing the database directly was correctly blocked');
     }
-  </script>
+
+    // Test 3: try loading channel/role info for a server you don't administer
+    try {
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-channels?guildId=999999999999999999`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const passed = res.status === 403 || res.status === 401;
+      lines.push(`${passed ? '✅' : '❌'} Viewing another server's setup was ${passed ? 'correctly blocked' : 'NOT blocked — this is a problem'}`);
+    } catch (err) { lines.push('⚠️ Test 3 could not run: ' + err.message); }
+
+    out.innerHTML = lines.map(l => `<p>${l}</p>`).join('') + '<p style="color:var(--grey);margin-top:16px">// Done — screenshot this and send it to Andrew.</p>';
+  }
+
+  if (location.hash === '#securitytest') {
+    window.addEventListener('DOMContentLoaded', () => {
+      const panel = document.getElementById('security-test-panel');
+      if (panel) panel.style.display = 'block';
+    });
+  }
+</script>
 </body>
 </html>
