@@ -555,6 +555,30 @@
           <p class="config-card-title">Feature Toggles</p>
           <p class="config-card-desc">Enable or disable BattleTag lookup, AI Tournament Director, scrims, coaching.</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('modlog')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+          <p class="config-card-title">Mod Log</p>
+          <p class="config-card-desc">Message, voice, ban, kick, timeout, role, invite, and warn logging channels.</p>
+          <p class="config-card-status" id="status-modlog">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('starboard')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <p class="config-card-title">Starboard</p>
+          <p class="config-card-desc">Pin popular messages to a channel once they hit a star threshold.</p>
+          <p class="config-card-status" id="status-starboard">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('jtc')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
+          <p class="config-card-title">Join to Create VC</p>
+          <p class="config-card-desc">Auto-create a temp voice channel when a member joins the trigger channel.</p>
+          <p class="config-card-status" id="status-jtc">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('reactionroles')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8V6a5 5 0 0 1 10 0v2"/></svg>
+          <p class="config-card-title">Reaction Roles</p>
+          <p class="config-card-desc">Post a button menu members click to self-assign roles.</p>
+          <p class="config-card-status" id="status-reactionroles">// checking...</p>
+        </div>
       </div>
 
       <!-- ══════════ DETAIL PAGES — hidden until a card above is clicked ══════════ -->
@@ -679,6 +703,141 @@
           <p class="save-msg" id="fun-channel-saved">// Settings saved successfully</p>
           <p class="save-msg" id="fun-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-modlog">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// mod log — free tier</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.7;margin-bottom:14px">Message edits/deletes, voice join/leave/move, and AutoMod actions. Toggle each category and pick where it posts.</p>
+
+        <div class="toggle-row"><span class="toggle-label">Message edits/deletes</span><label class="toggle"><input type="checkbox" checked id="modlog-message-enabled"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <label class="field-label">Message log channel</label>
+        <div id="modlog-message-channel-picker"></div>
+        <p class="channel-hint" id="modlog-message-channel-current"></p>
+
+        <div class="toggle-row" style="margin-top:14px"><span class="toggle-label">Voice join/leave/move</span><label class="toggle"><input type="checkbox" checked id="modlog-voice-enabled"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <label class="field-label">Voice log channel</label>
+        <div id="modlog-voice-channel-picker"></div>
+        <p class="channel-hint" id="modlog-voice-channel-current"></p>
+
+        <div class="toggle-row" style="margin-top:14px"><span class="toggle-label">AutoMod actions</span><label class="toggle"><input type="checkbox" checked id="modlog-automod-enabled"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <label class="field-label">AutoMod log channel</label>
+        <div id="modlog-automod-channel-picker"></div>
+        <p class="channel-hint" id="modlog-automod-channel-current"></p>
+
+        <div style="width:100%;height:1px;background:rgba(0,240,255,0.1);margin:22px 0"></div>
+        <p class="card-title">// mod log — pro tier</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.7;margin-bottom:14px">Bans, kicks, timeouts, bulk deletes, role changes, invite tracking, and the warn system. Requires Pro on this server's owner account.</p>
+
+        <div class="toggle-row"><span class="toggle-label">Bans / unbans / kicks / timeouts</span><label class="toggle"><input type="checkbox" checked id="modlog-ban-enabled"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <label class="field-label">Ban log channel</label>
+        <div id="modlog-ban-channel-picker"></div>
+        <p class="channel-hint" id="modlog-ban-channel-current"></p>
+
+        <div class="toggle-row" style="margin-top:14px"><span class="toggle-label">Bulk delete (purge)</span><label class="toggle"><input type="checkbox" checked id="modlog-purge-enabled"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <label class="field-label">Purge log channel</label>
+        <div id="modlog-purge-channel-picker"></div>
+        <p class="channel-hint" id="modlog-purge-channel-current"></p>
+
+        <div class="toggle-row" style="margin-top:14px"><span class="toggle-label">Role changes</span><label class="toggle"><input type="checkbox" checked id="modlog-role-enabled"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <label class="field-label">Role log channel</label>
+        <div id="modlog-role-channel-picker"></div>
+        <p class="channel-hint" id="modlog-role-channel-current"></p>
+
+        <div class="toggle-row" style="margin-top:14px"><span class="toggle-label">Invite tracking</span><label class="toggle"><input type="checkbox" checked id="modlog-invite-enabled"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <label class="field-label">Invite log channel</label>
+        <div id="modlog-invite-channel-picker"></div>
+        <p class="channel-hint" id="modlog-invite-channel-current"></p>
+
+        <div class="toggle-row" style="margin-top:14px"><span class="toggle-label">Warn system</span><label class="toggle"><input type="checkbox" checked id="modlog-warn-enabled"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <label class="field-label">Warn log channel</label>
+        <div id="modlog-warn-channel-picker"></div>
+        <p class="channel-hint" id="modlog-warn-channel-current"></p>
+
+        <label class="field-label" style="margin-top:14px">Auto-timeout after this many warnings (0 = off)</label>
+        <input class="cyber-input" type="number" min="0" id="modlog-warn-threshold" placeholder="0">
+        <label class="field-label">Auto-timeout duration (minutes)</label>
+        <input class="cyber-input" type="number" min="1" id="modlog-warn-minutes" placeholder="60">
+
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveModLogSettings()">Save mod log settings</button>
+          <p class="save-msg" id="modlog-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="modlog-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-starboard">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// starboard</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          When a message gets enough reactions with the configured emoji, AuraAI posts (and keeps updating) a copy of it in the starboard channel.
+        </p>
+        <div class="toggle-row"><span class="toggle-label">Starboard enabled</span><label class="toggle"><input type="checkbox" checked id="starboard-enabled"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <label class="field-label">Starboard channel</label>
+        <div id="starboard-channel-picker"></div>
+        <p class="channel-hint" id="starboard-channel-current"></p>
+        <label class="field-label">Emoji (native unicode like ⭐, or a custom emoji like &lt;:name:id&gt;)</label>
+        <input class="cyber-input" type="text" id="starboard-emoji" placeholder="⭐">
+        <label class="field-label">Star threshold</label>
+        <input class="cyber-input" type="number" min="1" id="starboard-threshold" placeholder="3">
+        <div class="toggle-row" style="margin-top:10px"><span class="toggle-label">Count the original author's own reaction</span><label class="toggle"><input type="checkbox" id="starboard-allow-self"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveStarboardSettings()">Save starboard settings</button>
+          <p class="save-msg" id="starboard-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="starboard-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-jtc">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// join to create</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          When a member joins the trigger <b>voice</b> channel below, AuraAI creates a fresh temp VC for them (deleted automatically once empty). This has to be a voice channel ID — voice channels don't show up in the text-channel picker above, so enable Developer Mode in Discord (User Settings → Advanced), then right-click the voice channel → Copy Channel ID.
+        </p>
+        <label class="field-label">Trigger voice channel ID</label>
+        <input class="cyber-input" type="text" id="jtc-channel-id" placeholder="e.g. 123456789012345678">
+        <label class="field-label">Default user limit for new temp VCs (0 = unlimited)</label>
+        <input class="cyber-input" type="number" min="0" max="99" id="jtc-default-limit" placeholder="0">
+        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:10px">New temp VCs are created in the same category as the trigger channel automatically — no extra setting needed for that.</p>
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveJtcSettings()">Save join-to-create settings</button>
+          <p class="save-msg" id="jtc-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="jtc-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-reactionroles">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// existing menus</p>
+        <div id="rr-menu-list" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">// Select a server to see its reaction role menus</div>
+      </div>
+      <div class="section-card">
+        <p class="card-title" id="rr-form-title">// create a new menu</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.7;margin-bottom:14px">Members click a button to add/remove a role. Role IDs aren't in the picker above — enable Developer Mode (User Settings → Advanced), then right-click a role in Server Settings → Roles → Copy Role ID.</p>
+        <input type="hidden" id="rr-editing-id" value="">
+        <label class="field-label">Channel to post in</label>
+        <div id="rr-channel-picker"></div>
+        <label class="field-label">Title</label>
+        <input class="cyber-input" type="text" id="rr-title" placeholder="e.g. Game Roles">
+        <label class="field-label">Description</label>
+        <input class="cyber-input" type="text" id="rr-description" placeholder="Click a button below to get a role!">
+        <label class="field-label" style="margin-top:14px">Roles (up to 25 buttons)</label>
+        <div id="rr-options-list"></div>
+        <button class="btn-secondary" style="margin-top:8px" onclick="addReactionRoleOptionRow()">+ Add role button</button>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-primary" onclick="saveReactionRoleMenu()">Save menu</button>
+          <button class="btn-secondary" onclick="resetReactionRoleForm()">Clear form</button>
+        </div>
+        <p class="save-msg" id="rr-saved">// Menu saved — click "Post / Update in Discord" from the list above to publish it</p>
+        <p class="save-msg" id="rr-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
       </div>
       </div>
     </div>
@@ -1245,6 +1404,16 @@
       { id: 'welcome-channel-picker' },
       { id: 'goodbye-channel-picker' },
       { id: 'fun-channel-picker' },
+      { id: 'modlog-message-channel-picker' },
+      { id: 'modlog-voice-channel-picker' },
+      { id: 'modlog-automod-channel-picker' },
+      { id: 'modlog-ban-channel-picker' },
+      { id: 'modlog-purge-channel-picker' },
+      { id: 'modlog-role-channel-picker' },
+      { id: 'modlog-invite-channel-picker' },
+      { id: 'modlog-warn-channel-picker' },
+      { id: 'starboard-channel-picker' },
+      { id: 'rr-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -1374,6 +1543,45 @@
 
     channelPickers['fun-channel-picker'].setChannels(guildChannelCache, s.fun_channel_id || null);
     setChannelHint('fun-channel-current', s.fun_channel_id);
+
+    channelPickers['modlog-message-channel-picker'].setChannels(guildChannelCache, s.message_log_channel_id || null);
+    setChannelHint('modlog-message-channel-current', s.message_log_channel_id);
+    channelPickers['modlog-voice-channel-picker'].setChannels(guildChannelCache, s.voice_log_channel_id || null);
+    setChannelHint('modlog-voice-channel-current', s.voice_log_channel_id);
+    channelPickers['modlog-automod-channel-picker'].setChannels(guildChannelCache, s.automod_log_channel_id || null);
+    setChannelHint('modlog-automod-channel-current', s.automod_log_channel_id);
+    channelPickers['modlog-ban-channel-picker'].setChannels(guildChannelCache, s.ban_log_channel_id || null);
+    setChannelHint('modlog-ban-channel-current', s.ban_log_channel_id);
+    channelPickers['modlog-purge-channel-picker'].setChannels(guildChannelCache, s.purge_log_channel_id || null);
+    setChannelHint('modlog-purge-channel-current', s.purge_log_channel_id);
+    channelPickers['modlog-role-channel-picker'].setChannels(guildChannelCache, s.role_log_channel_id || null);
+    setChannelHint('modlog-role-channel-current', s.role_log_channel_id);
+    channelPickers['modlog-invite-channel-picker'].setChannels(guildChannelCache, s.invite_log_channel_id || null);
+    setChannelHint('modlog-invite-channel-current', s.invite_log_channel_id);
+    channelPickers['modlog-warn-channel-picker'].setChannels(guildChannelCache, s.warn_log_channel_id || null);
+    setChannelHint('modlog-warn-channel-current', s.warn_log_channel_id);
+    document.getElementById('modlog-message-enabled').checked = s.message_log_enabled !== false;
+    document.getElementById('modlog-voice-enabled').checked = s.voice_log_enabled !== false;
+    document.getElementById('modlog-automod-enabled').checked = s.automod_log_enabled !== false;
+    document.getElementById('modlog-ban-enabled').checked = s.ban_log_enabled !== false;
+    document.getElementById('modlog-purge-enabled').checked = s.purge_log_enabled !== false;
+    document.getElementById('modlog-role-enabled').checked = s.role_log_enabled !== false;
+    document.getElementById('modlog-invite-enabled').checked = s.invite_log_enabled !== false;
+    document.getElementById('modlog-warn-enabled').checked = s.warn_log_enabled !== false;
+    document.getElementById('modlog-warn-threshold').value = s.warn_auto_action_threshold || 0;
+    document.getElementById('modlog-warn-minutes').value = s.warn_auto_action_minutes || 60;
+
+    channelPickers['starboard-channel-picker'].setChannels(guildChannelCache, s.starboard_channel_id || null);
+    setChannelHint('starboard-channel-current', s.starboard_channel_id);
+    document.getElementById('starboard-enabled').checked = s.starboard_enabled !== false;
+    document.getElementById('starboard-emoji').value = s.starboard_emoji || '⭐';
+    document.getElementById('starboard-threshold').value = s.starboard_threshold || 3;
+    document.getElementById('starboard-allow-self').checked = !!s.starboard_allow_self;
+
+    document.getElementById('jtc-channel-id').value = s.jtc_channel_id || '';
+    document.getElementById('jtc-default-limit').value = s.jtc_default_user_limit || 0;
+
+    channelPickers['rr-channel-picker'].setChannels(guildChannelCache, null);
   }
 
   // ── OVERVIEW STATS ────────────────────────────────────────────────────────
@@ -1759,7 +1967,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', modlog:'MOD LOG', starboard:'STARBOARD', jtc:'JOIN TO CREATE', reactionroles:'REACTION ROLES' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
@@ -1769,6 +1977,7 @@
     if (target) target.classList.add('active');
     const title = document.getElementById('bot-config-page-title');
     if (title) title.textContent = CONFIG_PAGE_TITLES[name] || 'BOT CONFIG';
+    if (name === 'reactionroles') loadReactionRoleMenus();
   }
 
   function showConfigGrid() {
@@ -1801,6 +2010,12 @@
     setStatus('status-welcome', !!s.welcome_channel_id);
     setStatus('status-goodbye', !!s.goodbye_channel_id);
     setStatus('status-fun', !!s.fun_channel_id);
+
+    const modlogSet = !!(s.message_log_channel_id || s.voice_log_channel_id || s.automod_log_channel_id || s.ban_log_channel_id || s.purge_log_channel_id || s.role_log_channel_id || s.invite_log_channel_id || s.warn_log_channel_id);
+    setStatus('status-modlog', modlogSet);
+    setStatus('status-starboard', !!s.starboard_channel_id);
+    setStatus('status-jtc', !!s.jtc_channel_id);
+    setStatus('status-reactionroles', (rrMenuCache && rrMenuCache.length > 0));
 
     updateCoachingSettingsStatus();
   }
@@ -2315,6 +2530,234 @@
     setChannelHint('goodbye-channel-current', goodbyeId);
     showSaved('goodbye-channel-saved');
   }
+
+  async function saveModLogSettings() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('modlog-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const payload = {
+      owner_discord_id: discordId, discord_server_id: selectedGuildId,
+      message_log_channel_id: channelPickers['modlog-message-channel-picker'].getValue() || null,
+      message_log_enabled: document.getElementById('modlog-message-enabled').checked,
+      voice_log_channel_id: channelPickers['modlog-voice-channel-picker'].getValue() || null,
+      voice_log_enabled: document.getElementById('modlog-voice-enabled').checked,
+      automod_log_channel_id: channelPickers['modlog-automod-channel-picker'].getValue() || null,
+      automod_log_enabled: document.getElementById('modlog-automod-enabled').checked,
+      ban_log_channel_id: channelPickers['modlog-ban-channel-picker'].getValue() || null,
+      ban_log_enabled: document.getElementById('modlog-ban-enabled').checked,
+      purge_log_channel_id: channelPickers['modlog-purge-channel-picker'].getValue() || null,
+      purge_log_enabled: document.getElementById('modlog-purge-enabled').checked,
+      role_log_channel_id: channelPickers['modlog-role-channel-picker'].getValue() || null,
+      role_log_enabled: document.getElementById('modlog-role-enabled').checked,
+      invite_log_channel_id: channelPickers['modlog-invite-channel-picker'].getValue() || null,
+      invite_log_enabled: document.getElementById('modlog-invite-enabled').checked,
+      warn_log_channel_id: channelPickers['modlog-warn-channel-picker'].getValue() || null,
+      warn_log_enabled: document.getElementById('modlog-warn-enabled').checked,
+      warn_auto_action_threshold: parseInt(document.getElementById('modlog-warn-threshold').value, 10) || 0,
+      warn_auto_action_minutes: parseInt(document.getElementById('modlog-warn-minutes').value, 10) || 60,
+    };
+    await sb.from('server_settings').upsert(payload, { onConflict: 'discord_server_id' });
+    setChannelHint('modlog-message-channel-current', payload.message_log_channel_id);
+    setChannelHint('modlog-voice-channel-current', payload.voice_log_channel_id);
+    setChannelHint('modlog-automod-channel-current', payload.automod_log_channel_id);
+    setChannelHint('modlog-ban-channel-current', payload.ban_log_channel_id);
+    setChannelHint('modlog-purge-channel-current', payload.purge_log_channel_id);
+    setChannelHint('modlog-role-channel-current', payload.role_log_channel_id);
+    setChannelHint('modlog-invite-channel-current', payload.invite_log_channel_id);
+    setChannelHint('modlog-warn-channel-current', payload.warn_log_channel_id);
+    showSaved('modlog-saved');
+  }
+
+  async function saveStarboardSettings() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('starboard-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const payload = {
+      owner_discord_id: discordId, discord_server_id: selectedGuildId,
+      starboard_enabled: document.getElementById('starboard-enabled').checked,
+      starboard_channel_id: channelPickers['starboard-channel-picker'].getValue() || null,
+      starboard_emoji: document.getElementById('starboard-emoji').value.trim() || '⭐',
+      starboard_threshold: parseInt(document.getElementById('starboard-threshold').value, 10) || 3,
+      starboard_allow_self: document.getElementById('starboard-allow-self').checked,
+    };
+    await sb.from('server_settings').upsert(payload, { onConflict: 'discord_server_id' });
+    setChannelHint('starboard-channel-current', payload.starboard_channel_id);
+    showSaved('starboard-saved');
+  }
+
+  async function saveJtcSettings() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('jtc-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const payload = {
+      owner_discord_id: discordId, discord_server_id: selectedGuildId,
+      jtc_channel_id: document.getElementById('jtc-channel-id').value.trim() || null,
+      jtc_default_user_limit: parseInt(document.getElementById('jtc-default-limit').value, 10) || 0,
+    };
+    await sb.from('server_settings').upsert(payload, { onConflict: 'discord_server_id' });
+    showSaved('jtc-saved');
+  }
+
+  // ── REACTION ROLES ────────────────────────────────────────────────────────
+  let rrMenuCache = [];
+  let rrOptionRows = []; // [{ roleId, label, emoji, style }] for the form currently being edited
+
+  async function loadReactionRoleMenus() {
+    const listEl = document.getElementById('rr-menu-list');
+    if (!selectedGuildId) { listEl.textContent = '// Select a server to see its reaction role menus'; rrMenuCache = []; return; }
+    listEl.textContent = '// Loading...';
+    try {
+      const { data: menus } = await sb.from('reaction_role_menus').select('*').eq('guild_id', selectedGuildId).order('created_at');
+      rrMenuCache = menus || [];
+      if (rrMenuCache.length === 0) { listEl.textContent = '// No menus yet — create one below'; return; }
+      const { data: allOptions } = await sb.from('reaction_role_options').select('*').in('menu_id', rrMenuCache.map(m => m.id));
+      listEl.innerHTML = rrMenuCache.map(m => {
+        const opts = (allOptions || []).filter(o => o.menu_id === m.id);
+        const chName = (guildChannelCache.find(c => c.id === m.channel_id) || {}).name;
+        return `<div style="background:var(--bg-2);border:1px solid rgba(0,240,255,0.15);padding:14px;margin-bottom:10px;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))">
+          <p style="font-family:var(--font-display);font-size:0.72rem;font-weight:700;color:var(--cyan)">${m.title || 'Untitled menu'}</p>
+          <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin:4px 0 10px">#${chName || m.channel_id} · ${opts.length} role${opts.length === 1 ? '' : 's'} · ${m.message_id ? 'posted' : 'not posted yet'}</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn-secondary" onclick="editReactionRoleMenu('${m.id}')">Edit</button>
+            <button class="btn-primary" onclick="postReactionRoleMenu('${m.id}')">Post / Update in Discord</button>
+            <button class="btn-danger" onclick="deleteReactionRoleMenu('${m.id}')">Delete</button>
+          </div>
+        </div>`;
+      }).join('');
+    } catch (err) {
+      console.error('loadReactionRoleMenus error:', err.message);
+      listEl.textContent = '// Error loading menus: ' + err.message;
+    }
+    updateConfigCardStatuses();
+  }
+
+  function renderReactionRoleOptionRows() {
+    const container = document.getElementById('rr-options-list');
+    container.innerHTML = rrOptionRows.map((row, i) => `
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px;padding:8px;background:var(--bg-2);border:1px solid rgba(0,240,255,0.08)">
+        <input class="cyber-input" style="flex:1;min-width:140px" type="text" placeholder="Role ID" value="${row.roleId || ''}" oninput="rrOptionRows[${i}].roleId=this.value.trim()">
+        <input class="cyber-input" style="flex:1;min-width:100px" type="text" placeholder="Button label" value="${row.label || ''}" oninput="rrOptionRows[${i}].label=this.value">
+        <input class="cyber-input" style="width:70px" type="text" placeholder="Emoji" value="${row.emoji || ''}" oninput="rrOptionRows[${i}].emoji=this.value.trim()">
+        <select class="cyber-input" style="width:110px" onchange="rrOptionRows[${i}].style=this.value">
+          <option value="blurple" ${row.style === 'blurple' ? 'selected' : ''}>Blurple</option>
+          <option value="grey" ${row.style === 'grey' ? 'selected' : ''}>Grey</option>
+          <option value="green" ${row.style === 'green' ? 'selected' : ''}>Green</option>
+          <option value="red" ${row.style === 'red' ? 'selected' : ''}>Red</option>
+        </select>
+        <button class="btn-danger" onclick="removeReactionRoleOptionRow(${i})">✕</button>
+      </div>`).join('');
+  }
+
+  function addReactionRoleOptionRow() {
+    if (rrOptionRows.length >= 25) { alert('Discord allows a maximum of 25 buttons per menu.'); return; }
+    rrOptionRows.push({ roleId: '', label: '', emoji: '', style: 'blurple' });
+    renderReactionRoleOptionRows();
+  }
+
+  function removeReactionRoleOptionRow(i) {
+    rrOptionRows.splice(i, 1);
+    renderReactionRoleOptionRows();
+  }
+
+  function resetReactionRoleForm() {
+    document.getElementById('rr-editing-id').value = '';
+    document.getElementById('rr-form-title').textContent = '// create a new menu';
+    document.getElementById('rr-title').value = '';
+    document.getElementById('rr-description').value = '';
+    channelPickers['rr-channel-picker'].setValue('', '— Pick a channel —');
+    rrOptionRows = [];
+    renderReactionRoleOptionRows();
+  }
+
+  async function editReactionRoleMenu(menuId) {
+    const menu = rrMenuCache.find(m => m.id === menuId);
+    if (!menu) return;
+    document.getElementById('rr-editing-id').value = menuId;
+    document.getElementById('rr-form-title').textContent = '// editing menu';
+    document.getElementById('rr-title').value = menu.title || '';
+    document.getElementById('rr-description').value = menu.description || '';
+    const ch = guildChannelCache.find(c => c.id === menu.channel_id);
+    channelPickers['rr-channel-picker'].setValue(menu.channel_id, ch ? ('# ' + ch.name) : menu.channel_id);
+    const { data: options } = await sb.from('reaction_role_options').select('*').eq('menu_id', menuId).order('position');
+    rrOptionRows = (options || []).map(o => ({ roleId: o.role_id, label: o.label || '', emoji: o.emoji || '', style: o.button_style || 'blurple' }));
+    renderReactionRoleOptionRows();
+    document.getElementById('rr-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  async function saveReactionRoleMenu() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const errorEl = document.getElementById('rr-error');
+    if (!selectedGuildId) { errorEl.style.display = 'block'; setTimeout(() => errorEl.style.display = 'none', 4000); return; }
+    const channelId = channelPickers['rr-channel-picker'].getValue();
+    if (!channelId) { alert('Pick a channel to post the menu in.'); return; }
+    const validRows = rrOptionRows.filter(r => r.roleId);
+    if (validRows.length === 0) { alert('Add at least one role button with a Role ID.'); return; }
+
+    const editingId = document.getElementById('rr-editing-id').value || null;
+    const menuPayload = {
+      guild_id: selectedGuildId,
+      channel_id: channelId,
+      title: document.getElementById('rr-title').value.trim() || null,
+      description: document.getElementById('rr-description').value.trim() || null,
+      updated_at: new Date().toISOString(),
+    };
+
+    try {
+      let menuId = editingId;
+      if (editingId) {
+        await sb.from('reaction_role_menus').update(menuPayload).eq('id', editingId);
+        await sb.from('reaction_role_options').delete().eq('menu_id', editingId);
+      } else {
+        const { data: inserted, error } = await sb.from('reaction_role_menus').insert(menuPayload).select('id').single();
+        if (error) throw error;
+        menuId = inserted.id;
+      }
+      const optionRows = validRows.map((r, i) => ({ menu_id: menuId, role_id: r.roleId, label: r.label || null, emoji: r.emoji || null, button_style: r.style || 'blurple', position: i }));
+      await sb.from('reaction_role_options').insert(optionRows);
+      showSaved('rr-saved');
+      resetReactionRoleForm();
+      await loadReactionRoleMenus();
+    } catch (err) {
+      console.error('saveReactionRoleMenu error:', err.message);
+      alert('Error saving menu: ' + err.message);
+    }
+  }
+
+  async function postReactionRoleMenu(menuId) {
+    try {
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/reaction-roles/post`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ menuId })
+      });
+      const data = await res.json();
+      if (!res.ok) { alert('Error posting menu: ' + (data.error || 'unknown error')); return; }
+      alert('Menu posted/updated in Discord!');
+      await loadReactionRoleMenus();
+    } catch (err) {
+      console.error('postReactionRoleMenu error:', err.message);
+      alert('Error posting menu: ' + err.message);
+    }
+  }
+
+  async function deleteReactionRoleMenu(menuId) {
+    if (!confirm('Delete this menu? This does not remove an already-posted Discord message, but the buttons on it will stop working.')) return;
+    try {
+      await sb.from('reaction_role_menus').delete().eq('id', menuId);
+      await loadReactionRoleMenus();
+    } catch (err) {
+      console.error('deleteReactionRoleMenu error:', err.message);
+      alert('Error deleting menu: ' + err.message);
+    }
+  }
+
 
 
   function showCoachApplyPaywall(){const el=document.getElementById('paywall-coach-apply');if(el){el.style.display='flex';}}
