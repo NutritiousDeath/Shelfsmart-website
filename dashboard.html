@@ -1329,7 +1329,10 @@
     });
 
     try {
-      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-roles?guildId=${guildId}`);
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-roles?guildId=${guildId}`, {
+        headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+      });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       guildRoleCache = data.roles || [];
@@ -1401,7 +1404,10 @@
     Object.values(channelPickers).forEach(p => p.setPlaceholder('Loading channels...'));
 
     try {
-      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-channels?guildId=${guildId}`);
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-channels?guildId=${guildId}`, {
+        headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+      });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       guildChannelCache = data.channels || [];
@@ -1691,6 +1697,17 @@
 
   async function onServerChange(guildId) {
     selectedGuildId = guildId;
+
+    if (guildId) {
+      try {
+        const { data: { session } } = await sb.auth.getSession();
+        await fetch(`${RAILWAY_BOT_URL}/api/guild-admin-sync`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+          body: JSON.stringify({ guildId })
+        });
+      } catch (err) { console.error('guild-admin-sync error:', err.message); }
+    }
 
     // Update bot-config warning banner
     const warning = document.getElementById('bot-config-server-warning');
