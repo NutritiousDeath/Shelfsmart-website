@@ -550,6 +550,12 @@
           <p class="config-card-desc">Where /hitman and other fun commands post.</p>
           <p class="config-card-status" id="status-fun">// checking...</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('voice')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+          <p class="config-card-title">Voice Channels</p>
+          <p class="config-card-desc">Join-to-Create trigger channel, category, and default user limit.</p>
+          <p class="config-card-status" id="status-voice">// checking...</p>
+        </div>
         <div class="config-card" onclick="showConfigPage('levels')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <p class="config-card-title">Leveling</p>
@@ -707,6 +713,33 @@
             <p class="save-msg" id="xp-rate-saved">// Settings saved successfully</p>
             <p class="save-msg" id="xp-rate-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
           </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-voice">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// join-to-create voice</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          Members who join the trigger channel get their own temp voice channel automatically, deleted when it empties out. Manage it with <span style="color:var(--cyan)">/voice-rename</span>, <span style="color:var(--cyan)">/voice-lock</span>, <span style="color:var(--cyan)">/voice-limit</span>, and the rest of the /voice-* commands.
+        </p>
+        <label class="field-label">Trigger channel (members join this to spawn their own VC)</label>
+        <div id="voice-jtc-channel-picker"></div>
+        <p class="channel-hint" id="voice-jtc-channel-current"></p>
+
+        <label class="field-label" style="margin-top:18px">Category for new temp channels (optional)</label>
+        <div id="voice-jtc-category-picker"></div>
+        <p class="channel-hint" id="voice-jtc-category-current"></p>
+        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px">Leave unset to create temp channels in the same category as the trigger channel.</p>
+
+        <label class="field-label" style="margin-top:18px">Default user limit (0 = unlimited)</label>
+        <input class="cyber-input" type="number" id="voice-jtc-user-limit" value="0" min="0" max="99">
+
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="saveVoiceSettings()">Save voice settings</button>
+          <p class="save-msg" id="voice-settings-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="voice-settings-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
       </div>
       </div>
@@ -1201,8 +1234,11 @@
       this.noResults.style.display = visible === 0 ? 'block' : 'none';
     }
 
-    // Build the list from channel data grouped by category
-    setChannels(channels, savedId) {
+    // Build the list from channel data grouped by category.
+    // typeFilter defaults to [0,5] (text + announcement) to keep every existing
+    // caller's behavior byte-for-byte identical. Pass [2] for voice channels or
+    // [4] for a flat category picker.
+    setChannels(channels, savedId, typeFilter = [0, 5]) {
       this.list.innerHTML = '';
       this.options = [];
 
@@ -1211,13 +1247,26 @@
         return;
       }
 
-      const textChannels = channels.filter(c => c.type === 0 || c.type === 5).sort((a, b) => a.position - b.position);
+      // Category pickers are flat — categories can't nest inside each other.
+      if (typeFilter.length === 1 && typeFilter[0] === 4) {
+        const cats = channels.filter(c => c.type === 4).sort((a, b) => a.position - b.position);
+        cats.forEach(ch => this._addOption(ch, savedId));
+        if (savedId) {
+          const saved = channels.find(c => c.id === savedId);
+          if (saved) { this.value = savedId; this.selected.querySelector('.cd-label').textContent = this._iconFor(saved.type) + saved.name; }
+        } else {
+          this.selected.querySelector('.cd-label').textContent = '— Pick a category (optional) —';
+        }
+        return;
+      }
+
+      const relevantChannels = channels.filter(c => typeFilter.includes(c.type)).sort((a, b) => a.position - b.position);
       const categories = channels.filter(c => c.type === 4).sort((a, b) => a.position - b.position);
       const usedIds = new Set();
 
       // Grouped by category
       categories.forEach(cat => {
-        const children = textChannels.filter(c => c.parent_id === cat.id).sort((a, b) => a.position - b.position);
+        const children = relevantChannels.filter(c => c.parent_id === cat.id).sort((a, b) => a.position - b.position);
         if (children.length === 0) return;
         const lbl = document.createElement('div');
         lbl.className = 'cd-group-label';
@@ -1227,7 +1276,7 @@
       });
 
       // Uncategorized
-      const uncategorized = textChannels.filter(c => !c.parent_id && !usedIds.has(c.id));
+      const uncategorized = relevantChannels.filter(c => !c.parent_id && !usedIds.has(c.id));
       if (uncategorized.length > 0) {
         const lbl = document.createElement('div');
         lbl.className = 'cd-group-label';
@@ -1241,21 +1290,28 @@
         const saved = channels.find(c => c.id === savedId);
         if (saved) {
           this.value = savedId;
-          this.selected.querySelector('.cd-label').textContent = (saved.type === 5 ? '📢 ' : '# ') + saved.name;
+          this.selected.querySelector('.cd-label').textContent = this._iconFor(saved.type) + saved.name;
         }
       } else {
         this.selected.querySelector('.cd-label').textContent = '— Pick a channel —';
       }
     }
 
+    _iconFor(type) {
+      if (type === 5) return '📢 ';
+      if (type === 2) return '🔊 ';
+      if (type === 4) return '📁 ';
+      return '# ';
+    }
+
     _addOption(ch, savedId) {
       const div = document.createElement('div');
       div.className = 'cd-option' + (ch.id === savedId ? ' selected' : '');
-      div.textContent = (ch.type === 5 ? '📢 ' : '# ') + ch.name;
+      div.textContent = this._iconFor(ch.type) + ch.name;
       div.dataset.value = ch.id;
       div.onclick = (e) => {
         e.stopPropagation();
-        this.setValue(ch.id, (ch.type === 5 ? '📢 ' : '# ') + ch.name);
+        this.setValue(ch.id, this._iconFor(ch.type) + ch.name);
         this.close();
         if (this.onChange) this.onChange(ch.id);
       };
@@ -1288,7 +1344,11 @@
     if (!el) return;
     if (!itemId) { el.textContent = ''; return; }
     const ch = guildChannelCache.find(c => c.id === itemId);
-    if (ch) { el.textContent = '// currently: #' + ch.name + ' (' + itemId + ')'; return; }
+    if (ch) {
+      const icon = ch.type === 5 ? '📢' : ch.type === 2 ? '🔊' : ch.type === 4 ? '📁' : '#';
+      el.textContent = '// currently: ' + icon + (icon === '#' ? '' : ' ') + ch.name + ' (' + itemId + ')';
+      return;
+    }
     const role = guildRoleCache.find(r => r.id === itemId);
     if (role) { el.textContent = '// currently: @' + role.name + ' (' + itemId + ')'; return; }
     el.textContent = '// currently: ' + itemId;
@@ -1312,6 +1372,8 @@
       { id: 'fun-channel-picker' },
       { id: 'levels-channel-picker' },
       { id: 'suggestions-channel-picker' },
+      { id: 'voice-jtc-channel-picker' },
+      { id: 'voice-jtc-category-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -1454,6 +1516,13 @@
 
     channelPickers['suggestions-channel-picker'].setChannels(guildChannelCache, s.suggestions_channel_id || null);
     setChannelHint('suggestions-channel-current', s.suggestions_channel_id);
+
+    channelPickers['voice-jtc-channel-picker'].setChannels(guildChannelCache, s.jtc_channel_id || null, [2]);
+    setChannelHint('voice-jtc-channel-current', s.jtc_channel_id);
+    channelPickers['voice-jtc-category-picker'].setChannels(guildChannelCache, s.jtc_category_id || null, [4]);
+    setChannelHint('voice-jtc-category-current', s.jtc_category_id);
+    const jtcLimitInput = document.getElementById('voice-jtc-user-limit');
+    if (jtcLimitInput) jtcLimitInput.value = s.jtc_default_user_limit || 0;
   }
 
   // ── OVERVIEW STATS ────────────────────────────────────────────────────────
@@ -1850,7 +1919,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
@@ -1894,6 +1963,7 @@
     setStatus('status-fun', !!s.fun_channel_id);
     setStatus('status-levels', !!s.levels_channel_id);
     setStatus('status-suggestions', !!s.suggestions_channel_id);
+    setStatus('status-voice', !!s.jtc_channel_id);
 
     updateCoachingSettingsStatus();
   }
@@ -2480,6 +2550,27 @@
     );
     setChannelHint('suggestions-channel-current', suggestionsId);
     showSaved('suggestions-channel-saved');
+  }
+
+  async function saveVoiceSettings() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('voice-settings-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const jtcChannelId = channelPickers['voice-jtc-channel-picker'].getValue() || null;
+    const jtcCategoryId = channelPickers['voice-jtc-category-picker'].getValue() || null;
+    const limitInput = document.getElementById('voice-jtc-user-limit');
+    const jtcDefaultUserLimit = limitInput ? Math.max(0, Math.min(99, parseInt(limitInput.value, 10) || 0)) : 0;
+
+    await sb.from('server_settings').upsert(
+      { owner_discord_id: discordId, discord_server_id: selectedGuildId, jtc_channel_id: jtcChannelId, jtc_category_id: jtcCategoryId, jtc_default_user_limit: jtcDefaultUserLimit },
+      { onConflict: 'discord_server_id' }
+    );
+    setChannelHint('voice-jtc-channel-current', jtcChannelId);
+    setChannelHint('voice-jtc-category-current', jtcCategoryId);
+    showSaved('voice-settings-saved');
   }
 
 
