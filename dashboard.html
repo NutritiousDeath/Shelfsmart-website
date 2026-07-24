@@ -691,6 +691,23 @@
           <p class="save-msg" id="levels-channel-saved">// Settings saved successfully</p>
           <p class="save-msg" id="levels-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
+
+        <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
+          <label class="field-label">XP Rate</label>
+          <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:14px;letter-spacing:0.5px">
+            Multiplies XP gained per message. x1 is the default MEE6-parity rate — turn it down to slow leveling, or up to speed it up.
+          </p>
+          <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-bottom:6px">
+            <span>x0.25</span><span>x0.5</span><span>x0.75</span><span>x1</span><span>x1.5</span><span>x2</span><span>x2.5</span><span>x3</span>
+          </div>
+          <input type="range" id="xp-rate-slider" min="0" max="7" step="1" value="3" style="width:100%" oninput="onXpRateSliderInput()">
+          <p class="channel-hint" id="xp-rate-current" style="margin-top:8px">Current: x1</p>
+          <div style="margin-top:16px">
+            <button class="btn-primary" onclick="saveXpRate()">Save XP rate</button>
+            <p class="save-msg" id="xp-rate-saved">// Settings saved successfully</p>
+            <p class="save-msg" id="xp-rate-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+          </div>
+        </div>
       </div>
       </div>
 
@@ -1427,6 +1444,7 @@
 
     channelPickers['levels-channel-picker'].setChannels(guildChannelCache, s.levels_channel_id || null);
     setChannelHint('levels-channel-current', s.levels_channel_id);
+    setXpRateSlider(s.xp_rate);
 
     channelPickers['suggestions-channel-picker'].setChannels(guildChannelCache, s.suggestions_channel_id || null);
     setChannelHint('suggestions-channel-current', s.suggestions_channel_id);
@@ -2388,6 +2406,47 @@
     );
     setChannelHint('levels-channel-current', levelsId);
     showSaved('levels-channel-saved');
+  }
+
+  // x0.25 to x3 in 8 stops — mirrors MEE6's XP Rate slider positions exactly.
+  const XP_RATE_STOPS = [0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3];
+
+  function setXpRateSlider(savedRate) {
+    const slider = document.getElementById('xp-rate-slider');
+    if (!slider) return;
+    const rate = typeof savedRate === 'number' && savedRate > 0 ? savedRate : 1;
+    let closestIndex = 3; // default to x1
+    let closestDiff = Infinity;
+    XP_RATE_STOPS.forEach((stop, i) => {
+      const diff = Math.abs(stop - rate);
+      if (diff < closestDiff) { closestDiff = diff; closestIndex = i; }
+    });
+    slider.value = closestIndex;
+    onXpRateSliderInput();
+  }
+
+  function onXpRateSliderInput() {
+    const slider = document.getElementById('xp-rate-slider');
+    const hint = document.getElementById('xp-rate-current');
+    if (!slider || !hint) return;
+    const rate = XP_RATE_STOPS[parseInt(slider.value, 10)];
+    hint.textContent = 'Current: x' + rate;
+  }
+
+  async function saveXpRate() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('xp-rate-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const slider = document.getElementById('xp-rate-slider');
+    const rate = XP_RATE_STOPS[parseInt(slider.value, 10)];
+    await sb.from('server_settings').upsert(
+      { owner_discord_id: discordId, discord_server_id: selectedGuildId, xp_rate: rate },
+      { onConflict: 'discord_server_id' }
+    );
+    showSaved('xp-rate-saved');
   }
 
   async function saveSuggestionsChannel() {
