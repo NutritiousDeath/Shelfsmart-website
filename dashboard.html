@@ -556,6 +556,12 @@
           <p class="config-card-desc">Join-to-Create trigger channel, category, and default user limit.</p>
           <p class="config-card-status" id="status-voice">// checking...</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('reactionroles')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+          <p class="config-card-title">Reaction Roles</p>
+          <p class="config-card-desc">Build the button menu members use to self-assign roles.</p>
+          <p class="config-card-status" id="status-reactionroles">// checking...</p>
+        </div>
         <div class="config-card" onclick="showConfigPage('levels')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <p class="config-card-title">Leveling</p>
@@ -740,6 +746,45 @@
           <button class="btn-primary" onclick="saveVoiceSettings()">Save voice settings</button>
           <p class="save-msg" id="voice-settings-saved">// Settings saved successfully</p>
           <p class="save-msg" id="voice-settings-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-reactionroles">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// reaction roles</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          Posts a button menu members click to self-assign roles. Clicking again removes the role. One menu per server — posting again edits the existing message in place instead of spamming a new one.
+        </p>
+
+        <label class="field-label">Channel to post in</label>
+        <div id="rr-channel-picker"></div>
+        <p class="channel-hint" id="rr-channel-current"></p>
+
+        <label class="field-label" style="margin-top:18px">Title</label>
+        <input class="cyber-input" type="text" id="rr-title" placeholder="Pick your roles" maxlength="256">
+
+        <label class="field-label" style="margin-top:14px">Description</label>
+        <textarea class="cyber-input" id="rr-description" rows="3" placeholder="Click a button below to get or remove a role." maxlength="1000"></textarea>
+
+        <label class="field-label" style="margin-top:14px">Embed subtitle (optional, bolded above the description)</label>
+        <input class="cyber-input" type="text" id="rr-embed-subtitle" placeholder="Game Roles" maxlength="256">
+
+        <label class="field-label" style="margin-top:14px">Message text above the embed (optional)</label>
+        <input class="cyber-input" type="text" id="rr-message-text" placeholder="" maxlength="1000">
+
+        <label class="field-label" style="margin-top:14px">Image URL (optional)</label>
+        <input class="cyber-input" type="text" id="rr-image-url" placeholder="https://...">
+
+        <label class="field-label" style="margin-top:20px">Role Buttons <span style="color:var(--grey);font-weight:400">(max 25)</span></label>
+        <div id="rr-options-container" style="margin-top:8px"></div>
+        <button class="btn-secondary" onclick="addReactionRoleOption()" style="margin-top:8px">+ Add Role Button</button>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <button class="btn-primary" onclick="postReactionRoleMenu()">Post / Update in Discord</button>
+          <p class="save-msg" id="rr-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="rr-error" style="color:var(--pink)"></p>
         </div>
       </div>
       </div>
@@ -1374,6 +1419,7 @@
       { id: 'suggestions-channel-picker' },
       { id: 'voice-jtc-channel-picker' },
       { id: 'voice-jtc-category-picker' },
+      { id: 'rr-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -1455,6 +1501,170 @@
       }
     } else {
       picker.selected.querySelector('.cd-label').textContent = '— Pick a role —';
+    }
+  }
+
+  // ─── REACTION ROLES BUILDER ──────────────────────────────────────────────────
+  let rrOptionCounter = 0;
+
+  function addReactionRoleOption(existing) {
+    const rowId = 'rr-opt-' + (rrOptionCounter++);
+    const row = document.createElement('div');
+    row.id = rowId;
+    row.style = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;padding:10px;background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.1);border-radius:6px;flex-wrap:wrap';
+
+    const pickerMount = document.createElement('div');
+    pickerMount.id = rowId + '-role-picker';
+    pickerMount.style = 'flex:1;min-width:160px';
+    row.appendChild(pickerMount);
+
+    const labelInput = document.createElement('input');
+    labelInput.className = 'cyber-input';
+    labelInput.placeholder = 'Button label';
+    labelInput.id = rowId + '-label';
+    labelInput.maxLength = 80;
+    labelInput.style = 'width:140px';
+    labelInput.value = existing?.label || '';
+    row.appendChild(labelInput);
+
+    const emojiInput = document.createElement('input');
+    emojiInput.className = 'cyber-input';
+    emojiInput.placeholder = 'Emoji';
+    emojiInput.id = rowId + '-emoji';
+    emojiInput.style = 'width:70px';
+    emojiInput.value = existing?.emoji || '';
+    row.appendChild(emojiInput);
+
+    const styleSelect = document.createElement('select');
+    styleSelect.className = 'cyber-input';
+    styleSelect.id = rowId + '-style';
+    styleSelect.style = 'width:100px';
+    ['blurple', 'grey', 'green', 'red'].forEach(styleName => {
+      const opt = document.createElement('option');
+      opt.value = styleName;
+      opt.textContent = styleName;
+      if ((existing?.button_style || 'blurple') === styleName) opt.selected = true;
+      styleSelect.appendChild(opt);
+    });
+    row.appendChild(styleSelect);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = '✕';
+    removeBtn.title = 'Remove this role button';
+    removeBtn.style = 'background:var(--pink);color:#fff;border:none;border-radius:4px;width:30px;height:34px;cursor:pointer;flex-shrink:0';
+    removeBtn.onclick = () => { delete channelPickers[rowId + '-role-picker']; row.remove(); };
+    row.appendChild(removeBtn);
+
+    document.getElementById('rr-options-container').appendChild(row);
+
+    const picker = new CyberDropdown(rowId + '-role-picker', null);
+    channelPickers[rowId + '-role-picker'] = picker;
+    _populateRolePicker(rowId + '-role-picker', existing?.role_id || null);
+  }
+
+  function clearReactionRoleForm() {
+    document.getElementById('rr-options-container').innerHTML = '';
+    Object.keys(channelPickers).forEach(k => { if (k.startsWith('rr-opt-')) delete channelPickers[k]; });
+    ['rr-title', 'rr-description', 'rr-embed-subtitle', 'rr-message-text', 'rr-image-url'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+  }
+
+  async function loadReactionRoleMenu(guildId) {
+    clearReactionRoleForm();
+    channelPickers['rr-channel-picker'].setChannels(guildChannelCache, null);
+
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/reaction-roles?guildId=${guildId}`, {
+        headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+      });
+      if (!res.ok) { setStatus('status-reactionroles', false); return; }
+      const data = await res.json();
+
+      if (!data.menu) { setStatus('status-reactionroles', false); return; }
+
+      channelPickers['rr-channel-picker'].setChannels(guildChannelCache, data.menu.channel_id);
+      setChannelHint('rr-channel-current', data.menu.channel_id);
+      document.getElementById('rr-title').value = data.menu.title || '';
+      document.getElementById('rr-description').value = data.menu.description || '';
+      document.getElementById('rr-embed-subtitle').value = data.menu.embed_subtitle || '';
+      document.getElementById('rr-message-text').value = data.menu.message_text || '';
+      document.getElementById('rr-image-url').value = data.menu.image_url || '';
+      (data.options || []).forEach(opt => addReactionRoleOption(opt));
+      setStatus('status-reactionroles', true);
+    } catch (err) {
+      console.error('loadReactionRoleMenu error:', err.message);
+      setStatus('status-reactionroles', false);
+    }
+  }
+
+  async function postReactionRoleMenu() {
+    if (!selectedGuildId) {
+      const e = document.getElementById('rr-error');
+      e.textContent = '// Error: Please select your Discord server first!';
+      e.style.display = 'block';
+      setTimeout(() => e.style.display = 'none', 4000);
+      return;
+    }
+
+    const channelId = channelPickers['rr-channel-picker'].getValue() || null;
+    if (!channelId) {
+      const e = document.getElementById('rr-error');
+      e.textContent = '// Error: Pick a channel to post in.';
+      e.style.display = 'block';
+      setTimeout(() => e.style.display = 'none', 4000);
+      return;
+    }
+
+    const rows = document.querySelectorAll('#rr-options-container > div');
+    const options = [];
+    rows.forEach(row => {
+      const roleId = channelPickers[row.id + '-role-picker']?.getValue();
+      if (!roleId) return;
+      options.push({
+        roleId,
+        label: document.getElementById(row.id + '-label')?.value || 'Role',
+        emoji: document.getElementById(row.id + '-emoji')?.value || null,
+        buttonStyle: document.getElementById(row.id + '-style')?.value || 'blurple',
+      });
+    });
+
+    if (options.length === 0) {
+      const e = document.getElementById('rr-error');
+      e.textContent = '// Error: Add at least one role button with a role selected.';
+      e.style.display = 'block';
+      setTimeout(() => e.style.display = 'none', 4000);
+      return;
+    }
+
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/reaction-roles/post`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+        body: JSON.stringify({
+          guildId: selectedGuildId,
+          channelId,
+          title: document.getElementById('rr-title').value,
+          description: document.getElementById('rr-description').value,
+          embedSubtitle: document.getElementById('rr-embed-subtitle').value,
+          messageText: document.getElementById('rr-message-text').value,
+          imageUrl: document.getElementById('rr-image-url').value,
+          options,
+        }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Unknown error');
+      setChannelHint('rr-channel-current', channelId);
+      setStatus('status-reactionroles', true);
+      showSaved('rr-saved');
+    } catch (err) {
+      const e = document.getElementById('rr-error');
+      e.textContent = '// Error: ' + err.message;
+      e.style.display = 'block';
+      setTimeout(() => e.style.display = 'none', 6000);
     }
   }
 
@@ -1798,6 +2008,8 @@
       guildChannelCache = [];
       guildRoleCache = [];
       lastBotConfigSettings = null;
+      clearReactionRoleForm();
+      setStatus('status-reactionroles', false);
       Object.values(channelPickers).forEach(p => p.setPlaceholder('— Select a server first —'));
       updateConfigCardStatuses();
       return;
@@ -1826,6 +2038,7 @@
       loadGuildRoles(guildId, savedSettings)
     ]);
     updateConfigCardStatuses();
+    await loadReactionRoleMenu(guildId);
 
     // Update coaching warning banner
     const coachingWarning=document.getElementById('coaching-server-warning');
@@ -1919,7 +2132,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
@@ -1940,17 +2153,17 @@
     updateConfigCardStatuses();
   }
 
+  // Shared status-badge helper — usable from anywhere, not just updateConfigCardStatuses.
+  function setStatus(id, isSet) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!selectedGuildId) { el.textContent = '// select a server'; el.className = 'config-card-status unset'; return; }
+    el.textContent = isSet ? '✓ Configured' : '// Not set';
+    el.className = 'config-card-status ' + (isSet ? 'set' : 'unset');
+  }
+
   function updateConfigCardStatuses() {
     const s = lastBotConfigSettings || {};
-    const hasServer = !!selectedGuildId;
-
-    const setStatus = (id, isSet) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (!hasServer) { el.textContent = '// select a server'; el.className = 'config-card-status unset'; return; }
-      el.textContent = isSet ? '✓ Configured' : '// Not set';
-      el.className = 'config-card-status ' + (isSet ? 'set' : 'unset');
-    };
 
     const channelsSet = !!(s.ow_channel_id || s.rivals_channel_id || s.d2_channel_id || s.r6_channel_id);
     setStatus('status-channels', channelsSet);
