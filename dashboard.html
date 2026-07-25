@@ -562,6 +562,12 @@
           <p class="config-card-desc">Build the button menu members use to self-assign roles.</p>
           <p class="config-card-status" id="status-reactionroles">// checking...</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('sticky')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M12 12v10M3 7l9 5 9-5"/></svg>
+          <p class="config-card-title">Sticky Messages <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">A message that stays pinned to the bottom of any channel.</p>
+          <p class="config-card-status" id="status-sticky">// checking...</p>
+        </div>
         <div class="config-card" onclick="showConfigPage('levels')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <p class="config-card-title">Leveling</p>
@@ -785,6 +791,97 @@
           <button class="btn-primary" onclick="postReactionRoleMenu()">Post / Update in Discord</button>
           <p class="save-msg" id="rr-saved">// Settings saved successfully</p>
           <p class="save-msg" id="rr-error" style="color:var(--pink)"></p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-sticky">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// sticky messages <span style="color:var(--purple);font-size:0.6rem">PRO FEATURE</span></p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          Keeps a message at the bottom of a channel by deleting and reposting it as new messages come in (refreshes at most once every ~12 seconds — not on every single message, to stay clear of rate limits).
+        </p>
+
+        <label class="field-label">Channel</label>
+        <div id="sticky-channel-picker"></div>
+        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px">Pick a channel to load or create its sticky.</p>
+
+        <div id="sticky-editor" style="display:none;margin-top:20px">
+
+          <div style="display:flex;gap:24px;flex-wrap:wrap">
+            <div style="flex:1;min-width:320px">
+
+              <label class="field-label">Variables <span style="color:var(--grey);font-weight:400">(click to insert into the focused field)</span></label>
+              <div id="sticky-var-buttons" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px"></div>
+
+              <label class="field-label">Title</label>
+              <input class="cyber-input sticky-field" type="text" id="sticky-title" placeholder="📌 Server Rules" maxlength="256">
+
+              <label class="field-label" style="margin-top:14px">Description</label>
+              <textarea class="cyber-input sticky-field" id="sticky-description" rows="4" placeholder="Welcome {user.mention}! Please read the rules before chatting." maxlength="1000"></textarea>
+
+              <label class="field-label" style="margin-top:14px">Embed subtitle (optional, small text above the title)</label>
+              <input class="cyber-input sticky-field" type="text" id="sticky-embed-subtitle" placeholder="{server.name}" maxlength="256">
+
+              <label class="field-label" style="margin-top:14px">Message text above the embed (optional)</label>
+              <input class="cyber-input sticky-field" type="text" id="sticky-message-text" placeholder="">
+
+              <label class="field-label" style="margin-top:14px">Embed color</label>
+              <input class="cyber-input sticky-field" type="text" id="sticky-color" placeholder="#00f0ff" maxlength="7">
+
+              <label class="field-label" style="margin-top:14px">Banner</label>
+              <select class="cyber-input sticky-field" id="sticky-banner-style">
+                <option value="none">No banner (optional image URL below)</option>
+                <option value="cyan">Impact banner — Cyan (AuraAI brand)</option>
+                <option value="purple">Impact banner — Purple (AuraAI brand)</option>
+                <option value="sunset">Impact banner — Sunset / Retrowave</option>
+              </select>
+
+              <div id="sticky-image-url-wrap">
+                <label class="field-label" style="margin-top:14px">Image URL (used only if Banner is "none")</label>
+                <input class="cyber-input sticky-field" type="text" id="sticky-image-url" placeholder="https://...">
+              </div>
+
+              <label style="display:flex;align-items:center;gap:8px;margin-top:16px;font-family:var(--font-mono);font-size:0.7rem;color:var(--white);cursor:pointer">
+                <input type="checkbox" id="sticky-enabled" checked style="width:16px;height:16px"> Enabled
+              </label>
+
+              <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+                <button class="btn-primary" onclick="saveStickyMessage()">Save & Post</button>
+                <button class="btn-secondary" onclick="deleteStickyMessage()" style="margin-left:8px;border-color:var(--pink);color:var(--pink)">Delete Sticky</button>
+                <p class="save-msg" id="sticky-saved">// Settings saved successfully</p>
+                <p class="save-msg" id="sticky-error" style="color:var(--pink)"></p>
+              </div>
+
+              <div style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+                <label class="field-label">Templates</label>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <select class="cyber-input" id="sticky-template-select" style="flex:1;min-width:160px">
+                    <option value="">— Load a saved template —</option>
+                  </select>
+                  <button class="btn-secondary" onclick="loadStickyTemplate()">Load</button>
+                  <button class="btn-secondary" onclick="saveStickyTemplate()">Save Current As Template</button>
+                  <button class="btn-secondary" onclick="deleteStickyTemplate()" style="border-color:var(--pink);color:var(--pink)">Delete</button>
+                </div>
+              </div>
+
+            </div>
+
+            <div style="flex:1;min-width:320px">
+              <label class="field-label">Live Preview</label>
+              <div id="sticky-preview-box" style="background:#2b2d31;border-radius:8px;padding:14px;font-family:'gg sans',sans-serif;margin-top:8px">
+                <div id="sticky-preview-msgtext" style="color:#dbdee1;font-size:0.9rem;margin-bottom:8px"></div>
+                <div style="border-left:4px solid #00f0ff;background:#1e1f22;border-radius:4px;padding:10px 14px" id="sticky-preview-embed">
+                  <div id="sticky-preview-subtitle" style="color:#dbdee1;font-size:0.75rem;font-weight:600;margin-bottom:4px"></div>
+                  <div id="sticky-preview-title" style="color:#fff;font-size:1rem;font-weight:700;margin-bottom:6px"></div>
+                  <div id="sticky-preview-desc" style="color:#dbdee1;font-size:0.85rem;white-space:pre-wrap;line-height:1.5"></div>
+                  <img id="sticky-preview-image" style="width:100%;border-radius:4px;margin-top:10px;display:none" alt="">
+                </div>
+              </div>
+              <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:8px">Approximate preview — variables shown with sample values. Banner images render server-side when posted.</p>
+            </div>
+          </div>
         </div>
       </div>
       </div>
@@ -1420,6 +1517,7 @@
       { id: 'voice-jtc-channel-picker' },
       { id: 'voice-jtc-category-picker' },
       { id: 'rr-channel-picker' },
+      { id: 'sticky-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -1504,6 +1602,283 @@
     }
   }
 
+  // ─── STICKY MESSAGES ──────────────────────────────────────────────────────────
+  const STICKY_VARIABLES = [
+    '{user}', '{user.mention}', '{user.name}', '{user.avatar}',
+    '{server}', '{server.name}', '{server.icon}', '{membercount}',
+    '{channel}', '{channel.name}', '{channel.mention}',
+    '{date}', '{time}', '{random:option1|option2|option3}',
+  ];
+  let stickyLastFocusedField = null;
+  let stickyCurrentChannelId = null;
+
+  function initStickyVarButtons() {
+    const container = document.getElementById('sticky-var-buttons');
+    if (!container || container.childElementCount > 0) return;
+    STICKY_VARIABLES.forEach(v => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = v;
+      btn.className = 'btn-secondary';
+      btn.style = 'font-size:0.55rem;padding:5px 8px;text-transform:none;letter-spacing:0';
+      btn.onclick = () => {
+        const field = stickyLastFocusedField || document.getElementById('sticky-description');
+        const start = field.selectionStart ?? field.value.length;
+        const end = field.selectionEnd ?? field.value.length;
+        field.value = field.value.slice(0, start) + v + field.value.slice(end);
+        field.focus();
+        field.selectionStart = field.selectionEnd = start + v.length;
+        updateStickyPreview();
+      };
+      container.appendChild(btn);
+    });
+
+    document.querySelectorAll('.sticky-field').forEach(el => {
+      el.addEventListener('focus', () => { stickyLastFocusedField = el; });
+      el.addEventListener('input', updateStickyPreview);
+    });
+    document.getElementById('sticky-banner-style').addEventListener('change', () => {
+      const isNone = document.getElementById('sticky-banner-style').value === 'none';
+      document.getElementById('sticky-image-url-wrap').style.display = isNone ? '' : 'none';
+      updateStickyPreview();
+    });
+  }
+
+  // Client-side preview only — sample values, not the real server-side resolver.
+  function resolveStickyPreviewText(text) {
+    if (!text) return '';
+    const channelName = guildChannelCache.find(c => c.id === stickyCurrentChannelId)?.name || 'general';
+    const serverName = userGuilds.find(g => g.id === selectedGuildId)?.name || 'Your Server';
+    let out = text.replace(/\{random:([^}]+)\}/g, (_, list) => list.split('|')[0].trim());
+    const map = {
+      '{user}': 'YourName', '{user.mention}': '@YourName', '{user.name}': 'YourName', '{user.avatar}': '',
+      '{server}': serverName, '{server.name}': serverName, '{server.icon}': '', '{membercount}': '1,204',
+      '{channel}': '#' + channelName, '{channel.name}': channelName, '{channel.mention}': '#' + channelName,
+      '{date}': new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      '{time}': new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+    };
+    for (const [token, val] of Object.entries(map)) out = out.split(token).join(val);
+    return out;
+  }
+
+  function updateStickyPreview() {
+    const msgText = resolveStickyPreviewText(document.getElementById('sticky-message-text').value);
+    const title = resolveStickyPreviewText(document.getElementById('sticky-title').value);
+    const desc = resolveStickyPreviewText(document.getElementById('sticky-description').value);
+    const subtitle = resolveStickyPreviewText(document.getElementById('sticky-embed-subtitle').value);
+    const color = document.getElementById('sticky-color').value || '#00f0ff';
+    const bannerStyle = document.getElementById('sticky-banner-style').value;
+    const imageUrl = document.getElementById('sticky-image-url').value;
+
+    document.getElementById('sticky-preview-msgtext').textContent = msgText;
+    document.getElementById('sticky-preview-title').textContent = title;
+    document.getElementById('sticky-preview-desc').textContent = desc;
+    document.getElementById('sticky-preview-subtitle').textContent = subtitle;
+    document.getElementById('sticky-preview-embed').style.borderLeftColor = /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#00f0ff';
+
+    const img = document.getElementById('sticky-preview-image');
+    if (bannerStyle !== 'none') {
+      const grad = bannerStyle === 'sunset' ? 'linear-gradient(180deg,#3a0d3f,#7a1f4d,#150422)' : bannerStyle === 'purple' ? 'linear-gradient(135deg,#0a0510,#2a0a3f)' : 'linear-gradient(135deg,#050810,#0a2530)';
+      img.style.display = 'flex';
+      img.removeAttribute('src');
+      img.style.background = grad;
+      img.style.height = '90px';
+      img.style.alignItems = 'center';
+      img.style.justifyContent = 'center';
+      img.style.color = '#fff';
+      img.style.fontWeight = '900';
+      img.style.fontFamily = 'Orbitron, sans-serif';
+      img.alt = (title || subtitle || 'ANNOUNCEMENT').toUpperCase();
+      img.style.setProperty('--placeholder-text', `"${img.alt}"`);
+      img.textContent = img.alt;
+    } else if (imageUrl) {
+      img.style.display = 'block';
+      img.src = imageUrl;
+      img.style.background = 'none';
+      img.textContent = '';
+    } else {
+      img.style.display = 'none';
+    }
+  }
+
+  function clearStickyEditor() {
+    ['sticky-title', 'sticky-description', 'sticky-embed-subtitle', 'sticky-message-text', 'sticky-image-url', 'sticky-color'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('sticky-banner-style').value = 'none';
+    document.getElementById('sticky-enabled').checked = true;
+    document.getElementById('sticky-image-url-wrap').style.display = '';
+    updateStickyPreview();
+  }
+
+  async function loadStickyForChannel(channelId) {
+    stickyCurrentChannelId = channelId;
+    document.getElementById('sticky-editor').style.display = channelId ? '' : 'none';
+    if (!channelId) return;
+    initStickyVarButtons();
+    clearStickyEditor();
+
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/sticky?guildId=${selectedGuildId}&channelId=${channelId}`, {
+        headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+      });
+      const data = await res.json();
+      if (data.sticky) {
+        document.getElementById('sticky-title').value = data.sticky.title || '';
+        document.getElementById('sticky-description').value = data.sticky.description || '';
+        document.getElementById('sticky-embed-subtitle').value = data.sticky.embed_subtitle || '';
+        document.getElementById('sticky-message-text').value = data.sticky.message_text || '';
+        document.getElementById('sticky-image-url').value = data.sticky.image_url || '';
+        document.getElementById('sticky-color').value = data.sticky.color || '';
+        document.getElementById('sticky-banner-style').value = data.sticky.banner_style || 'none';
+        document.getElementById('sticky-enabled').checked = data.sticky.enabled !== false;
+        document.getElementById('sticky-image-url-wrap').style.display = (data.sticky.banner_style && data.sticky.banner_style !== 'none') ? 'none' : '';
+      }
+      updateStickyPreview();
+    } catch (err) {
+      console.error('loadStickyForChannel error:', err.message);
+    }
+  }
+
+  async function saveStickyMessage() {
+    const e = document.getElementById('sticky-error');
+    e.style.display = 'none';
+    if (!selectedGuildId || !stickyCurrentChannelId) {
+      e.textContent = '// Error: Pick a channel first.'; e.style.display = 'block';
+      return;
+    }
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/sticky`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+        body: JSON.stringify({
+          guildId: selectedGuildId, channelId: stickyCurrentChannelId,
+          title: document.getElementById('sticky-title').value,
+          description: document.getElementById('sticky-description').value,
+          embedSubtitle: document.getElementById('sticky-embed-subtitle').value,
+          messageText: document.getElementById('sticky-message-text').value,
+          imageUrl: document.getElementById('sticky-image-url').value,
+          bannerStyle: document.getElementById('sticky-banner-style').value,
+          color: document.getElementById('sticky-color').value,
+          enabled: document.getElementById('sticky-enabled').checked,
+        }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Unknown error');
+      setStatus('status-sticky', true);
+      showSaved('sticky-saved');
+    } catch (err) {
+      e.textContent = '// Error: ' + err.message; e.style.display = 'block';
+    }
+  }
+
+  async function deleteStickyMessage() {
+    if (!selectedGuildId || !stickyCurrentChannelId) return;
+    if (!confirm('Delete this sticky message and remove it from the channel?')) return;
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      await fetch(`${RAILWAY_BOT_URL}/api/sticky/delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+        body: JSON.stringify({ guildId: selectedGuildId, channelId: stickyCurrentChannelId }),
+      });
+      clearStickyEditor();
+      setStatus('status-sticky', false);
+      showSaved('sticky-saved');
+    } catch (err) {
+      const e = document.getElementById('sticky-error');
+      e.textContent = '// Error: ' + err.message; e.style.display = 'block';
+    }
+  }
+
+  async function loadStickyTemplatesList() {
+    const select = document.getElementById('sticky-template-select');
+    if (!select || !selectedGuildId) return;
+    select.innerHTML = '<option value="">— Load a saved template —</option>';
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/sticky-templates?guildId=${selectedGuildId}`, {
+        headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+      });
+      const data = await res.json();
+      (data.templates || []).forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.id;
+        opt.textContent = t.name;
+        select.appendChild(opt);
+      });
+    } catch (err) { console.error('loadStickyTemplatesList error:', err.message); }
+  }
+
+  async function loadStickyTemplate() {
+    const select = document.getElementById('sticky-template-select');
+    const templateId = select.value;
+    if (!templateId) return;
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/sticky-templates?guildId=${selectedGuildId}`, {
+        headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+      });
+      const data = await res.json();
+      const t = (data.templates || []).find(x => x.id === templateId);
+      if (!t) return;
+      document.getElementById('sticky-title').value = t.title || '';
+      document.getElementById('sticky-description').value = t.description || '';
+      document.getElementById('sticky-embed-subtitle').value = t.embed_subtitle || '';
+      document.getElementById('sticky-message-text').value = t.message_text || '';
+      document.getElementById('sticky-image-url').value = t.image_url || '';
+      document.getElementById('sticky-color').value = t.color || '';
+      document.getElementById('sticky-banner-style').value = t.banner_style || 'none';
+      document.getElementById('sticky-image-url-wrap').style.display = (t.banner_style && t.banner_style !== 'none') ? 'none' : '';
+      updateStickyPreview();
+    } catch (err) { console.error('loadStickyTemplate error:', err.message); }
+  }
+
+  async function saveStickyTemplate() {
+    const name = prompt('Name this template (e.g. "Rules Reminder"):');
+    if (!name) return;
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      await fetch(`${RAILWAY_BOT_URL}/api/sticky-templates`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+        body: JSON.stringify({
+          guildId: selectedGuildId, name,
+          title: document.getElementById('sticky-title').value,
+          description: document.getElementById('sticky-description').value,
+          embedSubtitle: document.getElementById('sticky-embed-subtitle').value,
+          messageText: document.getElementById('sticky-message-text').value,
+          imageUrl: document.getElementById('sticky-image-url').value,
+          bannerStyle: document.getElementById('sticky-banner-style').value,
+          color: document.getElementById('sticky-color').value,
+        }),
+      });
+      await loadStickyTemplatesList();
+      showSaved('sticky-saved');
+    } catch (err) {
+      const e = document.getElementById('sticky-error');
+      e.textContent = '// Error: ' + err.message; e.style.display = 'block';
+    }
+  }
+
+  async function deleteStickyTemplate() {
+    const select = document.getElementById('sticky-template-select');
+    const templateId = select.value;
+    if (!templateId) return;
+    if (!confirm('Delete this template?')) return;
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      await fetch(`${RAILWAY_BOT_URL}/api/sticky-templates/delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+        body: JSON.stringify({ guildId: selectedGuildId, templateId }),
+      });
+      await loadStickyTemplatesList();
+    } catch (err) { console.error('deleteStickyTemplate error:', err.message); }
+  }
   // ─── REACTION ROLES BUILDER ──────────────────────────────────────────────────
   let rrOptionCounter = 0;
 
@@ -1719,6 +2094,8 @@
 
     channelPickers['fun-channel-picker'].setChannels(guildChannelCache, s.fun_channel_id || null);
     setChannelHint('fun-channel-current', s.fun_channel_id);
+
+    channelPickers['sticky-channel-picker'].setChannels(guildChannelCache, null);
 
     channelPickers['levels-channel-picker'].setChannels(guildChannelCache, s.levels_channel_id || null);
     setChannelHint('levels-channel-current', s.levels_channel_id);
@@ -2010,6 +2387,10 @@
       lastBotConfigSettings = null;
       clearReactionRoleForm();
       setStatus('status-reactionroles', false);
+      stickyCurrentChannelId = null;
+      document.getElementById('sticky-editor').style.display = 'none';
+      document.getElementById('status-sticky').textContent = '// select a server';
+      document.getElementById('status-sticky').className = 'config-card-status unset';
       Object.values(channelPickers).forEach(p => p.setPlaceholder('— Select a server first —'));
       updateConfigCardStatuses();
       return;
@@ -2039,6 +2420,9 @@
     ]);
     updateConfigCardStatuses();
     await loadReactionRoleMenu(guildId);
+    await loadStickyTemplatesList();
+    document.getElementById('status-sticky').textContent = '// pick a channel to configure';
+    document.getElementById('status-sticky').className = 'config-card-status unset';
 
     // Update coaching warning banner
     const coachingWarning=document.getElementById('coaching-server-warning');
@@ -2132,7 +2516,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', sticky:'STICKY MESSAGES' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
@@ -2843,6 +3227,7 @@
   }
 
   initChannelPickers();
+  channelPickers['sticky-channel-picker'].onChange = (val) => loadStickyForChannel(val);
   init();
 </script>
 </body>
