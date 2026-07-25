@@ -966,7 +966,7 @@
       <div class="section-card">
         <p class="card-title">// new member gate <span style="color:var(--purple);font-size:0.6rem">PRO FEATURE</span></p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:20px;letter-spacing:0.5px">
-          New members get a restricted role the instant they join — they can only see the channels you choose below — plus a DM with instructions. The role is automatically removed the moment they pick up any role from your Reaction Roles menu, which is what "unlocks" the rest of the server for them. Follow the steps below in order.
+          New members get a restricted role the instant they join — they can only see the channels you choose below — plus a DM with instructions. The role is automatically removed the moment they gain whichever role you designate as the "unlock" role in Step 3 (your verification bot's Verified role, for example) — that's what unlocks the rest of the server for them. Follow the steps below in order.
         </p>
 
         <div class="nmg-step">
@@ -986,31 +986,41 @@
 
         <div class="nmg-step">
           <p class="nmg-step-num">STEP 3</p>
-          <p class="nmg-step-title">Choose which channels new members CAN see</p>
-          <p class="nmg-step-desc" style="margin-bottom:10px">Every other channel gets hidden from this role until they unlock. At minimum, check your general chat and your Reaction Roles channel.</p>
-          <div id="nmg-unlock-channels" style="max-height:220px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);border-radius:6px;padding:10px;background:rgba(0,0,0,0.2)"></div>
+          <p class="nmg-step-title">Which role unlocks it?</p>
+          <p class="nmg-step-desc" style="margin-bottom:10px">
+            The moment a member gains THIS role — from any source, not just AuraAI — the New Member role gets removed and they're unlocked. If you use a separate verification bot (like Double Counter), pick its "Verified" role here. If you don't use one, you can pick one of your Reaction Roles instead.<br><br>
+            <span style="color:var(--pink)">⚠</span> Don't pick the same role as Step 2 — a role can't unlock itself.
+          </p>
+          <div id="nmg-unlock-role-picker"></div>
         </div>
 
         <div class="nmg-step">
           <p class="nmg-step-num">STEP 4</p>
-          <p class="nmg-step-title">Write the unlock DM</p>
-          <p class="nmg-step-desc" style="margin-bottom:10px">Sent automatically the moment someone joins.</p>
-          <div id="nmg-dm-var-buttons" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
-          <textarea class="cyber-input" id="nmg-dm-message" rows="5" placeholder="Welcome to {server}! Head to the Reaction Roles channel and grab a role to unlock the rest of the server." maxlength="1800"></textarea>
+          <p class="nmg-step-title">Choose which channels new members CAN see</p>
+          <p class="nmg-step-desc" style="margin-bottom:10px">Every other channel gets hidden from this role until they unlock. At minimum, check your general chat and wherever your verification happens.</p>
+          <div id="nmg-unlock-channels" style="max-height:220px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);border-radius:6px;padding:10px;background:rgba(0,0,0,0.2)"></div>
         </div>
 
         <div class="nmg-step">
           <p class="nmg-step-num">STEP 5</p>
+          <p class="nmg-step-title">Write the unlock DM</p>
+          <p class="nmg-step-desc" style="margin-bottom:10px">Sent automatically the moment someone joins.</p>
+          <div id="nmg-dm-var-buttons" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+          <textarea class="cyber-input" id="nmg-dm-message" rows="5" placeholder="Welcome to {server}! Please verify to unlock the rest of the server." maxlength="1800"></textarea>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 6</p>
           <p class="nmg-step-title">Apply the channel lockdown</p>
           <p class="nmg-step-desc" style="margin-bottom:10px">
-            This sets View Channel to OFF for your New Member role on every channel except the ones you checked in Step 3. It will <b style="color:var(--white)">not</b> touch @everyone or any other role's permissions — existing members are completely unaffected. Re-run this any time you add a new channel or change your selections above.
+            This sets View Channel to OFF for your New Member role on every channel except the ones you checked in Step 4. It will <b style="color:var(--white)">not</b> touch @everyone or any other role's permissions — existing members are completely unaffected. Re-run this any time you add a new channel or change your selections above.
           </p>
           <button class="btn-primary" onclick="applyNewMemberLockdown()">Apply Channel Lockdown</button>
           <p id="nmg-lockdown-result" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-top:10px"></p>
         </div>
 
         <div class="nmg-step">
-          <p class="nmg-step-num">STEP 6</p>
+          <p class="nmg-step-num">STEP 7</p>
           <p class="nmg-step-title">Turn it on</p>
           <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.7rem;color:var(--white);cursor:pointer">
             <input type="checkbox" id="nmg-enabled" style="width:16px;height:16px"> Enable New Member Gate
@@ -1658,6 +1668,7 @@
       { id: 'rr-channel-picker' },
       { id: 'sticky-channel-picker' },
       { id: 'nmg-role-picker' },
+      { id: 'nmg-unlock-role-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -2286,11 +2297,12 @@
     initNmgVarButtons();
     const settings = s || {};
     _populateRolePicker('nmg-role-picker', settings.new_member_role_id || null);
+    _populateRolePicker('nmg-unlock-role-picker', settings.new_member_unlock_role_id || null);
     document.getElementById('nmg-dm-message').value = settings.new_member_dm_message || '';
     document.getElementById('nmg-enabled').checked = !!settings.new_member_gate_enabled;
     renderUnlockChannelsList(settings.new_member_unlock_channel_ids || []);
     document.getElementById('nmg-lockdown-result').textContent = '';
-    setStatus('status-newmembergate', !!settings.new_member_gate_enabled && !!settings.new_member_role_id);
+    setStatus('status-newmembergate', !!settings.new_member_gate_enabled && !!settings.new_member_role_id && !!settings.new_member_unlock_role_id);
   }
 
   async function saveNewMemberGateSettings() {
@@ -2302,20 +2314,27 @@
     }
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
     const roleId = channelPickers['nmg-role-picker'].getValue() || null;
+    const unlockRoleId = channelPickers['nmg-unlock-role-picker'].getValue() || null;
     const unlockChannelIds = Array.from(document.querySelectorAll('.nmg-unlock-checkbox:checked')).map(cb => cb.value);
+
+    if (roleId && unlockRoleId && roleId === unlockRoleId) {
+      e.textContent = '// Error: The New Member role and the Unlock role can\'t be the same role.'; e.style.display = 'block';
+      return;
+    }
 
     try {
       await sb.from('server_settings').upsert(
         {
           owner_discord_id: discordId, discord_server_id: selectedGuildId,
           new_member_role_id: roleId,
+          new_member_unlock_role_id: unlockRoleId,
           new_member_dm_message: document.getElementById('nmg-dm-message').value,
           new_member_gate_enabled: document.getElementById('nmg-enabled').checked,
           new_member_unlock_channel_ids: unlockChannelIds,
         },
         { onConflict: 'discord_server_id' }
       );
-      setStatus('status-newmembergate', document.getElementById('nmg-enabled').checked && !!roleId);
+      setStatus('status-newmembergate', document.getElementById('nmg-enabled').checked && !!roleId && !!unlockRoleId);
       showSaved('nmg-saved');
     } catch (err) {
       e.textContent = '// Error: ' + err.message; e.style.display = 'block';
