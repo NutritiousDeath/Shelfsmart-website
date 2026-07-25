@@ -88,6 +88,10 @@
     .sticky-subtab-btn{background:transparent;border:none;color:var(--grey);font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:10px 18px;cursor:pointer;border-bottom:2px solid transparent}
     .sticky-subtab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
     .sticky-subtab-btn:hover{color:var(--white)}
+    .nmg-step{background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.12);border-radius:8px;padding:16px 18px;margin-bottom:14px}
+    .nmg-step-num{font-family:var(--font-display);font-size:0.65rem;font-weight:700;letter-spacing:2px;color:var(--purple);margin-bottom:4px}
+    .nmg-step-title{font-family:var(--font-display);font-size:0.85rem;font-weight:700;color:var(--white);margin-bottom:8px}
+    .nmg-step-desc{font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:1.8}
     .btn-danger{font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;padding:9px 18px;background:transparent;color:var(--pink);border:1px solid var(--pink);cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:all 0.2s;text-transform:uppercase}
     .btn-danger:hover{background:rgba(255,45,120,0.08);box-shadow:var(--glow-pink)}
     .btn-approve{font-family:var(--font-display);font-size:0.58rem;font-weight:700;letter-spacing:2px;padding:6px 14px;background:transparent;color:var(--green);border:1px solid var(--green);cursor:pointer;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);transition:all 0.2s;text-transform:uppercase}
@@ -571,6 +575,12 @@
           <p class="config-card-desc">A message that stays pinned to the bottom of any channel.</p>
           <p class="config-card-status" id="status-sticky">// checking...</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('newmembergate')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12 3 9v6l6 3M15 3l6 3v12l-6-3M9 12l6-3M9 12v6l6 3v-6"/></svg>
+          <p class="config-card-title">New Member Gate <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">Auto-role + channel lockdown + DM for new members, unlocked via Reaction Roles.</p>
+          <p class="config-card-status" id="status-newmembergate">// checking...</p>
+        </div>
         <div class="config-card" onclick="showConfigPage('levels')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <p class="config-card-title">Leveling</p>
@@ -947,6 +957,70 @@
               <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:8px">Approximate preview — variables shown with sample values. Banner images render server-side when posted.</p>
             </div>
           </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-newmembergate">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// new member gate <span style="color:var(--purple);font-size:0.6rem">PRO FEATURE</span></p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:20px;letter-spacing:0.5px">
+          New members get a restricted role the instant they join — they can only see the channels you choose below — plus a DM with instructions. The role is automatically removed the moment they pick up any role from your Reaction Roles menu, which is what "unlocks" the rest of the server for them. Follow the steps below in order.
+        </p>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 1</p>
+          <p class="nmg-step-title">Create the role in Discord</p>
+          <p class="nmg-step-desc">
+            Go to <b style="color:var(--white)">Server Settings → Roles → Create Role</b>. Name it anything — "New Member" or "Unverified" both work fine. It doesn't need any permissions turned on.<br><br>
+            <span style="color:var(--pink)">⚠ Important:</span> drag this new role so it sits <b style="color:var(--white)">below AuraAI's own role</b> in your role list. Discord only lets a bot manage roles positioned below its own — if AuraAI's role ends up underneath this one, the bot won't be able to assign or remove it and this feature silently won't work.
+          </p>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 2</p>
+          <p class="nmg-step-title">Select that role</p>
+          <div id="nmg-role-picker"></div>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 3</p>
+          <p class="nmg-step-title">Choose which channels new members CAN see</p>
+          <p class="nmg-step-desc" style="margin-bottom:10px">Every other channel gets hidden from this role until they unlock. At minimum, check your general chat and your Reaction Roles channel.</p>
+          <div id="nmg-unlock-channels" style="max-height:220px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);border-radius:6px;padding:10px;background:rgba(0,0,0,0.2)"></div>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 4</p>
+          <p class="nmg-step-title">Write the unlock DM</p>
+          <p class="nmg-step-desc" style="margin-bottom:10px">Sent automatically the moment someone joins.</p>
+          <div id="nmg-dm-var-buttons" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+          <textarea class="cyber-input" id="nmg-dm-message" rows="5" placeholder="Welcome to {server}! Head to the Reaction Roles channel and grab a role to unlock the rest of the server." maxlength="1800"></textarea>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 5</p>
+          <p class="nmg-step-title">Apply the channel lockdown</p>
+          <p class="nmg-step-desc" style="margin-bottom:10px">
+            This sets View Channel to OFF for your New Member role on every channel except the ones you checked in Step 3. It will <b style="color:var(--white)">not</b> touch @everyone or any other role's permissions — existing members are completely unaffected. Re-run this any time you add a new channel or change your selections above.
+          </p>
+          <button class="btn-primary" onclick="applyNewMemberLockdown()">Apply Channel Lockdown</button>
+          <p id="nmg-lockdown-result" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-top:10px"></p>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 6</p>
+          <p class="nmg-step-title">Turn it on</p>
+          <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.7rem;color:var(--white);cursor:pointer">
+            <input type="checkbox" id="nmg-enabled" style="width:16px;height:16px"> Enable New Member Gate
+          </label>
+        </div>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <button class="btn-primary" onclick="saveNewMemberGateSettings()">Save Settings</button>
+          <p class="save-msg" id="nmg-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="nmg-error" style="color:var(--pink)"></p>
         </div>
       </div>
       </div>
@@ -1583,6 +1657,7 @@
       { id: 'voice-jtc-category-picker' },
       { id: 'rr-channel-picker' },
       { id: 'sticky-channel-picker' },
+      { id: 'nmg-role-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -2155,6 +2230,126 @@
       e.textContent = '// Error: ' + err.message; e.style.display = 'block';
     }
   }
+  // ─── NEW MEMBER GATE ──────────────────────────────────────────────────────────
+  const NMG_VARIABLES = ['{user}', '{user.mention}', '{server}', '{membercount}'];
+  let nmgLastFocusedField = null;
+
+  function initNmgVarButtons() {
+    const container = document.getElementById('nmg-dm-var-buttons');
+    if (!container || container.childElementCount > 0) return;
+    NMG_VARIABLES.forEach(v => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = v;
+      btn.className = 'btn-secondary';
+      btn.style = 'font-size:0.55rem;padding:5px 8px;text-transform:none;letter-spacing:0';
+      btn.onclick = () => {
+        const field = document.getElementById('nmg-dm-message');
+        const start = field.selectionStart ?? field.value.length;
+        const end = field.selectionEnd ?? field.value.length;
+        field.value = field.value.slice(0, start) + v + field.value.slice(end);
+        field.focus();
+        field.selectionStart = field.selectionEnd = start + v.length;
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  function renderUnlockChannelsList(savedIds) {
+    const container = document.getElementById('nmg-unlock-channels');
+    if (!container) return;
+    container.innerHTML = '';
+    const saved = new Set(savedIds || []);
+    const relevant = guildChannelCache.filter(c => c.type === 0 || c.type === 5).sort((a, b) => a.position - b.position);
+
+    if (relevant.length === 0) {
+      container.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No channels loaded yet — select a server first.</p>';
+      return;
+    }
+
+    relevant.forEach(ch => {
+      const label = document.createElement('label');
+      label.style = 'display:flex;align-items:center;gap:8px;padding:4px 0;font-family:var(--font-mono);font-size:0.7rem;color:var(--white);cursor:pointer';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = ch.id;
+      cb.checked = saved.has(ch.id);
+      cb.style = 'width:15px;height:15px';
+      cb.className = 'nmg-unlock-checkbox';
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode('#' + ch.name));
+      container.appendChild(label);
+    });
+  }
+
+  function loadNewMemberGateSettings(guildId, s) {
+    initNmgVarButtons();
+    const settings = s || {};
+    _populateRolePicker('nmg-role-picker', settings.new_member_role_id || null);
+    document.getElementById('nmg-dm-message').value = settings.new_member_dm_message || '';
+    document.getElementById('nmg-enabled').checked = !!settings.new_member_gate_enabled;
+    renderUnlockChannelsList(settings.new_member_unlock_channel_ids || []);
+    document.getElementById('nmg-lockdown-result').textContent = '';
+    setStatus('status-newmembergate', !!settings.new_member_gate_enabled && !!settings.new_member_role_id);
+  }
+
+  async function saveNewMemberGateSettings() {
+    const e = document.getElementById('nmg-error');
+    e.style.display = 'none';
+    if (!selectedGuildId) {
+      e.textContent = '// Error: Please select your Discord server first!'; e.style.display = 'block';
+      return;
+    }
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const roleId = channelPickers['nmg-role-picker'].getValue() || null;
+    const unlockChannelIds = Array.from(document.querySelectorAll('.nmg-unlock-checkbox:checked')).map(cb => cb.value);
+
+    try {
+      await sb.from('server_settings').upsert(
+        {
+          owner_discord_id: discordId, discord_server_id: selectedGuildId,
+          new_member_role_id: roleId,
+          new_member_dm_message: document.getElementById('nmg-dm-message').value,
+          new_member_gate_enabled: document.getElementById('nmg-enabled').checked,
+          new_member_unlock_channel_ids: unlockChannelIds,
+        },
+        { onConflict: 'discord_server_id' }
+      );
+      setStatus('status-newmembergate', document.getElementById('nmg-enabled').checked && !!roleId);
+      showSaved('nmg-saved');
+    } catch (err) {
+      e.textContent = '// Error: ' + err.message; e.style.display = 'block';
+    }
+  }
+
+  async function applyNewMemberLockdown() {
+    const resultEl = document.getElementById('nmg-lockdown-result');
+    if (!selectedGuildId) { resultEl.textContent = '⚠ Select a server first.'; return; }
+    const roleId = channelPickers['nmg-role-picker'].getValue();
+    if (!roleId) { resultEl.textContent = '⚠ Pick a role in Step 2 first.'; return; }
+
+    const unlockChannelIds = Array.from(document.querySelectorAll('.nmg-unlock-checkbox:checked')).map(cb => cb.value);
+    resultEl.textContent = 'Applying lockdown across every channel — this may take a few seconds...';
+
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/new-member-gate/apply-lockdown`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+        body: JSON.stringify({ guildId: selectedGuildId, roleId, unlockChannelIds }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Unknown error');
+      let msg = `✅ Done — ${result.unlocked} channel(s) left visible, ${result.locked} hidden from this role.`;
+      if (result.errors && result.errors.length > 0) {
+        msg += ` ⚠ ${result.errors.length} channel(s) failed: ${result.errors.slice(0, 3).join('; ')}`;
+      }
+      resultEl.textContent = msg;
+    } catch (err) {
+      resultEl.textContent = '❌ Error: ' + err.message;
+    }
+  }
+
   // ─── REACTION ROLES BUILDER ──────────────────────────────────────────────────
   let rrOptionCounter = 0;
 
@@ -2669,6 +2864,10 @@
       document.getElementById('sticky-editor').style.display = 'none';
       document.getElementById('status-sticky').textContent = '// select a server';
       document.getElementById('status-sticky').className = 'config-card-status unset';
+      document.getElementById('status-newmembergate').textContent = '// select a server';
+      document.getElementById('status-newmembergate').className = 'config-card-status unset';
+      document.getElementById('nmg-unlock-channels').innerHTML = '';
+      document.getElementById('nmg-lockdown-result').textContent = '';
       Object.values(channelPickers).forEach(p => p.setPlaceholder('— Select a server first —'));
       updateConfigCardStatuses();
       return;
@@ -2702,6 +2901,7 @@
     await fetchStickyTemplates();
     document.getElementById('status-sticky').textContent = stickyListCache.length ? `✓ ${stickyListCache.length} active` : '// none yet';
     document.getElementById('status-sticky').className = 'config-card-status ' + (stickyListCache.length ? 'set' : 'unset');
+    loadNewMemberGateSettings(guildId, savedSettings);
 
     // Update coaching warning banner
     const coachingWarning=document.getElementById('coaching-server-warning');
@@ -2795,7 +2995,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', sticky:'STICKY MESSAGES' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', sticky:'STICKY MESSAGES', newmembergate:'NEW MEMBER GATE' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
