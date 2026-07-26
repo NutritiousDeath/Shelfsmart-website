@@ -2509,7 +2509,7 @@
     const icons={twitch:'🟣',youtube:'🔴',tiktok:'⚫',kick:'🟢'};
     // Try to find channel name from cache
     const getChName=(id)=>{if(!id)return'not set';const ch=guildChannelCache.find(c=>c.id===id);return ch?'#'+ch.name:id;};
-    list.innerHTML=alerts.map(a=>`<div class="platform-row" style="margin-bottom:8px"><div><p class="platform-name">${icons[a.platform]||'📡'} ${a.username}</p><p class="platform-sub">${a.platform} — ${getChName(a.alert_channel_id)}${a.custom_message?' — ✉️ Custom message set':''}</p></div><div style="display:flex;align-items:center;gap:8px"><span class="badge ${a.enabled?'badge-active':'badge-free'}">${a.enabled?'Active':'Paused'}</span><button onclick="removeAlert('${a.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
+    list.innerHTML=alerts.map(a=>`<div class="platform-row" style="margin-bottom:8px"><div><p class="platform-name">${icons[a.platform]||'📡'} ${a.display_name||a.username}</p><p class="platform-sub">${a.platform} — ${getChName(a.alert_channel_id)}${a.custom_message?' — ✉️ Custom message set':''}</p></div><div style="display:flex;align-items:center;gap:8px"><span class="badge ${a.enabled?'badge-active':'badge-free'}">${a.enabled?'Active':'Paused'}</span><button onclick="removeAlert('${a.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
   }
 
   async function removeAlert(id){await sb.from('social_alerts').delete().eq('id',id);loadAlerts();}
@@ -2546,14 +2546,14 @@
     const platform=document.getElementById('alert-platform').value;
     const channelId=channelPickers['alert-channel'].getValue();
     const errorEl=document.getElementById('alert-error');errorEl.style.display='none';
-    let username='';
-    if(platform==='tiktok'||platform==='kick') username=document.getElementById('alert-manual')?.value.trim()||'';
-    else username=selectedStreamer?.username||document.getElementById('alert-search')?.value.trim()||'';
+    let username='';let displayName=null;
+    if(platform==='tiktok'||platform==='kick'){username=document.getElementById('alert-manual')?.value.trim()||'';displayName=username||null;}
+    else{username=selectedStreamer?.username||document.getElementById('alert-search')?.value.trim()||'';displayName=selectedStreamer?.displayName||username||null;}
     if(!username){errorEl.textContent='// Error: Please select or enter a streamer';errorEl.style.display='block';return;}
     if(!channelId){errorEl.textContent='// Error: Please select an alert channel';errorEl.style.display='block';return;}
     const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
     const customMessage=document.getElementById('alert-custom-message')?.value.trim()||null;
-    const{error}=await sb.from('social_alerts').insert({discord_server_id:selectedGuildId||discordId,platform,username,alert_channel_id:channelId,enabled:true,custom_message:customMessage});
+    const{error}=await sb.from('social_alerts').insert({discord_server_id:selectedGuildId||discordId,platform,username,display_name:displayName,alert_channel_id:channelId,enabled:true,custom_message:customMessage});
     if(error){errorEl.textContent='// Error: '+error.message;errorEl.style.display='block';return;}
     showSaved('alert-saved');clearSelectedStreamer();
     if(document.getElementById('alert-search'))document.getElementById('alert-search').value='';
