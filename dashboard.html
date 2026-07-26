@@ -2538,7 +2538,7 @@
       });
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || 'Unknown error');
-      let msg = `✅ Done — ${result.unlocked} channel(s) left visible, ${result.locked} hidden from this role.`;
+      let msg = `✅ Done — ${result.unlocked} channel(s) left visible, ${result.locked} hidden from this role${result.skipped ? ` (${result.skipped} thread(s) skipped — they inherit visibility from their parent channel automatically)` : ''}.`;
       if (result.errors && result.errors.length > 0) {
         msg += ` ⚠ ${result.errors.length} channel(s) failed: ${result.errors.slice(0, 3).join('; ')}`;
       }
