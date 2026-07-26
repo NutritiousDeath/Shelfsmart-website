@@ -92,6 +92,10 @@
     .nmg-step-num{font-family:var(--font-display);font-size:0.65rem;font-weight:700;letter-spacing:2px;color:var(--purple);margin-bottom:4px}
     .nmg-step-title{font-family:var(--font-display);font-size:0.85rem;font-weight:700;color:var(--white);margin-bottom:8px}
     .nmg-step-desc{font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:1.8}
+    .modlog-event-row{display:flex;align-items:center;gap:10px;padding:8px 10px;font-family:var(--font-mono);font-size:0.72rem;color:var(--white);cursor:pointer;border-radius:4px}
+    .modlog-event-row:hover{background:rgba(0,240,255,0.04)}
+    .modlog-event-row input{width:15px;height:15px}
+    .modact-example{font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-top:6px;font-style:italic}
     .btn-danger{font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;padding:9px 18px;background:transparent;color:var(--pink);border:1px solid var(--pink);cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:all 0.2s;text-transform:uppercase}
     .btn-danger:hover{background:rgba(255,45,120,0.08);box-shadow:var(--glow-pink)}
     .btn-approve{font-family:var(--font-display);font-size:0.58rem;font-weight:700;letter-spacing:2px;padding:6px 14px;background:transparent;color:var(--green);border:1px solid var(--green);cursor:pointer;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);transition:all 0.2s;text-transform:uppercase}
@@ -592,6 +596,18 @@
           <p class="config-card-title">Security <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
           <p class="config-card-desc">Domain blacklist for scam links, plus an anti-raid honeypot channel.</p>
           <p class="config-card-status" id="status-security">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('modlogsettings')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M8 8h8M8 16h5"/></svg>
+          <p class="config-card-title">Mod Log Settings</p>
+          <p class="config-card-desc">Which channel gets logs, and which event types get logged.</p>
+          <p class="config-card-status" id="status-modlogsettings">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('modactions')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 3.5a2.12 2.12 0 0 1 3 3L4 20l-4 1 1-4Z"/></svg>
+          <p class="config-card-title">Moderation Actions</p>
+          <p class="config-card-desc">/ban, /kick, /mute, /hardmute, /timeout, /tempban — DM behavior, durations, purge.</p>
+          <p class="config-card-status" id="status-modactions">// checking...</p>
         </div>
         <div class="config-card" onclick="showConfigPage('levels')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
@@ -1179,6 +1195,200 @@
             <button class="btn-primary" onclick="saveHoneypotSettings()">Save</button>
             <p class="save-msg" id="security-honeypot-saved">// Settings saved successfully</p>
             <p class="save-msg" id="security-honeypot-error" style="color:var(--pink)"></p>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-modlogsettings">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// mod log settings</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:18px;letter-spacing:0.5px">
+          One channel receives all the log types you check below. The logging itself already runs in the background — this just controls where it posts and which events are included.
+        </p>
+
+        <label class="field-label">Modlog channel</label>
+        <div id="modlog-channel-picker"></div>
+
+        <label class="field-label" style="margin-top:22px">Logged events</label>
+        <div style="display:flex;flex-direction:column;gap:2px;margin-top:8px">
+          <label class="modlog-event-row"><input type="checkbox" id="modlog-ban" class="modlog-checkbox"> Bans &amp; Unbans</label>
+          <label class="modlog-event-row"><input type="checkbox" id="modlog-warn" class="modlog-checkbox"> Warnings, Mutes, Hardmutes, Unmutes</label>
+          <label class="modlog-event-row"><input type="checkbox" id="modlog-message" class="modlog-checkbox"> Message edits &amp; deletes</label>
+          <label class="modlog-event-row"><input type="checkbox" id="modlog-purge" class="modlog-checkbox"> Bulk message purges</label>
+          <label class="modlog-event-row"><input type="checkbox" id="modlog-role" class="modlog-checkbox"> Role changes</label>
+          <label class="modlog-event-row"><input type="checkbox" id="modlog-voice" class="modlog-checkbox"> Voice channel join/leave</label>
+          <label class="modlog-event-row"><input type="checkbox" id="modlog-invite" class="modlog-checkbox"> Invite tracking</label>
+          <label class="modlog-event-row"><input type="checkbox" id="modlog-automod" class="modlog-checkbox"> Discord AutoMod actions</label>
+        </div>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <button class="btn-primary" onclick="saveModLogSettings()">Save</button>
+          <p class="save-msg" id="modlogsettings-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="modlogsettings-error" style="color:var(--pink)"></p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-modactions">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// moderation actions</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:18px;letter-spacing:0.5px">
+          These settings control the DM behavior, default duration, and message purge for AuraAI's own moderation commands. Command permissions (who can run them) are controlled by Discord's own role permissions, not here.
+        </p>
+
+        <div style="display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid rgba(0,240,255,0.15);margin-bottom:18px">
+          <button class="sticky-subtab-btn active" id="modact-subtab-btn-ban" onclick="showModActionSubtab('ban')">Ban</button>
+          <button class="sticky-subtab-btn" id="modact-subtab-btn-kick" onclick="showModActionSubtab('kick')">Kick</button>
+          <button class="sticky-subtab-btn" id="modact-subtab-btn-mute" onclick="showModActionSubtab('mute')">Mute</button>
+          <button class="sticky-subtab-btn" id="modact-subtab-btn-hardmute" onclick="showModActionSubtab('hardmute')">Hardmute</button>
+          <button class="sticky-subtab-btn" id="modact-subtab-btn-timeout" onclick="showModActionSubtab('timeout')">Timeout</button>
+          <button class="sticky-subtab-btn" id="modact-subtab-btn-tempban" onclick="showModActionSubtab('tempban')">Tempban</button>
+        </div>
+
+        <!-- ── BAN ──────────────────────────────────────────────────────────── -->
+        <div id="modact-subtab-ban">
+          <label class="field-label">DM the offender?</label>
+          <select class="cyber-input" id="modact-ban-dm" onchange="updateModActionExample('ban')">
+            <option value="none">Do not DM offender</option>
+            <option value="reason">Send server, action and reason</option>
+          </select>
+          <p class="modact-example" id="modact-ban-example"></p>
+
+          <label class="field-label" style="margin-top:18px">Default message purge (days)</label>
+          <input class="cyber-input" type="number" id="modact-ban-purge" min="0" max="7" value="2">
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+            <button class="btn-primary" onclick="saveModAction('ban')">Save</button>
+            <p class="save-msg" id="modact-ban-saved">// Settings saved successfully</p>
+            <p class="save-msg" id="modact-ban-error" style="color:var(--pink)"></p>
+          </div>
+        </div>
+
+        <!-- ── KICK ─────────────────────────────────────────────────────────── -->
+        <div id="modact-subtab-kick" style="display:none">
+          <label class="field-label">DM the offender?</label>
+          <select class="cyber-input" id="modact-kick-dm" onchange="updateModActionExample('kick')">
+            <option value="none">Do not DM offender</option>
+            <option value="reason">Send server, action and reason</option>
+          </select>
+          <p class="modact-example" id="modact-kick-example"></p>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+            <button class="btn-primary" onclick="saveModAction('kick')">Save</button>
+            <p class="save-msg" id="modact-kick-saved">// Settings saved successfully</p>
+            <p class="save-msg" id="modact-kick-error" style="color:var(--pink)"></p>
+          </div>
+        </div>
+
+        <!-- ── MUTE ─────────────────────────────────────────────────────────── -->
+        <div id="modact-subtab-mute" style="display:none">
+          <div class="nmg-step">
+            <p class="nmg-step-title">One-time setup</p>
+            <p class="nmg-step-desc">Mute uses a real Discord role, not Discord's native timeout — so it never expires unless you set a duration, and works even past Discord's 28-day timeout cap. Pick or create a role below, then click "Set Up Mute Role Permissions" once to deny Send Messages / Speak for that role across every channel.</p>
+          </div>
+
+          <label class="field-label">Mute role</label>
+          <div id="modact-mute-role-picker"></div>
+          <button class="btn-secondary" onclick="setupMuteRolePermissions()" style="margin-top:10px">Set Up Mute Role Permissions</button>
+          <p id="modact-mute-setup-result" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-top:8px"></p>
+
+          <label class="field-label" style="margin-top:18px">DM the offender?</label>
+          <select class="cyber-input" id="modact-mute-dm" onchange="updateModActionExample('mute')">
+            <option value="none">Do not DM offender</option>
+            <option value="reason">Send server, action and reason</option>
+          </select>
+          <p class="modact-example" id="modact-mute-example"></p>
+
+          <label class="field-label" style="margin-top:18px">Default mute duration (0 = permanent)</label>
+          <div style="display:flex;gap:10px">
+            <input class="cyber-input" type="number" id="modact-mute-hours" min="0" placeholder="Hours">
+            <input class="cyber-input" type="number" id="modact-mute-minutes" min="0" max="59" placeholder="Minutes">
+          </div>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+            <button class="btn-primary" onclick="saveModAction('mute')">Save</button>
+            <p class="save-msg" id="modact-mute-saved">// Settings saved successfully</p>
+            <p class="save-msg" id="modact-mute-error" style="color:var(--pink)"></p>
+          </div>
+        </div>
+
+        <!-- ── HARDMUTE ─────────────────────────────────────────────────────── -->
+        <div id="modact-subtab-hardmute" style="display:none">
+          <div class="nmg-step">
+            <p class="nmg-step-desc">Uses the same Mute role configured in the Mute tab, but also strips every other role the member has — their roles are saved and automatically restored when they're unmuted.</p>
+          </div>
+
+          <label class="field-label">DM the offender?</label>
+          <select class="cyber-input" id="modact-hardmute-dm" onchange="updateModActionExample('hardmute')">
+            <option value="none">Do not DM offender</option>
+            <option value="reason">Send server, action and reason</option>
+          </select>
+          <p class="modact-example" id="modact-hardmute-example"></p>
+
+          <label class="field-label" style="margin-top:18px">Default hardmute duration (0 = permanent)</label>
+          <div style="display:flex;gap:10px">
+            <input class="cyber-input" type="number" id="modact-hardmute-hours" min="0" placeholder="Hours">
+            <input class="cyber-input" type="number" id="modact-hardmute-minutes" min="0" max="59" placeholder="Minutes">
+          </div>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+            <button class="btn-primary" onclick="saveModAction('hardmute')">Save</button>
+            <p class="save-msg" id="modact-hardmute-saved">// Settings saved successfully</p>
+            <p class="save-msg" id="modact-hardmute-error" style="color:var(--pink)"></p>
+          </div>
+        </div>
+
+        <!-- ── TIMEOUT ──────────────────────────────────────────────────────── -->
+        <div id="modact-subtab-timeout" style="display:none">
+          <div class="nmg-step">
+            <p class="nmg-step-desc">Discord's native timeout — no role needed, but capped at 28 days by Discord itself.</p>
+          </div>
+
+          <label class="field-label">DM the offender?</label>
+          <select class="cyber-input" id="modact-timeout-dm" onchange="updateModActionExample('timeout')">
+            <option value="none">Do not DM offender</option>
+            <option value="reason">Send server, action and reason</option>
+          </select>
+          <p class="modact-example" id="modact-timeout-example"></p>
+
+          <label class="field-label" style="margin-top:18px">Default timeout duration</label>
+          <div style="display:flex;gap:10px">
+            <input class="cyber-input" type="number" id="modact-timeout-hours" min="0" placeholder="Hours">
+            <input class="cyber-input" type="number" id="modact-timeout-minutes" min="0" max="59" placeholder="Minutes">
+          </div>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+            <button class="btn-primary" onclick="saveModAction('timeout')">Save</button>
+            <p class="save-msg" id="modact-timeout-saved">// Settings saved successfully</p>
+            <p class="save-msg" id="modact-timeout-error" style="color:var(--pink)"></p>
+          </div>
+        </div>
+
+        <!-- ── TEMPBAN ──────────────────────────────────────────────────────── -->
+        <div id="modact-subtab-tempban" style="display:none">
+          <label class="field-label">DM the offender?</label>
+          <select class="cyber-input" id="modact-tempban-dm" onchange="updateModActionExample('tempban')">
+            <option value="none">Do not DM offender</option>
+            <option value="reason">Send server, action and reason</option>
+          </select>
+          <p class="modact-example" id="modact-tempban-example"></p>
+
+          <label class="field-label" style="margin-top:18px">Default tempban duration</label>
+          <div style="display:flex;gap:10px">
+            <input class="cyber-input" type="number" id="modact-tempban-hours" min="0" placeholder="Hours">
+            <input class="cyber-input" type="number" id="modact-tempban-minutes" min="0" max="59" placeholder="Minutes">
+          </div>
+
+          <label class="field-label" style="margin-top:18px">Default message purge (days)</label>
+          <input class="cyber-input" type="number" id="modact-tempban-purge" min="0" max="7" value="2">
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+            <button class="btn-primary" onclick="saveModAction('tempban')">Save</button>
+            <p class="save-msg" id="modact-tempban-saved">// Settings saved successfully</p>
+            <p class="save-msg" id="modact-tempban-error" style="color:var(--pink)"></p>
           </div>
         </div>
       </div>
@@ -1818,6 +2028,8 @@
       { id: 'sticky-channel-picker' },
       { id: 'nmg-role-picker' },
       { id: 'security-honeypot-channel-picker' },
+      { id: 'modlog-channel-picker' },
+      { id: 'modact-mute-role-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -2719,6 +2931,148 @@
     }
   }
 
+  // ─── MOD LOG SETTINGS ─────────────────────────────────────────────────────────
+  const MODLOG_CHECKBOX_TO_FIELD = {
+    'modlog-ban': 'ban', 'modlog-warn': 'warn', 'modlog-message': 'message',
+    'modlog-purge': 'purge', 'modlog-role': 'role', 'modlog-voice': 'voice',
+    'modlog-invite': 'invite', 'modlog-automod': 'automod',
+  };
+
+  function loadModLogSettings(s) {
+    const settings = s || {};
+    // Any one of the per-type channel fields represents "the" modlog channel for display purposes.
+    const sharedChannelId = settings.ban_log_channel_id || settings.warn_log_channel_id || settings.message_log_channel_id || null;
+    channelPickers['modlog-channel-picker'].setChannels(guildChannelCache, sharedChannelId);
+    Object.entries(MODLOG_CHECKBOX_TO_FIELD).forEach(([checkboxId, prefix]) => {
+      const el = document.getElementById(checkboxId);
+      if (el) el.checked = settings[`${prefix}_log_enabled`] !== false;
+    });
+    setStatus('status-modlogsettings', !!sharedChannelId);
+  }
+
+  async function saveModLogSettings() {
+    const e = document.getElementById('modlogsettings-error');
+    e.style.display = 'none';
+    if (!selectedGuildId) { e.textContent = '// Error: Please select your Discord server first!'; e.style.display = 'block'; return; }
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const channelId = channelPickers['modlog-channel-picker'].getValue() || null;
+
+    const fields = { owner_discord_id: discordId, discord_server_id: selectedGuildId };
+    Object.entries(MODLOG_CHECKBOX_TO_FIELD).forEach(([checkboxId, prefix]) => {
+      fields[`${prefix}_log_channel_id`] = channelId;
+      fields[`${prefix}_log_enabled`] = document.getElementById(checkboxId)?.checked !== false;
+    });
+
+    try {
+      await sb.from('server_settings').upsert(fields, { onConflict: 'discord_server_id' });
+      setStatus('status-modlogsettings', !!channelId);
+      showSaved('modlogsettings-saved');
+    } catch (err) {
+      e.textContent = '// Error: ' + err.message; e.style.display = 'block';
+    }
+  }
+
+  // ─── MODERATION ACTIONS ───────────────────────────────────────────────────────
+  const MODACT_TYPES = ['ban', 'kick', 'mute', 'hardmute', 'timeout', 'tempban'];
+  const MODACT_LABELS = { ban: 'banned', kick: 'kicked', mute: 'muted', hardmute: 'hardmuted', timeout: 'timed out', tempban: 'temporarily banned' };
+  const MODACT_HAS_DURATION = { mute: true, hardmute: true, timeout: true, tempban: true };
+  const MODACT_HAS_PURGE = { ban: true, tempban: true };
+
+  function showModActionSubtab(name) {
+    MODACT_TYPES.forEach(t => {
+      document.getElementById(`modact-subtab-${t}`).style.display = t === name ? '' : 'none';
+      document.getElementById(`modact-subtab-btn-${t}`).classList.toggle('active', t === name);
+    });
+  }
+
+  function updateModActionExample(type) {
+    const mode = document.getElementById(`modact-${type}-dm`).value;
+    const el = document.getElementById(`modact-${type}-example`);
+    const serverName = userGuilds.find(g => g.id === selectedGuildId)?.name || 'Your Server';
+    if (mode === 'reason') {
+      el.textContent = `Example: You were ${MODACT_LABELS[type]} in ${serverName}. Reason: 'DMing ads'`;
+    } else {
+      el.textContent = 'Example: N/A';
+    }
+  }
+
+  function loadModActionSettings(s) {
+    const settings = s || {};
+    MODACT_TYPES.forEach(type => {
+      const dmEl = document.getElementById(`modact-${type}-dm`);
+      if (dmEl) dmEl.value = settings[`${type}_dm_mode`] || (type === 'ban' || type === 'kick' || type === 'tempban' ? 'none' : 'reason');
+      updateModActionExample(type);
+
+      if (MODACT_HAS_DURATION[type]) {
+        const hEl = document.getElementById(`modact-${type}-hours`);
+        const mEl = document.getElementById(`modact-${type}-minutes`);
+        if (hEl) hEl.value = settings[`${type}_default_hours`] ?? (type === 'timeout' ? 1 : 0);
+        if (mEl) mEl.value = settings[`${type}_default_minutes`] ?? 0;
+      }
+      if (MODACT_HAS_PURGE[type]) {
+        const pEl = document.getElementById(`modact-${type}-purge`);
+        if (pEl) pEl.value = settings[`${type}_purge_days`] ?? 2;
+      }
+    });
+
+    channelPickers['modact-mute-role-picker'] && _populateRolePicker('modact-mute-role-picker', settings.mute_role_id || null);
+    document.getElementById('modact-mute-setup-result').textContent = '';
+    setStatus('status-modactions', !!settings.mute_role_id);
+  }
+
+  async function saveModAction(type) {
+    const e = document.getElementById(`modact-${type}-error`);
+    e.style.display = 'none';
+    if (!selectedGuildId) { e.textContent = '// Error: Please select your Discord server first!'; e.style.display = 'block'; return; }
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+
+    const fields = { owner_discord_id: discordId, discord_server_id: selectedGuildId };
+    fields[`${type}_dm_mode`] = document.getElementById(`modact-${type}-dm`).value;
+
+    if (MODACT_HAS_DURATION[type]) {
+      fields[`${type}_default_hours`] = Math.max(0, parseInt(document.getElementById(`modact-${type}-hours`).value, 10) || 0);
+      fields[`${type}_default_minutes`] = Math.max(0, parseInt(document.getElementById(`modact-${type}-minutes`).value, 10) || 0);
+    }
+    if (MODACT_HAS_PURGE[type]) {
+      fields[`${type}_purge_days`] = Math.min(7, Math.max(0, parseInt(document.getElementById(`modact-${type}-purge`).value, 10) || 0));
+    }
+    if (type === 'mute') {
+      fields.mute_role_id = channelPickers['modact-mute-role-picker'].getValue() || null;
+    }
+
+    try {
+      await sb.from('server_settings').upsert(fields, { onConflict: 'discord_server_id' });
+      if (type === 'mute') setStatus('status-modactions', !!fields.mute_role_id);
+      showSaved(`modact-${type}-saved`);
+    } catch (err) {
+      e.textContent = '// Error: ' + err.message; e.style.display = 'block';
+    }
+  }
+
+  async function setupMuteRolePermissions() {
+    const resultEl = document.getElementById('modact-mute-setup-result');
+    if (!selectedGuildId) { resultEl.textContent = '⚠ Select a server first.'; return; }
+    const roleId = channelPickers['modact-mute-role-picker'].getValue();
+    if (!roleId) { resultEl.textContent = '⚠ Pick a Mute role first.'; return; }
+
+    resultEl.textContent = 'Applying permissions across every channel — this may take a few seconds...';
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/moderation/setup-mute-role`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+        body: JSON.stringify({ guildId: selectedGuildId, roleId }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Unknown error');
+      let msg = `✅ Done — updated ${result.updated} channel(s).`;
+      if (result.errors?.length) msg += ` ⚠ ${result.errors.length} failed: ${result.errors.slice(0, 3).join('; ')}`;
+      resultEl.textContent = msg;
+    } catch (err) {
+      resultEl.textContent = '❌ Error: ' + err.message;
+    }
+  }
+
   function updateSecurityStatus() {
     const s = lastBotConfigSettings || {};
     const anyActive = !!s.domain_blacklist_enabled || !!s.honeypot_enabled;
@@ -3250,6 +3604,11 @@
       document.getElementById('status-security').className = 'config-card-status unset';
       domainBlacklistCache = [];
       renderDomainList();
+      document.getElementById('status-modlogsettings').textContent = '// select a server';
+      document.getElementById('status-modlogsettings').className = 'config-card-status unset';
+      document.getElementById('status-modactions').textContent = '// select a server';
+      document.getElementById('status-modactions').className = 'config-card-status unset';
+      document.getElementById('modact-mute-setup-result').textContent = '';
       Object.values(channelPickers).forEach(p => p.setPlaceholder('— Select a server first —'));
       updateConfigCardStatuses();
       return;
@@ -3289,6 +3648,8 @@
     loadHoneypotSettings(savedSettings);
     await fetchDomainBlacklist();
     updateSecurityStatus();
+    loadModLogSettings(savedSettings);
+    loadModActionSettings(savedSettings);
 
     // Update coaching warning banner
     const coachingWarning=document.getElementById('coaching-server-warning');
@@ -3382,7 +3743,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', sticky:'STICKY MESSAGES', newmembergate:'NEW MEMBER GATE', warnthreshold:'WARN THRESHOLD', security:'SECURITY' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', sticky:'STICKY MESSAGES', newmembergate:'NEW MEMBER GATE', warnthreshold:'WARN THRESHOLD', security:'SECURITY', modlogsettings:'MOD LOG SETTINGS', modactions:'MODERATION ACTIONS' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
