@@ -1269,9 +1269,7 @@
       <div class="section-card">
         <p class="card-title">// add new alert</p>
         <label class="field-label">Platform</label>
-        <select class="cyber-input" id="alert-platform" style="cursor:pointer" onchange="onPlatformChange(this.value)">
-          <option value="twitch">Twitch</option><option value="youtube">YouTube</option><option value="kick">Kick</option><option value="tiktok">TikTok</option>
-        </select>
+        <div id="alert-platform"></div>
         <label class="field-label">Search for streamer / channel</label>
         <div style="position:relative">
           <input class="cyber-input" type="text" id="alert-search" placeholder="Type a name to search..." oninput="onAlertSearch(this.value)" autocomplete="off">
@@ -1819,6 +1817,7 @@
       { id: 'modact-mute-role-picker' },
       { id: 'modact-ban-dm' }, { id: 'modact-kick-dm' }, { id: 'modact-mute-dm' },
       { id: 'modact-hardmute-dm' }, { id: 'modact-timeout-dm' }, { id: 'modact-tempban-dm' },
+      { id: 'alert-platform' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -2528,7 +2527,7 @@
   }
 
   async function searchStreamers(query){
-    const platform=document.getElementById('alert-platform').value;
+    const platform=channelPickers['alert-platform'].getValue();
     const resultsEl=document.getElementById('search-results');
     resultsEl.innerHTML='<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Searching...</div>';resultsEl.style.display='block';
     try{
@@ -2543,7 +2542,7 @@
   function clearSelectedStreamer(){selectedStreamer=null;document.getElementById('selected-streamer').style.display='none';}
 
   async function addAlert(){
-    const platform=document.getElementById('alert-platform').value;
+    const platform=channelPickers['alert-platform'].getValue();
     const channelId=channelPickers['alert-channel'].getValue();
     const errorEl=document.getElementById('alert-error');errorEl.style.display='none';
     let username='';let displayName=null;
@@ -3126,6 +3125,13 @@
   ['ban', 'kick', 'mute', 'hardmute', 'timeout', 'tempban'].forEach(type => {
     channelPickers[`modact-${type}-dm`].onChange = () => updateModActionExample(type);
   });
+  channelPickers['alert-platform'].setStaticOptions([
+    { value: 'twitch', label: 'Twitch' },
+    { value: 'youtube', label: 'YouTube' },
+    { value: 'kick', label: 'Kick' },
+    { value: 'tiktok', label: 'TikTok' },
+  ], 'twitch');
+  channelPickers['alert-platform'].onChange = (val) => onPlatformChange(val);
   init();
 </script>
 </body>
