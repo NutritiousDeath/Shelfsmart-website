@@ -998,12 +998,12 @@
 
         <div class="nmg-step">
           <p class="nmg-step-num">STEP 3</p>
-          <p class="nmg-step-title">Which role unlocks it?</p>
+          <p class="nmg-step-title">Which role(s) unlock it?</p>
           <p class="nmg-step-desc" style="margin-bottom:10px">
-            The moment a member gains THIS role — from any source, not just AuraAI — the New Member role gets removed and they're unlocked. If you use a separate verification bot (like Double Counter), pick its "Verified" role here. If you don't use one, you can pick one of your Reaction Roles instead.<br><br>
-            <span style="color:var(--pink)">⚠</span> Don't pick the same role as Step 2 — a role can't unlock itself.
+            The moment a member gains ANY ONE of the roles you check below — from any source, not just AuraAI — the New Member role gets removed and they're unlocked. If you use a separate verification bot (like Double Counter), check its "Verified" role. If your Reaction Roles menu has multiple options (game roles, interest roles, etc.), you can check all of them — picking up any single one unlocks the member.<br><br>
+            <span style="color:var(--pink)">⚠</span> Don't check the same role selected in Step 2 — a role can't unlock itself.
           </p>
-          <div id="nmg-unlock-role-picker"></div>
+          <div id="nmg-unlock-roles" style="max-height:220px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);border-radius:6px;padding:10px;background:rgba(0,0,0,0.2)"></div>
         </div>
 
         <div class="nmg-step">
@@ -1817,7 +1817,6 @@
       { id: 'rr-channel-picker' },
       { id: 'sticky-channel-picker' },
       { id: 'nmg-role-picker' },
-      { id: 'nmg-unlock-role-picker' },
       { id: 'security-honeypot-channel-picker' },
     ];
     pickerDefs.forEach(def => {
@@ -2443,16 +2442,46 @@
     });
   }
 
+  // Excludes whichever role is currently picked as the gate role in Step 2,
+  // since a role can't unlock itself — matches the warning text in Step 3.
+  function renderUnlockRolesList(savedIds) {
+    const container = document.getElementById('nmg-unlock-roles');
+    if (!container) return;
+    container.innerHTML = '';
+    const saved = new Set(savedIds || []);
+    const gateRoleId = channelPickers['nmg-role-picker']?.getValue();
+    const relevant = (guildRoleCache || []).filter(r => r.id !== gateRoleId && r.name !== '@everyone').sort((a, b) => (b.position || 0) - (a.position || 0));
+
+    if (relevant.length === 0) {
+      container.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No roles loaded yet — select a server first.</p>';
+      return;
+    }
+
+    relevant.forEach(r => {
+      const label = document.createElement('label');
+      label.style = 'display:flex;align-items:center;gap:8px;padding:4px 0;font-family:var(--font-mono);font-size:0.7rem;color:var(--white);cursor:pointer';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = r.id;
+      cb.checked = saved.has(r.id);
+      cb.style = 'width:15px;height:15px';
+      cb.className = 'nmg-unlock-role-checkbox';
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode('@' + r.name));
+      container.appendChild(label);
+    });
+  }
+
   function loadNewMemberGateSettings(guildId, s) {
     initNmgVarButtons();
     const settings = s || {};
     _populateRolePicker('nmg-role-picker', settings.new_member_role_id || null);
-    _populateRolePicker('nmg-unlock-role-picker', settings.new_member_unlock_role_id || null);
+    renderUnlockRolesList(settings.new_member_unlock_role_ids || []);
     document.getElementById('nmg-dm-message').value = settings.new_member_dm_message || '';
     document.getElementById('nmg-enabled').checked = !!settings.new_member_gate_enabled;
     renderUnlockChannelsList(settings.new_member_unlock_channel_ids || []);
     document.getElementById('nmg-lockdown-result').textContent = '';
-    setStatus('status-newmembergate', !!settings.new_member_gate_enabled && !!settings.new_member_role_id && !!settings.new_member_unlock_role_id);
+    setStatus('status-newmembergate', !!settings.new_member_gate_enabled && !!settings.new_member_role_id && (settings.new_member_unlock_role_ids || []).length > 0);
   }
 
   async function saveNewMemberGateSettings() {
@@ -2464,11 +2493,11 @@
     }
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
     const roleId = channelPickers['nmg-role-picker'].getValue() || null;
-    const unlockRoleId = channelPickers['nmg-unlock-role-picker'].getValue() || null;
+    const unlockRoleIds = Array.from(document.querySelectorAll('.nmg-unlock-role-checkbox:checked')).map(cb => cb.value);
     const unlockChannelIds = Array.from(document.querySelectorAll('.nmg-unlock-checkbox:checked')).map(cb => cb.value);
 
-    if (roleId && unlockRoleId && roleId === unlockRoleId) {
-      e.textContent = '// Error: The New Member role and the Unlock role can\'t be the same role.'; e.style.display = 'block';
+    if (roleId && unlockRoleIds.includes(roleId)) {
+      e.textContent = '// Error: The New Member role can\'t also be checked as an Unlock role.'; e.style.display = 'block';
       return;
     }
 
@@ -2477,14 +2506,14 @@
         {
           owner_discord_id: discordId, discord_server_id: selectedGuildId,
           new_member_role_id: roleId,
-          new_member_unlock_role_id: unlockRoleId,
+          new_member_unlock_role_ids: unlockRoleIds,
           new_member_dm_message: document.getElementById('nmg-dm-message').value,
           new_member_gate_enabled: document.getElementById('nmg-enabled').checked,
           new_member_unlock_channel_ids: unlockChannelIds,
         },
         { onConflict: 'discord_server_id' }
       );
-      setStatus('status-newmembergate', document.getElementById('nmg-enabled').checked && !!roleId && !!unlockRoleId);
+      setStatus('status-newmembergate', document.getElementById('nmg-enabled').checked && !!roleId && unlockRoleIds.length > 0);
       showSaved('nmg-saved');
     } catch (err) {
       e.textContent = '// Error: ' + err.message; e.style.display = 'block';
@@ -3213,6 +3242,7 @@
       document.getElementById('status-newmembergate').textContent = '// select a server';
       document.getElementById('status-newmembergate').className = 'config-card-status unset';
       document.getElementById('nmg-unlock-channels').innerHTML = '';
+      document.getElementById('nmg-unlock-roles').innerHTML = '';
       document.getElementById('nmg-lockdown-result').textContent = '';
       document.getElementById('status-warnthreshold').textContent = '// select a server';
       document.getElementById('status-warnthreshold').className = 'config-card-status unset';
