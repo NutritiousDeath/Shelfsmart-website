@@ -581,6 +581,18 @@
           <p class="config-card-desc">Auto-role + channel lockdown + DM for new members, unlocked via Reaction Roles.</p>
           <p class="config-card-status" id="status-newmembergate">// checking...</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('warnthreshold')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          <p class="config-card-title">Warn Threshold <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">Auto-timeout a member after they rack up N warnings from /warn.</p>
+          <p class="config-card-status" id="status-warnthreshold">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('security')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 3 6v6c0 5 3.5 8.5 9 10 5.5-1.5 9-5 9-10V6z"/></svg>
+          <p class="config-card-title">Security <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">Domain blacklist for scam links, plus an anti-raid honeypot channel.</p>
+          <p class="config-card-status" id="status-security">// checking...</p>
+        </div>
         <div class="config-card" onclick="showConfigPage('levels')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <p class="config-card-title">Leveling</p>
@@ -1031,6 +1043,143 @@
           <button class="btn-primary" onclick="saveNewMemberGateSettings()">Save Settings</button>
           <p class="save-msg" id="nmg-saved">// Settings saved successfully</p>
           <p class="save-msg" id="nmg-error" style="color:var(--pink)"></p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-warnthreshold">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// warn threshold <span style="color:var(--purple);font-size:0.6rem">PRO FEATURE</span></p>
+
+        <div class="nmg-step">
+          <p class="nmg-step-title">Who does this affect?</p>
+          <p class="nmg-step-desc">Any member who receives warnings through your mods running <span style="color:var(--cyan)">/warn</span>. Mods themselves are never affected by this — it only acts on the person being warned.</p>
+        </div>
+        <div class="nmg-step">
+          <p class="nmg-step-title">What does it do?</p>
+          <p class="nmg-step-desc">Once a member's total warning count reaches the threshold you set, AuraAI automatically times them out for the duration you set — no mod has to catch it or act manually. It fires the instant the triggering <span style="color:var(--cyan)">/warn</span> is issued.</p>
+        </div>
+        <div class="nmg-step">
+          <p class="nmg-step-title">Where does it apply?</p>
+          <p class="nmg-step-desc">Server-wide — warning counts aren't tied to any specific channel, so it doesn't matter where the warnings were issued.</p>
+        </div>
+
+        <label class="field-label" style="margin-top:10px">Timeout after this many warnings (0 = disabled)</label>
+        <input class="cyber-input" type="number" id="warnthreshold-count" min="0" max="50" value="0">
+
+        <label class="field-label" style="margin-top:14px">Timeout duration (minutes)</label>
+        <input class="cyber-input" type="number" id="warnthreshold-minutes" min="1" max="40320" value="60">
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <button class="btn-primary" onclick="saveWarnThreshold()">Save</button>
+          <p class="save-msg" id="warnthreshold-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="warnthreshold-error" style="color:var(--pink)"></p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-security">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// security <span style="color:var(--purple);font-size:0.6rem">PRO FEATURE</span></p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:18px;letter-spacing:0.5px">
+          Members with <span style="color:var(--cyan)">Manage Server</span> or <span style="color:var(--cyan)">Administrator</span> are always immune to both tools below — you'll never lock yourself out testing your own settings.
+        </p>
+
+        <div style="display:flex;gap:4px;border-bottom:1px solid rgba(0,240,255,0.15);margin-bottom:18px">
+          <button class="sticky-subtab-btn active" id="security-subtab-btn-domains" onclick="showSecuritySubtab('domains')">Domain Blacklist</button>
+          <button class="sticky-subtab-btn" id="security-subtab-btn-honeypot" onclick="showSecuritySubtab('honeypot')">Honeypot</button>
+        </div>
+
+        <!-- ── DOMAIN BLACKLIST ─────────────────────────────────────────────── -->
+        <div id="security-subtab-domains">
+          <div class="nmg-step">
+            <p class="nmg-step-title">Who does this affect?</p>
+            <p class="nmg-step-desc">Any member without Manage Server or Administrator — so regular members and anyone posting a scam/phishing link (fake Nitro giveaways, fake payment or refund links, crypto scam invites are common targets for paid Discord communities).</p>
+          </div>
+          <div class="nmg-step">
+            <p class="nmg-step-title">What does it do?</p>
+            <p class="nmg-step-desc">Deletes any message containing a link to a domain on your list below. You choose how far it escalates: just delete the message, delete it and issue a formal warning (counts toward Warn Threshold above), or delete it and time the member out immediately.</p>
+          </div>
+          <div class="nmg-step">
+            <p class="nmg-step-title">Where does it apply?</p>
+            <p class="nmg-step-desc">Every message, in every channel, server-wide.</p>
+          </div>
+
+          <label style="display:flex;align-items:center;gap:8px;margin:16px 0;font-family:var(--font-mono);font-size:0.7rem;color:var(--white);cursor:pointer">
+            <input type="checkbox" id="security-domains-enabled" style="width:16px;height:16px"> Enable Domain Blacklist
+          </label>
+
+          <label class="field-label">Add a domain</label>
+          <div style="display:flex;gap:8px">
+            <input class="cyber-input" type="text" id="security-domain-input" placeholder="e.g. discord-nitro-free.com" style="flex:1">
+            <button class="btn-secondary" onclick="addBlacklistedDomain()">Add</button>
+          </div>
+          <div id="security-domain-list" style="margin-top:12px;max-height:220px;overflow-y:auto"></div>
+
+          <label class="field-label" style="margin-top:18px">If a blacklisted link is posted</label>
+          <select class="cyber-input" id="security-domain-punishment" onchange="document.getElementById('security-domain-timeout-wrap').style.display = this.value === 'delete_timeout' ? '' : 'none'">
+            <option value="delete">Just delete the message</option>
+            <option value="delete_warn">Delete + issue a warning</option>
+            <option value="delete_timeout">Delete + timeout</option>
+          </select>
+
+          <div id="security-domain-timeout-wrap" style="display:none">
+            <label class="field-label" style="margin-top:14px">Timeout duration (minutes)</label>
+            <input class="cyber-input" type="number" id="security-domain-timeout-minutes" min="1" max="40320" value="10">
+          </div>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+            <button class="btn-primary" onclick="saveDomainBlacklistSettings()">Save</button>
+            <p class="save-msg" id="security-domains-saved">// Settings saved successfully</p>
+            <p class="save-msg" id="security-domains-error" style="color:var(--pink)"></p>
+          </div>
+        </div>
+
+        <!-- ── HONEYPOT ─────────────────────────────────────────────────────── -->
+        <div id="security-subtab-honeypot" style="display:none">
+          <div class="nmg-step">
+            <p class="nmg-step-title">Who does this affect?</p>
+            <p class="nmg-step-desc">Any member without Manage Server or Administrator who posts in the trap channel you designate below — real members should never have a reason to post there.</p>
+          </div>
+          <div class="nmg-step">
+            <p class="nmg-step-title">What does it do?</p>
+            <p class="nmg-step-desc">Instantly deletes their message and punishes them — kick, ban, or timeout, your choice — with no warning first. This is meant to catch raid bots and spam accounts posting blind, not to be a "first offense" tool.</p>
+          </div>
+          <div class="nmg-step">
+            <p class="nmg-step-title">Where does it apply?</p>
+            <p class="nmg-step-desc">Only the one channel you pick below.</p>
+          </div>
+          <div class="nmg-step">
+            <p class="nmg-step-title">Tip for making it actually work</p>
+            <p class="nmg-step-desc">Name the channel something a raid bot or spam account would target but a real member never would — e.g. "free-nitro", "giveaway-claim", "verify-here" (if you're not already using that name for real verification). If you're using New Member Gate, you can also make this channel one that only the New Member role can see — real verified members will never even encounter it.</p>
+          </div>
+
+          <label style="display:flex;align-items:center;gap:8px;margin:16px 0;font-family:var(--font-mono);font-size:0.7rem;color:var(--white);cursor:pointer">
+            <input type="checkbox" id="security-honeypot-enabled" style="width:16px;height:16px"> Enable Honeypot
+          </label>
+
+          <label class="field-label">Honeypot channel</label>
+          <div id="security-honeypot-channel-picker"></div>
+
+          <label class="field-label" style="margin-top:14px">Punishment</label>
+          <select class="cyber-input" id="security-honeypot-punishment" onchange="document.getElementById('security-honeypot-timeout-wrap').style.display = this.value === 'timeout' ? '' : 'none'">
+            <option value="kick">Kick</option>
+            <option value="ban">Ban</option>
+            <option value="timeout">Timeout</option>
+          </select>
+
+          <div id="security-honeypot-timeout-wrap" style="display:none">
+            <label class="field-label" style="margin-top:14px">Timeout duration (minutes)</label>
+            <input class="cyber-input" type="number" id="security-honeypot-timeout-minutes" min="1" max="40320" value="60">
+          </div>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+            <button class="btn-primary" onclick="saveHoneypotSettings()">Save</button>
+            <p class="save-msg" id="security-honeypot-saved">// Settings saved successfully</p>
+            <p class="save-msg" id="security-honeypot-error" style="color:var(--pink)"></p>
+          </div>
         </div>
       </div>
       </div>
@@ -1669,6 +1818,7 @@
       { id: 'sticky-channel-picker' },
       { id: 'nmg-role-picker' },
       { id: 'nmg-unlock-role-picker' },
+      { id: 'security-honeypot-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -2369,6 +2519,183 @@
     }
   }
 
+  // ─── WARN THRESHOLD ───────────────────────────────────────────────────────────
+  function loadWarnThresholdSettings(s) {
+    const settings = s || {};
+    document.getElementById('warnthreshold-count').value = settings.warn_auto_action_threshold || 0;
+    document.getElementById('warnthreshold-minutes').value = settings.warn_auto_action_minutes || 60;
+    setStatus('status-warnthreshold', !!(settings.warn_auto_action_threshold > 0));
+  }
+
+  async function saveWarnThreshold() {
+    const e = document.getElementById('warnthreshold-error');
+    e.style.display = 'none';
+    if (!selectedGuildId) { e.textContent = '// Error: Please select your Discord server first!'; e.style.display = 'block'; return; }
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const count = Math.max(0, parseInt(document.getElementById('warnthreshold-count').value, 10) || 0);
+    const minutes = Math.max(1, parseInt(document.getElementById('warnthreshold-minutes').value, 10) || 60);
+
+    try {
+      await sb.from('server_settings').upsert(
+        { owner_discord_id: discordId, discord_server_id: selectedGuildId, warn_auto_action_threshold: count, warn_auto_action_minutes: minutes },
+        { onConflict: 'discord_server_id' }
+      );
+      setStatus('status-warnthreshold', count > 0);
+      showSaved('warnthreshold-saved');
+    } catch (err) {
+      e.textContent = '// Error: ' + err.message; e.style.display = 'block';
+    }
+  }
+
+  // ─── SECURITY: DOMAIN BLACKLIST + HONEYPOT ───────────────────────────────────
+  let domainBlacklistCache = [];
+
+  function showSecuritySubtab(name) {
+    document.getElementById('security-subtab-domains').style.display = name === 'domains' ? '' : 'none';
+    document.getElementById('security-subtab-honeypot').style.display = name === 'honeypot' ? '' : 'none';
+    document.getElementById('security-subtab-btn-domains').classList.toggle('active', name === 'domains');
+    document.getElementById('security-subtab-btn-honeypot').classList.toggle('active', name === 'honeypot');
+  }
+
+  function renderDomainList() {
+    const container = document.getElementById('security-domain-list');
+    if (domainBlacklistCache.length === 0) {
+      container.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No domains added yet.</p>';
+      return;
+    }
+    container.innerHTML = '';
+    domainBlacklistCache.forEach(d => {
+      const row = document.createElement('div');
+      row.style = 'display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(0,0,0,0.2);border-radius:4px;margin-bottom:6px;font-family:var(--font-mono);font-size:0.7rem';
+      row.innerHTML = `<span style="color:var(--white)">${d.domain}</span>`;
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '✕';
+      delBtn.style = 'background:var(--pink);color:#fff;border:none;border-radius:4px;width:24px;height:24px;cursor:pointer';
+      delBtn.onclick = () => removeBlacklistedDomain(d.domain);
+      row.appendChild(delBtn);
+      container.appendChild(row);
+    });
+  }
+
+  async function fetchDomainBlacklist() {
+    if (!selectedGuildId) { domainBlacklistCache = []; renderDomainList(); return; }
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${RAILWAY_BOT_URL}/api/domain-blacklist?guildId=${selectedGuildId}`, {
+        headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+      });
+      const data = await res.json();
+      domainBlacklistCache = data.domains || [];
+    } catch (err) {
+      console.error('fetchDomainBlacklist error:', err.message);
+      domainBlacklistCache = [];
+    }
+    renderDomainList();
+  }
+
+  async function addBlacklistedDomain() {
+    const input = document.getElementById('security-domain-input');
+    const domain = input.value.trim();
+    if (!domain || !selectedGuildId) return;
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      await fetch(`${RAILWAY_BOT_URL}/api/domain-blacklist`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+        body: JSON.stringify({ guildId: selectedGuildId, domain }),
+      });
+      input.value = '';
+      await fetchDomainBlacklist();
+    } catch (err) {
+      console.error('addBlacklistedDomain error:', err.message);
+    }
+  }
+
+  async function removeBlacklistedDomain(domain) {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      await fetch(`${RAILWAY_BOT_URL}/api/domain-blacklist/delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+        body: JSON.stringify({ guildId: selectedGuildId, domain }),
+      });
+      await fetchDomainBlacklist();
+    } catch (err) {
+      console.error('removeBlacklistedDomain error:', err.message);
+    }
+  }
+
+  function loadDomainBlacklistSettings(s) {
+    const settings = s || {};
+    document.getElementById('security-domains-enabled').checked = !!settings.domain_blacklist_enabled;
+    document.getElementById('security-domain-punishment').value = settings.domain_blacklist_punishment || 'delete';
+    document.getElementById('security-domain-timeout-minutes').value = settings.domain_blacklist_timeout_minutes || 10;
+    document.getElementById('security-domain-timeout-wrap').style.display = settings.domain_blacklist_punishment === 'delete_timeout' ? '' : 'none';
+  }
+
+  async function saveDomainBlacklistSettings() {
+    const e = document.getElementById('security-domains-error');
+    e.style.display = 'none';
+    if (!selectedGuildId) { e.textContent = '// Error: Please select your Discord server first!'; e.style.display = 'block'; return; }
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+
+    try {
+      await sb.from('server_settings').upsert(
+        {
+          owner_discord_id: discordId, discord_server_id: selectedGuildId,
+          domain_blacklist_enabled: document.getElementById('security-domains-enabled').checked,
+          domain_blacklist_punishment: document.getElementById('security-domain-punishment').value,
+          domain_blacklist_timeout_minutes: Math.max(1, parseInt(document.getElementById('security-domain-timeout-minutes').value, 10) || 10),
+        },
+        { onConflict: 'discord_server_id' }
+      );
+      updateSecurityStatus();
+      showSaved('security-domains-saved');
+    } catch (err) {
+      e.textContent = '// Error: ' + err.message; e.style.display = 'block';
+    }
+  }
+
+  function loadHoneypotSettings(s) {
+    const settings = s || {};
+    document.getElementById('security-honeypot-enabled').checked = !!settings.honeypot_enabled;
+    channelPickers['security-honeypot-channel-picker'].setChannels(guildChannelCache, settings.honeypot_channel_id || null);
+    document.getElementById('security-honeypot-punishment').value = settings.honeypot_punishment || 'kick';
+    document.getElementById('security-honeypot-timeout-minutes').value = settings.honeypot_timeout_minutes || 60;
+    document.getElementById('security-honeypot-timeout-wrap').style.display = settings.honeypot_punishment === 'timeout' ? '' : 'none';
+  }
+
+  async function saveHoneypotSettings() {
+    const e = document.getElementById('security-honeypot-error');
+    e.style.display = 'none';
+    if (!selectedGuildId) { e.textContent = '// Error: Please select your Discord server first!'; e.style.display = 'block'; return; }
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    const channelId = channelPickers['security-honeypot-channel-picker'].getValue() || null;
+
+    try {
+      await sb.from('server_settings').upsert(
+        {
+          owner_discord_id: discordId, discord_server_id: selectedGuildId,
+          honeypot_enabled: document.getElementById('security-honeypot-enabled').checked,
+          honeypot_channel_id: channelId,
+          honeypot_punishment: document.getElementById('security-honeypot-punishment').value,
+          honeypot_timeout_minutes: Math.max(1, parseInt(document.getElementById('security-honeypot-timeout-minutes').value, 10) || 60),
+        },
+        { onConflict: 'discord_server_id' }
+      );
+      updateSecurityStatus();
+      showSaved('security-honeypot-saved');
+    } catch (err) {
+      e.textContent = '// Error: ' + err.message; e.style.display = 'block';
+    }
+  }
+
+  function updateSecurityStatus() {
+    const s = lastBotConfigSettings || {};
+    const anyActive = !!s.domain_blacklist_enabled || !!s.honeypot_enabled;
+    setStatus('status-security', anyActive);
+  }
+
   // ─── REACTION ROLES BUILDER ──────────────────────────────────────────────────
   let rrOptionCounter = 0;
 
@@ -2887,6 +3214,12 @@
       document.getElementById('status-newmembergate').className = 'config-card-status unset';
       document.getElementById('nmg-unlock-channels').innerHTML = '';
       document.getElementById('nmg-lockdown-result').textContent = '';
+      document.getElementById('status-warnthreshold').textContent = '// select a server';
+      document.getElementById('status-warnthreshold').className = 'config-card-status unset';
+      document.getElementById('status-security').textContent = '// select a server';
+      document.getElementById('status-security').className = 'config-card-status unset';
+      domainBlacklistCache = [];
+      renderDomainList();
       Object.values(channelPickers).forEach(p => p.setPlaceholder('— Select a server first —'));
       updateConfigCardStatuses();
       return;
@@ -2921,6 +3254,11 @@
     document.getElementById('status-sticky').textContent = stickyListCache.length ? `✓ ${stickyListCache.length} active` : '// none yet';
     document.getElementById('status-sticky').className = 'config-card-status ' + (stickyListCache.length ? 'set' : 'unset');
     loadNewMemberGateSettings(guildId, savedSettings);
+    loadWarnThresholdSettings(savedSettings);
+    loadDomainBlacklistSettings(savedSettings);
+    loadHoneypotSettings(savedSettings);
+    await fetchDomainBlacklist();
+    updateSecurityStatus();
 
     // Update coaching warning banner
     const coachingWarning=document.getElementById('coaching-server-warning');
@@ -3014,7 +3352,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', sticky:'STICKY MESSAGES', newmembergate:'NEW MEMBER GATE' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', sticky:'STICKY MESSAGES', newmembergate:'NEW MEMBER GATE', warnthreshold:'WARN THRESHOLD', security:'SECURITY' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
