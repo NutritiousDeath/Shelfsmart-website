@@ -1251,10 +1251,7 @@
         <!-- ── BAN ──────────────────────────────────────────────────────────── -->
         <div id="modact-subtab-ban">
           <label class="field-label">DM the offender?</label>
-          <select class="cyber-input" id="modact-ban-dm" onchange="updateModActionExample('ban')">
-            <option value="none">Do not DM offender</option>
-            <option value="reason">Send server, action and reason</option>
-          </select>
+          <div id="modact-ban-dm"></div>
           <p class="modact-example" id="modact-ban-example"></p>
 
           <label class="field-label" style="margin-top:18px">Default message purge (days)</label>
@@ -1270,10 +1267,7 @@
         <!-- ── KICK ─────────────────────────────────────────────────────────── -->
         <div id="modact-subtab-kick" style="display:none">
           <label class="field-label">DM the offender?</label>
-          <select class="cyber-input" id="modact-kick-dm" onchange="updateModActionExample('kick')">
-            <option value="none">Do not DM offender</option>
-            <option value="reason">Send server, action and reason</option>
-          </select>
+          <div id="modact-kick-dm"></div>
           <p class="modact-example" id="modact-kick-example"></p>
 
           <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
@@ -1296,10 +1290,7 @@
           <p id="modact-mute-setup-result" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-top:8px"></p>
 
           <label class="field-label" style="margin-top:18px">DM the offender?</label>
-          <select class="cyber-input" id="modact-mute-dm" onchange="updateModActionExample('mute')">
-            <option value="none">Do not DM offender</option>
-            <option value="reason">Send server, action and reason</option>
-          </select>
+          <div id="modact-mute-dm"></div>
           <p class="modact-example" id="modact-mute-example"></p>
 
           <label class="field-label" style="margin-top:18px">Default mute duration (0 = permanent)</label>
@@ -1322,10 +1313,7 @@
           </div>
 
           <label class="field-label">DM the offender?</label>
-          <select class="cyber-input" id="modact-hardmute-dm" onchange="updateModActionExample('hardmute')">
-            <option value="none">Do not DM offender</option>
-            <option value="reason">Send server, action and reason</option>
-          </select>
+          <div id="modact-hardmute-dm"></div>
           <p class="modact-example" id="modact-hardmute-example"></p>
 
           <label class="field-label" style="margin-top:18px">Default hardmute duration (0 = permanent)</label>
@@ -1348,10 +1336,7 @@
           </div>
 
           <label class="field-label">DM the offender?</label>
-          <select class="cyber-input" id="modact-timeout-dm" onchange="updateModActionExample('timeout')">
-            <option value="none">Do not DM offender</option>
-            <option value="reason">Send server, action and reason</option>
-          </select>
+          <div id="modact-timeout-dm"></div>
           <p class="modact-example" id="modact-timeout-example"></p>
 
           <label class="field-label" style="margin-top:18px">Default timeout duration</label>
@@ -1370,10 +1355,7 @@
         <!-- ── TEMPBAN ──────────────────────────────────────────────────────── -->
         <div id="modact-subtab-tempban" style="display:none">
           <label class="field-label">DM the offender?</label>
-          <select class="cyber-input" id="modact-tempban-dm" onchange="updateModActionExample('tempban')">
-            <option value="none">Do not DM offender</option>
-            <option value="reason">Send server, action and reason</option>
-          </select>
+          <div id="modact-tempban-dm"></div>
           <p class="modact-example" id="modact-tempban-example"></p>
 
           <label class="field-label" style="margin-top:18px">Default tempban duration</label>
@@ -1984,6 +1966,38 @@
 
     getValue() { return this.value; }
 
+    // For simple fixed-choice dropdowns (e.g. "Do not DM offender" / "Send
+    // server, action and reason") — same widget, same styling, but no search
+    // box since there's nothing worth searching in a 2-4 item list. This is
+    // what replaces native <select> anywhere in the dashboard: native
+    // dropdowns can have their closed state styled with CSS, but the opened
+    // popup falls back to native OS/browser rendering (bright white, no way
+    // to theme it), which is why this custom widget exists at all.
+    setStaticOptions(optionsArray, savedValue) {
+      this.searchWrap.style.display = 'none';
+      this.list.innerHTML = '';
+      this.options = [];
+
+      optionsArray.forEach(opt => {
+        const div = document.createElement('div');
+        div.className = 'cd-option' + (opt.value === savedValue ? ' selected' : '');
+        div.textContent = opt.label;
+        div.dataset.value = opt.value;
+        div.onclick = (e) => {
+          e.stopPropagation();
+          this.setValue(opt.value, opt.label);
+          this.close();
+          if (this.onChange) this.onChange(opt.value);
+        };
+        this.list.appendChild(div);
+        this.options.push({ value: opt.value, label: opt.label, el: div });
+      });
+
+      const saved = optionsArray.find(o => o.value === savedValue);
+      this.value = savedValue || optionsArray[0]?.value || '';
+      this.selected.querySelector('.cd-label').textContent = saved ? saved.label : (optionsArray[0]?.label || '— Select —');
+    }
+
     setPlaceholder(text) {
       this.value = '';
       this.selected.querySelector('.cd-label').textContent = text;
@@ -2037,6 +2051,8 @@
       { id: 'security-honeypot-channel-picker' },
       { id: 'modlog-channel-picker' },
       { id: 'modact-mute-role-picker' },
+      { id: 'modact-ban-dm' }, { id: 'modact-kick-dm' }, { id: 'modact-mute-dm' },
+      { id: 'modact-hardmute-dm' }, { id: 'modact-timeout-dm' }, { id: 'modact-tempban-dm' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -2992,8 +3008,13 @@
     });
   }
 
+  const DM_MODE_OPTIONS = [
+    { value: 'none', label: 'Do not DM offender' },
+    { value: 'reason', label: 'Send server, action and reason' },
+  ];
+
   function updateModActionExample(type) {
-    const mode = document.getElementById(`modact-${type}-dm`).value;
+    const mode = channelPickers[`modact-${type}-dm`]?.getValue();
     const el = document.getElementById(`modact-${type}-example`);
     const serverName = userGuilds.find(g => g.id === selectedGuildId)?.name || 'Your Server';
     if (mode === 'reason') {
@@ -3006,8 +3027,8 @@
   function loadModActionSettings(s) {
     const settings = s || {};
     MODACT_TYPES.forEach(type => {
-      const dmEl = document.getElementById(`modact-${type}-dm`);
-      if (dmEl) dmEl.value = settings[`${type}_dm_mode`] || (type === 'ban' || type === 'kick' || type === 'tempban' ? 'none' : 'reason');
+      const defaultMode = (type === 'ban' || type === 'kick' || type === 'tempban') ? 'none' : 'reason';
+      channelPickers[`modact-${type}-dm`]?.setStaticOptions(DM_MODE_OPTIONS, settings[`${type}_dm_mode`] || defaultMode);
       updateModActionExample(type);
 
       if (MODACT_HAS_DURATION[type]) {
@@ -3034,7 +3055,7 @@
     const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
 
     const fields = { owner_discord_id: discordId, discord_server_id: selectedGuildId };
-    fields[`${type}_dm_mode`] = document.getElementById(`modact-${type}-dm`).value;
+    fields[`${type}_dm_mode`] = channelPickers[`modact-${type}-dm`].getValue();
 
     if (MODACT_HAS_DURATION[type]) {
       fields[`${type}_default_hours`] = Math.max(0, parseInt(document.getElementById(`modact-${type}-hours`).value, 10) || 0);
@@ -4573,6 +4594,9 @@
   }
 
   initChannelPickers();
+  ['ban', 'kick', 'mute', 'hardmute', 'timeout', 'tempban'].forEach(type => {
+    channelPickers[`modact-${type}-dm`].onChange = () => updateModActionExample(type);
+  });
   init();
 </script>
 </body>
