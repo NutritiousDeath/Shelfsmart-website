@@ -1153,71 +1153,112 @@
       <div class="section-card">
         <p class="card-title">// server info hub</p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:18px;letter-spacing:0.5px">
-          Build an ordered set of named panels — Welcome, Rules, Links, Mods, whatever you want — each with a banner header image and its own content below it. Publish them all together to one channel. Re-publishing edits the existing messages in place instead of posting duplicates.
+          Publish a set of banner-headed panels — Welcome, Rules, Links, Mods, etc. — together to one channel. Re-publishing edits the existing messages in place instead of posting duplicates.
         </p>
 
-        <button class="btn-primary" onclick="startNewInfoHubPanel()">+ Add Panel</button>
-        <div style="overflow-x:auto;margin-top:18px">
-          <table style="width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:0.72rem">
-            <thead>
-              <tr style="border-bottom:1px solid rgba(0,240,255,0.15);text-align:left">
-                <th style="padding:8px;color:var(--cyan)">ORDER</th>
-                <th style="padding:8px;color:var(--cyan)">TITLE</th>
-                <th style="padding:8px;color:var(--cyan)">BANNER</th>
-                <th style="padding:8px;color:var(--cyan)">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody id="infohub-panel-table-body">
-              <tr><td colspan="4" style="padding:16px;text-align:center;color:var(--grey)">No panels yet — add one above.</td></tr>
-            </tbody>
-          </table>
+        <label class="field-label">Publish to channel</label>
+        <div id="infohub-channel-picker"></div>
+
+        <div style="display:flex;gap:4px;border-bottom:1px solid rgba(0,240,255,0.15);margin:18px 0">
+          <button class="sticky-subtab-btn active" id="infohub-subtab-btn-custom" onclick="showInfoHubSubtab('custom')">Custom</button>
+          <button class="sticky-subtab-btn" id="infohub-subtab-btn-themed" onclick="showInfoHubSubtab('themed')">Themed</button>
         </div>
 
-        <!-- ── PANEL EDITOR (shared for create + edit) ─────────────────────── -->
-        <div id="infohub-editor" style="display:none;margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
-          <p class="card-title" id="infohub-editor-heading" style="font-size:0.75rem">// new panel</p>
+        <!-- ── CUSTOM MODE ──────────────────────────────────────────────────── -->
+        <div id="infohub-subtab-custom">
+          <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:14px">
+            Freeform panels — any title, any order, banner generated on the fly.
+          </p>
 
-          <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:12px">
-            <div style="flex:1;min-width:320px">
-              <label class="field-label">Title <span style="color:var(--grey);font-weight:400">(also the banner text)</span></label>
-              <input class="cyber-input" type="text" id="infohub-title" placeholder="Welcome" maxlength="60">
+          <button class="btn-primary" onclick="startNewInfoHubPanel()">+ Add Panel</button>
+          <div style="overflow-x:auto;margin-top:18px">
+            <table style="width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:0.72rem">
+              <thead>
+                <tr style="border-bottom:1px solid rgba(0,240,255,0.15);text-align:left">
+                  <th style="padding:8px;color:var(--cyan)">ORDER</th>
+                  <th style="padding:8px;color:var(--cyan)">TITLE</th>
+                  <th style="padding:8px;color:var(--cyan)">BANNER</th>
+                  <th style="padding:8px;color:var(--cyan)">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="infohub-panel-table-body">
+                <tr><td colspan="4" style="padding:16px;text-align:center;color:var(--grey)">No panels yet — add one above.</td></tr>
+              </tbody>
+            </table>
+          </div>
 
-              <label class="field-label" style="margin-top:14px">Banner</label>
-              <div id="infohub-banner-style"></div>
+          <!-- ── PANEL EDITOR (shared for create + edit) ─────────────────────── -->
+          <div id="infohub-editor" style="display:none;margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
+            <p class="card-title" id="infohub-editor-heading" style="font-size:0.75rem">// new panel</p>
 
-              <label class="field-label" style="margin-top:14px">Content</label>
-              <textarea class="cyber-input" id="infohub-content" rows="6" placeholder="Hello and a warm welcome to all of our new members! 👋" maxlength="3900"></textarea>
+            <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:12px">
+              <div style="flex:1;min-width:320px">
+                <label class="field-label">Title <span style="color:var(--grey);font-weight:400">(also the banner text)</span></label>
+                <input class="cyber-input" type="text" id="infohub-title" placeholder="Welcome" maxlength="60">
 
-              <label class="field-label" style="margin-top:14px">Embed accent color</label>
-              <input class="cyber-input" type="text" id="infohub-color" placeholder="#00f0ff" maxlength="7">
+                <label class="field-label" style="margin-top:14px">Banner</label>
+                <div id="infohub-banner-style"></div>
 
-              <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
-                <button class="btn-primary" onclick="saveInfoHubPanel()">Save Panel</button>
-                <button class="btn-secondary" onclick="cancelInfoHubPanel()" style="margin-left:8px">Cancel</button>
-                <button class="btn-secondary" onclick="deleteInfoHubPanelFromEditor()" id="infohub-delete-btn" style="display:none;margin-left:8px;border-color:var(--pink);color:var(--pink)">Delete</button>
-                <p class="save-msg" id="infohub-saved">// Settings saved successfully</p>
-                <p class="save-msg" id="infohub-error" style="color:var(--pink)"></p>
+                <label class="field-label" style="margin-top:14px">Content</label>
+                <textarea class="cyber-input" id="infohub-content" rows="6" placeholder="Hello and a warm welcome to all of our new members! 👋" maxlength="3900"></textarea>
+
+                <label class="field-label" style="margin-top:14px">Embed accent color</label>
+                <input class="cyber-input" type="text" id="infohub-color" placeholder="#00f0ff" maxlength="7">
+
+                <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+                  <button class="btn-primary" onclick="saveInfoHubPanel()">Save Panel</button>
+                  <button class="btn-secondary" onclick="cancelInfoHubPanel()" style="margin-left:8px">Cancel</button>
+                  <button class="btn-secondary" onclick="deleteInfoHubPanelFromEditor()" id="infohub-delete-btn" style="display:none;margin-left:8px;border-color:var(--pink);color:var(--pink)">Delete</button>
+                  <p class="save-msg" id="infohub-saved">// Settings saved successfully</p>
+                  <p class="save-msg" id="infohub-error" style="color:var(--pink)"></p>
+                </div>
               </div>
-            </div>
 
-            <div style="flex:1;min-width:320px">
-              <label class="field-label">Live Preview</label>
-              <div style="background:#2b2d31;border-radius:8px;padding:14px;margin-top:8px">
-                <div id="infohub-preview-banner" style="height:70px;border-radius:4px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:900;color:#fff;text-transform:uppercase"></div>
-                <div style="border-left:4px solid #00f0ff;background:#1e1f22;border-radius:4px;padding:10px 14px" id="infohub-preview-embed">
-                  <div id="infohub-preview-content" style="color:#dbdee1;font-size:0.85rem;white-space:pre-wrap;line-height:1.5"></div>
+              <div style="flex:1;min-width:320px">
+                <label class="field-label">Live Preview</label>
+                <div style="background:#2b2d31;border-radius:8px;padding:14px;margin-top:8px">
+                  <div id="infohub-preview-banner" style="height:70px;border-radius:4px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:900;color:#fff;text-transform:uppercase"></div>
+                  <div style="border-left:4px solid #00f0ff;background:#1e1f22;border-radius:4px;padding:10px 14px" id="infohub-preview-embed">
+                    <div id="infohub-preview-content" style="color:#dbdee1;font-size:0.85rem;white-space:pre-wrap;line-height:1.5"></div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
+            <button class="btn-primary" onclick="publishInfoHub()">Publish / Update All Panels</button>
+            <p id="infohub-publish-result" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-top:10px"></p>
+          </div>
         </div>
 
-        <!-- ── PUBLISH ──────────────────────────────────────────────────────── -->
-        <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
-          <label class="field-label">Publish to channel</label>
-          <div id="infohub-channel-picker"></div>
-          <button class="btn-primary" onclick="publishInfoHub()" style="margin-top:12px">Publish / Update All Panels</button>
-          <p id="infohub-publish-result" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-top:10px"></p>
+        <!-- ── THEMED MODE ──────────────────────────────────────────────────── -->
+        <div id="infohub-subtab-themed" style="display:none">
+          <div class="nmg-step">
+            <p class="nmg-step-title">How this works</p>
+            <p class="nmg-step-desc">Pick a theme below — each one provides pre-made banner art for all 7 standard panels (Welcome, Rules, Links, Mods, FAQ, Socials, Announcements). You just fill in the text for each. A theme only shows up here once every one of its 7 images actually exists.</p>
+          </div>
+
+          <label class="field-label">Choose a theme</label>
+          <div id="infohub-theme-gallery" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:10px">
+            <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Checking available themes...</p>
+          </div>
+
+          <div id="infohub-themed-panels" style="display:none;margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
+            <p class="card-title" style="font-size:0.75rem" id="infohub-themed-heading">// theme panels</p>
+            <div id="infohub-themed-panel-list" style="margin-top:12px"></div>
+
+            <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+              <button class="btn-primary" onclick="saveThemedInfoHubContent()">Save All Panel Content</button>
+              <p class="save-msg" id="infohub-themed-saved">// Settings saved successfully</p>
+              <p class="save-msg" id="infohub-themed-error" style="color:var(--pink)"></p>
+            </div>
+
+            <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+              <button class="btn-primary" onclick="publishThemedInfoHubAction()">Publish / Update Themed Hub</button>
+              <p id="infohub-themed-publish-result" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-top:10px"></p>
+            </div>
+          </div>
         </div>
       </div>
       </div>
