@@ -296,7 +296,17 @@
   // Same-origin check (dashboard and theme images both live on
   // uptight-shelf-smart-flow.com) — no CORS issue, just a plain HEAD request.
   function checkImageExists(url) {
-    return fetch(url, { method: 'HEAD' }).then(r => r.ok).catch(() => false);
+    // A real <img> load, with a cache-busting query param, instead of
+    // fetch(HEAD). Browsers can be surprisingly persistent about caching a
+    // failed fetch() response even across a hard page refresh — this
+    // guarantees a genuinely fresh check every single time, not a
+    // potentially stale "this 404'd before" result from a moment ago.
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = `${url}?_check=${Date.now()}`;
+    });
   }
 
   async function checkThemeCompleteness(themeId) {
