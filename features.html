@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AuraAI — Esports, Community & Moderation for Discord</title>
-<meta name="description" content="AuraAI is a Discord bot for gaming communities: esports tournament management, AI chat, leveling, moderation, and more.">
+<meta name="description" content="AuraAI is a Discord bot for gaming communities: esports tournament management, ESO trial/PvP signups, AI chat, leveling, moderation, and more.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -188,12 +188,12 @@
 </div>
 
 <div class="games-strip">
-  <span>Overwatch 2</span> · <span>Marvel Rivals</span> · <span>Rainbow Six Siege</span> · <span>Destiny 2</span>
+  <span>Overwatch 2</span> · <span>Marvel Rivals</span> · <span>Rainbow Six Siege</span> · <span>Destiny 2</span> · <span>Elder Scrolls Online</span>
 </div>
 
 <section id="capabilities">
   <p class="eyebrow">Capabilities</p>
-  <h2 class="section-title">Five systems, one bot.</h2>
+  <h2 class="section-title">Six systems, one bot.</h2>
   <p class="section-lede">Every feature below runs from a single dashboard — no juggling five different bots with five different permission sets.</p>
 
   <div class="cap-grid">
@@ -206,6 +206,18 @@
         <li>Map pool rotation per game mode</li>
         <li>Team registration, roster management, scrim scheduling</li>
         <li>1-on-1 coaching — private threads with transcript logging</li>
+      </ul>
+    </div>
+    <div class="cap-card">
+      <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M12 12 3 7m9 5 9-5m-9 5v10"/></svg>
+      <h3>Elder Scrolls Online</h3>
+      <ul>
+        <li>Guided signup wizard for <b>Trials and Cyrodiil PvP</b> — Back/Cancel buttons on every step, timezone-aware scheduling</li>
+        <li>Full 14-trial reference, including Cloudrest &amp; Asylum Sanctorium's stacking hard modes</li>
+        <li>Champion Point system explainer with live calculator links</li>
+        <li>Undaunted Pledge rotation lookup</li>
+        <li>Build guide directory (AlcastHQ, Xynode, Woeler, Deltia's)</li>
+        <li>Trader price lookup via Tamriel Trade Centre</li>
       </ul>
     </div>
     <div class="cap-card">
@@ -313,7 +325,7 @@
 
   const bootLines = [
     { text: '&gt; Connecting to Discord Gateway...', ok: true },
-    { text: '&gt; Loading Esports Module (OW2 / Rivals / R6 / D2)...', ok: true },
+    { text: '&gt; Loading Esports Module (OW2 / Rivals / R6 / D2 / ESO)...', ok: true },
     { text: '&gt; Loading Leveling Engine...', ok: true },
     { text: '&gt; Loading Moderation Suite...', ok: true },
     { text: 'AURAAI ONLINE', ok: false, final: true },
