@@ -225,10 +225,6 @@
         <div class="cmd-card"><p class="cmd-name">/<span>/</span>stats</p><p class="cmd-desc">Look up a player's competitive stats. Use in the Overwatch channel for BattleTag lookup, or the Marvel Rivals channel for username lookup.</p><div class="cmd-params"><b>username</b> — BattleTag (OW: Name#1234) or username (Rivals)</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
         <div class="cmd-card"><p class="cmd-name">/<span>/</span>top-heroes</p><p class="cmd-desc">Shows the top 10 heroes ranked by win rate for the current patch. Use in the game's designated channel.</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
       </div>
-      <p class="cmd-section-label">// Events &amp; Signups</p>
-      <div class="cmd-grid">
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>create</p><p class="cmd-desc">DMs you a setup menu to build a Custom Event, a game signup (Overwatch 2, Marvel Rivals, Rainbow Six Siege), a Destiny 2 Raid, an ESO Trial, or ESO PvP (Cyrodiil) — or to list or cancel an existing event. Every step has Back and Cancel buttons, so a wrong answer never means starting over.</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
-      </div>
       <p class="cmd-section-label">// Tournaments</p>
       <div class="cmd-grid">
         <div class="cmd-card"><p class="cmd-name">/<span>/</span>tournament-create</p><p class="cmd-desc">Create a new tournament. Sets the game, format, max teams, ruleset, and results channel.</p><div class="cmd-params"><b>name</b> — Tournament name<br><b>game</b> — OW2, Marvel Rivals, or Destiny 2<br><b>format</b> — Swiss / Single Elim / Double Elim / Round Robin<br><b>max_teams</b> — (optional) Max number of teams<br><b>ruleset</b> — (optional) Rules text</div><div style="margin-top:10px"><span class="cmd-who pro">● Pro — Admin</span></div></div>
@@ -342,6 +338,12 @@
           <p class="config-card-title">Reaction Roles</p>
           <p class="config-card-desc">Build the button menu members use to self-assign roles.</p>
           <p class="config-card-status" id="status-reactionroles">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('tickets')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7"/><path d="M4 7l8-4 8 4"/><path d="M9 21v-6a3 3 0 0 1 6 0v6"/></svg>
+          <p class="config-card-title">Support Tickets</p>
+          <p class="config-card-desc">Ticket channel, support role, categories, and transcript log channel.</p>
+          <p class="config-card-status" id="status-tickets">// checking...</p>
         </div>
         <div class="config-card" onclick="showConfigPage('sticky')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M12 12v10M3 7l9 5 9-5"/></svg>
@@ -608,6 +610,38 @@
           <button class="btn-primary" onclick="postReactionRoleMenu()">Post / Update in Discord</button>
           <p class="save-msg" id="rr-saved">// Settings saved successfully</p>
           <p class="save-msg" id="rr-error" style="color:var(--pink)"></p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-tickets">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// support tickets</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          Posts a panel in the channel below. Members click a button (or pick from a dropdown, if you add more than one category) to open a private ticket thread. The support role automatically sees every ticket — no manual adding required.
+        </p>
+
+        <label class="field-label">Ticket channel <span style="color:var(--grey);font-weight:400">(panel posts here, tickets open as threads under it)</span></label>
+        <div id="ticket-channel-picker"></div>
+        <p class="channel-hint" id="ticket-channel-current"></p>
+
+        <label class="field-label" style="margin-top:14px">Support role <span style="color:var(--grey);font-weight:400">(auto-sees and can claim/close every ticket)</span></label>
+        <div id="ticket-support-role-picker"></div>
+        <p class="channel-hint" id="ticket-support-role-current"></p>
+
+        <label class="field-label" style="margin-top:14px">Transcript log channel (optional)</label>
+        <div id="ticket-log-channel-picker"></div>
+        <p class="channel-hint" id="ticket-log-channel-current"></p>
+
+        <label class="field-label" style="margin-top:20px">Ticket Categories <span style="color:var(--grey);font-weight:400">(1 = single button, 2+ = dropdown, max 25)</span></label>
+        <div id="ticket-categories-container" style="margin-top:8px"></div>
+        <button class="btn-secondary" onclick="addTicketCategory()" style="margin-top:8px">+ Add Category</button>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <button class="btn-primary" onclick="saveAndPublishTickets()">Save &amp; Post / Update in Discord</button>
+          <p class="save-msg" id="ticket-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="ticket-error" style="color:var(--pink)"></p>
         </div>
       </div>
       </div>
@@ -1935,6 +1969,9 @@
       { id: 'voice-jtc-channel-picker' },
       { id: 'voice-jtc-category-picker' },
       { id: 'rr-channel-picker' },
+      { id: 'ticket-channel-picker' },
+      { id: 'ticket-support-role-picker' },
+      { id: 'ticket-log-channel-picker' },
       { id: 'sticky-channel-picker' },
       { id: 'nmg-role-picker' },
       { id: 'security-honeypot-channel-picker' },
@@ -2036,6 +2073,7 @@
 <script src="js/dashboard-modlog-modactions.js"></script>
 <script src="js/dashboard-licenses.js"></script>
 <script src="js/dashboard-reactionroles.js"></script>
+<script src="js/dashboard-tickets.js"></script>
 <script src="js/dashboard-infohub.js"></script>
 
 <script>
@@ -2382,6 +2420,8 @@
       lastBotConfigSettings = null;
       clearReactionRoleForm();
       setStatus('status-reactionroles', false);
+      clearTicketForm();
+      setStatus('status-tickets', false);
       stickyEditingChannelId = null;
       stickyListCache = [];
       stickyTemplatesCache = [];
@@ -2439,6 +2479,7 @@
     ]);
     updateConfigCardStatuses();
     await loadReactionRoleMenu(guildId);
+    await loadTicketSettings(guildId);
     await fetchStickyList();
     await fetchStickyTemplates();
     document.getElementById('status-sticky').textContent = stickyListCache.length ? `✓ ${stickyListCache.length} active` : '// none yet';
@@ -2545,7 +2586,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');if(name==='billing')loadMyLicenses();}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', sticky:'STICKY MESSAGES', newmembergate:'NEW MEMBER GATE', warnthreshold:'WARN THRESHOLD', security:'SECURITY', modlogsettings:'MOD LOG SETTINGS', modactions:'MODERATION ACTIONS', infohub:'SERVER INFO HUB' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', tickets:'SUPPORT TICKETS', sticky:'STICKY MESSAGES', newmembergate:'NEW MEMBER GATE', warnthreshold:'WARN THRESHOLD', security:'SECURITY', modlogsettings:'MOD LOG SETTINGS', modactions:'MODERATION ACTIONS', infohub:'SERVER INFO HUB' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
