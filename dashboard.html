@@ -2420,7 +2420,7 @@
       lastBotConfigSettings = null;
       clearReactionRoleForm();
       setStatus('status-reactionroles', false);
-      clearTicketForm();
+      if (typeof clearTicketForm === 'function') clearTicketForm();
       setStatus('status-tickets', false);
       stickyEditingChannelId = null;
       stickyListCache = [];
@@ -2478,21 +2478,37 @@
       loadGuildRoles(guildId, savedSettings)
     ]);
     updateConfigCardStatuses();
-    await loadReactionRoleMenu(guildId);
-    await loadTicketSettings(guildId);
-    await fetchStickyList();
-    await fetchStickyTemplates();
-    document.getElementById('status-sticky').textContent = stickyListCache.length ? `✓ ${stickyListCache.length} active` : '// none yet';
-    document.getElementById('status-sticky').className = 'config-card-status ' + (stickyListCache.length ? 'set' : 'unset');
-    loadNewMemberGateSettings(guildId, savedSettings);
-    loadWarnThresholdSettings(savedSettings);
-    loadDomainBlacklistSettings(savedSettings);
-    loadHoneypotSettings(savedSettings);
-    await fetchDomainBlacklist();
-    updateSecurityStatus();
-    loadModLogSettings(savedSettings);
-    loadModActionSettings(savedSettings);
-    loadInfoHubSettings(savedSettings);
+    // Each config-page loader below is wrapped individually so that one
+    // broken/missing script (e.g. a JS file that failed to upload, or a
+    // runtime error inside a single loader) can't take down every other
+    // panel on the page — previously a single throw here silently killed
+    // every loader queued after it, which is why unrelated tabs would get
+    // stuck on "checking..." and their CyberDropdown pickers would never
+    // finish initializing.
+    try { await loadReactionRoleMenu(guildId); } catch (err) { console.error('loadReactionRoleMenu failed:', err); }
+    try {
+      if (typeof loadTicketSettings === 'function') {
+        await loadTicketSettings(guildId);
+      } else {
+        console.error('loadTicketSettings is not defined — js/dashboard-tickets.js failed to load (check the <script> path/upload).');
+        setStatus('status-tickets', false);
+      }
+    } catch (err) { console.error('loadTicketSettings failed:', err); }
+    try {
+      await fetchStickyList();
+      await fetchStickyTemplates();
+      document.getElementById('status-sticky').textContent = stickyListCache.length ? `✓ ${stickyListCache.length} active` : '// none yet';
+      document.getElementById('status-sticky').className = 'config-card-status ' + (stickyListCache.length ? 'set' : 'unset');
+    } catch (err) { console.error('sticky messages load failed:', err); }
+    try { loadNewMemberGateSettings(guildId, savedSettings); } catch (err) { console.error('loadNewMemberGateSettings failed:', err); }
+    try { loadWarnThresholdSettings(savedSettings); } catch (err) { console.error('loadWarnThresholdSettings failed:', err); }
+    try { loadDomainBlacklistSettings(savedSettings); } catch (err) { console.error('loadDomainBlacklistSettings failed:', err); }
+    try { loadHoneypotSettings(savedSettings); } catch (err) { console.error('loadHoneypotSettings failed:', err); }
+    try { await fetchDomainBlacklist(); } catch (err) { console.error('fetchDomainBlacklist failed:', err); }
+    try { updateSecurityStatus(); } catch (err) { console.error('updateSecurityStatus failed:', err); }
+    try { loadModLogSettings(savedSettings); } catch (err) { console.error('loadModLogSettings failed:', err); }
+    try { loadModActionSettings(savedSettings); } catch (err) { console.error('loadModActionSettings failed:', err); }
+    try { loadInfoHubSettings(savedSettings); } catch (err) { console.error('loadInfoHubSettings failed:', err); }
 
     // Update coaching warning banner
     const coachingWarning=document.getElementById('coaching-server-warning');
