@@ -616,34 +616,84 @@
 
       <div class="config-detail" id="config-detail-tickets">
         <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
-      <div class="section-card">
-        <p class="card-title">// support tickets</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          Posts a panel in the channel below. Members click a button (or pick from a dropdown, if you add more than one category) to open a private ticket thread. The support role automatically sees every ticket — no manual adding required.
-        </p>
 
-        <label class="field-label">Ticket channel <span style="color:var(--grey);font-weight:400">(panel posts here, tickets open as threads under it)</span></label>
-        <div id="ticket-channel-picker"></div>
-        <p class="channel-hint" id="ticket-channel-current"></p>
-
-        <label class="field-label" style="margin-top:14px">Support role <span style="color:var(--grey);font-weight:400">(auto-sees and can claim/close every ticket)</span></label>
-        <div id="ticket-support-role-picker"></div>
-        <p class="channel-hint" id="ticket-support-role-current"></p>
-
-        <label class="field-label" style="margin-top:14px">Transcript log channel (optional)</label>
-        <div id="ticket-log-channel-picker"></div>
-        <p class="channel-hint" id="ticket-log-channel-current"></p>
-
-        <label class="field-label" style="margin-top:20px">Ticket Categories <span style="color:var(--grey);font-weight:400">(1 = single button, 2+ = dropdown, max 25)</span></label>
-        <div id="ticket-categories-container" style="margin-top:8px"></div>
-        <button class="btn-secondary" onclick="addTicketCategory()" style="margin-top:8px">+ Add Category</button>
-
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
-          <button class="btn-primary" onclick="saveAndPublishTickets()">Save &amp; Post / Update in Discord</button>
-          <p class="save-msg" id="ticket-saved">// Settings saved successfully</p>
-          <p class="save-msg" id="ticket-error" style="color:var(--pink)"></p>
+        <!-- PANEL LIST VIEW -->
+        <div id="ticket-panel-list-view">
+          <div class="section-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+              <p class="card-title" style="margin:0">// your ticketing panels</p>
+              <div style="display:flex;align-items:center;gap:12px">
+                <span id="ticket-panel-count" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--grey)">0 / 5</span>
+                <button class="btn-primary" id="ticket-create-panel-btn" onclick="createTicketPanel()">+ Create a Panel</button>
+              </div>
+            </div>
+            <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin:10px 0 0" id="ticket-panel-empty-hint">No panels yet — create one to let members open tickets.</p>
+            <div id="ticket-panel-list" style="margin-top:12px"></div>
+          </div>
         </div>
-      </div>
+
+        <!-- PANEL EDITOR VIEW -->
+        <div id="ticket-panel-editor-view" style="display:none">
+          <button class="config-back-btn" onclick="showTicketPanelList()" style="margin-bottom:10px">‹ Back to panel list</button>
+          <div class="section-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+              <input class="cyber-input" id="ticket-panel-name" placeholder="Panel name" style="font-size:0.95rem;font-weight:600;max-width:340px">
+              <div style="display:flex;gap:8px">
+                <button class="btn-secondary" onclick="deleteTicketPanel()">Delete Panel</button>
+                <button class="btn-secondary" onclick="saveTicketPanel(false)">Save</button>
+                <button class="btn-primary" onclick="saveTicketPanel(true)">Save &amp; Publish</button>
+              </div>
+            </div>
+            <p class="save-msg" id="ticket-saved">// Settings saved successfully</p>
+            <p class="save-msg" id="ticket-error" style="color:var(--pink)"></p>
+
+            <p class="card-subtitle" style="margin-top:16px">General</p>
+            <label class="field-label">Publish channel</label>
+            <div id="ticket-channel-picker"></div>
+
+            <label class="field-label" style="margin-top:14px">Ticket Manager Roles <span id="ticket-manager-role-count" style="color:var(--grey);font-weight:400">(0/10)</span></label>
+            <div id="ticket-manager-roles-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0"></div>
+            <button class="btn-secondary" id="ticket-manager-roles-toggle" onclick="toggleTicketRolePicker()">+ Select roles</button>
+            <div id="ticket-manager-roles-picker" style="display:none;margin-top:8px;max-height:220px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);border-radius:6px;padding:8px"></div>
+
+            <p class="card-subtitle" style="margin-top:22px">Panel Message</p>
+            <label class="field-label">Title</label>
+            <input class="cyber-input" id="ticket-panel-embed-title" maxlength="256" placeholder="How can we help?">
+            <label class="field-label" style="margin-top:10px">Description</label>
+            <textarea class="cyber-input" id="ticket-panel-embed-desc" rows="3" maxlength="3800" placeholder="Click a button below to open a ticket."></textarea>
+            <div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap">
+              <div>
+                <label class="field-label">Color</label>
+                <input type="color" id="ticket-panel-embed-color" value="#00f0ff" style="width:60px;height:34px;border:none;background:none;cursor:pointer">
+              </div>
+              <div style="flex:1;min-width:220px">
+                <label class="field-label">Image URL (optional)</label>
+                <input class="cyber-input" id="ticket-panel-embed-image" placeholder="https://...">
+              </div>
+            </div>
+
+            <p class="card-subtitle" style="margin-top:22px">Ticket Types <span style="color:var(--grey);font-weight:400">(Buttons or Dropdown, max 25)</span></p>
+            <div style="display:flex;gap:8px;margin-bottom:12px">
+              <button class="btn-secondary" id="ticket-mode-buttons-btn" onclick="setTicketPanelMode('buttons')">Buttons</button>
+              <button class="btn-secondary" id="ticket-mode-dropdown-btn" onclick="setTicketPanelMode('dropdown')">Dropdown</button>
+            </div>
+            <div id="ticket-types-container"></div>
+            <button class="btn-secondary" onclick="addTicketType()" style="margin-top:8px">+ Add Ticket Type</button>
+
+            <p class="card-subtitle" style="margin-top:22px">Ticket Transcript</p>
+            <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.7rem;color:var(--grey)">
+              <input type="checkbox" id="ticket-transcript-enabled"> Enable transcript logging when a ticket is closed
+            </label>
+            <div id="ticket-transcript-channel-picker" style="margin-top:8px"></div>
+            <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.7rem;color:var(--grey);margin-top:10px">
+              <input type="checkbox" id="ticket-transcript-dm"> Send the transcript in private to the member that opened the ticket
+            </label>
+
+            <p class="card-subtitle" style="margin-top:22px">Commands</p>
+            <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-bottom:8px">The commands can only be executed from a ticket channel by ticket managers.</p>
+            <div id="ticket-commands-toggles"></div>
+          </div>
+        </div>
       </div>
 
       <div class="config-detail" id="config-detail-sticky">
@@ -1970,8 +2020,7 @@
       { id: 'voice-jtc-category-picker' },
       { id: 'rr-channel-picker' },
       { id: 'ticket-channel-picker' },
-      { id: 'ticket-support-role-picker' },
-      { id: 'ticket-log-channel-picker' },
+      { id: 'ticket-transcript-channel-picker' },
       { id: 'sticky-channel-picker' },
       { id: 'nmg-role-picker' },
       { id: 'security-honeypot-channel-picker' },
@@ -2420,7 +2469,7 @@
       lastBotConfigSettings = null;
       clearReactionRoleForm();
       setStatus('status-reactionroles', false);
-      if (typeof clearTicketForm === 'function') clearTicketForm();
+      if (typeof resetTicketPanels === 'function') resetTicketPanels();
       setStatus('status-tickets', false);
       stickyEditingChannelId = null;
       stickyListCache = [];
@@ -2487,13 +2536,13 @@
     // finish initializing.
     try { await loadReactionRoleMenu(guildId); } catch (err) { console.error('loadReactionRoleMenu failed:', err); }
     try {
-      if (typeof loadTicketSettings === 'function') {
-        await loadTicketSettings(guildId);
+      if (typeof loadTicketPanelsList === 'function') {
+        await loadTicketPanelsList(guildId);
       } else {
-        console.error('loadTicketSettings is not defined — js/dashboard-tickets.js failed to load (check the <script> path/upload).');
+        console.error('loadTicketPanelsList is not defined — js/dashboard-tickets.js failed to load (check the <script> path/upload).');
         setStatus('status-tickets', false);
       }
-    } catch (err) { console.error('loadTicketSettings failed:', err); }
+    } catch (err) { console.error('loadTicketPanelsList failed:', err); }
     try {
       await fetchStickyList();
       await fetchStickyTemplates();
@@ -2612,6 +2661,7 @@
     if (target) target.classList.add('active');
     const title = document.getElementById('bot-config-page-title');
     if (title) title.textContent = CONFIG_PAGE_TITLES[name] || 'BOT CONFIG';
+    if (name === 'tickets' && typeof showTicketPanelList === 'function') showTicketPanelList();
   }
 
   function showConfigGrid() {
