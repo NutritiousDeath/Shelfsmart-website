@@ -41,6 +41,7 @@ function loadOnboardingSettings(guildId, s) {
   document.getElementById('ob-unlocks-gate').checked = !!settings.onboarding_unlocks_gate;
   document.getElementById('ob-intro-message').value = settings.onboarding_intro_message || '';
   document.getElementById('ob-completion-message').value = settings.onboarding_completion_message || '';
+  document.getElementById('ob-channel-post-result').textContent = '';
 
   const saved = Array.isArray(settings.onboarding_questions) ? settings.onboarding_questions : [];
   obQuestions = saved.map(q => ({
@@ -281,6 +282,7 @@ async function saveOnboardingSettings() {
         onboarding_intro_message: document.getElementById('ob-intro-message').value,
         onboarding_completion_message: document.getElementById('ob-completion-message').value,
         onboarding_questions: questionsPayload,
+        onboarding_channel_id: channelPickers['ob-channel-picker'].getValue() || null,
       },
       { onConflict: 'discord_server_id' }
     );
@@ -288,5 +290,33 @@ async function saveOnboardingSettings() {
     showSaved('ob-saved');
   } catch (err) {
     e.textContent = '// Error: ' + err.message; e.style.display = 'block';
+  }
+}
+
+// Triggers the Railway bot to post (or edit, if already posted) the
+// channel-based version of the questions — the intro message plus one
+// message per question, using toggle buttons. Reads whatever's currently
+// saved in server_settings, so Save Settings must run first if the channel
+// or questions just changed.
+async function postOnboardingChannelMessage() {
+  const resultEl = document.getElementById('ob-channel-post-result');
+  if (!selectedGuildId) { resultEl.textContent = '⚠ Select a server first.'; return; }
+  const channelId = channelPickers['ob-channel-picker'].getValue();
+  if (!channelId) { resultEl.textContent = '⚠ Pick a channel above, then Save Settings, then try again.'; return; }
+
+  resultEl.textContent = 'Posting/updating the channel message...';
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(`${RAILWAY_BOT_URL}/api/onboarding/post-channel-message`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+      body: JSON.stringify({ guildId: selectedGuildId }),
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.error || 'Unknown error');
+    resultEl.textContent = `✅ Posted/updated ${result.messageIds.length} message(s) in that channel.`;
+  } catch (err) {
+    resultEl.textContent = '❌ Error: ' + err.message;
   }
 }

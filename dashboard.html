@@ -887,6 +887,17 @@
 
         <div class="nmg-step">
           <p class="nmg-step-num">STEP 5</p>
+          <p class="nmg-step-title">Optional: also post the questions in a channel</p>
+          <p class="nmg-step-desc" style="font-size:0.85rem;line-height:2;margin-bottom:10px">
+            Posts the same questions as permanent messages in a channel with clickable answer buttons — anyone can self-serve there anytime, no DM required. Great alongside (or instead of) the automatic DM, especially for members with DMs off. Pick a channel, hit Save below, then come back and click "Post/Update Channel Message."
+          </p>
+          <div id="ob-channel-picker"></div>
+          <button class="btn-secondary" onclick="postOnboardingChannelMessage()" style="margin-top:12px">Post/Update Channel Message</button>
+          <p id="ob-channel-post-result" style="font-family:var(--font-mono);font-size:0.75rem;color:var(--grey);margin-top:10px"></p>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 6</p>
           <p class="nmg-step-title">Turn it on</p>
           <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.85rem;color:var(--white);cursor:pointer">
             <input type="checkbox" id="ob-enabled" style="width:16px;height:16px"> Enable Full Onboarding
@@ -2018,6 +2029,7 @@
       { id: 'rr-channel-picker' },
       { id: 'sticky-channel-picker' },
       { id: 'nmg-role-picker' },
+      { id: 'ob-channel-picker' },
       { id: 'security-honeypot-channel-picker' },
       { id: 'modlog-channel-picker' },
       { id: 'modact-mute-role-picker' },
@@ -2165,6 +2177,8 @@
 
     channelPickers['welcome-channel-picker'].setChannels(guildChannelCache, s.welcome_channel_id || null);
     setChannelHint('welcome-channel-current', s.welcome_channel_id);
+
+    channelPickers['ob-channel-picker'].setChannels(guildChannelCache, s.onboarding_channel_id || null);
 
     channelPickers['goodbye-channel-picker'].setChannels(guildChannelCache, s.goodbye_channel_id || null);
     setChannelHint('goodbye-channel-current', s.goodbye_channel_id);
@@ -2486,6 +2500,7 @@
       obQuestions = [];
       const obContainer = document.getElementById('ob-questions');
       if (obContainer) obContainer.innerHTML = '';
+      document.getElementById('ob-channel-post-result').textContent = '';
       document.getElementById('status-onboarding').textContent = '// select a server';
       document.getElementById('status-onboarding').className = 'config-card-status unset';
       document.getElementById('status-modactions').textContent = '// select a server';
