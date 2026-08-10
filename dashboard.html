@@ -339,12 +339,6 @@
           <p class="config-card-desc">Build the button menu members use to self-assign roles.</p>
           <p class="config-card-status" id="status-reactionroles">// checking...</p>
         </div>
-        <div class="config-card" onclick="showConfigPage('tickets')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7"/><path d="M4 7l8-4 8 4"/><path d="M9 21v-6a3 3 0 0 1 6 0v6"/></svg>
-          <p class="config-card-title">Support Tickets</p>
-          <p class="config-card-desc">Ticket channel, support role, categories, and transcript log channel.</p>
-          <p class="config-card-status" id="status-tickets">// checking...</p>
-        </div>
         <div class="config-card" onclick="showConfigPage('sticky')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M12 12v10M3 7l9 5 9-5"/></svg>
           <p class="config-card-title">Sticky Messages <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
@@ -356,6 +350,12 @@
           <p class="config-card-title">New Member Gate <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
           <p class="config-card-desc">Auto-role + channel lockdown + DM for new members, unlocked via Reaction Roles.</p>
           <p class="config-card-status" id="status-newmembergate">// checking...</p>
+        </div>
+        <div class="config-card" onclick="showConfigPage('onboarding')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>
+          <p class="config-card-title">Full Onboarding <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">DM new members a question flow that assigns roles automatically.</p>
+          <p class="config-card-status" id="status-onboarding">// checking...</p>
         </div>
         <div class="config-card" onclick="showConfigPage('warnthreshold')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
@@ -614,88 +614,6 @@
       </div>
       </div>
 
-      <div class="config-detail" id="config-detail-tickets">
-        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
-
-        <!-- PANEL LIST VIEW -->
-        <div id="ticket-panel-list-view">
-          <div class="section-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-              <p class="card-title" style="margin:0">// your ticketing panels</p>
-              <div style="display:flex;align-items:center;gap:12px">
-                <span id="ticket-panel-count" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--grey)">0 / 5</span>
-                <button class="btn-primary" id="ticket-create-panel-btn" onclick="createTicketPanel()">+ Create a Panel</button>
-              </div>
-            </div>
-            <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin:10px 0 0" id="ticket-panel-empty-hint">No panels yet — create one to let members open tickets.</p>
-            <div id="ticket-panel-list" style="margin-top:12px"></div>
-          </div>
-        </div>
-
-        <!-- PANEL EDITOR VIEW -->
-        <div id="ticket-panel-editor-view" style="display:none">
-          <button class="config-back-btn" onclick="showTicketPanelList()" style="margin-bottom:10px">‹ Back to panel list</button>
-          <div class="section-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px">
-              <input class="cyber-input" id="ticket-panel-name" placeholder="Panel name" style="font-size:0.95rem;font-weight:600;max-width:340px">
-              <div style="display:flex;gap:8px">
-                <button class="btn-secondary" onclick="deleteTicketPanel()">Delete Panel</button>
-                <button class="btn-secondary" onclick="saveTicketPanel(false)">Save</button>
-                <button class="btn-primary" onclick="saveTicketPanel(true)">Save &amp; Publish</button>
-              </div>
-            </div>
-            <p class="save-msg" id="ticket-saved">// Settings saved successfully</p>
-            <p class="save-msg" id="ticket-error" style="color:var(--pink)"></p>
-
-            <p class="card-subtitle" style="margin-top:16px">General</p>
-            <label class="field-label">Publish channel</label>
-            <div id="ticket-channel-picker"></div>
-
-            <label class="field-label" style="margin-top:14px">Ticket Manager Roles <span id="ticket-manager-role-count" style="color:var(--grey);font-weight:400">(0/10)</span></label>
-            <div id="ticket-manager-roles-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0"></div>
-            <button class="btn-secondary" id="ticket-manager-roles-toggle" onclick="toggleTicketRolePicker()">+ Select roles</button>
-            <div id="ticket-manager-roles-picker" style="display:none;margin-top:8px;max-height:220px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);border-radius:6px;padding:8px"></div>
-
-            <p class="card-subtitle" style="margin-top:22px">Panel Message</p>
-            <label class="field-label">Title</label>
-            <input class="cyber-input" id="ticket-panel-embed-title" maxlength="256" placeholder="How can we help?">
-            <label class="field-label" style="margin-top:10px">Description</label>
-            <textarea class="cyber-input" id="ticket-panel-embed-desc" rows="3" maxlength="3800" placeholder="Click a button below to open a ticket."></textarea>
-            <div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap">
-              <div>
-                <label class="field-label">Color</label>
-                <input type="color" id="ticket-panel-embed-color" value="#00f0ff" style="width:60px;height:34px;border:none;background:none;cursor:pointer">
-              </div>
-              <div style="flex:1;min-width:220px">
-                <label class="field-label">Image URL (optional)</label>
-                <input class="cyber-input" id="ticket-panel-embed-image" placeholder="https://...">
-              </div>
-            </div>
-
-            <p class="card-subtitle" style="margin-top:22px">Ticket Types <span style="color:var(--grey);font-weight:400">(Buttons or Dropdown, max 25)</span></p>
-            <div style="display:flex;gap:8px;margin-bottom:12px">
-              <button class="btn-secondary" id="ticket-mode-buttons-btn" onclick="setTicketPanelMode('buttons')">Buttons</button>
-              <button class="btn-secondary" id="ticket-mode-dropdown-btn" onclick="setTicketPanelMode('dropdown')">Dropdown</button>
-            </div>
-            <div id="ticket-types-container"></div>
-            <button class="btn-secondary" onclick="addTicketType()" style="margin-top:8px">+ Add Ticket Type</button>
-
-            <p class="card-subtitle" style="margin-top:22px">Ticket Transcript</p>
-            <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.7rem;color:var(--grey)">
-              <input type="checkbox" id="ticket-transcript-enabled"> Enable transcript logging when a ticket is closed
-            </label>
-            <div id="ticket-transcript-channel-picker" style="margin-top:8px"></div>
-            <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.7rem;color:var(--grey);margin-top:10px">
-              <input type="checkbox" id="ticket-transcript-dm"> Send the transcript in private to the member that opened the ticket
-            </label>
-
-            <p class="card-subtitle" style="margin-top:22px">Commands</p>
-            <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-bottom:8px">The commands can only be executed from a ticket channel by ticket managers.</p>
-            <div id="ticket-commands-toggles"></div>
-          </div>
-        </div>
-      </div>
-
       <div class="config-detail" id="config-detail-sticky">
         <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
       <div class="section-card">
@@ -919,6 +837,65 @@
           <button class="btn-primary" onclick="saveNewMemberGateSettings()">Save Settings</button>
           <p class="save-msg" id="nmg-saved">// Settings saved successfully</p>
           <p class="save-msg" id="nmg-error" style="color:var(--pink)"></p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-onboarding">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// full onboarding <span style="color:var(--purple);font-size:0.6rem">PRO FEATURE</span></p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:20px;letter-spacing:0.5px">
+          The instant a new member joins, AuraAI DMs them a short question flow you build below. Each answer they pick assigns a role automatically — no manual role management needed. Works great paired with New Member Gate: turn on "Unlock New Member Gate" below and completing onboarding is what lets them into the rest of the server.
+        </p>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 1</p>
+          <p class="nmg-step-title">Build your questions</p>
+          <p class="nmg-step-desc" style="margin-bottom:14px">
+            Each question needs at least 2 answer options, and each option needs a role picked — that's the role AuraAI grants when someone selects it. Check "Allow multiple answers" for questions where more than one option can apply (e.g. "which games do you play?").
+          </p>
+          <div id="ob-questions"></div>
+          <button class="btn-secondary" onclick="obAddQuestion()" style="margin-top:6px">+ Add Question</button>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 2</p>
+          <p class="nmg-step-title">Write the intro DM</p>
+          <p class="nmg-step-desc" style="margin-bottom:10px">Sent first, before the questions start.</p>
+          <div id="ob-intro-var-buttons" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+          <textarea class="cyber-input" id="ob-intro-message" rows="4" placeholder="Welcome to {server}! Let's get you set up — answer a few quick questions and I'll assign your roles automatically." maxlength="1800"></textarea>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 3</p>
+          <p class="nmg-step-title">Write the completion DM</p>
+          <p class="nmg-step-desc" style="margin-bottom:10px">Sent once they've answered every question and roles are assigned.</p>
+          <div id="ob-completion-var-buttons" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+          <textarea class="cyber-input" id="ob-completion-message" rows="4" placeholder="All set! Thanks for answering those — your roles are assigned and you're ready to go. Welcome aboard!" maxlength="1800"></textarea>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 4</p>
+          <p class="nmg-step-title">Optional: tie into New Member Gate</p>
+          <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.7rem;color:var(--white);cursor:pointer">
+            <input type="checkbox" id="ob-unlocks-gate" style="width:16px;height:16px"> Unlock New Member Gate automatically when onboarding is completed
+          </label>
+          <p class="nmg-step-desc" style="margin-top:8px">Only does anything if New Member Gate is also enabled. Leave unchecked if you don't use the gate, or want it unlocked some other way.</p>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-num">STEP 5</p>
+          <p class="nmg-step-title">Turn it on</p>
+          <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.7rem;color:var(--white);cursor:pointer">
+            <input type="checkbox" id="ob-enabled" style="width:16px;height:16px"> Enable Full Onboarding
+          </label>
+        </div>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <button class="btn-primary" onclick="saveOnboardingSettings()">Save Settings</button>
+          <p class="save-msg" id="ob-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="ob-error" style="color:var(--pink)"></p>
         </div>
       </div>
       </div>
@@ -2019,8 +1996,6 @@
       { id: 'voice-jtc-channel-picker' },
       { id: 'voice-jtc-category-picker' },
       { id: 'rr-channel-picker' },
-      { id: 'ticket-channel-picker' },
-      { id: 'ticket-transcript-channel-picker' },
       { id: 'sticky-channel-picker' },
       { id: 'nmg-role-picker' },
       { id: 'security-honeypot-channel-picker' },
@@ -2117,12 +2092,12 @@
 
 <script src="js/dashboard-sticky.js"></script>
 <script src="js/dashboard-newmembergate.js"></script>
+<script src="js/dashboard-onboarding.js"></script>
 <script src="js/dashboard-warnthreshold.js"></script>
 <script src="js/dashboard-security.js"></script>
 <script src="js/dashboard-modlog-modactions.js"></script>
 <script src="js/dashboard-licenses.js"></script>
 <script src="js/dashboard-reactionroles.js"></script>
-<script src="js/dashboard-tickets.js"></script>
 <script src="js/dashboard-infohub.js"></script>
 
 <script>
@@ -2469,8 +2444,6 @@
       lastBotConfigSettings = null;
       clearReactionRoleForm();
       setStatus('status-reactionroles', false);
-      if (typeof resetTicketPanels === 'function') resetTicketPanels();
-      setStatus('status-tickets', false);
       stickyEditingChannelId = null;
       stickyListCache = [];
       stickyTemplatesCache = [];
@@ -2490,6 +2463,11 @@
       renderDomainList();
       document.getElementById('status-modlogsettings').textContent = '// select a server';
       document.getElementById('status-modlogsettings').className = 'config-card-status unset';
+      obQuestions = [];
+      const obContainer = document.getElementById('ob-questions');
+      if (obContainer) obContainer.innerHTML = '';
+      document.getElementById('status-onboarding').textContent = '// select a server';
+      document.getElementById('status-onboarding').className = 'config-card-status unset';
       document.getElementById('status-modactions').textContent = '// select a server';
       document.getElementById('status-modactions').className = 'config-card-status unset';
       document.getElementById('modact-mute-setup-result').textContent = '';
@@ -2527,37 +2505,21 @@
       loadGuildRoles(guildId, savedSettings)
     ]);
     updateConfigCardStatuses();
-    // Each config-page loader below is wrapped individually so that one
-    // broken/missing script (e.g. a JS file that failed to upload, or a
-    // runtime error inside a single loader) can't take down every other
-    // panel on the page — previously a single throw here silently killed
-    // every loader queued after it, which is why unrelated tabs would get
-    // stuck on "checking..." and their CyberDropdown pickers would never
-    // finish initializing.
-    try { await loadReactionRoleMenu(guildId); } catch (err) { console.error('loadReactionRoleMenu failed:', err); }
-    try {
-      if (typeof loadTicketPanelsList === 'function') {
-        await loadTicketPanelsList(guildId);
-      } else {
-        console.error('loadTicketPanelsList is not defined — js/dashboard-tickets.js failed to load (check the <script> path/upload).');
-        setStatus('status-tickets', false);
-      }
-    } catch (err) { console.error('loadTicketPanelsList failed:', err); }
-    try {
-      await fetchStickyList();
-      await fetchStickyTemplates();
-      document.getElementById('status-sticky').textContent = stickyListCache.length ? `✓ ${stickyListCache.length} active` : '// none yet';
-      document.getElementById('status-sticky').className = 'config-card-status ' + (stickyListCache.length ? 'set' : 'unset');
-    } catch (err) { console.error('sticky messages load failed:', err); }
-    try { loadNewMemberGateSettings(guildId, savedSettings); } catch (err) { console.error('loadNewMemberGateSettings failed:', err); }
-    try { loadWarnThresholdSettings(savedSettings); } catch (err) { console.error('loadWarnThresholdSettings failed:', err); }
-    try { loadDomainBlacklistSettings(savedSettings); } catch (err) { console.error('loadDomainBlacklistSettings failed:', err); }
-    try { loadHoneypotSettings(savedSettings); } catch (err) { console.error('loadHoneypotSettings failed:', err); }
-    try { await fetchDomainBlacklist(); } catch (err) { console.error('fetchDomainBlacklist failed:', err); }
-    try { updateSecurityStatus(); } catch (err) { console.error('updateSecurityStatus failed:', err); }
-    try { loadModLogSettings(savedSettings); } catch (err) { console.error('loadModLogSettings failed:', err); }
-    try { loadModActionSettings(savedSettings); } catch (err) { console.error('loadModActionSettings failed:', err); }
-    try { loadInfoHubSettings(savedSettings); } catch (err) { console.error('loadInfoHubSettings failed:', err); }
+    await loadReactionRoleMenu(guildId);
+    await fetchStickyList();
+    await fetchStickyTemplates();
+    document.getElementById('status-sticky').textContent = stickyListCache.length ? `✓ ${stickyListCache.length} active` : '// none yet';
+    document.getElementById('status-sticky').className = 'config-card-status ' + (stickyListCache.length ? 'set' : 'unset');
+    loadNewMemberGateSettings(guildId, savedSettings);
+    try { loadOnboardingSettings(guildId, savedSettings); } catch (err) { console.error('loadOnboardingSettings error:', err.message); }
+    loadWarnThresholdSettings(savedSettings);
+    loadDomainBlacklistSettings(savedSettings);
+    loadHoneypotSettings(savedSettings);
+    await fetchDomainBlacklist();
+    updateSecurityStatus();
+    loadModLogSettings(savedSettings);
+    loadModActionSettings(savedSettings);
+    loadInfoHubSettings(savedSettings);
 
     // Update coaching warning banner
     const coachingWarning=document.getElementById('coaching-server-warning');
@@ -2651,7 +2613,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');if(name==='billing')loadMyLicenses();}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', tickets:'SUPPORT TICKETS', sticky:'STICKY MESSAGES', newmembergate:'NEW MEMBER GATE', warnthreshold:'WARN THRESHOLD', security:'SECURITY', modlogsettings:'MOD LOG SETTINGS', modactions:'MODERATION ACTIONS', infohub:'SERVER INFO HUB' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', sticky:'STICKY MESSAGES', newmembergate:'NEW MEMBER GATE', warnthreshold:'WARN THRESHOLD', security:'SECURITY', modlogsettings:'MOD LOG SETTINGS', modactions:'MODERATION ACTIONS', infohub:'SERVER INFO HUB' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
@@ -2661,7 +2623,6 @@
     if (target) target.classList.add('active');
     const title = document.getElementById('bot-config-page-title');
     if (title) title.textContent = CONFIG_PAGE_TITLES[name] || 'BOT CONFIG';
-    if (name === 'tickets' && typeof showTicketPanelList === 'function') showTicketPanelList();
   }
 
   function showConfigGrid() {

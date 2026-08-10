@@ -8,7 +8,9 @@ let ticketCurrentPanelId = null;
 let ticketCurrentMode = 'buttons';
 let ticketManagerRoleIds = [];
 let ticketTypeCounter = 0;
-let ticketTypePickers = {}; // rowId -> { create: CyberDropdown, claimed: CyberDropdown, closed: CyberDropdown }
+let ticketTypePickers = {}; // rowId -> { create, claimed, closed: CyberDropdown, emojiValue: string|null }
+let guildEmojiCache = null; // null = not fetched yet, [] = fetched, none exist
+let ticketEmojiPickerOpenFor = null; // rowId currently showing its picker popup, or null
 
 const TICKET_MAX_PANELS = 5;
 
@@ -28,6 +30,8 @@ function showTicketPanelEditorView() {
 function resetTicketPanels() {
   ticketPanelsCache = [];
   ticketCurrentPanelId = null;
+  guildEmojiCache = null;
+  closeTicketEmojiPicker();
   document.getElementById('ticket-panel-list').innerHTML = '';
   document.getElementById('ticket-panel-count').textContent = `0 / ${TICKET_MAX_PANELS}`;
   document.getElementById('ticket-panel-empty-hint').style.display = '';
@@ -229,6 +233,97 @@ function renderTicketManagerRoleChips() {
   });
 }
 
+// ─── EMOJI PICKER (server custom emojis) ─────────────────────────────────────
+
+async function ensureGuildEmojisLoaded() {
+  if (guildEmojiCache !== null) return guildEmojiCache;
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(`${RAILWAY_BOT_URL}/api/guild-emojis?guildId=${selectedGuildId}`, {
+      headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+    });
+    const data = await res.json();
+    guildEmojiCache = res.ok ? (data.emojis || []) : [];
+  } catch (err) {
+    console.error('loading guild emojis failed:', err.message);
+    guildEmojiCache = [];
+  }
+  return guildEmojiCache;
+}
+
+function renderTicketTypeEmojiButton(rowId) {
+  const btn = document.getElementById(rowId + '-emoji-btn');
+  if (!btn) return;
+  const value = ticketTypePickers[rowId]?.emojiValue;
+  const custom = value && value.match(/^<a?:(\w+):(\d+)>$/);
+  if (custom) {
+    const animated = value.startsWith('<a:');
+    const url = `https://cdn.discordapp.com/emojis/${custom[2]}.${animated ? 'gif' : 'png'}?size=32`;
+    btn.innerHTML = `<img src="${url}" style="width:20px;height:20px" alt="">`;
+  } else if (value) {
+    btn.textContent = value;
+  } else {
+    btn.textContent = '+';
+    btn.style.color = 'var(--grey)';
+  }
+}
+
+function setTicketTypeEmoji(rowId, value) {
+  if (!ticketTypePickers[rowId]) ticketTypePickers[rowId] = {};
+  ticketTypePickers[rowId].emojiValue = value;
+  renderTicketTypeEmojiButton(rowId);
+  closeTicketEmojiPicker();
+}
+
+async function openTicketEmojiPicker(rowId) {
+  if (ticketEmojiPickerOpenFor === rowId) { closeTicketEmojiPicker(); return; }
+  closeTicketEmojiPicker();
+  ticketEmojiPickerOpenFor = rowId;
+
+  const btn = document.getElementById(rowId + '-emoji-btn');
+  const popup = document.createElement('div');
+  popup.id = 'ticket-emoji-popup';
+  popup.style = 'position:absolute;z-index:50;margin-top:4px;width:260px;max-height:260px;overflow-y:auto;background:#0a0e18;border:1px solid rgba(0,240,255,0.3);border-radius:8px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,0.5)';
+
+  const unicodeRow = document.createElement('input');
+  unicodeRow.className = 'cyber-input';
+  unicodeRow.placeholder = 'Or type a unicode emoji (🎫)';
+  unicodeRow.style = 'margin-bottom:8px;font-size:0.85rem';
+  unicodeRow.onkeydown = (e) => {
+    if (e.key === 'Enter' && unicodeRow.value.trim()) setTicketTypeEmoji(rowId, unicodeRow.value.trim());
+  };
+  popup.appendChild(unicodeRow);
+
+  const grid = document.createElement('div');
+  grid.style = 'display:grid;grid-template-columns:repeat(6,1fr);gap:6px';
+  grid.innerHTML = '<p style="grid-column:1/-1;font-family:var(--font-mono);font-size:0.6rem;color:var(--grey)">Loading server emojis...</p>';
+  popup.appendChild(grid);
+
+  btn.parentElement.style.position = 'relative';
+  btn.parentElement.appendChild(popup);
+
+  const emojis = await ensureGuildEmojisLoaded();
+  grid.innerHTML = '';
+  if (emojis.length === 0) {
+    grid.innerHTML = '<p style="grid-column:1/-1;font-family:var(--font-mono);font-size:0.6rem;color:var(--grey)">No custom emojis on this server.</p>';
+    return;
+  }
+  emojis.forEach(e => {
+    const item = document.createElement('button');
+    item.type = 'button';
+    item.title = e.name;
+    item.style = 'width:36px;height:36px;border:none;border-radius:6px;background:rgba(0,240,255,0.05);cursor:pointer;display:flex;align-items:center;justify-content:center';
+    item.innerHTML = `<img src="${e.url}" style="width:22px;height:22px" alt="${e.name}">`;
+    item.onclick = () => setTicketTypeEmoji(rowId, `<${e.animated ? 'a' : ''}:${e.name}:${e.id}>`);
+    grid.appendChild(item);
+  });
+}
+
+function closeTicketEmojiPicker() {
+  document.getElementById('ticket-emoji-popup')?.remove();
+  ticketEmojiPickerOpenFor = null;
+}
+
 // ─── TICKET TYPES (buttons / dropdown options, each with 3 category routes) ─
 
 function addTicketType(existing) {
@@ -249,13 +344,21 @@ function addTicketType(existing) {
   labelInput.value = existing?.label || '';
   topLine.appendChild(labelInput);
 
-  const emojiInput = document.createElement('input');
-  emojiInput.className = 'cyber-input';
-  emojiInput.placeholder = 'Emoji';
-  emojiInput.id = rowId + '-emoji';
-  emojiInput.style = 'width:70px';
-  emojiInput.value = existing?.emoji || '';
-  topLine.appendChild(emojiInput);
+  const emojiBtn = document.createElement('button');
+  emojiBtn.type = 'button';
+  emojiBtn.id = rowId + '-emoji-btn';
+  emojiBtn.title = 'Choose an emoji';
+  emojiBtn.style = 'width:38px;height:34px;border-radius:6px;border:1px solid rgba(0,240,255,0.2);background:rgba(0,240,255,0.06);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0';
+  emojiBtn.onclick = () => openTicketEmojiPicker(rowId);
+  topLine.appendChild(emojiBtn);
+
+  const emojiClearBtn = document.createElement('button');
+  emojiClearBtn.type = 'button';
+  emojiClearBtn.textContent = '✕';
+  emojiClearBtn.title = 'Clear emoji';
+  emojiClearBtn.style = 'width:26px;height:34px;border-radius:6px;border:none;background:rgba(255,79,109,0.15);color:var(--pink);cursor:pointer;flex-shrink:0;font-size:0.7rem';
+  emojiClearBtn.onclick = () => setTicketTypeEmoji(rowId, null);
+  topLine.appendChild(emojiClearBtn);
 
   const styleSelect = document.createElement('select');
   styleSelect.className = 'cyber-input';
@@ -290,7 +393,8 @@ function addTicketType(existing) {
     { key: 'claimed', label: 'Category: claimed' },
     { key: 'closed', label: 'Category: closed' },
   ];
-  ticketTypePickers[rowId] = {};
+  ticketTypePickers[rowId] = { emojiValue: existing?.emoji || null };
+  renderTicketTypeEmojiButton(rowId);
   catFields.forEach(f => {
     const wrap = document.createElement('div');
     const lbl = document.createElement('p');
@@ -347,7 +451,7 @@ function collectTicketTypesFromForm() {
     const pickers = ticketTypePickers[row.id] || {};
     types.push({
       label,
-      emoji: document.getElementById(row.id + '-emoji')?.value || null,
+      emoji: pickers.emojiValue || null,
       buttonStyle: document.getElementById(row.id + '-style')?.value || 'blurple',
       createCategoryId: pickers.create?.getValue() || null,
       claimedCategoryId: pickers.claimed?.getValue() || null,
