@@ -898,6 +898,25 @@
           <p class="save-msg" id="ob-saved">// Settings saved successfully</p>
           <p class="save-msg" id="ob-error" style="color:var(--pink)"></p>
         </div>
+
+        <details style="margin-top:24px;border:1px solid rgba(180,79,255,0.3);border-radius:6px;background:rgba(0,0,0,0.2)">
+          <summary style="cursor:pointer;padding:14px;font-family:var(--font-mono);font-size:0.7rem;color:var(--purple);user-select:none">
+            ⚡ Switching over from Discord's native Onboarding? Click for full steps.
+          </summary>
+          <div style="padding:0 16px 16px 16px">
+            <p class="nmg-step-desc" style="margin-bottom:10px">
+              If your server is a Community server, Discord's built-in Onboarding question flow is probably still showing new members its own prompts alongside (or instead of) AuraAI's. Turning it off is a few clicks in Discord itself — AuraAI can't do this part for you, since it's a Discord server setting, not something a bot can toggle.
+            </p>
+            <ol style="font-family:var(--font-mono);font-size:0.65rem;color:var(--white);line-height:2;padding-left:18px;margin-bottom:10px">
+              <li>In Discord, go to <b style="color:var(--cyan)">Server Settings → Onboarding</b> and switch off the main Onboarding toggle at the top of that page. This turns off the built-in question flow — it does <b>not</b> remove your server's Community status, Rules channel, or Public Updates channel.</li>
+              <li>On that same page, check the <b style="color:var(--cyan)">Server Guide</b> section — it's technically part of Onboarding and can sometimes stick around after the main toggle is off. Clear or disable it too if you don't want it showing.</li>
+              <li>Go to <b style="color:var(--cyan)">Server Settings → Overview → Welcome Screen</b> and decide whether to keep it as a simple rules/invite display or turn it off, since AuraAI's DM flow is now doing the actual welcoming.</li>
+              <li><b style="color:var(--cyan)">Server Settings → Safety Setup → Verification Level</b> is separate from Onboarding and unaffected by any of this — no changes needed there.</li>
+              <li>Come back here and confirm the questions above match what you want, tell people about <b style="color:var(--cyan)">/onboard-me</b> as the fallback, and you're fully switched over.</li>
+            </ol>
+            <p class="nmg-step-desc">Discord's menu labels shift from time to time — if something above doesn't match exactly what you see, look for the closest match under Server Settings.</p>
+          </div>
+        </details>
       </div>
       </div>
 
