@@ -109,7 +109,7 @@ function renderObQuestions() {
   container.innerHTML = '';
 
   if (obQuestions.length === 0) {
-    container.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No questions yet — click "Add Question" below to build your first one.</p>';
+    container.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--grey)">No questions yet — click "Add Question" below to build your first one.</p>';
   }
 
   obQuestions.forEach((q, qi) => {
@@ -119,7 +119,7 @@ function renderObQuestions() {
     const header = document.createElement('div');
     header.style = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:10px';
     const label = document.createElement('p');
-    label.style = 'font-family:var(--font-mono);font-size:0.7rem;color:var(--cyan)';
+    label.style = 'font-family:var(--font-mono);font-size:0.85rem;color:var(--cyan)';
     label.textContent = `QUESTION ${qi + 1}`;
     header.appendChild(label);
     const removeBtn = document.createElement('button');
@@ -137,11 +137,11 @@ function renderObQuestions() {
     qInput.placeholder = 'e.g. Which games do you play?';
     qInput.value = q.question;
     qInput.maxLength = 200;
-    qInput.style = 'margin-bottom:10px;width:100%';
+    qInput.style = 'margin-bottom:10px;width:100%;font-size:0.85rem';
     card.appendChild(qInput);
 
     const typeLabel = document.createElement('label');
-    typeLabel.style = 'display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.65rem;color:var(--white);cursor:pointer;margin-bottom:10px';
+    typeLabel.style = 'display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.85rem;color:var(--white);cursor:pointer;margin-bottom:10px';
     const typeToggle = document.createElement('input');
     typeToggle.type = 'checkbox';
     typeToggle.id = 'ob-qtype-' + q.id;
@@ -166,7 +166,7 @@ function renderObQuestions() {
       oInput.placeholder = 'Answer label, e.g. Overwatch 2';
       oInput.value = o.label;
       oInput.maxLength = 80;
-      oInput.style = 'flex:1;min-width:160px;font-size:0.7rem';
+      oInput.style = 'flex:1;min-width:160px;font-size:0.85rem';
       row.appendChild(oInput);
 
       const pickerMount = document.createElement('div');

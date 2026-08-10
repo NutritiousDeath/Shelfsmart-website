@@ -845,7 +845,7 @@
         <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
       <div class="section-card">
         <p class="card-title">// full onboarding <span style="color:var(--purple);font-size:0.6rem">PRO FEATURE</span></p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:20px;letter-spacing:0.5px">
+        <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--grey);line-height:2;margin-bottom:20px;letter-spacing:0.3px">
           The instant a new member joins, AuraAI DMs them a short question flow you build below. Each answer they pick assigns a role automatically — no manual role management needed. Works great paired with New Member Gate: turn on "Unlock New Member Gate" below and completing onboarding is what lets them into the rest of the server.<br><br>
           <span style="color:var(--pink)">⚠</span> Some members will always have Direct Messages turned off, so the automatic DM won't reach everyone. Anyone missed can run <b style="color:var(--white)">/onboard-me</b> in your server to get the questions sent again — mention that command in your welcome/rules channel so nobody gets stuck.
         </p>
@@ -853,7 +853,7 @@
         <div class="nmg-step">
           <p class="nmg-step-num">STEP 1</p>
           <p class="nmg-step-title">Build your questions</p>
-          <p class="nmg-step-desc" style="margin-bottom:14px">
+          <p class="nmg-step-desc" style="font-size:0.85rem;line-height:2;margin-bottom:14px">
             Each question needs at least 2 answer options, and each option needs a role picked — that's the role AuraAI grants when someone selects it. Check "Allow multiple answers" for questions where more than one option can apply (e.g. "which games do you play?").
           </p>
           <div id="ob-questions"></div>
@@ -863,32 +863,32 @@
         <div class="nmg-step">
           <p class="nmg-step-num">STEP 2</p>
           <p class="nmg-step-title">Write the intro DM</p>
-          <p class="nmg-step-desc" style="margin-bottom:10px">Sent first, before the questions start.</p>
+          <p class="nmg-step-desc" style="font-size:0.85rem;line-height:2;margin-bottom:10px">Sent first, before the questions start.</p>
           <div id="ob-intro-var-buttons" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
-          <textarea class="cyber-input" id="ob-intro-message" rows="4" placeholder="Welcome to {server}! Let's get you set up — answer a few quick questions and I'll assign your roles automatically." maxlength="1800"></textarea>
+          <textarea class="cyber-input" id="ob-intro-message" rows="4" style="font-size:0.85rem" placeholder="Welcome to {server}! Let's get you set up — answer a few quick questions and I'll assign your roles automatically." maxlength="1800"></textarea>
         </div>
 
         <div class="nmg-step">
           <p class="nmg-step-num">STEP 3</p>
           <p class="nmg-step-title">Write the completion DM</p>
-          <p class="nmg-step-desc" style="margin-bottom:10px">Sent once they've answered every question and roles are assigned.</p>
+          <p class="nmg-step-desc" style="font-size:0.85rem;line-height:2;margin-bottom:10px">Sent once they've answered every question and roles are assigned.</p>
           <div id="ob-completion-var-buttons" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
-          <textarea class="cyber-input" id="ob-completion-message" rows="4" placeholder="All set! Thanks for answering those — your roles are assigned and you're ready to go. Welcome aboard!" maxlength="1800"></textarea>
+          <textarea class="cyber-input" id="ob-completion-message" rows="4" style="font-size:0.85rem" placeholder="All set! Thanks for answering those — your roles are assigned and you're ready to go. Welcome aboard!" maxlength="1800"></textarea>
         </div>
 
         <div class="nmg-step">
           <p class="nmg-step-num">STEP 4</p>
           <p class="nmg-step-title">Optional: tie into New Member Gate</p>
-          <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.7rem;color:var(--white);cursor:pointer">
+          <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.85rem;color:var(--white);cursor:pointer">
             <input type="checkbox" id="ob-unlocks-gate" style="width:16px;height:16px"> Unlock New Member Gate automatically when onboarding is completed
           </label>
-          <p class="nmg-step-desc" style="margin-top:8px">Only does anything if New Member Gate is also enabled. Leave unchecked if you don't use the gate, or want it unlocked some other way.</p>
+          <p class="nmg-step-desc" style="font-size:0.85rem;line-height:2;margin-top:8px">Only does anything if New Member Gate is also enabled. Leave unchecked if you don't use the gate, or want it unlocked some other way.</p>
         </div>
 
         <div class="nmg-step">
           <p class="nmg-step-num">STEP 5</p>
           <p class="nmg-step-title">Turn it on</p>
-          <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.7rem;color:var(--white);cursor:pointer">
+          <label style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:0.85rem;color:var(--white);cursor:pointer">
             <input type="checkbox" id="ob-enabled" style="width:16px;height:16px"> Enable Full Onboarding
           </label>
         </div>
@@ -900,21 +900,21 @@
         </div>
 
         <details style="margin-top:24px;border:1px solid rgba(180,79,255,0.3);border-radius:6px;background:rgba(0,0,0,0.2)">
-          <summary style="cursor:pointer;padding:14px;font-family:var(--font-mono);font-size:0.7rem;color:var(--purple);user-select:none">
+          <summary style="cursor:pointer;padding:14px;font-family:var(--font-mono);font-size:0.88rem;color:var(--purple);user-select:none">
             ⚡ Switching over from Discord's native Onboarding? Click for full steps.
           </summary>
           <div style="padding:0 16px 16px 16px">
-            <p class="nmg-step-desc" style="margin-bottom:10px">
+            <p class="nmg-step-desc" style="font-size:0.85rem;line-height:2;margin-bottom:12px">
               If your server is a Community server, Discord's built-in Onboarding question flow is probably still showing new members its own prompts alongside (or instead of) AuraAI's. Turning it off is a few clicks in Discord itself — AuraAI can't do this part for you, since it's a Discord server setting, not something a bot can toggle.
             </p>
-            <ol style="font-family:var(--font-mono);font-size:0.65rem;color:var(--white);line-height:2;padding-left:18px;margin-bottom:10px">
+            <ol style="font-family:var(--font-mono);font-size:0.85rem;color:var(--white);line-height:2.3;padding-left:20px;margin-bottom:12px">
               <li>In Discord, go to <b style="color:var(--cyan)">Server Settings → Onboarding</b> and switch off the main Onboarding toggle at the top of that page. This turns off the built-in question flow — it does <b>not</b> remove your server's Community status, Rules channel, or Public Updates channel.</li>
               <li>On that same page, check the <b style="color:var(--cyan)">Server Guide</b> section — it's technically part of Onboarding and can sometimes stick around after the main toggle is off. Clear or disable it too if you don't want it showing.</li>
               <li>Go to <b style="color:var(--cyan)">Server Settings → Overview → Welcome Screen</b> and decide whether to keep it as a simple rules/invite display or turn it off, since AuraAI's DM flow is now doing the actual welcoming.</li>
               <li><b style="color:var(--cyan)">Server Settings → Safety Setup → Verification Level</b> is separate from Onboarding and unaffected by any of this — no changes needed there.</li>
               <li>Come back here and confirm the questions above match what you want, tell people about <b style="color:var(--cyan)">/onboard-me</b> as the fallback, and you're fully switched over.</li>
             </ol>
-            <p class="nmg-step-desc">Discord's menu labels shift from time to time — if something above doesn't match exactly what you see, look for the closest match under Server Settings.</p>
+            <p class="nmg-step-desc" style="font-size:0.85rem;line-height:2">Discord's menu labels shift from time to time — if something above doesn't match exactly what you see, look for the closest match under Server Settings.</p>
           </div>
         </details>
       </div>
