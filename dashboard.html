@@ -526,6 +526,26 @@
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
           Members can DM AuraAI a screenshot of their ESO Pithka Achievement Tracker QR code via /pat-verify. The screenshot itself always stays private in DMs — turn this on to also post the decoded, checksum-verified result to a channel here. Off by default.
         </p>
+
+        <div class="nmg-step">
+          <p class="nmg-step-title">What it tracks</p>
+          <p class="nmg-step-desc">
+            The QR only encodes whichever PAT tab was open when the member generated it — so a single scan usually covers one category, not their full account:<br><br>
+            <b style="color:var(--white)">Base dungeons</b> — Veteran, Hard mode<br>
+            <b style="color:var(--white)">Trifecta dungeons</b> — Veteran, Hard mode, Challenger, Trifecta, Extra<br>
+            <b style="color:var(--white)">Trials</b> — Veteran, Partial Hard Mode (+1 / +2), Hard mode, Trifecta, Extra<br>
+            <b style="color:var(--white)">Arenas</b> — Veteran, Trifecta, Extra
+          </p>
+        </div>
+
+        <div class="nmg-step">
+          <p class="nmg-step-title">Tag legend</p>
+          <p class="nmg-step-desc">
+            Discord embeds can't color individual words, so each clear tier gets its own emoji instead — these are what actually show up next to each dungeon/trial name in the posted result:<br><br>
+            🔹 Veteran &nbsp;·&nbsp; ⚔️ Hard mode &nbsp;·&nbsp; 🌗 Partial HM +1 &nbsp;·&nbsp; 🌘 Partial HM +2 &nbsp;·&nbsp; 🏆 Trifecta &nbsp;·&nbsp; ⭐ Extra &nbsp;·&nbsp; 👑 Challenger
+          </p>
+        </div>
+
         <div class="toggle-row"><span class="toggle-label">Post verified scans to a channel</span><label class="toggle"><input type="checkbox" id="patverify-enabled"><div class="t-track"></div><div class="t-thumb"></div></label></div>
         <label class="field-label" style="margin-top:14px">Results channel</label>
         <div id="patverify-channel-picker"></div>
@@ -534,6 +554,29 @@
           <button class="btn-primary" onclick="savePatVerifySettings()">Save settings</button>
           <p class="save-msg" id="patverify-saved">// Settings saved successfully</p>
           <p class="save-msg" id="patverify-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+
+        <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
+          <label class="field-label" style="margin-top:0">What gets posted</label>
+          <div style="background:#2b2d31;border-radius:8px;padding:14px;font-family:'gg sans',Helvetica,Arial,sans-serif;margin-top:8px">
+            <div style="color:#dbdee1;font-size:0.85rem;margin-bottom:8px">@member submitted a scan:</div>
+            <div style="border-left:4px solid #00BFFF;background:#1e1f22;border-radius:4px;padding:10px 14px">
+              <div style="color:#00BFFF;font-size:0.85rem;font-weight:700;margin-bottom:8px">⟩⟩ PITHKA SCAN VERIFIED</div>
+              <div style="display:flex;gap:24px;margin-bottom:8px">
+                <div><div style="color:#949ba4;font-size:0.65rem;text-transform:uppercase">Operator</div><div style="color:#dbdee1;font-size:0.8rem">NutritiousDeath</div></div>
+                <div><div style="color:#949ba4;font-size:0.65rem;text-transform:uppercase">Scanned</div><div style="color:#dbdee1;font-size:0.8rem">Aug 11, 2026</div></div>
+                <div><div style="color:#949ba4;font-size:0.65rem;text-transform:uppercase">Server</div><div style="color:#dbdee1;font-size:0.8rem">PC NA</div></div>
+              </div>
+              <div style="color:#949ba4;font-size:0.65rem;text-transform:uppercase;margin-bottom:4px">Base dungeons</div>
+              <div style="color:#dbdee1;font-size:0.8rem;line-height:1.6">
+                <b>Banished Cells I</b> — ⚔️ Hard mode<br>
+                <b>Wayrest Sewers I</b> — 🔹 Veteran<br>
+                <b>Vaults of Madness</b> — ⚔️ Hard mode
+              </div>
+              <div style="color:#5c5e66;font-size:0.6rem;margin-top:10px">Checksum OK · Reflects only what was on-screen when this QR was generated</div>
+            </div>
+          </div>
+          <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:8px">Approximate preview — actual accent color and layout render exactly as shown once posted.</p>
         </div>
       </div>
       </div>
