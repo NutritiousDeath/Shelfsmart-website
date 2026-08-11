@@ -321,6 +321,12 @@
           <p class="config-card-desc">Message posted when a member leaves.</p>
           <p class="config-card-status" id="status-goodbye">// checking...</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('patverify')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <p class="config-card-title">Pithka Verify Channel</p>
+          <p class="config-card-desc">Posts verified ESO Pithka Achievement Tracker scans here.</p>
+          <p class="config-card-status" id="status-patverify">// checking...</p>
+        </div>
         <div class="config-card" onclick="showConfigPage('fun')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
           <p class="config-card-title">Fun Channel</p>
@@ -509,6 +515,25 @@
           <button class="btn-primary" onclick="saveGoodbyeChannel()">Save goodbye channel</button>
           <p class="save-msg" id="goodbye-channel-saved">// Settings saved successfully</p>
           <p class="save-msg" id="goodbye-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
+        </div>
+      </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-patverify">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+      <div class="section-card">
+        <p class="card-title">// pithka verify channel</p>
+        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
+          Members can DM AuraAI a screenshot of their ESO Pithka Achievement Tracker QR code via /pat-verify. The screenshot itself always stays private in DMs — turn this on to also post the decoded, checksum-verified result to a channel here. Off by default.
+        </p>
+        <div class="toggle-row"><span class="toggle-label">Post verified scans to a channel</span><label class="toggle"><input type="checkbox" id="patverify-enabled"><div class="t-track"></div><div class="t-thumb"></div></label></div>
+        <label class="field-label" style="margin-top:14px">Results channel</label>
+        <div id="patverify-channel-picker"></div>
+        <p class="channel-hint" id="patverify-channel-current"></p>
+        <div style="margin-top:16px">
+          <button class="btn-primary" onclick="savePatVerifySettings()">Save settings</button>
+          <p class="save-msg" id="patverify-saved">// Settings saved successfully</p>
+          <p class="save-msg" id="patverify-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
       </div>
       </div>
@@ -2037,6 +2062,7 @@
       { id: 'modact-hardmute-dm' }, { id: 'modact-timeout-dm' }, { id: 'modact-tempban-dm' },
       { id: 'alert-platform' },
       { id: 'infohub-banner-style' }, { id: 'infohub-channel-picker' },
+      { id: 'patverify-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -2182,6 +2208,10 @@
 
     channelPickers['goodbye-channel-picker'].setChannels(guildChannelCache, s.goodbye_channel_id || null);
     setChannelHint('goodbye-channel-current', s.goodbye_channel_id);
+
+    channelPickers['patverify-channel-picker'].setChannels(guildChannelCache, s.pat_verify_channel_id || null);
+    setChannelHint('patverify-channel-current', s.pat_verify_channel_id);
+    document.getElementById('patverify-enabled').checked = !!s.pat_verify_enabled;
 
     channelPickers['fun-channel-picker'].setChannels(guildChannelCache, s.fun_channel_id || null);
     setChannelHint('fun-channel-current', s.fun_channel_id);
@@ -2689,6 +2719,7 @@
 
     setStatus('status-welcome', !!s.welcome_channel_id);
     setStatus('status-goodbye', !!s.goodbye_channel_id);
+    setStatus('status-patverify', !!s.pat_verify_enabled && !!s.pat_verify_channel_id);
     setStatus('status-fun', !!s.fun_channel_id);
     setStatus('status-levels', !!s.levels_channel_id);
     setStatus('status-suggestions', !!s.suggestions_channel_id);
@@ -3206,6 +3237,24 @@
     );
     setChannelHint('goodbye-channel-current', goodbyeId);
     showSaved('goodbye-channel-saved');
+  }
+
+  async function savePatVerifySettings() {
+    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
+    if (!selectedGuildId) {
+      const e = document.getElementById('patverify-error');
+      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
+      return;
+    }
+    const enabled = document.getElementById('patverify-enabled').checked;
+    const channelId = channelPickers['patverify-channel-picker'].getValue() || null;
+    await sb.from('server_settings').upsert(
+      { owner_discord_id: discordId, discord_server_id: selectedGuildId, pat_verify_enabled: enabled, pat_verify_channel_id: channelId },
+      { onConflict: 'discord_server_id' }
+    );
+    setChannelHint('patverify-channel-current', channelId);
+    setStatus('status-patverify', enabled && !!channelId);
+    showSaved('patverify-saved');
   }
 
   async function saveLevelsChannel() {
