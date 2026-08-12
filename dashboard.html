@@ -144,9 +144,6 @@
     <button class="sidebar-item" onclick="setTab('alerts',this);loadAlerts()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Social alerts
     </button>
-    <button class="sidebar-item" onclick="setTab('eso',this);loadEsoTab()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5L12 2z"/></svg>ESO Guild Sync
-    </button>
 
     <span class="sidebar-section" id="coaching-sidebar-section">// Coaching</span>
     <button class="sidebar-item" id="coaching-sidebar-btn" onclick="setTab('coaching',this);loadCoachingTab();resetCoachingSettingsView()">
@@ -545,7 +542,8 @@
           <p class="nmg-step-title">Tag legend</p>
           <p class="nmg-step-desc">
             Discord embeds can't color individual words, so each clear tier gets its own emoji instead — these are what actually show up next to each dungeon/trial name in the posted result:<br><br>
-            🔹 Veteran &nbsp;·&nbsp; ⚔️ Hard mode &nbsp;·&nbsp; 🌗 Partial HM +1 &nbsp;·&nbsp; 🌘 Partial HM +2 &nbsp;·&nbsp; 🏆 Trifecta &nbsp;·&nbsp; ⭐ Extra &nbsp;·&nbsp; 👑 Challenger
+            🔹 Veteran &nbsp;·&nbsp; ⚔️ Hard mode &nbsp;·&nbsp; 🌗 Partial HM +1 &nbsp;·&nbsp; 🌘 Partial HM +2 &nbsp;·&nbsp; 🏆 Trifecta &nbsp;·&nbsp; ⭐ Extra &nbsp;·&nbsp; 👑 Challenger &nbsp;·&nbsp; 🏃 Speed Run &nbsp;·&nbsp; 💀 No Death<br><br>
+            <span style="color:var(--pink)">⚠</span> 🏃 Speed Run and 💀 No Death only appear alongside 🏆 Trifecta. Pithka's own QR export never encodes Speed Run or No Death on their own — a Trifecta clear requires both by definition, so they're shown automatically whenever Trifecta shows up, but a solo Speed Run or No Death clear (without full Trifecta) has no way to reach AuraAI, since Pithka's addon never puts it in the QR at all.
           </p>
         </div>
 
@@ -571,12 +569,16 @@
                 <div><div style="color:#949ba4;font-size:0.65rem;text-transform:uppercase">Server</div><div style="color:#dbdee1;font-size:0.8rem">PC NA</div></div>
               </div>
               <div style="color:#949ba4;font-size:0.65rem;text-transform:uppercase;margin-bottom:4px">Base dungeons</div>
-              <div style="color:#dbdee1;font-size:0.8rem;line-height:1.6">
+              <div style="color:#dbdee1;font-size:0.8rem;line-height:1.6;margin-bottom:10px">
                 <b>Banished Cells I</b> — ⚔️ Hard mode<br>
                 <b>Wayrest Sewers I</b> — 🔹 Veteran<br>
                 <b>Vaults of Madness</b> — ⚔️ Hard mode
               </div>
-              <div style="color:#5c5e66;font-size:0.6rem;margin-top:10px">Checksum OK · Reflects only what was on-screen when this QR was generated</div>
+              <div style="color:#949ba4;font-size:0.65rem;text-transform:uppercase;margin-bottom:4px">Trials</div>
+              <div style="color:#dbdee1;font-size:0.8rem;line-height:1.6">
+                <b>Cloudrest</b> — 🏆 Trifecta — Gryphon Heart, 🏃 Speed Run, 💀 No Death
+              </div>
+              <div style="color:#5c5e66;font-size:0.6rem;margin-top:10px">Checksum OK · Reflects only what was on-screen when this QR was generated · 🏃💀 implied by Trifecta, not separately encoded</div>
             </div>
           </div>
           <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:8px">Approximate preview — actual accent color and layout render exactly as shown once posted.</p>
@@ -1588,24 +1590,6 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════ ESO GUILD SYNC ══════════════════════════════════ -->
-    <div class="tab" id="tab-eso">
-      <p class="page-tag">// role automation</p>
-      <p class="page-title">ESO GUILD SYNC</p>
-      <div class="section-card">
-        <p class="card-title">// add a guild</p>
-        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);margin-bottom:10px;line-height:1.7">Add one entry per ESO guild branch you want synced to this Discord — a single companion app run can feed multiple branches into one server.</p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <input class="cyber-input" type="text" id="eso-new-guild-name" placeholder="ESO guild name (exactly as it appears in-game)" style="flex:1;min-width:220px">
-          <button class="btn-primary" onclick="addEsoGuildPrompt()">+ Add Guild</button>
-        </div>
-        <p class="save-msg" id="eso-add-error" style="color:var(--pink)"></p>
-      </div>
-      <div id="eso-guilds-container">
-        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Select your server to configure ESO guild sync.</p>
-      </div>
-    </div>
-
     <!-- ══════════════════════════════════ COACHING ══════════════════════════════════ -->
     <div class="tab" id="tab-coaching">
       <p class="page-tag">// training management</p>
@@ -2221,7 +2205,6 @@
 <script src="js/dashboard-licenses.js"></script>
 <script src="js/dashboard-reactionroles.js"></script>
 <script src="js/dashboard-infohub.js"></script>
-<script src="js/dashboard-eso.js"></script>
 
 <script>
   async function loadGuildChannels(guildId, savedSettings) {
