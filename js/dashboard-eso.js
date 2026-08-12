@@ -18,6 +18,7 @@ async function loadEsoTab() {
     container.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Select your server to configure ESO guild sync.</p>';
     return;
   }
+  loadEsoSyncToken();
   container.innerHTML = '<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading...</p>';
 
   // Drop any dynamic pickers from a previous render so we don't leak stale entries
@@ -203,6 +204,58 @@ async function saveEsoRankRoles(esoGuildId) {
     showSaved('eso-guild-' + esoGuildId + '-saved');
   } catch (err) {
     const e = document.getElementById('eso-guild-' + esoGuildId + '-error');
+    if (e) { e.textContent = '// Error: ' + err.message; e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 5000); }
+  }
+}
+
+// ─── SYNC TOKEN (per-server) ──────────────────────────────────────────────
+
+async function loadEsoSyncToken() {
+  const field = document.getElementById('eso-sync-token-field');
+  if (!field || !selectedGuildId) return;
+  field.value = 'Loading...';
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(`${RAILWAY_BOT_URL}/api/eso-sync-token?guildId=${selectedGuildId}`, {
+      headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.error || 'Unknown error');
+    field.value = result.token;
+  } catch (err) {
+    field.value = '';
+    console.error('loadEsoSyncToken error:', err.message);
+  }
+}
+
+function copyEsoSyncToken() {
+  const field = document.getElementById('eso-sync-token-field');
+  if (!field || !field.value) return;
+  navigator.clipboard.writeText(field.value).then(() => {
+    showSaved('eso-token-saved');
+  }).catch(() => {
+    const e = document.getElementById('eso-token-error');
+    if (e) { e.textContent = '// Could not copy — select and copy manually'; e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 5000); }
+  });
+}
+
+async function regenerateEsoSyncTokenConfirm() {
+  if (!confirm('Regenerate this server\'s sync token? Any companion app still using the old token will stop working until you update its config with the new one.')) return;
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(`${RAILWAY_BOT_URL}/api/eso-sync-token/regenerate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session?.access_token || ''}` },
+      body: JSON.stringify({ guildId: selectedGuildId }),
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.error || 'Unknown error');
+    document.getElementById('eso-sync-token-field').value = result.token;
+    showSaved('eso-token-saved');
+  } catch (err) {
+    const e = document.getElementById('eso-token-error');
     if (e) { e.textContent = '// Error: ' + err.message; e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 5000); }
   }
 }
