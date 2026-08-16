@@ -147,6 +147,9 @@
     <button class="sidebar-item" onclick="setTab('eso',this);loadEsoTab()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5L12 2z"/></svg>ESO Guild Sync
     </button>
+    <button class="sidebar-item" onclick="setTab('eso-download',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>ESO Sync Files
+    </button>
 
     <span class="sidebar-section" id="coaching-sidebar-section">// Coaching</span>
     <button class="sidebar-item" id="coaching-sidebar-btn" onclick="setTab('coaching',this);loadCoachingTab();resetCoachingSettingsView()">
@@ -1614,6 +1617,69 @@
       </div>
       <div id="eso-guilds-container">
         <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Select your server to configure ESO guild sync.</p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════ ESO SYNC FILES (broadcast style) ══════════════════════════════════ -->
+    <div class="tab" id="tab-eso-download">
+      <div style="border:1px solid rgba(0,240,255,0.3);padding:20px 24px;margin-bottom:24px;background:linear-gradient(180deg, rgba(0,240,255,0.06), transparent);position:relative">
+        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--pink);letter-spacing:3px;margin-bottom:6px">⬤ TRANSMISSION ACTIVE</p>
+        <p class="page-title" style="margin-bottom:4px">FEDERAL AURA SERVICE</p>
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--cyan);letter-spacing:2px">ESO GUILD SYNC — CIVILIAN DISTRIBUTION CHANNEL</p>
+      </div>
+
+      <div class="section-card">
+        <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--white);line-height:2">
+          Are you still assigning guild roles <em>by hand</em>? Citizen, that ends today.<br>
+          Federal Aura Service has authorized full automation of guild rank synchronization, direct to Discord. No manual updates. No forgotten promotions. No excuses.
+        </p>
+      </div>
+
+      <div class="section-card">
+        <p class="card-title">// how it works</p>
+        <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--white);line-height:2">
+          A small addon reports your guild roster.<br>
+          A companion service relays it to Aura.<br>
+          Aura assigns the correct role. Automatically. Every time.<br><br>
+          Simple. Efficient. <span style="color:var(--cyan)">Compliant.</span>
+        </p>
+      </div>
+
+      <div class="section-card">
+        <p class="card-title">// requirements</p>
+        <ul style="font-family:var(--font-mono);font-size:0.78rem;color:var(--grey);line-height:2.2;padding-left:20px">
+          <li>Elder Scrolls Online, installed and active</li>
+          <li>Node.js (18 or newer), installed on your PC</li>
+          <li>An AuraAI dashboard login for this server</li>
+        </ul>
+      </div>
+
+      <div class="section-card" style="border-color:rgba(0,240,255,0.35);text-align:center;padding:32px 24px">
+        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);letter-spacing:3px;margin-bottom:14px">FILE PACKAGE — VERSION 1.0.0</p>
+        <a href="downloads/AuraAI-ESO-Sync.zip" download class="btn-primary" style="display:inline-block;text-decoration:none;font-size:0.85rem;padding:14px 32px">⬇ DOWNLOAD PACKAGE</a>
+        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:14px">Includes the addon, the companion service, and a setup guide.</p>
+      </div>
+
+      <div class="section-card">
+        <p class="card-title">// deployment briefing</p>
+        <ol style="font-family:var(--font-mono);font-size:0.78rem;color:var(--white);line-height:2.4;padding-left:20px">
+          <li>Extract the package.</li>
+          <li>Move the <code style="color:var(--cyan)">EsoDiscordSync</code> folder into your ESO <code style="color:var(--cyan)">AddOns</code> folder.</li>
+          <li>Confirm the addon's APIVersion matches your game client. Enable it.</li>
+          <li>Run the companion service. It will ask for your Server ID and Sync Token — both are one tab away, on <a href="#" onclick="setTab('eso',null);document.querySelectorAll('.sidebar-item').forEach(b=>{if(b.textContent.trim()==='ESO Guild Sync')b.classList.add('active')});return false" style="color:var(--cyan)">ESO Guild Sync</a>.</li>
+          <li>In-game: type <code style="color:var(--cyan)">/esosync</code>, then <code style="color:var(--cyan)">/reloadui</code>.</li>
+        </ol>
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);margin-top:14px;line-height:1.9">Full instructions are included in the package README.</p>
+      </div>
+
+      <div class="section-card" style="border-color:rgba(255,255,255,0.1)">
+        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);line-height:1.8">
+          This Add-on is not created by, affiliated with or sponsored by ZeniMax Media Inc. or its affiliates. The Elder Scrolls® and related logos are registered trademarks or trademarks of ZeniMax Media Inc. in the United States and/or other countries. All rights reserved.
+        </p>
+      </div>
+
+      <div style="text-align:center;padding:28px 0 8px 0">
+        <p style="font-family:var(--font-display);font-size:1.1rem;color:var(--cyan);letter-spacing:2px">Would you like to know more?</p>
       </div>
     </div>
 
