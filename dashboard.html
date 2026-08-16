@@ -1665,7 +1665,8 @@
         <ol style="font-family:var(--font-mono);font-size:0.78rem;color:var(--white);line-height:2.4;padding-left:20px">
           <li>Extract the package.</li>
           <li>Move the <code style="color:var(--cyan)">EsoDiscordSync</code> folder into your ESO <code style="color:var(--cyan)">AddOns</code> folder.</li>
-          <li>Confirm the addon's APIVersion matches your game client. Enable it.</li>
+          <li>Launch ESO. Confirm <code style="color:var(--cyan)">EsoDiscordSync</code> appears checked in the in-game Addon Manager — it ships pre-configured for the current game version, no editing required.</li>
+          <li>If it ever shows as "out of date" after a big ESO update: that flag alone doesn't mean it stopped working. Just check back on this page for an updated download.</li>
           <li>Run the companion service. It will ask for your Server ID and Sync Token — both are one tab away, on <a href="#" onclick="setTab('eso',null);document.querySelectorAll('.sidebar-item').forEach(b=>{if(b.textContent.trim()==='ESO Guild Sync')b.classList.add('active')});return false" style="color:var(--cyan)">ESO Guild Sync</a>.</li>
           <li>In-game: type <code style="color:var(--cyan)">/esosync</code>, then <code style="color:var(--cyan)">/reloadui</code>.</li>
         </ol>
