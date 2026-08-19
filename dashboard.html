@@ -303,124 +303,124 @@
 
       <!-- ══════════ LANDING GRID — click a card to configure that section ══════════ -->
       <div class="config-grid" id="bot-config-grid">
-        <div class="config-card" onclick="showConfigPage('channels')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
-          <p class="config-card-title">Game Channels</p>
-          <p class="config-card-desc">Tournament channels for OW2, Rivals, Destiny 2, and R6 Siege.</p>
-          <p class="config-card-status" id="status-channels">// checking...</p>
+        <div class="config-card" onclick="showConfigPage('features')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+          <p class="config-card-title">Feature Toggles</p>
+          <p class="config-card-desc">Enable or disable BattleTag lookup, AI Tournament Director, scrims, coaching.</p>
         </div>
-        <div class="config-card" onclick="showConfigPage('roles')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          <p class="config-card-title">Role Pings</p>
-          <p class="config-card-desc">Roles AuraAI pings for game-specific notifications.</p>
-          <p class="config-card-status" id="status-roles">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('welcome')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          <p class="config-card-title">Welcome Channel</p>
-          <p class="config-card-desc">Cyberpunk welcome card posted when a member joins.</p>
-          <p class="config-card-status" id="status-welcome">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('goodbye')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
-          <p class="config-card-title">Goodbye Channel</p>
-          <p class="config-card-desc">Message posted when a member leaves.</p>
-          <p class="config-card-status" id="status-goodbye">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('patverify')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          <p class="config-card-title">Pithka Verify Channel</p>
-          <p class="config-card-desc">Posts verified ESO Pithka Achievement Tracker scans here.</p>
-          <p class="config-card-status" id="status-patverify">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('fun')">
+<div class="config-card" onclick="showConfigPage('fun')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
           <p class="config-card-title">Fun Channel</p>
           <p class="config-card-desc">Where /hitman and other fun commands post.</p>
           <p class="config-card-status" id="status-fun">// checking...</p>
         </div>
-        <div class="config-card" onclick="showConfigPage('voice')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
-          <p class="config-card-title">Voice Channels</p>
-          <p class="config-card-desc">Join-to-Create trigger channel, category, and default user limit.</p>
-          <p class="config-card-status" id="status-voice">// checking...</p>
+<div class="config-card" onclick="showConfigPage('channels')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+          <p class="config-card-title">Game Channels</p>
+          <p class="config-card-desc">Tournament channels for OW2, Rivals, Destiny 2, and R6 Siege.</p>
+          <p class="config-card-status" id="status-channels">// checking...</p>
         </div>
-        <div class="config-card" onclick="showConfigPage('reactionroles')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
-          <p class="config-card-title">Reaction Roles</p>
-          <p class="config-card-desc">Build the button menu members use to self-assign roles.</p>
-          <p class="config-card-status" id="status-reactionroles">// checking...</p>
+<div class="config-card" onclick="showConfigPage('goodbye')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+          <p class="config-card-title">Goodbye Channel</p>
+          <p class="config-card-desc">Message posted when a member leaves.</p>
+          <p class="config-card-status" id="status-goodbye">// checking...</p>
         </div>
-        <div class="config-card" onclick="showConfigPage('sticky')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M12 12v10M3 7l9 5 9-5"/></svg>
-          <p class="config-card-title">Sticky Messages <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
-          <p class="config-card-desc">A message that stays pinned to the bottom of any channel.</p>
-          <p class="config-card-status" id="status-sticky">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('newmembergate')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12 3 9v6l6 3M15 3l6 3v12l-6-3M9 12l6-3M9 12v6l6 3v-6"/></svg>
-          <p class="config-card-title">New Member Gate <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
-          <p class="config-card-desc">Auto-role + channel lockdown + DM for new members, unlocked via Reaction Roles.</p>
-          <p class="config-card-status" id="status-newmembergate">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('onboarding')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>
-          <p class="config-card-title">Full Onboarding <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
-          <p class="config-card-desc">DM new members a question flow that assigns roles automatically.</p>
-          <p class="config-card-status" id="status-onboarding">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('tickets')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h18v4a2 2 0 0 0 0 4v4H3v-4a2 2 0 0 0 0-4Z"/><path d="M12 7v10"/></svg>
-          <p class="config-card-title">Support Tickets <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
-          <p class="config-card-desc">Up to 5 panels, real channels per ticket, category routing, transcripts.</p>
-          <p class="config-card-status" id="status-tickets">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('warnthreshold')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
-          <p class="config-card-title">Warn Threshold <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
-          <p class="config-card-desc">Auto-timeout a member after they rack up N warnings from /warn.</p>
-          <p class="config-card-status" id="status-warnthreshold">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('security')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 3 6v6c0 5 3.5 8.5 9 10 5.5-1.5 9-5 9-10V6z"/></svg>
-          <p class="config-card-title">Security <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
-          <p class="config-card-desc">Domain blacklist for scam links, plus an anti-raid honeypot channel.</p>
-          <p class="config-card-status" id="status-security">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('infohub')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
-          <p class="config-card-title">Server Info Hub</p>
-          <p class="config-card-desc">Welcome / Rules / Links / Mods — banner-headed panels, published as a set.</p>
-          <p class="config-card-status" id="status-infohub">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('modlogsettings')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M8 8h8M8 16h5"/></svg>
-          <p class="config-card-title">Mod Log Settings</p>
-          <p class="config-card-desc">Which channel gets logs, and which event types get logged.</p>
-          <p class="config-card-status" id="status-modlogsettings">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('modactions')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 3.5a2.12 2.12 0 0 1 3 3L4 20l-4 1 1-4Z"/></svg>
-          <p class="config-card-title">Moderation Actions</p>
-          <p class="config-card-desc">/ban, /kick, /mute, /hardmute, /timeout, /tempban — DM behavior, durations, purge.</p>
-          <p class="config-card-status" id="status-modactions">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('levels')">
+<div class="config-card" onclick="showConfigPage('levels')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <p class="config-card-title">Leveling</p>
           <p class="config-card-desc">Channel for level-up announcements. XP tracking works either way.</p>
           <p class="config-card-status" id="status-levels">// checking...</p>
         </div>
-        <div class="config-card" onclick="showConfigPage('suggestions')">
+<div class="config-card" onclick="showConfigPage('modlogsettings')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M8 8h8M8 16h5"/></svg>
+          <p class="config-card-title">Mod Log Settings</p>
+          <p class="config-card-desc">Which channel gets logs, and which event types get logged.</p>
+          <p class="config-card-status" id="status-modlogsettings">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('modactions')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.5 3.5a2.12 2.12 0 0 1 3 3L4 20l-4 1 1-4Z"/></svg>
+          <p class="config-card-title">Moderation Actions</p>
+          <p class="config-card-desc">/ban, /kick, /mute, /hardmute, /timeout, /tempban — DM behavior, durations, purge.</p>
+          <p class="config-card-status" id="status-modactions">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('patverify')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <p class="config-card-title">Pithka Verify Channel</p>
+          <p class="config-card-desc">Posts verified ESO Pithka Achievement Tracker scans here.</p>
+          <p class="config-card-status" id="status-patverify">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('reactionroles')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+          <p class="config-card-title">Reaction Roles</p>
+          <p class="config-card-desc">Build the button menu members use to self-assign roles.</p>
+          <p class="config-card-status" id="status-reactionroles">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('roles')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <p class="config-card-title">Role Pings</p>
+          <p class="config-card-desc">Roles AuraAI pings for game-specific notifications.</p>
+          <p class="config-card-status" id="status-roles">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('infohub')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
+          <p class="config-card-title">Server Info Hub</p>
+          <p class="config-card-desc">Welcome / Rules / Links / Mods — banner-headed panels, published as a set.</p>
+          <p class="config-card-status" id="status-infohub">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('suggestions')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           <p class="config-card-title">Suggestions</p>
           <p class="config-card-desc">Required channel for /suggest — no channel set means the command is disabled.</p>
           <p class="config-card-status" id="status-suggestions">// checking...</p>
         </div>
-        <div class="config-card" onclick="showConfigPage('features')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
-          <p class="config-card-title">Feature Toggles</p>
-          <p class="config-card-desc">Enable or disable BattleTag lookup, AI Tournament Director, scrims, coaching.</p>
+<div class="config-card" onclick="showConfigPage('voice')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+          <p class="config-card-title">Voice Channels</p>
+          <p class="config-card-desc">Join-to-Create trigger channel, category, and default user limit.</p>
+          <p class="config-card-status" id="status-voice">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('welcome')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <p class="config-card-title">Welcome Channel</p>
+          <p class="config-card-desc">Cyberpunk welcome card posted when a member joins.</p>
+          <p class="config-card-status" id="status-welcome">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('onboarding')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 3 3 6 3s6-1 6-3v-5"/></svg>
+          <p class="config-card-title">Full Onboarding <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">DM new members a question flow that assigns roles automatically.</p>
+          <p class="config-card-status" id="status-onboarding">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('newmembergate')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12 3 9v6l6 3M15 3l6 3v12l-6-3M9 12l6-3M9 12v6l6 3v-6"/></svg>
+          <p class="config-card-title">New Member Gate <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">Auto-role + channel lockdown + DM for new members, unlocked via Reaction Roles.</p>
+          <p class="config-card-status" id="status-newmembergate">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('security')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 3 6v6c0 5 3.5 8.5 9 10 5.5-1.5 9-5 9-10V6z"/></svg>
+          <p class="config-card-title">Security <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">Domain blacklist for scam links, plus an anti-raid honeypot channel.</p>
+          <p class="config-card-status" id="status-security">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('sticky')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M12 12v10M3 7l9 5 9-5"/></svg>
+          <p class="config-card-title">Sticky Messages <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">A message that stays pinned to the bottom of any channel.</p>
+          <p class="config-card-status" id="status-sticky">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('tickets')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h18v4a2 2 0 0 0 0 4v4H3v-4a2 2 0 0 0 0-4Z"/><path d="M12 7v10"/></svg>
+          <p class="config-card-title">Support Tickets <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">Up to 5 panels, real channels per ticket, category routing, transcripts.</p>
+          <p class="config-card-status" id="status-tickets">// checking...</p>
+        </div>
+<div class="config-card" onclick="showConfigPage('warnthreshold')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          <p class="config-card-title">Warn Threshold <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">Auto-timeout a member after they rack up N warnings from /warn.</p>
+          <p class="config-card-status" id="status-warnthreshold">// checking...</p>
         </div>
       </div>
 
