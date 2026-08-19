@@ -369,6 +369,12 @@
           <p class="config-card-desc">DM new members a question flow that assigns roles automatically.</p>
           <p class="config-card-status" id="status-onboarding">// checking...</p>
         </div>
+        <div class="config-card" onclick="showConfigPage('tickets')">
+          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h18v4a2 2 0 0 0 0 4v4H3v-4a2 2 0 0 0 0-4Z"/><path d="M12 7v10"/></svg>
+          <p class="config-card-title">Support Tickets <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
+          <p class="config-card-desc">Up to 5 panels, real channels per ticket, category routing, transcripts.</p>
+          <p class="config-card-status" id="status-tickets">// checking...</p>
+        </div>
         <div class="config-card" onclick="showConfigPage('warnthreshold')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
           <p class="config-card-title">Warn Threshold <span style="color:var(--purple);font-size:0.55rem">PRO</span></p>
@@ -1003,6 +1009,102 @@
           </div>
         </details>
       </div>
+      </div>
+
+      <div class="config-detail" id="config-detail-tickets">
+        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
+
+        <!-- ── PANEL LIST VIEW ─────────────────────────────────────────────── -->
+        <div id="ticket-panel-list-view">
+          <div class="section-card">
+            <p class="card-title">// support ticket panels <span style="color:var(--purple);font-size:0.6rem">PRO FEATURE</span></p>
+            <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--grey);line-height:2;margin-bottom:16px">
+              Up to 5 independent panels. Each posts as an embed with buttons (or a dropdown) — clicking one opens a real Discord channel for that ticket, which physically moves between categories as it's claimed and closed. Click a panel below to edit it, or create a new one.
+            </p>
+            <p style="font-family:var(--font-mono);font-size:0.7rem;color:var(--cyan);margin-bottom:10px" id="ticket-panel-count">0 / 5</p>
+            <div id="ticket-panel-list"></div>
+            <p id="ticket-panel-empty-hint" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);margin:10px 0">No panels yet — create your first one below.</p>
+            <button class="btn-primary" id="ticket-create-panel-btn" onclick="createTicketPanel()">+ Create Panel</button>
+          </div>
+        </div>
+
+        <!-- ── PANEL EDITOR VIEW ───────────────────────────────────────────── -->
+        <div id="ticket-panel-editor-view" style="display:none">
+          <button class="btn-secondary" onclick="showTicketPanelList()" style="margin-bottom:16px">‹ All Panels</button>
+
+          <div class="section-card">
+            <p class="card-title">// panel basics</p>
+            <label class="field-label">Panel name (internal — not shown to members)</label>
+            <input class="cyber-input" type="text" id="ticket-panel-name" maxlength="80" placeholder="e.g. Support">
+            <label class="field-label" style="margin-top:14px">Publish channel</label>
+            <div id="ticket-channel-picker"></div>
+          </div>
+
+          <div class="section-card">
+            <p class="card-title">// who can manage tickets</p>
+            <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:10px">Roles that can claim/close/reopen/delete tickets from this panel, and see every ticket channel. Up to 10 roles. <span id="ticket-manager-role-count">(0/10)</span></p>
+            <div id="ticket-manager-roles-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+            <button class="btn-secondary" onclick="toggleTicketRolePicker()">+ Add manager role</button>
+            <div id="ticket-manager-roles-picker" style="display:none;margin-top:10px;max-height:200px;overflow-y:auto;background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.1);border-radius:6px;padding:8px"></div>
+          </div>
+
+          <div class="section-card">
+            <p class="card-title">// panel message (embed)</p>
+            <label class="field-label">Title</label>
+            <input class="cyber-input" type="text" id="ticket-panel-embed-title" maxlength="256" placeholder="How can we help?">
+            <label class="field-label" style="margin-top:12px">Description</label>
+            <textarea class="cyber-input" id="ticket-panel-embed-desc" rows="3" maxlength="2000" placeholder="Click a button below to open a ticket."></textarea>
+            <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap">
+              <div style="flex:1;min-width:140px">
+                <label class="field-label">Color</label>
+                <input class="cyber-input" type="color" id="ticket-panel-embed-color" value="#00f0ff" style="height:38px;padding:4px">
+              </div>
+              <div style="flex:2;min-width:200px">
+                <label class="field-label">Image URL (optional)</label>
+                <input class="cyber-input" type="text" id="ticket-panel-embed-image" placeholder="https://...">
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <p class="card-title">// entry style</p>
+            <div style="display:flex;gap:10px">
+              <button class="btn-secondary" id="ticket-mode-buttons-btn" onclick="setTicketPanelMode('buttons')">Buttons</button>
+              <button class="btn-secondary" id="ticket-mode-dropdown-btn" onclick="setTicketPanelMode('dropdown')">Dropdown</button>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <p class="card-title">// ticket types</p>
+            <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:12px">Each type is one button (or dropdown option). The 3 categories control where the channel lives at each stage — leave any blank to skip moving it at that stage.</p>
+            <div id="ticket-types-container"></div>
+            <button class="btn-secondary" onclick="addTicketType()">+ Add Ticket Type</button>
+          </div>
+
+          <div class="section-card">
+            <p class="card-title">// transcripts</p>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+              <input type="checkbox" id="ticket-transcript-enabled" style="width:16px;height:16px"> Post a transcript when a ticket is closed
+            </label>
+            <label class="field-label" style="margin-top:14px">Transcript channel</label>
+            <div id="ticket-transcript-channel-picker"></div>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:14px">
+              <input type="checkbox" id="ticket-transcript-dm" style="width:16px;height:16px"> Also DM the transcript to the person who opened the ticket
+            </label>
+          </div>
+
+          <div class="section-card">
+            <p class="card-title">// slash commands for this panel</p>
+            <div id="ticket-commands-toggles"></div>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+            <button class="btn-secondary" onclick="saveTicketPanel(false)">Save Draft</button>
+            <button class="btn-primary" onclick="saveTicketPanel(true)">Save &amp; Publish</button>
+            <button style="background:var(--pink);color:#fff;border:none;border-radius:4px;padding:10px 18px;cursor:pointer;font-family:var(--font-mono);font-size:0.68rem" onclick="deleteTicketPanel()">Delete Panel</button>
+          </div>
+          <p class="save-msg" id="ticket-error" style="color:var(--pink)"></p>
+        </div>
       </div>
 
       <div class="config-detail" id="config-detail-warnthreshold">
@@ -2206,6 +2308,8 @@
       { id: 'alert-platform' },
       { id: 'infohub-banner-style' }, { id: 'infohub-channel-picker' },
       { id: 'patverify-channel-picker' },
+      { id: 'ticket-channel-picker' },
+      { id: 'ticket-transcript-channel-picker' },
     ];
     pickerDefs.forEach(def => {
       channelPickers[def.id] = new CyberDropdown(def.id, () => {});
@@ -2294,6 +2398,7 @@
 <script src="js/dashboard-sticky.js"></script>
 <script src="js/dashboard-newmembergate.js"></script>
 <script src="js/dashboard-onboarding.js"></script>
+<script src="js/dashboard-tickets.js"></script>
 <script src="js/dashboard-warnthreshold.js"></script>
 <script src="js/dashboard-security.js"></script>
 <script src="js/dashboard-modlog-modactions.js"></script>
@@ -2679,6 +2784,9 @@
       document.getElementById('ob-channel-post-result').textContent = '';
       document.getElementById('status-onboarding').textContent = '// select a server';
       document.getElementById('status-onboarding').className = 'config-card-status unset';
+      const statusTickets = document.getElementById('status-tickets');
+      if (statusTickets) { statusTickets.textContent = '// select a server'; statusTickets.className = 'config-card-status unset'; }
+      if (typeof resetTicketPanels === 'function') resetTicketPanels();
       document.getElementById('status-modactions').textContent = '// select a server';
       document.getElementById('status-modactions').className = 'config-card-status unset';
       document.getElementById('modact-mute-setup-result').textContent = '';
@@ -2723,6 +2831,7 @@
     document.getElementById('status-sticky').className = 'config-card-status ' + (stickyListCache.length ? 'set' : 'unset');
     loadNewMemberGateSettings(guildId, savedSettings);
     try { loadOnboardingSettings(guildId, savedSettings); } catch (err) { console.error('loadOnboardingSettings error:', err.message); }
+    try { if (typeof loadTicketPanelsList === 'function') loadTicketPanelsList(guildId); } catch (err) { console.error('loadTicketPanelsList error:', err.message); }
     loadWarnThresholdSettings(savedSettings);
     loadDomainBlacklistSettings(savedSettings);
     loadHoneypotSettings(savedSettings);
@@ -2824,7 +2933,7 @@
   function setTab(name,btn){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');if(btn)btn.classList.add('active');if(name==='billing')loadMyLicenses();}
 
   // ── BOT CONFIG — MEE6-style card grid → detail page navigation ─────────────
-  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', sticky:'STICKY MESSAGES', newmembergate:'NEW MEMBER GATE', warnthreshold:'WARN THRESHOLD', security:'SECURITY', modlogsettings:'MOD LOG SETTINGS', modactions:'MODERATION ACTIONS', infohub:'SERVER INFO HUB' };
+  const CONFIG_PAGE_TITLES = { channels:'GAME CHANNELS', roles:'ROLE PINGS', welcome:'WELCOME CHANNEL', goodbye:'GOODBYE CHANNEL', fun:'FUN CHANNEL', features:'FEATURE TOGGLES', levels:'LEVELING CHANNEL', suggestions:'SUGGESTIONS CHANNEL', voice:'JOIN-TO-CREATE VOICE', reactionroles:'REACTION ROLES', sticky:'STICKY MESSAGES', newmembergate:'NEW MEMBER GATE', warnthreshold:'WARN THRESHOLD', security:'SECURITY', modlogsettings:'MOD LOG SETTINGS', modactions:'MODERATION ACTIONS', infohub:'SERVER INFO HUB', tickets:'SUPPORT TICKETS' };
 
   function showConfigPage(name) {
     const grid = document.getElementById('bot-config-grid');
