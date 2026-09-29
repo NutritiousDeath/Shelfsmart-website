@@ -8,7 +8,8 @@
 //   • Download          — downloads/AuraSync.zip (Windows app)
 //   • Setup steps, Discord commands, and fine print
 //
-// MTG Premium gating (subscribe button, locked state) gets added here later.
+// Aura Premium status + subscribe live in js/dashboard-premium.js, which adds
+// a strip to this tab and the plans to the Billing tab.
 //
 // PREVIEW MODE: while COMING_SOON is true the tab shows the full interface
 // with every button switched off, no calls to the bot, and a diagonal
@@ -19,7 +20,7 @@
   const AURA_SYNC_VERSION = '0.2.0';
   const DOWNLOAD_URL = 'downloads/AuraSync.zip';
   const CARD_IMAGE = 'img/mtg/aura-card.png';
-  const COMING_SOON = true;
+  const COMING_SOON = false;
 
   // ─── MOUNT ──────────────────────────────────────────────────────────────────
 
