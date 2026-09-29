@@ -1,6 +1,6 @@
 // ─── DASHBOARD: MTG ARENA TAB ─────────────────────────────────────────────────
-// Self-mounting: this file adds its own sidebar button (after "ESO Sync Files")
-// and its own tab panel, so dashboard.html only needs one <script> line.
+// Self-mounting: adds its button under the shared "// Game Ops" sidebar
+// section (js/dashboard-games.js, which must load first) and its own tab panel.
 //
 // The tab is per-USER (tied to the Discord login), not per-server:
 //   • Aura Sync status  — linked?, last sync, card counts (GET /api/mtg/status)
@@ -28,28 +28,12 @@
 
   function mountSidebar() {
     if (document.getElementById('mtg-sidebar-btn')) return;
-    const buttons = Array.from(document.querySelectorAll('.sidebar-item'));
-    const anchor = buttons.find((b) => (b.getAttribute('onclick') || '').includes("'eso-download'"))
-      || buttons.find((b) => (b.getAttribute('onclick') || '').includes("'eso'"));
-    const section = document.createElement('span');
-    section.className = 'sidebar-section';
-    section.textContent = '// MTG Arena';
-    const btn = document.createElement('button');
-    btn.className = 'sidebar-item';
-    btn.id = 'mtg-sidebar-btn';
-    btn.innerHTML = ICON_CARDS + 'MTG Arena' + (COMING_SOON
-      ? '<span style="margin-left:auto;font-family:var(--font-mono);font-size:0.5rem;letter-spacing:1.5px;color:var(--purple);border:1px solid rgba(180,79,255,0.6);padding:1px 5px">SOON</span>'
-      : '');
-    btn.addEventListener('click', () => { setTab('mtg', btn); loadMtgTab(); });
-
-    if (anchor && anchor.parentNode) {
-      anchor.parentNode.insertBefore(section, anchor.nextSibling);
-      section.parentNode.insertBefore(btn, section.nextSibling);
-    } else {
-      const aside = document.querySelector('aside');
-      const status = aside && aside.querySelector('.status-indicator');
-      if (aside) { aside.insertBefore(section, status || null); aside.insertBefore(btn, status || null); }
-    }
+    // Lives under the shared "// Game Ops" section (js/dashboard-games.js).
+    if (!window.AuraGames) { console.error('dashboard-games.js must load before dashboard-mtg.js'); return; }
+    window.AuraGames.addButton({
+      id: 'mtg-sidebar-btn', tab: 'mtg', label: 'MTG Arena', icon: ICON_CARDS,
+      onOpen: () => loadMtgTab(),
+    });
   }
 
   function mountTab() {
@@ -129,7 +113,7 @@
 
   const mono = 'font-family:var(--font-mono)';
   const TAB_HTML = `
-    <div class="mtg-hero" style="display:flex;gap:32px;align-items:center;flex-wrap:wrap;border:1px solid rgba(180,79,255,0.35);padding:24px 26px;margin-bottom:24px;background:linear-gradient(135deg, rgba(180,79,255,0.10), rgba(0,191,255,0.04) 60%, transparent)">
+    <div class="mtg-hero game-hero" style="display:flex;gap:32px;align-items:center;flex-wrap:wrap;border:1px solid rgba(180,79,255,0.35);padding:24px 26px;margin-bottom:24px;background:linear-gradient(135deg, rgba(180,79,255,0.10), rgba(0,191,255,0.04) 60%, transparent)">
       <img src="${CARD_IMAGE}" alt="Aura — MTG Arena companion" style="width:260px;max-width:60%;height:auto;border-radius:12px;box-shadow:0 0 26px rgba(180,79,255,0.55), 0 0 2px rgba(0,191,255,0.8)">
       <div style="flex:1;min-width:240px">
         <p class="page-tag">// mtg arena companion</p>

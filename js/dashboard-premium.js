@@ -1,6 +1,7 @@
 // ─── DASHBOARD: AURA PREMIUM ──────────────────────────────────────────────────
-// Self-mounting (like dashboard-mtg.js): adds an "Aura Premium" section to the
-// top of the Billing tab and a small status strip to the MTG Arena tab.
+// Self-mounting: adds an "Aura Premium" section to the top of the Billing tab
+// and a small status strip to each Game Ops tab (MTG Arena, Division 2,
+// Destiny 2). Load it LAST, after the game page scripts.
 //
 // Aura Premium is PER PLAYER (not per server — that's AuraAI Pro/Lifetime):
 //   • One Game  — $5/mo  (MTG Arena, Division 2 or Destiny 2)
@@ -13,10 +14,11 @@
 (function () {
   const API = (typeof RAILWAY_BOT_URL !== 'undefined') ? RAILWAY_BOT_URL : 'https://web-production-01b81.up.railway.app';
   const GAMES = [
-    { id: 'mtg', label: 'MTG Arena' },
-    { id: 'div2', label: 'Division 2' },
-    { id: 'd2', label: 'Destiny 2' },
+    { id: 'mtg', label: 'MTG Arena', premium: 'unlimited AI deck builds &amp; refines.', free: 'Syncing, collection, exports &amp; wildcard checks are always free.' },
+    { id: 'div2', label: 'Division 2', premium: 'unlimited AI build plans &amp; tweaks.', free: 'Your gear locker is always free.' },
+    { id: 'd2', label: 'Destiny 2', premium: 'unlimited AI builds &amp; refines.', free: 'Linking your account and viewing your vault are always free.' },
   ];
+  const GAME_IDS = GAMES.map((g) => g.id);
   const mono = 'font-family:var(--font-mono)';
   let selectedGame = 'mtg';
   let lastStatus = null;
@@ -212,28 +214,32 @@
     }
   }
 
-  // ─── MTG TAB STRIP ──────────────────────────────────────────────────────────
+  // ─── GAME TAB STRIPS ────────────────────────────────────────────────────────
 
   function renderStrip(s) {
-    const tab = document.getElementById('tab-mtg');
+    for (const g of GAMES) renderGameStrip(s, g);
+  }
+
+  function renderGameStrip(s, g) {
+    const tab = document.getElementById(`tab-${g.id}`);
     if (!tab) return;
-    let strip = document.getElementById('pm-mtg-strip');
+    let strip = document.getElementById(`pm-${g.id}-strip`);
     if (!strip) {
       strip = document.createElement('div');
-      strip.id = 'pm-mtg-strip';
-      strip.className = 'section-card';
+      strip.id = `pm-${g.id}-strip`;
+      strip.className = 'section-card pm-game-strip';
       strip.style.cssText = 'border-color:rgba(180,79,255,0.45);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px';
-      const hero = tab.querySelector('.mtg-hero');
+      const hero = tab.querySelector('.game-hero');
       if (hero && hero.parentNode) hero.parentNode.insertBefore(strip, hero.nextSibling); else tab.prepend(strip);
     }
-    const mtg = s.all || s.games.includes('mtg');
+    const unlocked = s.all || s.games.includes(g.id);
     const left = Math.max(0, s.usage.freeLimit - s.usage.used);
-    strip.innerHTML = mtg
-      ? `<p style="${mono};font-size:0.74rem;color:var(--white)">⭐ <span style="color:var(--purple)">Aura Premium</span> — unlimited AI deck builds &amp; refines.</p>`
-      : `<p style="${mono};font-size:0.74rem;color:var(--white);line-height:1.8">🎟️ <span style="color:var(--cyan)">${left} of ${s.usage.freeLimit}</span> free AI builds left this month. Syncing, collection, exports &amp; wildcard checks are always free.</p>
-         <button class="btn-primary" style="font-size:0.7rem;padding:8px 16px" id="pm-strip-btn">GET PREMIUM</button>`;
-    const btn = document.getElementById('pm-strip-btn');
-    if (btn) btn.addEventListener('click', goToBilling);
+    strip.innerHTML = unlocked
+      ? `<p style="${mono};font-size:0.74rem;color:var(--white)">⭐ <span style="color:var(--purple)">Aura Premium</span> — ${g.premium}</p>`
+      : `<p style="${mono};font-size:0.74rem;color:var(--white);line-height:1.8">🎟️ <span style="color:var(--cyan)">${left} of ${s.usage.freeLimit}</span> free AI builds left this month (shared across games). ${g.free}</p>
+         <button class="btn-primary pm-strip-btn" style="font-size:0.7rem;padding:8px 16px">GET PREMIUM</button>`;
+    const btn = strip.querySelector('.pm-strip-btn');
+    if (btn) btn.addEventListener('click', () => { selectedGame = g.id; renderGames(); if (lastStatus) render(lastStatus); goToBilling(); });
   }
 
   function goToBilling() {
@@ -245,7 +251,7 @@
   // ─── PLAYER VIEW ────────────────────────────────────────────────────────────
   // The dashboard's "Access required — upgrade to Pro" wall is for server
   // owners. Players who only want the game features get a player view instead:
-  // the MTG Arena tab + the Aura Premium card, nothing else.
+  // the Game Ops tabs + the Aura Premium card, nothing else.
 
   const INTENT_KEY = 'auraPlayerIntent';
   let playerMode = false;
@@ -254,17 +260,23 @@
     return Array.from(document.querySelectorAll('.sidebar-item')).find((b) => (b.getAttribute('onclick') || '').includes(`'${name}'`));
   }
 
+  function gameButton(id) {
+    return document.querySelector(`.sidebar-item[data-game-tab="${id}"]`);
+  }
+
   function openTarget(target) {
-    if (target === 'billing') goToBilling();
-    else { const mtg = document.getElementById('mtg-sidebar-btn'); if (mtg) mtg.click(); }
+    if (target === 'billing') { goToBilling(); return; }
+    const btn = gameButton(GAME_IDS.includes(target) ? target : 'mtg');
+    if (btn) btn.click();
   }
 
   function enterPlayerMode(target) {
     if (!playerMode) {
       playerMode = true;
       document.body.classList.add('aura-player-mode');
-      const mtg = document.getElementById('mtg-sidebar-btn');
-      if (mtg) { mtg.setAttribute('data-player-keep', ''); if (mtg.previousElementSibling) mtg.previousElementSibling.setAttribute('data-player-keep', ''); }
+      const section = document.getElementById('games-sidebar-section');
+      if (section) section.setAttribute('data-player-keep', '');
+      document.querySelectorAll('.sidebar-item[data-game-tab]').forEach((b) => b.setAttribute('data-player-keep', ''));
       const bill = sidebarButton('billing');
       if (bill) { bill.setAttribute('data-player-keep', ''); if (bill.previousElementSibling?.classList.contains('sidebar-section')) bill.previousElementSibling.setAttribute('data-player-keep', ''); }
       const overlay = document.getElementById('paywall-overlay');
@@ -293,7 +305,7 @@
     btn.addEventListener('click', () => enterPlayerMode('mtg'));
     const sub = document.createElement('p');
     sub.id = 'pm-player-sub';
-    sub.textContent = 'MTG Arena sync, Division 2 & Destiny 2 builds — free to start, no server needed.';
+    sub.textContent = 'MTG Arena, Division 2 & Destiny 2 builds, collections and vaults — free to start, no server needed.';
     stripeBtn.parentNode.insertBefore(btn, stripeBtn);
     stripeBtn.parentNode.insertBefore(sub, stripeBtn);
   }
@@ -302,7 +314,7 @@
     const params = new URLSearchParams(window.location.search);
     let intent = null;
     if (params.get('premium')) intent = `premium:${params.get('premium')}`;
-    else if (params.get('tab') === 'mtg') intent = 'tab:mtg';
+    else if (GAME_IDS.includes(params.get('tab'))) intent = `tab:${params.get('tab')}`;
     try {
       if (intent) sessionStorage.setItem(INTENT_KEY, intent); // survives the Discord login redirect
       else intent = sessionStorage.getItem(INTENT_KEY);
@@ -327,7 +339,7 @@
       if (walled) addPaywallButton();
 
       const [kind, value] = (intent || '').split(':');
-      const target = kind === 'premium' ? 'billing' : kind === 'tab' ? 'mtg' : null;
+      const target = kind === 'premium' ? 'billing' : kind === 'tab' ? value : null;
       if (target) {
         clearIntent();
         if (walled) enterPlayerMode(target); else openTarget(target);
@@ -361,12 +373,12 @@
       document.getElementById('pm-buy-all').addEventListener('click', () => checkout('all'));
       document.getElementById('pm-manage').addEventListener('click', openPortal);
     }
-    // Refresh whenever Billing or MTG Arena is opened.
+    // Refresh whenever Billing or any game tab is opened.
     for (const b of document.querySelectorAll('.sidebar-item')) {
       const oc = b.getAttribute('onclick') || '';
-      if (oc.includes("'billing'") || b.id === 'mtg-sidebar-btn') b.addEventListener('click', loadPremiumStatus);
+      if (oc.includes("'billing'") || b.dataset.gameTab) b.addEventListener('click', loadPremiumStatus);
     }
-    // Player view + links from Discord / Stripe (?premium=…, ?tab=mtg).
+    // Player view + links from Discord / Stripe (?premium=…, ?tab=mtg|div2|d2).
     const style = document.createElement('style');
     style.textContent = PLAYER_CSS;
     document.head.appendChild(style);
