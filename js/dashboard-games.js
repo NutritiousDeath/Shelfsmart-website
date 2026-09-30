@@ -11,6 +11,24 @@
   const FALLBACK_ART = 'img/mtg/aura-card.png';
   let lastButton = null;
 
+  // Game Ops made the sidebar tall enough to scroll on shorter screens — give
+  // its scrollbar (and the main panel's) the dashboard theme instead of the
+  // browser's default white one.
+  (function styleScrollbars() {
+    if (document.getElementById('aura-scrollbar-style')) return;
+    const css = document.createElement('style');
+    css.id = 'aura-scrollbar-style';
+    css.textContent = `
+      .sidebar, .main { scrollbar-width: thin; scrollbar-color: rgba(0,240,255,0.28) transparent;
+        scrollbar-color: color-mix(in srgb, var(--cyan) 30%, transparent) transparent; }
+      .sidebar::-webkit-scrollbar, .main::-webkit-scrollbar { width: 5px; }
+      .sidebar::-webkit-scrollbar-track, .main::-webkit-scrollbar-track { background: transparent; }
+      .sidebar::-webkit-scrollbar-thumb, .main::-webkit-scrollbar-thumb { background: rgba(0,240,255,0.28); border-radius: 3px; }
+      .sidebar::-webkit-scrollbar-thumb:hover, .main::-webkit-scrollbar-thumb:hover { background: rgba(0,240,255,0.55); }
+    `;
+    (document.head || document.documentElement).appendChild(css);
+  })();
+
   function section() {
     let s = document.getElementById('games-sidebar-section');
     if (s) return s;
