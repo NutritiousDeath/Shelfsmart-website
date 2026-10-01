@@ -1,0 +1,312 @@
+// ─── DASHBOARD: MTG ARENA — BAN LIST CHANNEL ──────────────────────────────────
+// Adds a "// ban list channel" card to the MTG Arena tab (js/dashboard-mtg.js
+// must load first — it has the #mtg-banlist-slot this mounts into, and calls
+// AuraMtgBanlist.load() whenever the tab opens or refreshes).
+//
+// Server admins pick a server, a channel and the formats to follow. When the
+// MTG Arena ban list changes, Aura posts what changed + the updated list there.
+// Needs Aura Premium for MTG ($5/mo, or $10/mo All Games) or AuraAI Pro /
+// Lifetime on that server — the bot checks this, the page just explains it.
+//
+// Also shows the current Arena ban list Aura enforces in every deck.
+
+(function () {
+  const API = (typeof RAILWAY_BOT_URL !== 'undefined') ? RAILWAY_BOT_URL : 'https://web-production-01b81.up.railway.app';
+  const BILLING_URL = 'dashboard.html?premium=plans';
+  const mono = 'font-family:var(--font-mono)';
+  const ACCENT = '#b44fff';
+
+  let overview = null;       // GET /api/mtg/banlist
+  let guildInfo = null;      // GET /api/mtg/banlist/guild
+  let currentGuild = null;
+  let serverDd = null;
+  let channelDd = null;
+  let loading = false;
+
+  const CSS = `
+    #mtg-banlist .bl-row { display:grid; grid-template-columns:110px 1fr; gap:12px; align-items:center; margin-top:14px; }
+    #mtg-banlist .bl-label { ${mono}; font-size:0.62rem; color:var(--grey); letter-spacing:2px; }
+    #mtg-banlist .bl-formats { display:flex; flex-wrap:wrap; gap:8px; }
+    #mtg-banlist .bl-chip { ${mono}; font-size:0.68rem; letter-spacing:1px; padding:7px 12px; border:1px solid rgba(255,255,255,0.15); color:var(--grey); cursor:pointer; user-select:none; background:transparent; }
+    #mtg-banlist .bl-chip.on { border-color:${ACCENT}; color:var(--white); background:rgba(180,79,255,0.12); box-shadow:0 0 8px rgba(180,79,255,0.35); }
+    #mtg-banlist .bl-chip:disabled { opacity:0.4; cursor:not-allowed; }
+    #mtg-banlist .bl-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; align-items:center; }
+    #mtg-banlist .bl-status { ${mono}; font-size:0.72rem; line-height:1.8; margin-top:14px; padding:10px 14px; border:1px solid rgba(255,255,255,0.1); }
+    #mtg-banlist .bl-badge { ${mono}; font-size:0.56rem; letter-spacing:2px; padding:3px 8px; border:1px solid ${ACCENT}; color:${ACCENT}; text-shadow:0 0 6px rgba(180,79,255,0.6); }
+    #mtg-banlist details { margin-top:20px; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px; }
+    #mtg-banlist summary { ${mono}; font-size:0.7rem; color:var(--cyan); cursor:pointer; letter-spacing:1px; }
+    #mtg-banlist .bl-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr)); gap:12px; margin-top:12px; }
+    #mtg-banlist .bl-fmt { border:1px solid rgba(255,255,255,0.08); padding:10px 12px; }
+    #mtg-banlist .bl-fmt p { ${mono}; font-size:0.66rem; line-height:1.7; color:var(--white); }
+    #mtg-banlist .bl-fmt .t { color:${ACCENT}; letter-spacing:1px; margin-bottom:4px; }
+    #mtg-banlist .bl-msg { ${mono}; font-size:0.7rem; }
+    @media (max-width: 560px) { #mtg-banlist .bl-row { grid-template-columns:1fr; gap:6px; } }
+  `;
+
+  const HTML = `
+    <style>${CSS}</style>
+    <div class="section-card" id="mtg-banlist" style="border-color:rgba(180,79,255,0.35)">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <p class="card-title" style="margin:0">// ban list channel</p>
+        <span class="bl-badge">PREMIUM</span>
+      </div>
+      <p style="${mono};font-size:0.76rem;color:var(--white);line-height:1.9;margin-top:12px">
+        When the MTG Arena ban list changes, Aura posts what changed and the updated list in the channel you pick.
+        <span style="color:var(--grey)">Needs Aura Premium for MTG ($5/mo) or AuraAI Pro / Lifetime on the server.</span>
+      </p>
+      <div id="bl-upsell" style="display:none;margin-top:14px;border:1px solid rgba(180,79,255,0.45);background:rgba(180,79,255,0.06);padding:12px 14px">
+        <p style="${mono};font-size:0.72rem;color:var(--white);line-height:1.8">⭐ This server isn't covered yet. Get <span style="color:${ACCENT}">Aura Premium — MTG Arena ($5/mo)</span> or All Games ($10/mo) to turn it on for any server you admin.</p>
+        <a href="${BILLING_URL}" class="btn-primary" style="display:inline-block;text-decoration:none;margin-top:10px;font-size:0.7rem;padding:8px 16px">SEE PLANS</a>
+      </div>
+      <div class="bl-row"><span class="bl-label">SERVER</span><div id="bl-server"></div></div>
+      <div class="bl-row"><span class="bl-label">CHANNEL</span><div id="bl-channel"></div></div>
+      <div class="bl-row" style="align-items:start"><span class="bl-label" style="padding-top:8px">FORMATS</span><div class="bl-formats" id="bl-formats"></div></div>
+      <div class="bl-actions">
+        <button class="btn-primary" id="bl-save">SAVE &amp; TURN ON</button>
+        <button class="btn-secondary" id="bl-post" style="font-size:0.65rem;padding:8px 14px">POST CURRENT LIST NOW</button>
+        <button class="btn-secondary" id="bl-off" style="font-size:0.65rem;padding:8px 14px;border-color:rgba(255,45,120,0.5);color:var(--pink)">TURN OFF</button>
+        <span class="bl-msg" id="bl-msg"></span>
+      </div>
+      <div class="bl-status" id="bl-status">Pick a server.</div>
+      <details id="bl-current">
+        <summary>VIEW THE CURRENT ARENA BAN LIST AURA ENFORCES</summary>
+        <p id="bl-checked" style="${mono};font-size:0.62rem;color:var(--grey);margin-top:10px"></p>
+        <div class="bl-list" id="bl-list"></div>
+      </details>
+    </div>`;
+
+  // ─── HELPERS ────────────────────────────────────────────────────────────────
+
+  async function authHeaders(json) {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) throw new Error('Not signed in');
+    return { Authorization: `Bearer ${session.access_token}`, ...(json ? { 'Content-Type': 'application/json' } : {}) };
+  }
+
+  async function api(path, opts = {}) {
+    const res = await fetch(`${API}${path}`, { ...opts, headers: await authHeaders(!!opts.body) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) { const e = new Error(data.error || `HTTP ${res.status}`); e.status = res.status; e.data = data; throw e; }
+    return data;
+  }
+
+  const esc = (t) => String(t ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function ago(iso) {
+    if (!iso) return 'never';
+    const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+    if (s < 60) return 'just now';
+    if (s < 3600) return `${Math.floor(s / 60)} min ago`;
+    if (s < 86400) return `${Math.floor(s / 3600)} hr ago`;
+    const d = Math.floor(s / 86400);
+    return d === 1 ? 'yesterday' : `${d} days ago`;
+  }
+
+  function msg(text, color) {
+    const el = document.getElementById('bl-msg');
+    if (!el) return;
+    el.textContent = text || '';
+    el.style.color = color || 'var(--grey)';
+  }
+
+  function adminGuilds() {
+    try { return (typeof userGuilds !== 'undefined' && Array.isArray(userGuilds)) ? userGuilds : []; } catch { return []; }
+  }
+
+  function selectedFormats() {
+    return [...document.querySelectorAll('#bl-formats .bl-chip.on')].map((b) => b.dataset.fmt);
+  }
+
+  function setBusy(busy) {
+    ['bl-save', 'bl-post', 'bl-off'].forEach((id) => { const b = document.getElementById(id); if (b) b.disabled = busy; });
+  }
+
+  // ─── RENDER ─────────────────────────────────────────────────────────────────
+
+  function renderFormats(selected) {
+    const box = document.getElementById('bl-formats');
+    if (!box || !overview) return;
+    const on = new Set(selected && selected.length ? selected : overview.formats.map((f) => f.key));
+    box.innerHTML = overview.formats.map((f) => `<button type="button" class="bl-chip${on.has(f.key) ? ' on' : ''}" data-fmt="${f.key}">${esc(f.label.toUpperCase())}</button>`).join('');
+    box.querySelectorAll('.bl-chip').forEach((b) => b.addEventListener('click', () => b.classList.toggle('on')));
+  }
+
+  function renderCurrentList() {
+    const list = document.getElementById('bl-list');
+    const checked = document.getElementById('bl-checked');
+    if (!list || !overview) return;
+    const st = overview.status || {};
+    checked.textContent = `Official list (hard-coded ${st.hardCodedDate || '—'}) + Scryfall, checked every 6 hours · last check ${ago(st.lastCheck?.at)}${st.lastCheck && st.lastCheck.ok === false ? ' (failed — using last good list)' : ''} · last change ${ago(st.lastChangeAt)}`;
+    list.innerHTML = overview.formats.map((f) => {
+      const c = overview.current[f.key] || { banned: [], restricted: [] };
+      const banned = c.banned.length ? c.banned.map((x) => esc(x.name) + (x.bo1 ? ' <span style="color:var(--yellow)">(Bo1)</span>' : '')).join(' · ') : '<span style="color:var(--grey)">None</span>';
+      const restricted = c.restricted.length ? `<p style="margin-top:6px"><span style="color:var(--cyan)">Restricted (max 1):</span> ${c.restricted.map((x) => esc(x.name)).join(' · ')}</p>` : '';
+      return `<div class="bl-fmt"><p class="t">${esc(f.label.toUpperCase())} — ${c.banned.length} BANNED</p><p>${banned}</p>${restricted}</div>`;
+    }).join('');
+  }
+
+  function renderStatus() {
+    const el = document.getElementById('bl-status');
+    const upsell = document.getElementById('bl-upsell');
+    if (!el) return;
+    upsell.style.display = 'none';
+    if (!currentGuild) { el.innerHTML = 'Pick a server.'; el.style.color = 'var(--grey)'; return; }
+    if (!guildInfo) { el.innerHTML = 'Loading…'; el.style.color = 'var(--grey)'; return; }
+    if (!guildInfo.botInServer) { el.innerHTML = '⚠ Aura isn\'t in this server — invite her first.'; el.style.color = 'var(--yellow)'; return; }
+    const cfg = guildInfo.config;
+    const via = guildInfo.premium ? 'your Aura Premium' : guildInfo.serverPro ? "this server's AuraAI Pro license" : null;
+    if (!guildInfo.ok) upsell.style.display = 'block';
+    if (cfg && cfg.enabled) {
+      const ch = guildChannelName(cfg.channelId);
+      el.style.color = cfg.lastError ? 'var(--yellow)' : 'var(--green)';
+      el.innerHTML = `● ON — posting to <span style="color:var(--cyan)">#${esc(ch || cfg.channelId)}</span> · last post ${ago(cfg.lastPostedAt)}`
+        + (via ? `<br><span style="color:var(--grey)">Covered by ${via}.</span>` : '')
+        + (cfg.lastError ? `<br>⚠ ${esc(cfg.lastError)}` : '');
+    } else {
+      el.style.color = 'var(--grey)';
+      el.innerHTML = `○ OFF${via ? ` · this server is covered by ${via} — pick a channel and save.` : ''}`;
+    }
+    const post = document.getElementById('bl-post');
+    const off = document.getElementById('bl-off');
+    if (post) post.style.display = cfg && cfg.enabled ? '' : 'none';
+    if (off) off.style.display = cfg && cfg.enabled ? '' : 'none';
+    const save = document.getElementById('bl-save');
+    if (save) save.textContent = cfg && cfg.enabled ? 'SAVE CHANGES' : 'SAVE & TURN ON';
+  }
+
+  let channelCache = [];
+  function guildChannelName(id) {
+    const c = channelCache.find((x) => x.id === id);
+    return c ? c.name : null;
+  }
+
+  // ─── LOADING ────────────────────────────────────────────────────────────────
+
+  async function pickServer(guildId) {
+    currentGuild = guildId || null;
+    guildInfo = null;
+    channelCache = [];
+    msg('');
+    renderStatus();
+    if (channelDd) channelDd.setPlaceholder(guildId ? 'Loading channels…' : '— Select a server first —');
+    if (!guildId) return;
+    try {
+      const [info, chans] = await Promise.all([
+        api(`/api/mtg/banlist/guild?guildId=${encodeURIComponent(guildId)}`),
+        api(`/api/guild-channels?guildId=${encodeURIComponent(guildId)}`).catch(() => ({ channels: [] })),
+      ]);
+      if (currentGuild !== guildId) return; // switched servers while loading
+      guildInfo = info;
+      channelCache = chans.channels || [];
+      if (channelDd) {
+        if (channelCache.length) channelDd.setChannels(channelCache, info.config?.channelId || null);
+        else channelDd.setPlaceholder(info.botInServer === false ? "⚠ Aura isn't in this server" : '⚠ Could not load channels');
+      }
+      renderFormats(info.config?.formats);
+    } catch (err) {
+      guildInfo = { botInServer: true, ok: false, config: null };
+      msg(err.message, 'var(--pink)');
+    }
+    renderStatus();
+  }
+
+  function mountDropdowns() {
+    if (typeof CyberDropdown === 'undefined') return;
+    if (!serverDd) {
+      serverDd = new CyberDropdown('bl-server', (v) => pickServer(v));
+      serverDd.searchInput.placeholder = 'Search servers...';
+    }
+    if (!channelDd) channelDd = new CyberDropdown('bl-channel', () => {});
+    const guilds = adminGuilds();
+    const opts = guilds.map((g) => ({ value: g.id, label: g.name }));
+    if (!opts.length) { serverDd.setPlaceholder('— No servers you admin —'); return; }
+    serverDd.setStaticOptions(opts, currentGuild);
+    serverDd.searchWrap.style.display = opts.length > 6 ? '' : 'none';
+    if (!currentGuild) {
+      serverDd.setValue('', '— Select server —');
+      let start = null;
+      try { if (typeof selectedGuildId !== 'undefined' && selectedGuildId && guilds.some((g) => g.id === selectedGuildId)) start = selectedGuildId; } catch { /* ignore */ }
+      if (!start && guilds.length === 1) start = guilds[0].id;
+      if (start) { serverDd.setValue(start, guilds.find((g) => g.id === start).name); pickServer(start); }
+    }
+  }
+
+  async function load() {
+    const root = document.getElementById('mtg-banlist');
+    if (!root || loading) return;
+    loading = true;
+    try {
+      overview = await api('/api/mtg/banlist');
+      renderCurrentList();
+      if (!document.querySelector('#bl-formats .bl-chip')) renderFormats(null);
+      mountDropdowns();
+      if (currentGuild) await pickServer(currentGuild);
+    } catch (err) {
+      msg(`Couldn't load the ban list (${err.message})`, 'var(--pink)');
+    } finally {
+      loading = false;
+    }
+  }
+
+  // ─── ACTIONS ────────────────────────────────────────────────────────────────
+
+  async function save() {
+    if (!currentGuild) return msg('Pick a server first.', 'var(--pink)');
+    const channelId = channelDd && channelDd.getValue();
+    if (!channelId) return msg('Pick a channel.', 'var(--pink)');
+    const formats = selectedFormats();
+    if (!formats.length) return msg('Pick at least one format.', 'var(--pink)');
+    setBusy(true);
+    msg('Saving…');
+    try {
+      const r = await api('/api/mtg/banlist/save', { method: 'POST', body: JSON.stringify({ guildId: currentGuild, channelId, formats, enabled: true }) });
+      if (r.warning) msg(r.warning, 'var(--yellow)');
+      else msg(r.postedNow ? 'Saved — Aura just posted the current list there. ✓' : 'Saved ✓', 'var(--green)');
+      await pickServer(currentGuild);
+    } catch (err) {
+      msg(err.message, 'var(--pink)');
+      if (err.data && err.data.needsPremium) document.getElementById('bl-upsell').style.display = 'block';
+    } finally { setBusy(false); }
+  }
+
+  async function postNow() {
+    if (!currentGuild) return;
+    setBusy(true);
+    msg('Posting…');
+    try {
+      await api('/api/mtg/banlist/post', { method: 'POST', body: JSON.stringify({ guildId: currentGuild }) });
+      msg('Posted ✓', 'var(--green)');
+      await pickServer(currentGuild);
+    } catch (err) { msg(err.message, 'var(--pink)'); } finally { setBusy(false); }
+  }
+
+  async function turnOff() {
+    if (!currentGuild || !confirm('Stop posting ban list updates in this server?')) return;
+    setBusy(true);
+    try {
+      await api('/api/mtg/banlist/save', { method: 'POST', body: JSON.stringify({ guildId: currentGuild, enabled: false }) });
+      msg('Turned off.', 'var(--grey)');
+      await pickServer(currentGuild);
+    } catch (err) { msg(err.message, 'var(--pink)'); } finally { setBusy(false); }
+  }
+
+  // ─── MOUNT ──────────────────────────────────────────────────────────────────
+
+  function mount() {
+    const slot = document.getElementById('mtg-banlist-slot');
+    if (!slot || document.getElementById('mtg-banlist')) return !!slot;
+    slot.innerHTML = HTML;
+    document.getElementById('bl-save').addEventListener('click', save);
+    document.getElementById('bl-post').addEventListener('click', postNow);
+    document.getElementById('bl-off').addEventListener('click', turnOff);
+    document.getElementById('bl-post').style.display = 'none';
+    document.getElementById('bl-off').style.display = 'none';
+    return true;
+  }
+
+  window.AuraMtgBanlist = { load: () => { if (mount()) load(); } };
+
+  function init() { mount(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();

@@ -6,6 +6,7 @@
 //   • Aura Sync status  — linked?, last sync, card counts (GET /api/mtg/status)
 //   • Sync token        — generate + copy, shown once (POST /api/mtg/token)
 //   • Download          — downloads/AuraSync.zip (Windows app)
+//   • Ban list channel  — js/dashboard-mtg-banlist.js mounts into #mtg-banlist-slot
 //   • Setup steps, Discord commands, and fine print
 //
 // Aura Premium status + subscribe live in js/dashboard-premium.js, which adds
@@ -138,6 +139,8 @@
       <div id="mtg-problem" style="display:none;margin-top:14px;border:1px solid rgba(255,184,48,0.45);padding:10px 14px;${mono};font-size:0.72rem;color:var(--yellow);line-height:1.8"></div>
     </div>
 
+    <div id="mtg-banlist-slot"></div>
+
     <div class="section-card">
       <p class="card-title">// sync token</p>
       <p style="${mono};font-size:0.78rem;color:var(--white);line-height:1.9">
@@ -225,6 +228,8 @@
 
   async function loadMtgTab() {
     if (COMING_SOON) return;
+    // Ban list channel card (js/dashboard-mtg-banlist.js).
+    if (window.AuraMtgBanlist) window.AuraMtgBanlist.load();
     const box = document.getElementById('mtg-status');
     const problem = document.getElementById('mtg-problem');
     if (!box) return;
