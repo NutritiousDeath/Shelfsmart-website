@@ -34,17 +34,12 @@
     <div style="width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);margin:16px 0"></div>
 
     <p id="paywall-title" style="font-family:var(--font-display);font-size:1rem;font-weight:700;letter-spacing:3px;color:var(--white);margin-bottom:8px">ACCESS REQUIRED</p>
-    <p id="paywall-message" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:1.9;margin-bottom:28px">You don't have an active plan. Upgrade to Pro to unlock the full AuraAI dashboard, or apply to become a coach.</p>
+    <p id="paywall-message" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:1.9;margin-bottom:28px">You don't have an active plan. Upgrade to Pro to unlock the full AuraAI dashboard, or add AuraAI to your server to use the free bot features.</p>
 
     <div style="display:flex;flex-direction:column;gap:12px;align-items:center">
       <!-- Upgrade to Pro -->
       <button id="paywall-stripe-btn" onclick="startCheckout('pro')" style="width:100%;max-width:320px;font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:2px;padding:13px 24px;background:var(--cyan);color:var(--bg);border:none;cursor:pointer;text-decoration:none;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);display:block;text-align:center;transition:all 0.2s" onmouseover="this.style.background='#fff'" onmouseout="this.style.background='var(--cyan)'">
         ⚡ UPGRADE TO PRO — $9/mo
-      </button>
-
-      <!-- Apply to Coach -->
-      <button onclick="showCoachApplyPaywall()" style="width:100%;max-width:320px;font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:2px;padding:13px 24px;background:transparent;color:#00aaff;border:1px solid #00aaff;cursor:pointer;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:all 0.2s" onmouseover="this.style.background='rgba(0,170,255,0.1)'" onmouseout="this.style.background='transparent'">
-        🎓 APPLY TO BECOME A COACH
       </button>
 
       <!-- Add to Discord -->
@@ -58,25 +53,6 @@
     <button onclick="signOut()" style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);background:none;border:none;cursor:pointer;letter-spacing:1px;text-decoration:underline">Sign out</button>
   </div>
 
-  <!-- Coach apply sub-panel -->
-  <div id="paywall-coach-apply" style="display:none;position:fixed;inset:0;background:rgba(5,8,16,0.98);z-index:600;display:none;align-items:center;justify-content:center;flex-direction:column">
-    <div style="max-width:480px;width:100%;padding:32px 24px;background:rgba(8,13,26,0.95);border:1px solid rgba(0,170,255,0.3);position:relative">
-      <button onclick="hideCoachApplyPaywall()" style="position:absolute;top:12px;right:12px;background:none;border:none;color:var(--grey);cursor:pointer;font-size:18px">✕</button>
-      <p style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;letter-spacing:3px;color:#00aaff;margin-bottom:20px">// APPLY TO COACH</p>
-      <label class="field-label" style="margin-top:0">Display name</label><input class="cyber-input" type="text" id="pw-apply-name" placeholder="e.g. CoachAura">
-      <label class="field-label">Game you coach</label>
-      <select class="cyber-input" id="pw-apply-game" style="cursor:pointer"><option value="Overwatch 2">🎮 Overwatch 2</option><option value="Marvel Rivals">⚔️ Marvel Rivals</option><option value="Destiny 2">🌌 Destiny 2</option></select>
-      <label class="field-label">Bio</label><textarea class="cyber-input" id="pw-apply-bio" rows="3" placeholder="Your rank, experience, why you'd be a great coach..."></textarea>
-      <label class="field-label">Strengths <span style="color:var(--grey)">(optional)</span></label><input class="cyber-input" type="text" id="pw-apply-strengths" placeholder="e.g. Support positioning, mechanical aim">
-      <label class="field-label">CashApp URL <span style="color:var(--grey)">(optional)</span></label><input class="cyber-input" type="text" id="pw-apply-cashapp" placeholder="https://cash.app/$username">
-      <label class="field-label">Stripe URL <span style="color:var(--grey)">(optional)</span></label><input class="cyber-input" type="text" id="pw-apply-stripe" placeholder="https://buy.stripe.com/...">
-      <div style="margin-top:16px;display:flex;gap:10px">
-        <button onclick="submitPaywallCoachApp()" style="font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;padding:10px 20px;background:#00aaff;color:var(--bg);border:none;cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)">Submit Application</button>
-      </div>
-      <p id="pw-apply-saved" style="font-family:var(--font-mono);font-size:0.65rem;color:#00aaff;margin-top:10px;display:none">// Application submitted! You'll receive a Discord DM when reviewed.</p>
-      <p id="pw-apply-error" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--pink);margin-top:10px;display:none"></p>
-    </div>
-  </div>
 </div>
 
 <!-- NAV -->
@@ -138,9 +114,6 @@
     </button>
 
     <span class="sidebar-section">// Features</span>
-    <button class="sidebar-item" onclick="setTab('tournaments',this);loadTournamentTab()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 21h8M12 17v4M6 3h12l-2 8H8L6 3z"/></svg>Tournaments
-    </button>
     <button class="sidebar-item" onclick="setTab('alerts',this);loadAlerts()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Social alerts
     </button>
@@ -149,17 +122,6 @@
     </button>
     <button class="sidebar-item" onclick="setTab('eso-download',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>ESO Sync Files
-    </button>
-
-    <span class="sidebar-section" id="coaching-sidebar-section">// Coaching</span>
-    <button class="sidebar-item" id="coaching-sidebar-btn" onclick="setTab('coaching',this);loadCoachingTab();resetCoachingSettingsView()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Coaching
-    </button>
-    <button class="sidebar-item" id="applications-sidebar-btn" onclick="setTab('applications',this);loadApplicationsTab()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>Applications
-    </button>
-    <button class="sidebar-item" id="coach-profile-sidebar" style="display:none;border-left-color:#00aaff;color:#00aaff" onclick="setTab('coach-profile',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><path d="M12 14v2"/></svg>My Profile
     </button>
 
     <span class="sidebar-section">// Account</span>
@@ -184,7 +146,6 @@
       </div>
       <div class="stats-grid">
         <div class="stat-card"><p class="stat-label">Servers</p><p class="stat-val" id="stat-servers">—</p></div>
-        <div class="stat-card"><p class="stat-label">Tournaments run</p><p class="stat-val" id="stat-tournaments">—</p></div>
         <div class="stat-card"><p class="stat-label">Commands run</p><p class="stat-val" id="stat-commands">—</p></div>
       </div>
       <div class="section-card">
@@ -201,7 +162,6 @@
       <div class="section-card">
         <p class="card-title">// quick actions</p>
         <div style="display:flex;flex-wrap:wrap;gap:10px">
-          <button class="btn-secondary" onclick="setTab('tournaments',document.querySelector('[onclick*=tournaments]'))">New tournament</button>
           <button class="btn-secondary" onclick="setTab('alerts',document.querySelector('[onclick*=alerts]'))">Add social alert</button>
           <button class="btn-secondary" onclick="setTab('billing',document.querySelector('[onclick*=billing]'))">Grant access</button>
           <a href="https://discord.com/oauth2/authorize?client_id=1479991514351538350&permissions=2251799813900304&integration_type=0&scope=bot+applications.commands" target="_blank" style="font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;padding:9px 18px;background:transparent;color:var(--cyan);border:1px solid var(--cyan);cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:all 0.2s;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(0,240,255,0.08)'" onmouseout="this.style.background='transparent'">
@@ -220,42 +180,95 @@
         <p class="card-title">// access levels</p>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <span class="cmd-who anyone">● Anyone in server</span>
-          <span class="cmd-who captain">● Team captain only</span>
-          <span class="cmd-who pro">● Pro tier + admin</span>
-          <span class="cmd-who admin">● Tournament admin only</span>
+          <span class="cmd-who captain">● AI build — 3 free a month, unlimited with Aura Premium</span>
+          <span class="cmd-who pro">● Pro server + moderators</span>
+          <span class="cmd-who admin">● Moderators</span>
         </div>
       </div>
       <p class="cmd-section-label">// General</p>
       <div class="cmd-grid">
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>chat</p><p class="cmd-desc">Have a conversation with AuraAI. Ask anything — game tips, hero advice, tournament rules, or just chat.</p><div class="cmd-params"><b>message</b> — Your message to AuraAI</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>stats</p><p class="cmd-desc">Look up a player's competitive stats. Use in the Overwatch channel for BattleTag lookup, or the Marvel Rivals channel for username lookup.</p><div class="cmd-params"><b>username</b> — BattleTag (OW: Name#1234) or username (Rivals)</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>top-heroes</p><p class="cmd-desc">Shows the top 10 heroes ranked by win rate for the current patch. Use in the game's designated channel.</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>chat</p><p class="cmd-desc">Chat with AuraAI — ask about MTG, Division 2, Destiny 2, ESO or any game</p><div class="cmd-params"><b>message</b> — Your message</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
       </div>
-      <p class="cmd-section-label">// Tournaments</p>
+      <p class="cmd-section-label">// MTG Arena</p>
       <div class="cmd-grid">
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>tournament-create</p><p class="cmd-desc">Create a new tournament. Sets the game, format, max teams, ruleset, and results channel.</p><div class="cmd-params"><b>name</b> — Tournament name<br><b>game</b> — OW2, Marvel Rivals, or Destiny 2<br><b>format</b> — Swiss / Single Elim / Double Elim / Round Robin<br><b>max_teams</b> — (optional) Max number of teams<br><b>ruleset</b> — (optional) Rules text</div><div style="margin-top:10px"><span class="cmd-who pro">● Pro — Admin</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>tournament-end</p><p class="cmd-desc">End an active tournament and post final standings to the results channel.</p><div class="cmd-params"><b>tournament_name</b> — Name of the tournament to end</div><div style="margin-top:10px"><span class="cmd-who pro">● Pro — Admin</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>tournament-cancel</p><p class="cmd-desc">Cancel an active tournament. Optionally provide a reason.</p><div class="cmd-params"><b>tournament_name</b> — Name<br><b>reason</b> — (optional) Reason</div><div style="margin-top:10px"><span class="cmd-who pro">● Pro — Admin</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>register</p><p class="cmd-desc">Register yourself for an active tournament.</p><div class="cmd-params"><b>tournament_name</b><br><b>game_tag</b> — BattleTag or username<br><b>game</b></div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>team-create</p><p class="cmd-desc">Create a team for a tournament. You become the team captain.</p><div class="cmd-params"><b>team_name</b><br><b>tournament_name</b></div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>roster-add</p><p class="cmd-desc">Add a player to your team roster. Only the team captain can add players.</p><div class="cmd-params"><b>player</b> — @mention<br><b>tournament_name</b></div><div style="margin-top:10px"><span class="cmd-who captain">● Team Captain</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>report-score</p><p class="cmd-desc">Report your team's Swiss match result. Both captains must report.</p><div class="cmd-params"><b>tournament_name</b><br><b>your_score</b><br><b>opponent_score</b></div><div style="margin-top:10px"><span class="cmd-who captain">● Team Captain</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>ask-td</p><p class="cmd-desc">Ask the AI Tournament Director a question about rules, disputes, or standings.</p><div class="cmd-params"><b>question</b><br><b>tournament_name</b></div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>scrim-schedule</p><p class="cmd-desc">Schedule a scrim or find opponents to practice against.</p><div class="cmd-params"><b>game</b><br><b>availability</b><br><b>notes</b> — (optional)</div><div style="margin-top:10px"><span class="cmd-who pro">● Pro</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtg-link</p><p class="cmd-desc">Get your private MTG Arena sync token for the Aura Sync app</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtg-collection</p><p class="cmd-desc">Show a summary of your synced MTG Arena collection</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtg-export</p><p class="cmd-desc">Download your MTG Arena collection for Moxfield, Archidekt, MTGGoldfish, and more</p><div class="cmd-params"><b>format</b> — Which site the file is for</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtg-wildcards</p><p class="cmd-desc">Paste a decklist to see which cards you're missing and the wildcard cost</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtg-build</p><p class="cmd-desc">Build an MTG Arena deck from cards you own (AI-built, double-checked by Aura)</p><div class="cmd-params"><b>format</b> — Which Arena format<br><b>idea</b> (optional) — What kind of deck? e.g. "mono-red aggro" or "elves tribal"<br><b>colors</b> (optional) — Colors to use, e.g. RG or "black red"<br><b>commander</b> (optional) — Brawl only: the commander to build around<br><b>wildcards</b> (optional) — Rare + mythic crafts allowed (default 0 = only cards you own)</div><div style="margin-top:10px"><span class="cmd-who captain">● Anyone · AI build</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtg-refine</p><p class="cmd-desc">Paste any MTG Arena decklist and Aura upgrades it into its strongest version</p><div class="cmd-params"><b>format</b> — Which Arena format the deck is for<br><b>wildcards</b> (optional) — Max rare + mythic crafts (default: no limit — the strongest version)</div><div style="margin-top:10px"><span class="cmd-who captain">● Anyone · AI build</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtg-rules</p><p class="cmd-desc">Ask a Magic rules question — Aura answers from the official Comprehensive Rules</p><div class="cmd-params"><b>question</b> — e.g. "does ward trigger on an aura I cast?"</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
       </div>
-      <p class="cmd-section-label">// FACEIT Match System</p>
+      <p class="cmd-section-label">// The Division 2</p>
       <div class="cmd-grid">
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>match-start</p><p class="cmd-desc">Kicks off a FACEIT-style match. Creates a private thread and begins the hero ban phase.</p><div class="cmd-params"><b>tournament</b><br><b>team1</b><br><b>team2</b><br><b>lobby_team</b> — (optional)<br><b>mode_rotation</b> — (optional)</div><div style="margin-top:10px"><span class="cmd-who admin">● Tournament Admin</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>ban-hero</p><p class="cmd-desc">Submit your hero ban for the current map. Rules enforced automatically.</p><div class="cmd-params"><b>hero</b> — Hero name to ban</div><div style="margin-top:10px"><span class="cmd-who captain">● Team Captain</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>match-code</p><p class="cmd-desc">Share the custom game match code with both teams inside the match thread.</p><div class="cmd-params"><b>code</b> — The custom game match code</div><div style="margin-top:10px"><span class="cmd-who captain">● Team Captain</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>map-result</p><p class="cmd-desc">Report which team won the current map. Bot updates score and prompts the next pick.</p><div class="cmd-params"><b>winner</b> — Name of the winning team</div><div style="margin-top:10px"><span class="cmd-who captain">● Either Captain</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>map-pick</p><p class="cmd-desc">Losing team picks the next map. After picking, the ban phase begins.</p><div class="cmd-params"><b>map</b> — Map name</div><div style="margin-top:10px"><span class="cmd-who captain">● Losing Team Captain</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>div-build</p><p class="cmd-desc">Division 2: open your private build planner thread with Aura</p><div style="margin-top:10px"><span class="cmd-who captain">● Anyone · AI build</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>div-gear</p><p class="cmd-desc">Division 2: view or edit your gear locker</p><div class="cmd-params"><b>action</b> — What to do<br><b>item</b> (optional) — The item, e.g. "big alejandro" or "strikers chest" (spelling can be rough)</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
       </div>
-      <p class="cmd-section-label">// Coaching</p>
+      <p class="cmd-section-label">// Destiny 2</p>
       <div class="cmd-grid">
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>coaching-schedule</p><p class="cmd-desc">Request a coaching session. AuraAI posts available coaches for your game.</p><div class="cmd-params"><b>game</b><br><b>availability</b><br><b>focus_areas</b> — (optional)<br><b>notes</b> — (optional)</div><div style="margin-top:10px"><span class="cmd-who pro">● Pro</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>coaching-end</p><p class="cmd-desc">End an active coaching session. Posts full transcript to the log channel and archives the thread.</p><div style="margin-top:10px"><span class="cmd-who captain">● Coach or Player</span></div></div>
-        <div class="cmd-card"><p class="cmd-name">/<span>/</span>coach-apply</p><p class="cmd-desc">Apply to become a coach on AuraAI. You'll receive a Discord DM when reviewed.</p><div class="cmd-params"><b>display_name</b><br><b>game</b><br><b>bio</b><br><b>strengths</b> — (optional)<br><b>cashapp</b> — (optional)<br><b>stripe</b> — (optional)</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>d2-link</p><p class="cmd-desc">Destiny 2: link your Bungie account so Aura can read your vault</p><div class="cmd-params"><b>action</b> (optional) — Link (default) or unlink</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>d2-vault</p><p class="cmd-desc">Destiny 2: see what's in your vault — exotics, armor sets, duplicates</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>d2-build</p><p class="cmd-desc">Destiny 2: a build from YOUR vault, every piece checked against Bungie's data</p><div class="cmd-params"><b>class</b> (optional) — Which character (default: the one you played last)<br><b>goal</b> (optional) — What it's for, e.g. "Grandmasters", "Trials", "solo dungeon", "raid boss DPS"<br><b>element</b> (optional) — Subclass element (default: Aura picks)<br><b>exotic</b> (optional) — Build around this exotic, e.g. "Heart of Inmost Light"</div><div style="margin-top:10px"><span class="cmd-who captain">● Anyone · AI build</span></div></div>
+      </div>
+      <p class="cmd-section-label">// Elder Scrolls Online</p>
+      <div class="cmd-grid">
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>eso</p><p class="cmd-desc">ESO reference lookups</p><div class="cmd-params"><b>subcommands</b> — trials, cp, pledges, builds, sets, price, fish</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>eso-link</p><p class="cmd-desc">Link your Discord account to your ESO account</p><div class="cmd-params"><b>account_name</b> — Your ESO account name, no @ needed — just type it as shown in-game minus the @</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>pat-verify</p><p class="cmd-desc">Verify your ESO Pithka Achievement Tracker clears — Aura will DM you to send the QR screenshot</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+      </div>
+      <p class="cmd-section-label">// Events & Onboarding</p>
+      <div class="cmd-grid">
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>create</p><p class="cmd-desc">Create, list, or cancel an event/signup — Aura will DM you a setup menu</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>onboard-me</p><p class="cmd-desc">Re-send your onboarding questions if you missed the DM (or want to redo it)</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+      </div>
+      <p class="cmd-section-label">// Tickets</p>
+      <div class="cmd-grid">
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>ticket-claim</p><p class="cmd-desc">Claim the ticket in this channel</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>ticket-close</p><p class="cmd-desc">Close the ticket in this channel</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>ticket-reopen</p><p class="cmd-desc">Reopen a closed ticket in this channel</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>ticket-delete</p><p class="cmd-desc">Permanently delete the ticket in this channel</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+      </div>
+      <p class="cmd-section-label">// Temp Voice Channels</p>
+      <div class="cmd-grid">
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>voice-rename</p><p class="cmd-desc">Rename your temp voice channel</p><div class="cmd-params"><b>name</b> — New channel name</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>voice-limit</p><p class="cmd-desc">Set your temp VC user limit</p><div class="cmd-params"><b>limit</b> — Limit (0-99, 0 = unlimited)</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>voice-transfer</p><p class="cmd-desc">Transfer ownership of your temp VC</p><div class="cmd-params"><b>user</b> — User to transfer ownership to</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>voice-lock</p><p class="cmd-desc">Lock your temp VC so no new members can join</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>voice-unlock</p><p class="cmd-desc">Unlock your temp VC</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>voice-kick</p><p class="cmd-desc">Kick a user from your temp VC</p><div class="cmd-params"><b>user</b> — User to kick</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>voice-invite</p><p class="cmd-desc">Let a user join your temp VC even if locked/hidden</p><div class="cmd-params"><b>user</b> — User to invite</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>voice-hide</p><p class="cmd-desc">Hide your temp VC from everyone but current members</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>voice-unhide</p><p class="cmd-desc">Make your temp VC visible again</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>voice-claim</p><p class="cmd-desc">Claim ownership of a temp VC after the owner leaves</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+      </div>
+      <p class="cmd-section-label">// Leveling</p>
+      <div class="cmd-grid">
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>rank</p><p class="cmd-desc">Check your or another user's level and XP</p><div class="cmd-params"><b>user</b> (optional) — User to check (defaults to you)</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>leaderboard</p><p class="cmd-desc">View this server's XP leaderboard</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>give-xp</p><p class="cmd-desc">Give XP to a member</p><div class="cmd-params"><b>user</b> — Member to give XP to<br><b>amount</b> — Amount of XP to give</div><div style="margin-top:10px"><span class="cmd-who pro">● Pro server · moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>remove-xp</p><p class="cmd-desc">Remove XP from a member</p><div class="cmd-params"><b>user</b> — Member to remove XP from<br><b>amount</b> — Amount of XP to remove</div><div style="margin-top:10px"><span class="cmd-who pro">● Pro server · moderators</span></div></div>
+      </div>
+      <p class="cmd-section-label">// Moderation</p>
+      <div class="cmd-grid">
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>ban</p><p class="cmd-desc">Ban a member</p><div class="cmd-params"><b>user</b> — Member to ban<br><b>reason</b> — Reason for the ban<br><b>purge_days</b> (optional) — Days of their messages to delete (0-7, overrides default)</div><div style="margin-top:10px"><span class="cmd-who admin">● Moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>kick</p><p class="cmd-desc">Kick a member</p><div class="cmd-params"><b>user</b> — Member to kick<br><b>reason</b> — Reason for the kick</div><div style="margin-top:10px"><span class="cmd-who admin">● Moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>mute</p><p class="cmd-desc">Mute a member using the configured Mute role</p><div class="cmd-params"><b>user</b> — Member to mute<br><b>reason</b> — Reason for the mute<br><b>hours</b> (optional) — Duration in hours (overrides default, 0 = permanent)<br><b>minutes</b> (optional) — Duration in minutes (overrides default)</div><div style="margin-top:10px"><span class="cmd-who admin">● Moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>hardmute</p><p class="cmd-desc">Mute a member and strip their other roles (restored on unmute)</p><div class="cmd-params"><b>user</b> — Member to hardmute<br><b>reason</b> — Reason for the hardmute<br><b>hours</b> (optional) — Duration in hours (overrides default, 0 = permanent)<br><b>minutes</b> (optional) — Duration in minutes (overrides default)</div><div style="margin-top:10px"><span class="cmd-who admin">● Moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>timeout</p><p class="cmd-desc">Timeout a member using Discord's native timeout</p><div class="cmd-params"><b>user</b> — Member to timeout<br><b>reason</b> — Reason for the timeout<br><b>hours</b> (optional) — Duration in hours (overrides default, max 28 days total)<br><b>minutes</b> (optional) — Duration in minutes (overrides default)</div><div style="margin-top:10px"><span class="cmd-who admin">● Moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>tempban</p><p class="cmd-desc">Temporarily ban a member — auto-unbanned after the duration</p><div class="cmd-params"><b>user</b> — Member to tempban<br><b>reason</b> — Reason for the tempban<br><b>hours</b> (optional) — Duration in hours (overrides default)<br><b>minutes</b> (optional) — Duration in minutes (overrides default)<br><b>purge_days</b> (optional) — Days of their messages to delete (0-7, overrides default)</div><div style="margin-top:10px"><span class="cmd-who admin">● Moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>unmute</p><p class="cmd-desc">Remove a member's mute (restores roles if they were hardmuted)</p><div class="cmd-params"><b>user</b> — Member to unmute</div><div style="margin-top:10px"><span class="cmd-who admin">● Moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>unban</p><p class="cmd-desc">Unban a user by their Discord ID</p><div class="cmd-params"><b>user_id</b> — Discord user ID to unban</div><div style="margin-top:10px"><span class="cmd-who admin">● Moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>warn</p><p class="cmd-desc">Warn a member</p><div class="cmd-params"><b>user</b> — Member to warn<br><b>reason</b> — Reason for the warning</div><div style="margin-top:10px"><span class="cmd-who pro">● Pro server · moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>warnings</p><p class="cmd-desc">View a member's warning history</p><div class="cmd-params"><b>user</b> — Member to check</div><div style="margin-top:10px"><span class="cmd-who pro">● Pro server · moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>embed-create</p><p class="cmd-desc">Build and post a custom embed</p><div style="margin-top:10px"><span class="cmd-who admin">● Moderators</span></div></div>
+      </div>
+      <p class="cmd-section-label">// Tags & Suggestions</p>
+      <div class="cmd-grid">
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>tag-create</p><p class="cmd-desc">Save a custom tag</p><div class="cmd-params"><b>name</b> — Tag name (lowercase, hyphens allowed)<br><b>response</b> — What the bot should reply with</div><div style="margin-top:10px"><span class="cmd-who admin">● Moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>tag</p><p class="cmd-desc">Recall a saved tag</p><div class="cmd-params"><b>name</b> — Tag name</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>tag-delete</p><p class="cmd-desc">Delete a saved tag</p><div class="cmd-params"><b>name</b> — Tag name</div><div style="margin-top:10px"><span class="cmd-who admin">● Moderators</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>tag-list</p><p class="cmd-desc">List all saved tags in this server</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>suggest</p><p class="cmd-desc">Submit a suggestion for this server</p><div class="cmd-params"><b>idea</b> — Your suggestion</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
       </div>
     </div>
 
@@ -303,18 +316,6 @@
 
       <!-- ══════════ LANDING GRID — click a card to configure that section ══════════ -->
       <div class="config-grid" id="bot-config-grid">
-        <div class="config-card" onclick="showConfigPage('channels')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
-          <p class="config-card-title">Game Channels</p>
-          <p class="config-card-desc">Tournament channels for OW2, Rivals, Destiny 2, and R6 Siege.</p>
-          <p class="config-card-status" id="status-channels">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('roles')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          <p class="config-card-title">Role Pings</p>
-          <p class="config-card-desc">Roles AuraAI pings for game-specific notifications.</p>
-          <p class="config-card-status" id="status-roles">// checking...</p>
-        </div>
         <div class="config-card" onclick="showConfigPage('welcome')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
           <p class="config-card-title">Welcome Channel</p>
@@ -332,12 +333,6 @@
           <p class="config-card-title">Pithka Verify Channel</p>
           <p class="config-card-desc">Posts verified ESO Pithka Achievement Tracker scans here.</p>
           <p class="config-card-status" id="status-patverify">// checking...</p>
-        </div>
-        <div class="config-card" onclick="showConfigPage('fun')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
-          <p class="config-card-title">Fun Channel</p>
-          <p class="config-card-desc">Where /hitman and other fun commands post.</p>
-          <p class="config-card-status" id="status-fun">// checking...</p>
         </div>
         <div class="config-card" onclick="showConfigPage('voice')">
           <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
@@ -411,83 +406,9 @@
           <p class="config-card-desc">Required channel for /suggest — no channel set means the command is disabled.</p>
           <p class="config-card-status" id="status-suggestions">// checking...</p>
         </div>
-        <div class="config-card" onclick="showConfigPage('features')">
-          <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
-          <p class="config-card-title">Feature Toggles</p>
-          <p class="config-card-desc">Enable or disable BattleTag lookup, AI Tournament Director, scrims, coaching.</p>
-        </div>
       </div>
 
       <!-- ══════════ DETAIL PAGES — hidden until a card above is clicked ══════════ -->
-
-      <div class="config-detail" id="config-detail-channels">
-        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
-      <div class="section-card">
-        <p class="card-title">// channel bindings</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          Select the channels where AuraAI should post updates. Click the dropdown and pick from your server's channel list — no IDs needed.
-        </p>
-
-        <label class="field-label">Overwatch tournament channel</label>
-        <div id="ow-channel-picker"></div>
-        <p class="channel-hint" id="ow-channel-current"></p>
-
-        <label class="field-label">Marvel Rivals tournament channel</label>
-        <div id="rivals-channel-picker"></div>
-        <p class="channel-hint" id="rivals-channel-current"></p>
-
-        <label class="field-label">Destiny 2 tournament channel</label>
-        <div id="d2-channel-picker"></div>
-        <p class="channel-hint" id="d2-channel-current"></p>
-
-        <label class="field-label">Rainbow Six Siege tournament channel</label>
-        <div id="r6-channel-picker"></div>
-        <p class="channel-hint" id="r6-channel-current"></p>
-
-        <div style="margin-top:16px">
-          <button class="btn-primary" onclick="saveChannels()">Save channels</button>
-          <p class="save-msg" id="channels-saved">// Settings saved successfully</p>
-          <p class="save-msg" id="channels-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
-        </div>
-      </div>
-      </div>
-
-      <div class="config-detail" id="config-detail-roles">
-        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
-      <div class="section-card">
-        <p class="card-title">// role pings</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.7;margin-bottom:14px">Select the roles AuraAI should ping for game-specific notifications. Pick from your server's role list — no IDs needed.</p>
-        <label class="field-label">Overwatch role</label>
-        <div id="ow-role-picker"></div>
-        <p class="channel-hint" id="ow-role-current"></p>
-        <label class="field-label">Marvel Rivals role</label>
-        <div id="rivals-role-picker"></div>
-        <p class="channel-hint" id="rivals-role-current"></p>
-        <label class="field-label">Destiny 2 role</label>
-        <div id="d2-role-picker"></div>
-        <p class="channel-hint" id="d2-role-current"></p>
-        <div style="margin-top:16px">
-          <button class="btn-primary" onclick="saveRoles()">Save roles</button>
-          <p class="save-msg" id="roles-saved">// Settings saved successfully</p>
-          <p class="save-msg" id="roles-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
-        </div>
-      </div>
-      </div>
-
-      <div class="config-detail" id="config-detail-features">
-        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
-      <div class="section-card">
-        <p class="card-title">// feature toggles</p>
-        <div class="toggle-row"><span class="toggle-label">BattleTag auto-lookup</span><label class="toggle"><input type="checkbox" checked id="toggle-battletag"><div class="t-track"></div><div class="t-thumb"></div></label></div>
-        <div class="toggle-row"><span class="toggle-label">AI Tournament Director</span><label class="toggle"><input type="checkbox" checked id="toggle-td"><div class="t-track"></div><div class="t-thumb"></div></label></div>
-        <div class="toggle-row"><span class="toggle-label">Scrim scheduling</span><label class="toggle"><input type="checkbox" id="toggle-scrims"><div class="t-track"></div><div class="t-thumb"></div></label></div>
-        <div class="toggle-row"><span class="toggle-label">Coaching requests</span><label class="toggle"><input type="checkbox" checked id="toggle-coaching"><div class="t-track"></div><div class="t-thumb"></div></label></div>
-        <div style="margin-top:14px">
-          <button class="btn-primary" onclick="saveToggles()">Save toggles</button>
-          <p class="save-msg" id="toggles-saved">// Settings saved successfully</p>
-        </div>
-      </div>
-      </div>
 
       <div class="config-detail" id="config-detail-welcome">
         <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
@@ -1450,103 +1371,6 @@
         </div>
       </div>
       </div>
-
-      <div class="config-detail" id="config-detail-fun">
-        <button class="config-back-btn" onclick="showConfigGrid()">‹ Back to Bot Config</button>
-      <div class="section-card">
-        <p class="card-title">// fun channel</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px;letter-spacing:0.5px">
-          The channel where fun commands like <span style="color:var(--cyan)">/hitman</span> post their output. Set this to a general or off-topic channel.
-        </p>
-        <label class="field-label">Fun channel</label>
-        <div id="fun-channel-picker"></div>
-        <p class="channel-hint" id="fun-channel-current"></p>
-        <div style="margin-top:16px">
-          <button class="btn-primary" onclick="saveFunChannel()">Save fun channel</button>
-          <p class="save-msg" id="fun-channel-saved">// Settings saved successfully</p>
-          <p class="save-msg" id="fun-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
-        </div>
-      </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════ TOURNAMENTS ══════════════════════════════════ -->
-    <div class="tab" id="tab-tournaments">
-      <p class="page-tag">// bracket management</p>
-      <p class="page-title">TOURNAMENTS</p>
-
-      <div class="section-card" id="swiss-panel" style="display:none;border-color:rgba(0,240,255,0.25)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
-          <div>
-            <p class="card-title" style="margin-bottom:4px" id="swiss-tournament-name">// tournament</p>
-            <div style="display:flex;gap:8px;flex-wrap:wrap" id="swiss-round-badges"></div>
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn-confirm" id="swiss-confirm-btn" style="display:none" onclick="confirmRound()">✓ Confirm Round</button>
-            <button class="btn-danger" style="font-size:0.58rem;padding:6px 12px" onclick="closeSwissPanel()">✕ Close</button>
-          </div>
-        </div>
-        <div style="display:flex;gap:0;margin-bottom:16px;border-bottom:1px solid rgba(0,240,255,0.1)">
-          <button id="swiss-tab-standings" onclick="showSwissTab('standings')" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:2px;padding:8px 16px;background:rgba(0,240,255,0.06);border:none;border-bottom:2px solid var(--cyan);color:var(--cyan);cursor:pointer;text-transform:uppercase">Standings</button>
-          <button id="swiss-tab-round1" onclick="showSwissTab('round1')" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:2px;padding:8px 16px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--grey);cursor:pointer;text-transform:uppercase">Round 1</button>
-          <button id="swiss-tab-round2" onclick="showSwissTab('round2')" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:2px;padding:8px 16px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--grey);cursor:pointer;text-transform:uppercase">Round 2</button>
-          <button id="swiss-tab-round3" onclick="showSwissTab('round3')" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:2px;padding:8px 16px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--grey);cursor:pointer;text-transform:uppercase">Round 3</button>
-        </div>
-        <div id="swiss-view-standings"><div id="standings-content"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading standings...</p></div></div>
-        <div id="swiss-view-round1" style="display:none"><div id="round1-content"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading matches...</p></div></div>
-        <div id="swiss-view-round2" style="display:none"><div id="round2-content"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Round 2 not started yet.</p></div></div>
-        <div id="swiss-view-round3" style="display:none"><div id="round3-content"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Round 3 not started yet.</p></div></div>
-      </div>
-
-      <div class="section-card" id="new-tournament-form" style="display:none;border-color:rgba(0,240,255,0.3)">
-        <p class="card-title" style="color:var(--cyan)">// create new tournament</p>
-        <label class="field-label">Tournament name</label>
-        <input class="cyber-input" type="text" id="new-t-name" placeholder="e.g. OW Spring Cup 2026">
-        <label class="field-label">Game</label>
-        <select class="cyber-input" id="new-t-game" style="cursor:pointer"><option value="overwatch">🎮 Overwatch 2</option><option value="rivals">⚔️ Marvel Rivals</option><option value="destiny">🌌 Destiny 2</option><option value="r6siege">🛡️ Rainbow Six Siege</option></select>
-        <label class="field-label">Max teams</label>
-        <input class="cyber-input" type="number" id="new-t-max" value="8" min="4" max="32">
-        <label class="field-label">Ruleset</label>
-        <textarea class="cyber-input" id="new-t-ruleset" rows="5" placeholder="Enter your tournament rules..."></textarea>
-        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn-primary" onclick="createTournament()">Create tournament</button>
-          <button class="btn-secondary" onclick="document.getElementById('new-tournament-form').style.display='none'">Cancel</button>
-        </div>
-        <p class="save-msg" id="tournament-created">// Tournament created successfully</p>
-        <p class="save-msg" id="tournament-error" style="color:var(--pink)"></p>
-      </div>
-
-      <div class="section-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-          <p class="card-title" style="margin-bottom:0">// active tournaments</p>
-          <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px" onclick="document.getElementById('new-tournament-form').style.display='block';document.getElementById('new-t-name').focus()">+ New tournament</button>
-        </div>
-        <div id="tournaments-list"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading tournaments...</p></div>
-      </div>
-
-      <div class="section-card" id="team-registration-card" style="display:none;border-color:rgba(180,79,255,0.2)">
-        <p class="card-title" style="color:var(--purple)">// team registration</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px">Register teams for <span id="reg-tournament-name" style="color:var(--cyan)">the selected tournament</span>.</p>
-        <label class="field-label">Team name</label>
-        <input class="cyber-input" type="text" id="reg-team-name" placeholder="e.g. Team Nova">
-        <label class="field-label">Captain Discord ID</label>
-        <input class="cyber-input" type="text" id="reg-captain-id" placeholder="e.g. 123456789012345678">
-        <label class="field-label">Captain username</label>
-        <input class="cyber-input" type="text" id="reg-captain-username" placeholder="e.g. PlayerOne">
-        <label class="field-label">Captain BattleTag <span style="color:var(--grey)">(for stat verification)</span></label>
-        <input class="cyber-input" type="text" id="reg-captain-battletag" placeholder="e.g. PlayerOne#1234">
-        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn-primary" onclick="registerTeam()">Register team</button>
-        </div>
-        <p class="save-msg" id="reg-saved">// Team registered successfully</p>
-        <p class="save-msg" id="reg-error" style="color:var(--pink)"></p>
-        <div style="margin-top:16px" id="registered-teams-list"></div>
-      </div>
-
-      <div class="section-card" id="start-round-card" style="display:none;border-color:rgba(0,255,136,0.15)">
-        <p class="card-title" style="color:var(--green)">// round management</p>
-        <div id="round-management-content"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Select a tournament above to manage rounds.</p></div>
-      </div>
     </div>
 
     <!-- ══════════════════════════════════ SOCIAL ALERTS ══════════════════════════════════ -->
@@ -1685,172 +1509,6 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════ COACHING ══════════════════════════════════ -->
-    <div class="tab" id="tab-coaching">
-      <p class="page-tag">// training management</p>
-      <p class="page-title">COACHING</p>
-
-      <div class="section-card" id="coach-apply-section" style="display:none;border-color:rgba(0,170,255,0.25)">
-        <p class="card-title" style="margin-bottom:14px;color:#00aaff">// become a coach</p>
-        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:1.9;margin-bottom:16px">Interested in coaching players on AuraAI? Submit an application below.</p>
-        <div id="existing-application-banner" style="display:none;padding:12px 16px;border:1px solid rgba(255,230,0,0.3);background:rgba(255,230,0,0.05);margin-bottom:16px">
-          <p id="existing-application-text" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--yellow);letter-spacing:0.5px"></p>
-        </div>
-        <div id="coach-apply-form">
-          <label class="field-label">Display name</label><input class="cyber-input" type="text" id="apply-name" placeholder="e.g. CoachAura">
-          <label class="field-label">Game you coach</label>
-          <select class="cyber-input" id="apply-game" style="cursor:pointer"><option value="Overwatch 2">🎮 Overwatch 2</option><option value="Marvel Rivals">⚔️ Marvel Rivals</option><option value="Destiny 2">🌌 Destiny 2</option></select>
-          <label class="field-label">Bio</label><textarea class="cyber-input" id="apply-bio" rows="3" placeholder="Tell us about your rank, experience, and why you'd make a great coach..."></textarea>
-          <label class="field-label">Strengths / specialties</label><textarea class="cyber-input" id="apply-strengths" rows="2" placeholder="e.g. Support positioning, mechanical aim..."></textarea>
-          <label class="field-label">Logo / avatar URL <span style="color:var(--grey)">(optional)</span></label><input class="cyber-input" type="text" id="apply-logo" placeholder="https://...">
-          <label class="field-label">CashApp URL <span style="color:var(--grey)">(optional)</span></label><input class="cyber-input" type="text" id="apply-cashapp" placeholder="https://cash.app/$username">
-          <label class="field-label">Stripe payment URL <span style="color:var(--grey)">(optional)</span></label><input class="cyber-input" type="text" id="apply-stripe" placeholder="https://buy.stripe.com/...">
-          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn-primary" onclick="submitCoachApplication()" style="background:#00aaff;border-color:#00aaff">Submit application</button>
-          </div>
-          <p class="save-msg" id="apply-saved" style="color:#00aaff">// Application submitted — we'll DM you on Discord when reviewed!</p>
-          <p class="save-msg" id="apply-error" style="color:var(--pink)"></p>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <p class="card-title">// scheduled sessions</p>
-        <div id="coaching-sessions-list"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading sessions...</p></div>
-      </div>
-
-      <div class="section-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-          <p class="card-title" style="margin-bottom:0">// coaching roster</p>
-          <button class="btn-primary" style="font-size:0.58rem;padding:6px 12px" id="add-coach-btn" onclick="document.getElementById('add-coach-form').style.display='block'">+ Add coach</button>
-        </div>
-        <div id="coaches-list"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No coaches added yet.</p></div>
-      </div>
-
-      <div class="section-card" id="add-coach-form" style="display:none;border-color:rgba(0,240,255,0.3)">
-        <p class="card-title" style="color:var(--cyan)">// add new coach</p>
-        <label class="field-label">Coach display name</label><input class="cyber-input" type="text" id="coach-name" placeholder="e.g. CoachAura">
-        <label class="field-label">Discord profile ID</label><input class="cyber-input" type="text" id="coach-discord-id" placeholder="e.g. 123456789012345678">
-        <label class="field-label">Logo / avatar URL</label><input class="cyber-input" type="text" id="coach-logo" placeholder="https://...">
-        <label class="field-label">Game</label>
-        <select class="cyber-input" id="coach-game" style="cursor:pointer"><option value="overwatch">Overwatch 2</option><option value="rivals">Marvel Rivals</option><option value="destiny">Destiny 2</option></select>
-        <label class="field-label">Bio</label><textarea class="cyber-input" id="coach-bio" rows="3" placeholder="Brief background and coaching experience..."></textarea>
-        <label class="field-label">Strengths / specialties</label><textarea class="cyber-input" id="coach-strengths" rows="3" placeholder="e.g. Support positioning, team coordination..."></textarea>
-        <label class="field-label">CashApp URL (optional)</label><input class="cyber-input" type="text" id="coach-cashapp" placeholder="https://cash.app/$username">
-        <label class="field-label">Stripe payment URL (optional)</label><input class="cyber-input" type="text" id="coach-stripe" placeholder="https://buy.stripe.com/...">
-        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn-primary" onclick="addCoach()">Save coach</button>
-          <button class="btn-secondary" onclick="document.getElementById('add-coach-form').style.display='none'">Cancel</button>
-        </div>
-        <p class="save-msg" id="coach-saved">// Coach added successfully</p>
-        <p class="save-msg" id="coach-error" style="color:var(--pink)"></p>
-      </div>
-
-      <div class="section-card" style="border-color:rgba(255,230,0,0.2)">
-        <p class="card-title" style="color:var(--yellow)">// payment & disclaimer</p>
-        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);line-height:1.9;margin-bottom:18px;letter-spacing:0.5px">⚠️ <span style="color:var(--yellow)">Coaching sessions will not begin until payment has been made.</span></p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a id="cashapp-link" href="#" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 18px;border:1px solid #00d632;background:rgba(0,214,50,0.05);text-decoration:none;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)" onmouseover="this.style.background='rgba(0,214,50,0.12)'" onmouseout="this.style.background='rgba(0,214,50,0.05)'"><span style="font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;color:#00d632">💵 CASHAPP</span></a>
-          <a id="stripe-link" href="#" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 18px;border:1px solid #635bff;background:rgba(99,91,255,0.05);text-decoration:none;transition:all 0.2s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%)" onmouseover="this.style.background='rgba(99,91,255,0.12)'" onmouseout="this.style.background='rgba(99,91,255,0.05)'"><span style="font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;color:#635bff">💳 STRIPE</span></a>
-        </div>
-      </div>
-
-      <!-- Coaching Settings — clickable card entry point, matches Bot Config pattern -->
-      <div class="config-card" id="coaching-settings-entry" onclick="showCoachingSettings()" style="margin-bottom:14px">
-        <svg class="config-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <p class="config-card-title">Coaching Settings</p>
-        <p class="config-card-desc">Coaching channel, log channel, request behavior, and session limits.</p>
-        <p class="config-card-status" id="status-coaching-settings">// checking...</p>
-      </div>
-
-      <div class="config-detail" id="config-detail-coaching-settings">
-        <button class="config-back-btn" onclick="hideCoachingSettings()">‹ Back</button>
-      <div class="section-card">
-        <p class="card-title">// coaching settings</p>
-        <div id="coaching-server-warning" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid rgba(255,45,120,0.5);background:rgba(255,45,120,0.07);box-shadow:0 0 12px rgba(255,45,120,0.15);margin-bottom:14px;transition:all 0.4s">
-          <span id="coaching-warning-icon" style="font-size:18px;flex-shrink:0">⚠️</span>
-          <p id="coaching-warning-text" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--pink);letter-spacing:0.5px;line-height:1.7;text-shadow:0 0 8px rgba(255,45,120,0.5)">No server selected — select your Discord server from the sidebar dropdown first.</p>
-        </div>
-
-        <label class="field-label">Coaching channel <span style="color:var(--pink)">*required</span></label>
-        <div id="coaching-channel-picker"></div>
-        <p class="channel-hint" id="coaching-channel-current"></p>
-        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px;margin-bottom:14px">Players will select their coach and receive session threads in this channel.</p>
-
-        <label class="field-label">Coaching log channel <span style="color:var(--pink)">*required</span></label>
-        <div id="coaching-log-channel-picker"></div>
-        <p class="channel-hint" id="coaching-log-channel-current"></p>
-        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:4px;margin-bottom:14px">Full session transcripts will be posted here when a session ends.</p>
-
-        <div class="divider"></div>
-        <div class="toggle-row"><span class="toggle-label">Allow coaching requests</span><label class="toggle"><input type="checkbox" checked id="toggle-coaching-allow"><div class="t-track"></div><div class="t-thumb"></div></label></div>
-        <div class="toggle-row"><span class="toggle-label">Auto-confirm requests</span><label class="toggle"><input type="checkbox" id="toggle-coaching-auto"><div class="t-track"></div><div class="t-thumb"></div></label></div>
-        <label class="field-label" style="margin-top:14px">Max sessions per week</label>
-        <input class="cyber-input" type="number" id="coaching-max-sessions" value="5" min="1" max="20">
-        <div style="margin-top:14px">
-          <button class="btn-primary" onclick="saveCoachingSettings()">Save settings</button>
-          <p class="save-msg" id="coaching-saved">// Settings saved successfully</p>
-        </div>
-      </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════ APPLICATIONS ══════════════════════════════════ -->
-    <div class="tab" id="tab-applications">
-      <p class="page-tag">// coach applications</p>
-      <p class="page-title">APPLICATIONS</p>
-      <div class="section-card" id="applications-review-section" style="border-color:rgba(255,230,0,0.2)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-          <p class="card-title" style="margin-bottom:0;color:var(--yellow)">// pending applications</p>
-          <span id="pending-app-count" class="badge badge-warning">0 pending</span>
-        </div>
-        <div id="applications-list"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading applications...</p></div>
-      </div>
-      <div class="section-card" id="delegates-section" style="display:none;border-color:rgba(180,79,255,0.2)">
-        <p class="card-title" style="color:var(--purple)">// approval delegates</p>
-        <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:16px">Delegates can approve or deny coach applications on your behalf.</p>
-        <div id="delegates-list" style="margin-bottom:14px"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading delegates...</p></div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
-          <div style="flex:1;min-width:200px"><label class="field-label" style="margin-top:0">Discord ID to add as delegate</label><input class="cyber-input" type="text" id="delegate-id" placeholder="e.g. 123456789012345678"></div>
-          <div style="flex:1;min-width:160px"><label class="field-label" style="margin-top:0">Discord tag (for display)</label><input class="cyber-input" type="text" id="delegate-tag" placeholder="e.g. username"></div>
-          <button class="btn-secondary" onclick="addDelegate()" style="flex-shrink:0">Add delegate</button>
-        </div>
-        <p class="save-msg" id="delegate-saved">// Delegate added</p>
-        <p class="save-msg" id="delegate-error" style="color:var(--pink)"></p>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════ COACH PROFILE ══════════════════════════════════ -->
-    <div class="tab" id="tab-coach-profile">
-      <p class="page-tag">// coach profile</p>
-      <p class="page-title">MY PROFILE</p>
-      <div class="section-card" style="border-color:rgba(0,170,255,0.3)">
-        <p class="card-title" style="color:#00aaff">// your coaching card</p>
-        <label class="field-label">Display name</label><input class="cyber-input" type="text" id="my-coach-name" placeholder="e.g. CoachAura">
-        <label class="field-label">Avatar / logo URL</label><input class="cyber-input" type="text" id="my-coach-logo" placeholder="https://...">
-        <label class="field-label">Game</label>
-        <select class="cyber-input" id="my-coach-game" style="cursor:pointer"><option value="overwatch">🎮 Overwatch 2</option><option value="rivals">⚔️ Marvel Rivals</option><option value="destiny">🌌 Destiny 2</option></select>
-        <label class="field-label">Bio</label><textarea class="cyber-input" id="my-coach-bio" rows="4" placeholder="Tell players about your background and coaching experience..."></textarea>
-        <label class="field-label">Strengths / specialties</label><textarea class="cyber-input" id="my-coach-strengths" rows="3" placeholder="e.g. Support positioning, team coordination..."></textarea>
-        <label class="field-label">CashApp URL</label><input class="cyber-input" type="text" id="my-coach-cashapp" placeholder="https://cash.app/$username">
-        <label class="field-label">Stripe payment URL</label><input class="cyber-input" type="text" id="my-coach-stripe" placeholder="https://buy.stripe.com/...">
-        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn-primary" onclick="saveMyCoachProfile()" style="border-color:#00aaff;background:#00aaff">Save profile</button>
-        </div>
-        <p class="save-msg" id="my-coach-saved" style="color:#00aaff">// Profile saved successfully</p>
-        <p class="save-msg" id="my-coach-error" style="color:var(--pink)"></p>
-      </div>
-      <div class="section-card">
-        <p class="card-title">// preview</p>
-        <div id="coach-preview-card" style="background:var(--bg-2);border:1px solid rgba(0,170,255,0.2);padding:16px;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));max-width:320px">
-          <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Fill out your profile above to see a preview.</p>
-        </div>
-      </div>
-      <div class="section-card">
-        <p class="card-title">// my coaching sessions</p>
-        <div id="my-coaching-sessions"><p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Loading sessions...</p></div>
-      </div>
-    </div>
-
     <!-- ══════════════════════════════════ BILLING ══════════════════════════════════ -->
     <div class="tab" id="tab-billing">
       <p class="page-tag">// subscription</p>
@@ -1900,8 +1558,8 @@
       <div class="section-card">
         <p class="card-title">// upgrade plan</p>
         <div class="plans-grid">
-          <div class="plan-card" id="plan-card-free"><div id="plan-badge-free" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div><p class="plan-name">Free</p><p class="plan-price">$0<span>/mo</span></p><div class="divider"></div><div class="plan-feature">✓ /chat command</div><div class="plan-feature">✓ Basic tournaments</div><div class="plan-feature">✓ BattleTag lookup</div><div class="plan-feature off">✗ Social alerts</div><div class="plan-feature off">✗ AI persona</div></div>
-          <div class="plan-card" id="plan-card-pro"><div id="plan-badge-pro" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div><p class="plan-name">Pro</p><p class="plan-price">$9<span>/mo</span></p><div class="divider"></div><div class="plan-feature">✓ Everything in Free</div><div class="plan-feature">✓ Social alerts</div><div class="plan-feature">✓ AI persona</div><div class="plan-feature">✓ Coaching tools</div><div class="plan-feature">✓ Advanced tournaments</div><div id="plan-upgrade-pro"><button class="btn-secondary" style="width:100%;margin-top:14px;font-size:0.58rem" onclick="startCheckout('pro')">Upgrade</button></div></div>
+          <div class="plan-card" id="plan-card-free"><div id="plan-badge-free" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div><p class="plan-name">Free</p><p class="plan-price">$0<span>/mo</span></p><div class="divider"></div><div class="plan-feature">✓ /chat command</div><div class="plan-feature">✓ Game tools: MTG, Division 2, Destiny 2, ESO</div><div class="plan-feature">✓ Moderation, tickets, leveling</div><div class="plan-feature off">✗ Social alerts</div><div class="plan-feature off">✗ AI persona</div></div>
+          <div class="plan-card" id="plan-card-pro"><div id="plan-badge-pro" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div><p class="plan-name">Pro</p><p class="plan-price">$9<span>/mo</span></p><div class="divider"></div><div class="plan-feature">✓ Everything in Free</div><div class="plan-feature">✓ Social alerts</div><div class="plan-feature">✓ AI persona</div><div class="plan-feature">✓ Pro moderation &amp; mod log</div><div class="plan-feature">✓ Sticky messages, security tools</div><div id="plan-upgrade-pro"><button class="btn-secondary" style="width:100%;margin-top:14px;font-size:0.58rem" onclick="startCheckout('pro')">Upgrade</button></div></div>
           <div class="plan-card" id="plan-card-lifetime"><div id="plan-badge-lifetime" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:#b44fff;text-shadow:0 0 8px #b44fff;letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div><p class="plan-name" style="color:#b44fff;text-shadow:0 0 10px #b44fff,0 0 30px #b44fff44;letter-spacing:3px">Lifetime</p><p class="plan-price" style="color:#b44fff;text-shadow:0 0 10px #b44fff,0 0 30px #b44fff44">$79<span> once</span></p><div class="divider"></div><div class="plan-feature">✓ Everything in Pro</div><div class="plan-feature">✓ Priority support</div><div class="plan-feature">✓ Early access</div><div class="plan-feature">✓ No recurring fees</div><div id="plan-upgrade-lifetime"><button class="btn-secondary" style="width:100%;margin-top:14px;font-size:0.58rem" onclick="startCheckout('lifetime')">Upgrade</button></div></div>
         </div>
       </div>
@@ -1925,10 +1583,9 @@
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  let currentUser = null, userAccess = null, isOwner = false, isDelegate = false, isCoach = false;
+  let currentUser = null, userAccess = null, isOwner = false, isDelegate = false, isCoach = false; // isDelegate/isCoach kept for older scripts
   let selectedGuildId = null, userGuilds = [];
   let lastBotConfigSettings = null;
-  let activeTournamentId = null, activeSwissTab = 'standings';
   // Cached channel list for the selected guild — used by all channel pickers
   let guildChannelCache = [];
 
@@ -2177,19 +1834,9 @@
   // Initialise all channel + role picker CyberDropdown instances (called once on page load)
   function initChannelPickers() {
     const pickerDefs = [
-      { id: 'ow-channel-picker' },
-      { id: 'rivals-channel-picker' },
-      { id: 'd2-channel-picker' },
-      { id: 'r6-channel-picker' },
-      { id: 'coaching-channel-picker' },
-      { id: 'coaching-log-channel-picker' },
       { id: 'alert-channel' },
-      { id: 'ow-role-picker' },
-      { id: 'rivals-role-picker' },
-      { id: 'd2-role-picker' },
       { id: 'welcome-channel-picker' },
       { id: 'goodbye-channel-picker' },
-      { id: 'fun-channel-picker' },
       { id: 'levels-channel-picker' },
       { id: 'suggestions-channel-picker' },
       { id: 'voice-jtc-channel-picker' },
@@ -2218,9 +1865,6 @@
   // Fetch roles from the bot endpoint and populate role pickers
   async function loadGuildRoles(guildId, savedSettings) {
     guildRoleCache = [];
-    ['ow-role-picker','rivals-role-picker','d2-role-picker'].forEach(id => {
-      channelPickers[id].setPlaceholder('Loading roles...');
-    });
 
     try {
       const { data: { session } } = await sb.auth.getSession();
@@ -2232,19 +1876,7 @@
       guildRoleCache = data.roles || [];
     } catch (err) {
       console.error('loadGuildRoles error:', err.message);
-      ['ow-role-picker','rivals-role-picker','d2-role-picker'].forEach(id => {
-        channelPickers[id].setPlaceholder('⚠️ Could not load roles');
-      });
-      return;
     }
-
-    const s = savedSettings || {};
-    _populateRolePicker('ow-role-picker', s.ow_role_id);
-    setChannelHint('ow-role-current', s.ow_role_id);
-    _populateRolePicker('rivals-role-picker', s.rivals_role_id);
-    setChannelHint('rivals-role-current', s.rivals_role_id);
-    _populateRolePicker('d2-role-picker', s.d2_role_id);
-    setChannelHint('d2-role-current', s.d2_role_id);
   }
 
   // Build role options into a CyberDropdown using the guildRoleCache
@@ -2333,24 +1965,6 @@
 
     const s = savedSettings || {};
 
-    channelPickers['ow-channel-picker'].setChannels(guildChannelCache, s.ow_channel_id);
-    setChannelHint('ow-channel-current', s.ow_channel_id);
-
-    channelPickers['rivals-channel-picker'].setChannels(guildChannelCache, s.rivals_channel_id);
-    setChannelHint('rivals-channel-current', s.rivals_channel_id);
-
-    channelPickers['d2-channel-picker'].setChannels(guildChannelCache, s.d2_channel_id);
-    setChannelHint('d2-channel-current', s.d2_channel_id);
-
-    channelPickers['r6-channel-picker'].setChannels(guildChannelCache, s.r6_channel_id || null);
-    setChannelHint('r6-channel-current', s.r6_channel_id);
-
-    channelPickers['coaching-channel-picker'].setChannels(guildChannelCache, s.coaching_channel_id);
-    setChannelHint('coaching-channel-current', s.coaching_channel_id);
-
-    channelPickers['coaching-log-channel-picker'].setChannels(guildChannelCache, s.coaching_log_channel_id);
-    setChannelHint('coaching-log-channel-current', s.coaching_log_channel_id);
-
     channelPickers['alert-channel'].setChannels(guildChannelCache, null);
 
     channelPickers['welcome-channel-picker'].setChannels(guildChannelCache, s.welcome_channel_id || null);
@@ -2365,8 +1979,6 @@
     setChannelHint('patverify-channel-current', s.pat_verify_channel_id);
     document.getElementById('patverify-enabled').checked = !!s.pat_verify_enabled;
 
-    channelPickers['fun-channel-picker'].setChannels(guildChannelCache, s.fun_channel_id || null);
-    setChannelHint('fun-channel-current', s.fun_channel_id);
 
     channelPickers['sticky-channel-picker'].setChannels(guildChannelCache, null);
 
@@ -2394,11 +2006,6 @@
       if (serversEl) serversEl.textContent = stats?.servers_count?.toLocaleString() ?? '0';
       if (commandsEl) commandsEl.textContent = stats?.commands_total?.toLocaleString() ?? '0';
     } catch (err) { console.error('loadOverviewStats error:', err.message); }
-    try {
-      const { count } = await sb.from('tournaments').select('id', { count: 'exact', head: true }).eq('status', 'completed');
-      const tournamentsEl = document.getElementById('stat-tournaments');
-      if (tournamentsEl) tournamentsEl.textContent = (count ?? 0).toLocaleString();
-    } catch (err) { console.error('loadOverviewStats (tournaments) error:', err.message); }
   }
 
   // ── TWITCH BOT CONFIG ─────────────────────────────────────────────────────
@@ -2508,40 +2115,10 @@
     const { data: access } = await sb.from('user_access').select('*').eq('discord_id', discordId).maybeSingle();
     userAccess = access;
     isOwner = (discordId === OWNER_DISCORD_ID);
-    if (!isOwner) {
-      const { data: delegateRow } = await sb.from('approval_delegates').select('id').eq('discord_id', discordId).maybeSingle();
-      isDelegate = !!delegateRow;
-    }
     if (access) {
       const tier = access.tier || 'free';
-      isCoach = access.is_coach === true;
       const navTierEl = document.getElementById('nav-tier');
-      // Owner and lifetime users always get full dashboard regardless of coach status
-      const isFullAccess = isOwner || tier === 'lifetime';
-      if (isCoach && !isFullAccess) {
-        navTierEl.textContent = 'COACH'; navTierEl.classList.add('coach-badge');
-        const overviewStatus = document.getElementById('overview-status');
-        if (overviewStatus) overviewStatus.style.display = 'none';
-        const serverSelectWrap = document.getElementById('server-select')?.parentElement;
-        if (serverSelectWrap) serverSelectWrap.style.display = 'none';
-        document.querySelectorAll('.sidebar-item').forEach(btn => {
-          const tab = btn.getAttribute('onclick') || '';
-          if (tab.includes('tournaments')||tab.includes('alerts')||tab.includes('billing')||tab.includes('overview')||tab.includes('bot')||tab.includes('applications')||tab.includes('commands')) btn.style.display = 'none';
-        });
-        document.querySelectorAll('.sidebar-section').forEach(section => {
-          if (section.textContent.includes('Main')||section.textContent.includes('Features')||section.textContent.includes('Account')) section.style.display = 'none';
-        });
-        const coachSidebar = document.getElementById('coach-profile-sidebar');
-        if (coachSidebar) coachSidebar.style.display = 'flex';
-        setTimeout(() => loadMyCoachProfile(), 200);
-      } else {
-        navTierEl.textContent = tier.toUpperCase();
-        // Also show coach profile tab in sidebar if they're a coach with full access
-        if (isCoach) {
-          const coachSidebar = document.getElementById('coach-profile-sidebar');
-          if (coachSidebar) coachSidebar.style.display = 'flex';
-        }
-      }
+      navTierEl.textContent = tier.toUpperCase();
       if (access.theme) applyTheme(access.theme);
       const cards = { free: 'plan-card-free', pro: 'plan-card-pro', lifetime: 'plan-card-lifetime' };
       Object.entries(cards).forEach(([t, id]) => {
@@ -2564,13 +2141,13 @@
         if (planEl) planEl.textContent = 'Pro — $9/month';
         if (renewEl) { if (access.expires_at) renewEl.textContent = `Renews ${new Date(access.expires_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`; else renewEl.textContent = '★ Manually granted — no expiry date set'; }
       }
-      if (tier === 'free') { const wasCoach = access.is_coach === false && access.granted_by === 'coach_approval'; showPaywall(wasCoach ? 'revoked' : 'default'); }
+      if (tier === 'free') showPaywall('default');
     } else {
       await sb.from('user_access').insert({ discord_id: discordId, discord_tag: discordName, email: currentUser.email, tier: 'free', status: 'active', granted_by: 'self' });
       showPaywall('default');
     }
     document.getElementById('loading').classList.add('hidden');
-    loadAlerts(); loadTournaments(); loadCoachingSessions(); loadCoaches(); loadUserServers();
+    loadAlerts(); loadUserServers();
     loadOverviewStats();
   }
 
@@ -2706,13 +2283,6 @@
       savedSettings = settings;
       lastBotConfigSettings = settings;
       if (settings) {
-        if (settings.feature_flags) {
-          const f=settings.feature_flags;
-          if(f.battletag!==undefined) document.getElementById('toggle-battletag').checked=f.battletag;
-          if(f.ask_td!==undefined) document.getElementById('toggle-td').checked=f.ask_td;
-          if(f.scrims!==undefined) document.getElementById('toggle-scrims').checked=f.scrims;
-          if(f.coaching!==undefined) document.getElementById('toggle-coaching').checked=f.coaching;
-        }
       }
     } catch (err) { console.error('Error loading server settings:', err.message); }
 
@@ -2738,59 +2308,10 @@
     loadModActionSettings(savedSettings);
     loadInfoHubSettings(savedSettings);
 
-    // Update coaching warning banner
-    const coachingWarning=document.getElementById('coaching-server-warning');
-    const coachingIcon=document.getElementById('coaching-warning-icon');
-    const coachingText=document.getElementById('coaching-warning-text');
-    if (coachingWarning && guildId) {
-      coachingWarning.style.border='1px solid rgba(0,255,136,0.5)';coachingWarning.style.background='rgba(0,255,136,0.07)';coachingWarning.style.boxShadow='0 0 12px rgba(0,255,136,0.15)';
-      if(coachingIcon) coachingIcon.textContent='✅';
-      if(coachingText) { coachingText.style.color='var(--green)';coachingText.style.textShadow='0 0 8px rgba(0,255,136,0.5)';const guild=userGuilds.find(g=>g.id===guildId);coachingText.textContent=`Server selected: ${guild?guild.name:guildId} — coaching settings below apply to this server.`; }
-    } else if (coachingWarning) {
-      coachingWarning.style.border='1px solid rgba(255,45,120,0.5)';coachingWarning.style.background='rgba(255,45,120,0.07)';coachingWarning.style.boxShadow='0 0 12px rgba(255,45,120,0.15)';
-      if(coachingIcon) coachingIcon.textContent='⚠️';
-      if(coachingText) { coachingText.style.color='var(--pink)';coachingText.style.textShadow='0 0 8px rgba(255,45,120,0.5)';coachingText.textContent='No server selected — select your Discord server from the sidebar dropdown first.'; }
-    }
-
-    loadAlerts(); loadCoachingSessions(); loadTournaments();
+    loadAlerts();
   }
 
   // ── SAVE / SETTINGS ───────────────────────────────────────────────────────
-  async function saveChannels() {
-    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
-    if (!selectedGuildId) { const e=document.getElementById('channels-error');if(e){e.style.display='block';setTimeout(()=>e.style.display='none',4000);}return; }
-    const owId = channelPickers['ow-channel-picker'].getValue();
-    const rivalsId = channelPickers['rivals-channel-picker'].getValue();
-    const d2Id = channelPickers['d2-channel-picker'].getValue();
-    const r6Id = channelPickers['r6-channel-picker'].getValue();
-    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_channel_id: owId||null, rivals_channel_id: rivalsId||null, d2_channel_id: d2Id||null, r6_channel_id: r6Id||null }, { onConflict: 'discord_server_id' });
-    // Refresh hints
-    setChannelHint('ow-channel-current', owId);
-    setChannelHint('rivals-channel-current', rivalsId);
-    setChannelHint('d2-channel-current', d2Id);
-    setChannelHint('r6-channel-current', r6Id);
-    showSaved('channels-saved');
-  }
-
-  async function saveRoles() {
-    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
-    if (!selectedGuildId) { const e=document.getElementById('roles-error');if(e){e.style.display='block';setTimeout(()=>e.style.display='none',4000);}return; }
-    const owRoleId = channelPickers['ow-role-picker'].getValue() || null;
-    const rivalsRoleId = channelPickers['rivals-role-picker'].getValue() || null;
-    const d2RoleId = channelPickers['d2-role-picker'].getValue() || null;
-    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId, ow_role_id: owRoleId, rivals_role_id: rivalsRoleId, d2_role_id: d2RoleId }, { onConflict: 'discord_server_id' });
-    setChannelHint('ow-role-current', owRoleId);
-    setChannelHint('rivals-role-current', rivalsRoleId);
-    setChannelHint('d2-role-current', d2RoleId);
-    showSaved('roles-saved');
-  }
-
-  async function saveToggles() {
-    const discordId = currentUser.user_metadata?.provider_id || currentUser.id;
-    await sb.from('server_settings').upsert({ owner_discord_id: discordId, discord_server_id: selectedGuildId||discordId, feature_flags: { battletag: document.getElementById('toggle-battletag').checked, ask_td: document.getElementById('toggle-td').checked, scrims: document.getElementById('toggle-scrims').checked, coaching: document.getElementById('toggle-coaching').checked } }, { onConflict: 'discord_server_id' });
-    showSaved('toggles-saved');
-  }
-
   let grantDurationValue = 30;
   function toggleGrantDuration() {
     const dd = document.getElementById('grant-duration-dropdown');
@@ -2863,56 +2384,14 @@
   function updateConfigCardStatuses() {
     const s = lastBotConfigSettings || {};
 
-    const channelsSet = !!(s.ow_channel_id || s.rivals_channel_id || s.d2_channel_id || s.r6_channel_id);
-    setStatus('status-channels', channelsSet);
-
-    const rolesSet = !!(s.ow_role_id || s.rivals_role_id || s.d2_role_id);
-    setStatus('status-roles', rolesSet);
-
     setStatus('status-welcome', !!s.welcome_channel_id);
     setStatus('status-goodbye', !!s.goodbye_channel_id);
     setStatus('status-patverify', !!s.pat_verify_enabled && !!s.pat_verify_channel_id);
-    setStatus('status-fun', !!s.fun_channel_id);
     setStatus('status-levels', !!s.levels_channel_id);
     setStatus('status-suggestions', !!s.suggestions_channel_id);
     setStatus('status-voice', !!s.jtc_channel_id);
-
-    updateCoachingSettingsStatus();
   }
 
-  // ── COACHING — same card/detail pattern, reuses lastBotConfigSettings (same server_settings row) ──
-  function showCoachingSettings() {
-    const entry = document.getElementById('coaching-settings-entry');
-    const detail = document.getElementById('config-detail-coaching-settings');
-    if (entry) entry.style.display = 'none';
-    if (detail) detail.classList.add('active');
-  }
-
-  function hideCoachingSettings() {
-    const entry = document.getElementById('coaching-settings-entry');
-    const detail = document.getElementById('config-detail-coaching-settings');
-    if (detail) detail.classList.remove('active');
-    if (entry) entry.style.display = 'block';
-    updateCoachingSettingsStatus();
-  }
-
-  function updateCoachingSettingsStatus() {
-    const s = lastBotConfigSettings || {};
-    const el = document.getElementById('status-coaching-settings');
-    if (!el) return;
-    if (!selectedGuildId) { el.textContent = '// select a server'; el.className = 'config-card-status unset'; return; }
-    const isSet = !!(s.coaching_channel_id && s.coaching_log_channel_id);
-    el.textContent = isSet ? '✓ Configured' : '// Required channels not set';
-    el.className = 'config-card-status ' + (isSet ? 'set' : 'unset');
-  }
-
-  function resetCoachingSettingsView() {
-    const entry = document.getElementById('coaching-settings-entry');
-    const detail = document.getElementById('config-detail-coaching-settings');
-    if (detail) detail.classList.remove('active');
-    if (entry) entry.style.display = 'block';
-    updateCoachingSettingsStatus();
-  }
   async function signOut(){await sb.auth.signOut();window.location.href='/login.html';}
   function updateClock(){document.getElementById('clock').textContent=new Date().toUTCString().replace('GMT','UTC');}
   updateClock();setInterval(updateClock,1000);
@@ -2980,356 +2459,6 @@
     if(document.getElementById('alert-custom-message'))document.getElementById('alert-custom-message').value='';
     channelPickers['alert-channel'].setValue('','— Pick a channel —');
     loadAlerts();
-  }
-
-  // ── SWISS TOURNAMENT SYSTEM ───────────────────────────────────────────────
-  let selectedTournament = null;
-  async function loadTournamentTab(){await loadTournaments();}
-  async function loadTournaments(){
-    const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;if(!discordId)return;
-    const{data:tournaments}=await sb.from('tournaments').select('*').eq('discord_server_id',selectedGuildId||discordId).order('created_at',{ascending:false});
-    const list=document.getElementById('tournaments-list');if(!list)return;
-    if(!tournaments||tournaments.length===0){list.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No tournaments yet. Click + New tournament to create one.</p>';return;}
-    const statusBadge={registration:'<span class="badge badge-pro">Reg open</span>',in_progress:'<span class="badge badge-live">Live</span>',completed:'<span class="badge badge-active">Done</span>',cancelled:'<span class="badge badge-free">Cancelled</span>'};
-    list.innerHTML=tournaments.map(t=>`<div class="platform-row" style="margin-bottom:8px;cursor:pointer" onclick="openTournament('${t.id}','${t.name.replace(/'/g,"\\'")}')"><div><p class="platform-name">🎮 ${t.name}</p><p class="platform-sub">Swiss · Overwatch 2 · ${(t.status||'registration').replace('_',' ')} · Click to manage</p></div><div style="display:flex;align-items:center;gap:8px">${statusBadge[t.status]||statusBadge.registration}<button onclick="event.stopPropagation();deleteTournament('${t.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
-  }
-
-  async function openTournament(id,name){
-    activeTournamentId=id;selectedTournament={id,name};
-    document.getElementById('swiss-panel').style.display='block';
-    document.getElementById('swiss-tournament-name').textContent=`// ${name}`;
-    document.getElementById('team-registration-card').style.display='block';
-    document.getElementById('reg-tournament-name').textContent=name;
-    document.getElementById('start-round-card').style.display='block';
-    document.getElementById('swiss-panel').scrollIntoView({behavior:'smooth'});
-    await refreshSwissData();
-  }
-
-  function closeSwissPanel(){
-    activeTournamentId=null;selectedTournament=null;
-    document.getElementById('swiss-panel').style.display='none';
-    document.getElementById('team-registration-card').style.display='none';
-    document.getElementById('start-round-card').style.display='none';
-  }
-
-  async function refreshSwissData(){if(!activeTournamentId)return;await Promise.all([loadStandings(),loadRoundMatches(1),loadRoundMatches(2),loadRoundMatches(3),loadRoundBadges(),loadRegisteredTeams(),loadRoundManagement()]);}
-
-  async function loadRoundBadges(){
-    const{data:rounds}=await sb.from('tournament_rounds').select('*').eq('tournament_id',activeTournamentId).order('round_number');
-    const badgeEl=document.getElementById('swiss-round-badges');if(!badgeEl)return;
-    const labels=[1,2,3].map(r=>{const round=rounds?.find(x=>x.round_number===r);const status=round?.status||'pending';return`<span class="round-badge ${status}">R${r} ${status}</span>`;});
-    badgeEl.innerHTML=labels.join('');
-  }
-
-  async function loadStandings(){
-    const{data:teams}=await sb.from('tournament_teams').select('*').eq('tournament_id',activeTournamentId).eq('status','active').order('wins',{ascending:false});
-    const el=document.getElementById('standings-content');if(!el)return;
-    if(!teams||teams.length===0){el.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No teams registered yet.</p>';return;}
-    el.innerHTML=`<table class="standings-table"><thead><tr><th>#</th><th>Team</th><th>Captain</th><th>W</th><th>L</th></tr></thead><tbody>${teams.map((t,i)=>`<tr><td><span class="standings-rank ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</span></td><td style="color:var(--cyan);font-family:var(--font-display);font-size:0.65rem;letter-spacing:1px">${t.team_name}</td><td>${t.captain_username}</td><td style="color:var(--green)">${t.wins}</td><td style="color:var(--pink)">${t.losses}</td></tr>`).join('')}</tbody></table>`;
-  }
-
-  async function loadRoundMatches(roundNum){
-    const{data:matches}=await sb.from('tournament_matches').select('*').eq('tournament_id',activeTournamentId).eq('round',roundNum).order('created_at');
-    const el=document.getElementById(`round${roundNum}-content`);if(!el)return;
-    if(!matches||matches.length===0){el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No matches for Round ${roundNum} yet.</p>`;return;}
-    el.innerHTML=matches.map(m=>{
-      const hasResult=m.status==='reported'||m.status==='confirmed';
-      const t1Win=m.winner_id===m.team1_id;const t2Win=m.winner_id===m.team2_id;
-      return`<div class="match-card"><span class="match-team ${t1Win?'match-winner':''}">${m.team1_name}</span><span class="match-vs">VS</span><span class="match-team ${t2Win?'match-winner':''}" style="text-align:right">${m.team2_name}</span>${hasResult?`<span class="match-score">${m.team1_score} — ${m.team2_score}</span>`:`<span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey)">Pending</span>`}<span class="badge ${m.status==='confirmed'?'badge-active':m.status==='reported'?'badge-warning':'badge-free'}">${m.status}</span></div>`;
-    }).join('');
-    const hasReported=matches.some(m=>m.status==='reported');const allConfirmed=matches.every(m=>m.status==='confirmed');
-    const confirmBtn=document.getElementById('swiss-confirm-btn');
-    if(confirmBtn)confirmBtn.style.display=(hasReported&&!allConfirmed&&(isOwner||isDelegate))?'inline-block':'none';
-  }
-
-  async function loadRegisteredTeams(){
-    const{data:teams}=await sb.from('tournament_teams').select('*').eq('tournament_id',activeTournamentId).order('created_at');
-    const el=document.getElementById('registered-teams-list');if(!el)return;
-    if(!teams||teams.length===0){el.innerHTML='<p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No teams registered yet.</p>';return;}
-    el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);letter-spacing:2px;margin-bottom:8px;text-transform:uppercase">Registered teams (${teams.length})</p>`+teams.map(t=>`<div class="platform-row" style="margin-bottom:6px"><div><p class="platform-name" style="font-size:0.65rem">${t.team_name}</p><p class="platform-sub">${t.captain_username}${t.captain_battletag?' · '+t.captain_battletag:''}</p></div><div style="display:flex;gap:6px;align-items:center"><span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--green)">${t.wins}W</span><span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--pink)">${t.losses}L</span><button onclick="removeTeam('${t.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:13px">✕</button></div></div>`).join('');
-  }
-
-  async function loadRoundManagement(){
-    const el=document.getElementById('round-management-content');if(!el||!activeTournamentId)return;
-    const{data:rounds}=await sb.from('tournament_rounds').select('*').eq('tournament_id',activeTournamentId).order('round_number');
-    const{data:teams}=await sb.from('tournament_teams').select('id').eq('tournament_id',activeTournamentId).eq('status','active');
-    const teamCount=teams?.length||0;const confirmedRounds=rounds?.filter(r=>r.status==='confirmed').length||0;const activeRound=rounds?.find(r=>r.status==='active');const nextRound=confirmedRounds+1;
-    if(confirmedRounds>=3){el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--green)">✅ Tournament complete — all 3 rounds finished.</p>`;return;}
-    if(activeRound){el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--yellow);margin-bottom:12px">⚡ Round ${activeRound.round_number} is active — waiting for all match results.</p><button class="btn-confirm" onclick="confirmRound()">✓ Confirm Round ${activeRound.round_number} & Generate Next Pairings</button>`;return;}
-    if(teamCount<4){el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">⚠️ Need at least 4 teams registered before starting Round 1. Currently: ${teamCount} teams.</p>`;return;}
-    el.innerHTML=`<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);margin-bottom:12px">${teamCount} teams registered. Ready to start Round ${nextRound}.</p><button class="btn-primary" onclick="startRound(${nextRound})">▶ Start Round ${nextRound} — Generate Pairings</button>`;
-  }
-
-  async function registerTeam(){
-    if(!activeTournamentId){showSaved('reg-error');document.getElementById('reg-error').textContent='// Select a tournament first';document.getElementById('reg-error').style.display='block';return;}
-    const teamName=document.getElementById('reg-team-name').value.trim();const captainId=document.getElementById('reg-captain-id').value.trim();const captainUsername=document.getElementById('reg-captain-username').value.trim();const captainBT=document.getElementById('reg-captain-battletag').value.trim();
-    const errEl=document.getElementById('reg-error');errEl.style.display='none';
-    if(!teamName||!captainId||!captainUsername){errEl.textContent='// Error: Team name, captain ID, and username are required';errEl.style.display='block';return;}
-    const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    const{error}=await sb.from('tournament_teams').insert({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||discordId,team_name:teamName,captain_discord_id:captainId,captain_username:captainUsername,captain_battletag:captainBT||null,wins:0,losses:0,status:'active'});
-    if(error){errEl.textContent='// Error: '+error.message;errEl.style.display='block';return;}
-    document.getElementById('reg-team-name').value='';document.getElementById('reg-captain-id').value='';document.getElementById('reg-captain-username').value='';document.getElementById('reg-captain-battletag').value='';
-    showSaved('reg-saved');await refreshSwissData();
-  }
-
-  async function removeTeam(id){if(!confirm('Remove this team from the tournament?'))return;await sb.from('tournament_teams').delete().eq('id',id);await refreshSwissData();}
-
-  async function startRound(roundNum){
-    if(!activeTournamentId)return;
-    const btn=event.target;btn.disabled=true;btn.textContent='Generating pairings...';
-    try{
-      const{data:teams}=await sb.from('tournament_teams').select('*').eq('tournament_id',activeTournamentId).eq('status','active').order('wins',{ascending:false});
-      if(!teams||teams.length<2){alert('Need at least 2 teams to start a round');btn.disabled=false;btn.textContent=`▶ Start Round ${roundNum} — Generate Pairings`;return;}
-      await sb.from('tournament_rounds').upsert({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||(currentUser?.user_metadata?.provider_id||currentUser?.id),round_number:roundNum,status:'active',pairings_posted:false},{onConflict:'tournament_id,round_number'});
-      const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-      const matches=[];const paired=new Set();
-      for(let i=0;i<teams.length;i++){
-        if(paired.has(teams[i].id))continue;
-        for(let j=i+1;j<teams.length;j++){
-          if(paired.has(teams[j].id))continue;
-          const{data:prev}=await sb.from('tournament_matches').select('id').eq('tournament_id',activeTournamentId).or(`and(team1_id.eq.${teams[i].id},team2_id.eq.${teams[j].id}),and(team1_id.eq.${teams[j].id},team2_id.eq.${teams[i].id})`).maybeSingle();
-          if(!prev){matches.push({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||discordId,round:roundNum,team1_id:teams[i].id,team2_id:teams[j].id,team1_name:teams[i].team_name,team2_name:teams[j].team_name,status:'pending'});paired.add(teams[i].id);paired.add(teams[j].id);break;}
-        }
-        if(!paired.has(teams[i].id)){
-          matches.push({tournament_id:activeTournamentId,discord_server_id:selectedGuildId||discordId,round:roundNum,team1_id:teams[i].id,team2_id:null,team1_name:teams[i].team_name,team2_name:'BYE',status:'confirmed',team1_score:1,team2_score:0,winner_id:teams[i].id,winner_name:teams[i].team_name});
-          paired.add(teams[i].id);
-          await sb.from('tournament_teams').update({wins:teams[i].wins+1}).eq('id',teams[i].id);
-        }
-      }
-      if(matches.length>0){const{error}=await sb.from('tournament_matches').insert(matches);if(error){alert('Error creating matches: '+error.message);btn.disabled=false;return;}}
-      await sb.from('tournaments').update({status:'in_progress'}).eq('id',activeTournamentId);
-      showSwissTab(`round${roundNum}`);await refreshSwissData();
-    }catch(err){console.error('startRound error:',err.message);alert('Error starting round: '+err.message);}
-    btn.disabled=false;
-  }
-
-  async function confirmRound(){
-    if(!activeTournamentId)return;
-    const{data:activeRound}=await sb.from('tournament_rounds').select('*').eq('tournament_id',activeTournamentId).eq('status','active').maybeSingle();
-    if(!activeRound){alert('No active round found');return;}
-    const roundNum=activeRound.round_number;
-    const{data:matches}=await sb.from('tournament_matches').select('*').eq('tournament_id',activeTournamentId).eq('round',roundNum);
-    const unreported=matches?.filter(m=>m.status==='pending'&&m.team2_name!=='BYE');
-    if(unreported&&unreported.length>0){if(!confirm(`${unreported.length} match(es) still pending. Confirm anyway and mark them as no-contest?`))return;}
-    const reviewerTag=currentUser?.user_metadata?.full_name||currentUser?.user_metadata?.name||'admin';
-    await sb.from('tournament_rounds').update({status:'confirmed',confirmed_by:reviewerTag,confirmed_at:new Date().toISOString()}).eq('id',activeRound.id);
-    await sb.from('tournament_matches').update({status:'confirmed'}).eq('tournament_id',activeTournamentId).eq('round',roundNum).eq('status','pending');
-    if(roundNum>=3)await sb.from('tournaments').update({status:'completed'}).eq('id',activeTournamentId);
-    await refreshSwissData();showSaved('tournament-created');
-  }
-
-  function showSwissTab(tab){
-    activeSwissTab=tab;
-    ['standings','round1','round2','round3'].forEach(t=>{
-      const btn=document.getElementById(`swiss-tab-${t}`);const view=document.getElementById(`swiss-view-${t}`);
-      if(btn){btn.style.background=t===tab?'rgba(0,240,255,0.06)':'transparent';btn.style.borderBottomColor=t===tab?'var(--cyan)':'transparent';btn.style.color=t===tab?'var(--cyan)':'var(--grey)';}
-      if(view)view.style.display=t===tab?'block':'none';
-    });
-  }
-
-  async function createTournament(){
-    const name=document.getElementById('new-t-name').value.trim();const maxTeams=parseInt(document.getElementById('new-t-max').value);const ruleset=document.getElementById('new-t-ruleset').value.trim();
-    const errEl=document.getElementById('tournament-error');errEl.style.display='none';
-    if(!name){errEl.textContent='// Error: Please enter a tournament name';errEl.style.display='block';return;}
-    const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    const{error}=await sb.from('tournaments').insert({name,game:'overwatch',bracket_type:'swiss',max_players:maxTeams,ruleset:ruleset||null,status:'registration',discord_server_id:selectedGuildId||discordId});
-    if(error){errEl.textContent='// Error: '+error.message;errEl.style.display='block';return;}
-    document.getElementById('new-t-name').value='';document.getElementById('new-t-ruleset').value='';
-    document.getElementById('new-tournament-form').style.display='none';showSaved('tournament-created');await loadTournaments();
-  }
-
-  async function deleteTournament(id){
-    if(!confirm('Delete this tournament? This will also delete all teams and matches.'))return;
-    await sb.from('tournament_matches').delete().eq('tournament_id',id);
-    await sb.from('tournament_rounds').delete().eq('tournament_id',id);
-    await sb.from('tournament_teams').delete().eq('tournament_id',id);
-    await sb.from('tournaments').delete().eq('id',id);
-    if(activeTournamentId===id)closeSwissPanel();
-    await loadTournaments();
-  }
-
-  // ── APPLICATIONS TAB ──────────────────────────────────────────────────────
-  async function loadApplicationsTab(){
-    const canReview=isOwner||isDelegate;
-    const reviewSection=document.getElementById('applications-review-section');const delegatesSection=document.getElementById('delegates-section');
-    if(reviewSection)reviewSection.style.display=canReview?'block':'none';
-    if(delegatesSection)delegatesSection.style.display=isOwner?'block':'none';
-    if(canReview){await loadApplications();if(isOwner)await loadDelegates();}
-    else{const list=document.getElementById('applications-list');if(list)list.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">You do not have permission to review applications.</p>';}
-  }
-
-  async function loadCoachingTab(){
-    const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    const applySection=document.getElementById('coach-apply-section');if(applySection)applySection.style.display=(!isCoach)?'block':'none';
-    const addCoachBtn=document.getElementById('add-coach-btn');if(addCoachBtn)addCoachBtn.style.display=(isOwner||isDelegate)?'inline-block':'none';
-    if(!isCoach)await loadMyApplicationStatus(discordId);
-    loadCoachingSessions();loadCoaches();
-  }
-
-  async function loadMyApplicationStatus(discordId){
-    const{data:app}=await sb.from('coach_applications').select('*').eq('discord_id',discordId).order('created_at',{ascending:false}).limit(1).maybeSingle();
-    const banner=document.getElementById('existing-application-banner');const text=document.getElementById('existing-application-text');const form=document.getElementById('coach-apply-form');
-    if(!app){if(banner)banner.style.display='none';if(form)form.style.display='block';return;}
-    if(banner)banner.style.display='block';
-    if(app.status==='pending'){banner.style.borderColor='rgba(255,230,0,0.3)';banner.style.background='rgba(255,230,0,0.05)';if(text){text.style.color='var(--yellow)';text.textContent='⏳ Your application is pending review. We\'ll DM you on Discord when it\'s been reviewed.';}if(form)form.style.display='none';}
-    else if(app.status==='approved'){banner.style.borderColor='rgba(0,255,136,0.3)';banner.style.background='rgba(0,255,136,0.05)';if(text){text.style.color='var(--green)';text.textContent='✅ Your application was approved! Refresh the page to access your coach profile.';}if(form)form.style.display='none';}
-    else if(app.status==='denied'){banner.style.borderColor='rgba(255,45,120,0.3)';banner.style.background='rgba(255,45,120,0.05)';if(text){text.style.color='var(--pink)';text.textContent=`❌ Your application was not approved${app.review_note?': '+app.review_note:'.'} You may reapply below.`;}if(form)form.style.display='block';}
-  }
-
-  async function submitCoachApplication(){
-    const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;const discordTag=currentUser?.user_metadata?.full_name||currentUser?.user_metadata?.name||discordId;
-    const errorEl=document.getElementById('apply-error');errorEl.style.display='none';
-    const name=document.getElementById('apply-name').value.trim();const game=document.getElementById('apply-game').value;const bio=document.getElementById('apply-bio').value.trim();const strengths=document.getElementById('apply-strengths').value.trim();const logo=document.getElementById('apply-logo').value.trim();const cashapp=document.getElementById('apply-cashapp').value.trim();const stripe=document.getElementById('apply-stripe').value.trim();
-    if(!name){errorEl.textContent='// Error: Display name is required';errorEl.style.display='block';return;}
-    if(!bio){errorEl.textContent='// Error: Bio is required';errorEl.style.display='block';return;}
-    const{data:existing}=await sb.from('coach_applications').select('status').eq('discord_id',discordId).eq('status','pending').maybeSingle();
-    if(existing){errorEl.textContent='// You already have a pending application';errorEl.style.display='block';return;}
-    const{error}=await sb.from('coach_applications').insert({discord_id:discordId,discord_tag:discordTag,display_name:name,game,bio:bio||null,strengths:strengths||null,logo_url:logo||null,cashapp_url:cashapp||null,stripe_url:stripe||null,status:'pending'});
-    if(error){errorEl.textContent='// Error: '+error.message;errorEl.style.display='block';return;}
-    showSaved('apply-saved');await loadMyApplicationStatus(discordId);
-  }
-
-  async function loadApplications(){
-    const list=document.getElementById('applications-list');const countEl=document.getElementById('pending-app-count');if(!list)return;
-    const{data:apps}=await sb.from('coach_applications').select('*').order('created_at',{ascending:false});
-    if(!apps||apps.length===0){list.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No applications yet.</p>';if(countEl)countEl.textContent='0 pending';return;}
-    const pending=apps.filter(a=>a.status==='pending');if(countEl)countEl.textContent=`${pending.length} pending`;
-    const gameIcons={'Overwatch 2':'🎮','Marvel Rivals':'⚔️','Destiny 2':'🌌'};
-    const statusBadge={pending:'<span class="badge badge-pending">Pending</span>',approved:'<span class="badge badge-approved">Approved</span>',denied:'<span class="badge badge-denied">Denied</span>'};
-    list.innerHTML=apps.map(a=>`<div class="app-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:6px"><div><p class="app-card-name">${gameIcons[a.game]||'🎮'} ${a.display_name}</p><p class="app-card-meta">${a.discord_tag} · ${a.game} · Applied ${new Date(a.created_at).toLocaleDateString()}</p></div>${statusBadge[a.status]||statusBadge.pending}</div>${a.bio?`<p class="app-card-bio">${a.bio}</p>`:''} ${a.strengths?`<p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--purple);margin-bottom:8px">💪 ${a.strengths}</p>`:''}<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${a.cashapp_url?`<a href="${a.cashapp_url}" target="_blank" style="font-family:var(--font-mono);font-size:0.58rem;color:#00d632;border:1px solid #00d632;padding:2px 8px;text-decoration:none">💵 CashApp</a>`:''}${a.stripe_url?`<a href="${a.stripe_url}" target="_blank" style="font-family:var(--font-mono);font-size:0.58rem;color:#635bff;border:1px solid #635bff;padding:2px 8px;text-decoration:none">💳 Stripe</a>`:''}</div>${a.status==='pending'?`<div class="app-card-actions"><button class="btn-approve" onclick="reviewApplication('${a.id}','${a.discord_id}','${a.discord_tag}','approved','${a.display_name}','${(a.game||'').replace(/'/g,"\\'")}','${(a.bio||'').replace(/'/g,"\\'").replace(/\n/g,' ')}','${(a.strengths||'').replace(/'/g,"\\'")}','${a.logo_url||''}','${a.cashapp_url||''}','${a.stripe_url||''}')">✓ Approve</button><button class="btn-deny" onclick="denyApplicationPrompt('${a.id}','${a.discord_id}','${a.discord_tag}')">✕ Deny</button></div>`:`<p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey)">Reviewed by ${a.reviewed_by||'admin'}${a.review_note?' — '+a.review_note:''}</p>`}</div>`).join('');
-  }
-
-  async function reviewApplication(appId,discordId,discordTag,action,displayName,game,bio,strengths,logoUrl,cashappUrl,stripeUrl){
-    const reviewerTag=currentUser?.user_metadata?.full_name||currentUser?.user_metadata?.name||'admin';
-    await sb.from('coach_applications').update({status:action,reviewed_by:reviewerTag,updated_at:new Date().toISOString()}).eq('id',appId);
-    if(action==='approved'){await sb.from('user_access').upsert({discord_id:discordId,discord_tag:discordTag,tier:'pro',status:'active',is_coach:true,granted_by:'coach_approval'},{onConflict:'discord_id'});await sb.from('coaches').upsert({discord_profile_id:discordId,discord_server_id:'global',display_name:displayName,game,bio:bio||null,strengths:strengths||null,logo_url:logoUrl||null,cashapp_url:cashappUrl||null,stripe_url:stripeUrl||null,is_active:true,discord_user_id:discordId},{onConflict:'discord_profile_id'});}
-    await sendCoachDM(discordId,action,displayName);
-    await loadApplications();await loadCoaches();
-  }
-
-  async function denyApplicationPrompt(appId,discordId,discordTag){
-    const note=prompt('Optional: Add a reason for denial:')||'';const reviewerTag=currentUser?.user_metadata?.full_name||currentUser?.user_metadata?.name||'admin';
-    await sb.from('coach_applications').update({status:'denied',reviewed_by:reviewerTag,review_note:note||null,updated_at:new Date().toISOString()}).eq('id',appId);
-    const{data:app}=await sb.from('coach_applications').select('display_name').eq('id',appId).maybeSingle();
-    await sendCoachDM(discordId,'denied',app?.display_name||'Applicant',note);
-    await loadApplications();
-  }
-
-  async function sendCoachDM(discordId,action,displayName,note){try{await fetch(`${RAILWAY_BOT_URL}/send-dm`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({discord_id:discordId,action,display_name:displayName,note:note||null})});}catch(err){console.warn('DM notification failed:',err.message);}}
-
-  async function loadDelegates(){
-    const list=document.getElementById('delegates-list');if(!list)return;
-    const{data:delegates}=await sb.from('approval_delegates').select('*').order('created_at',{ascending:true});
-    if(!delegates||delegates.length===0){list.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No delegates yet.</p>';return;}
-    list.innerHTML='<div>'+delegates.map(d=>`<span class="delegate-tag">${d.discord_tag||d.discord_id}<button onclick="removeDelegate('${d.id}','${d.discord_tag}')">✕</button></span>`).join('')+'</div>';
-  }
-
-  async function addDelegate(){
-    const id=document.getElementById('delegate-id').value.trim();const tag=document.getElementById('delegate-tag').value.trim();const errorEl=document.getElementById('delegate-error');errorEl.style.display='none';
-    if(!id){errorEl.textContent='// Error: Discord ID is required';errorEl.style.display='block';return;}
-    const reviewerTag=currentUser?.user_metadata?.full_name||currentUser?.user_metadata?.name||'owner';
-    const{error}=await sb.from('approval_delegates').insert({discord_id:id,discord_tag:tag||id,granted_by:reviewerTag});
-    if(error){if(error.code==='23505'){errorEl.textContent='// This user is already a delegate';errorEl.style.display='block';return;}errorEl.textContent='// Error: '+error.message;errorEl.style.display='block';return;}
-    document.getElementById('delegate-id').value='';document.getElementById('delegate-tag').value='';showSaved('delegate-saved');await loadDelegates();
-  }
-
-  async function removeDelegate(id,tag){if(!confirm(`Remove ${tag} as a delegate?`))return;await sb.from('approval_delegates').delete().eq('id',id);await loadDelegates();}
-
-  // ── COACHING ──────────────────────────────────────────────────────────────
-  async function saveCoachingSettings(){
-    const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    const coachChId=channelPickers['coaching-channel-picker'].getValue()||null;
-    const coachLogChId=channelPickers['coaching-log-channel-picker'].getValue()||null;
-    await sb.from('server_settings').upsert({owner_discord_id:discordId,discord_server_id:selectedGuildId||discordId,coaching_channel_id:coachChId,coaching_log_channel_id:coachLogChId,feature_flags:{battletag:document.getElementById('toggle-battletag').checked,ask_td:document.getElementById('toggle-td').checked,scrims:document.getElementById('toggle-scrims').checked,coaching:document.getElementById('toggle-coaching').checked,coaching_allow:document.getElementById('toggle-coaching-allow').checked,coaching_auto:document.getElementById('toggle-coaching-auto').checked,coaching_max_sessions:parseInt(document.getElementById('coaching-max-sessions').value)}},{onConflict:'discord_server_id'});
-    setChannelHint('coaching-channel-current',coachChId);
-    setChannelHint('coaching-log-channel-current',coachLogChId);
-    showSaved('coaching-saved');
-  }
-
-  async function loadCoachingSessions(){
-    const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;if(!discordId)return;
-    const{data:sessions}=await sb.from('coaching_schedules').select('*').eq('discord_server_id',discordId).order('created_at',{ascending:false});
-    const list=document.getElementById('coaching-sessions-list');if(!list)return;
-    if(!sessions||sessions.length===0){list.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No sessions scheduled yet.</p>';return;}
-    const statusBadge={requested:'<span class="badge badge-warning">Pending</span>',confirmed:'<span class="badge badge-active">Confirmed</span>',completed:'<span class="badge badge-free">Completed</span>',cancelled:'<span class="badge badge-free">Cancelled</span>'};
-    const gameIcons={overwatch:'🎮',rivals:'⚔️',destiny:'🌌'};
-    list.innerHTML=sessions.map(s=>`<div class="platform-row" style="margin-bottom:8px"><div><p class="platform-name">${gameIcons[s.game]||'🎮'} ${s.username||s.player_discord_id}</p><p class="platform-sub">${s.game} — ${s.availability}${s.focus_areas?' — '+s.focus_areas:''}</p></div><div style="display:flex;align-items:center;gap:8px">${statusBadge[s.status]||statusBadge.requested}<button onclick="deleteCoachingSession('${s.id}')" style="background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px;padding:2px 6px">✕</button></div></div>`).join('');
-  }
-
-  async function deleteCoachingSession(id){if(!confirm('Remove this coaching session?'))return;await sb.from('coaching_schedules').delete().eq('id',id);loadCoachingSessions();}
-
-  async function loadCoaches(){
-    const{data:coaches}=await sb.from('coaches').select('*').order('created_at',{ascending:false});
-    const list=document.getElementById('coaches-list');if(!list)return;
-    if(!coaches||coaches.length===0){list.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No coaches added yet.</p>';return;}
-    const gameNames={overwatch:'Overwatch 2',rivals:'Marvel Rivals',destiny:'Destiny 2'};const gameIcons={overwatch:'🎮',rivals:'⚔️',destiny:'🌌'};
-    list.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:4px">'+coaches.map(c=>`<div style="background:var(--bg-2);border:1px solid rgba(0,240,255,0.15);padding:16px;position:relative;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))">${c.logo_url?`<img src="${c.logo_url}" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--cyan);object-fit:cover;margin-bottom:8px" onerror="this.style.display='none'">`:`<div style="width:40px;height:40px;border-radius:50%;background:rgba(0,240,255,0.1);border:1px solid rgba(0,240,255,0.3);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px">🎮</div>`}<p style="font-family:var(--font-display);font-size:0.72rem;font-weight:700;color:var(--cyan)">${c.display_name||'Coach'}</p><p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey);margin-bottom:8px">${gameIcons[c.game]||''} ${gameNames[c.game]||c.game}</p>${c.bio?`<p style="font-family:var(--font-mono);font-size:0.62rem;color:rgba(232,234,240,0.7);line-height:1.7;margin-bottom:8px">${c.bio}</p>`:''} ${c.strengths?`<p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--purple);margin-bottom:10px">💪 ${c.strengths}</p>`:''}<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${c.cashapp_url?`<a href="${c.cashapp_url}" target="_blank" style="font-family:var(--font-mono);font-size:0.58rem;color:#00d632;border:1px solid #00d632;padding:3px 8px;text-decoration:none">💵 CashApp</a>`:''}${c.stripe_url?`<a href="${c.stripe_url}" target="_blank" style="font-family:var(--font-mono);font-size:0.58rem;color:#635bff;border:1px solid #635bff;padding:3px 8px;text-decoration:none">💳 Stripe</a>`:''}</div><button onclick="deleteCoach('${c.id}')" style="position:absolute;top:8px;right:8px;background:none;border:none;color:var(--pink);cursor:pointer;font-size:14px">✕</button></div>`).join('')+'</div>';
-    const coachWithCashapp=coaches.find(c=>c.cashapp_url);const coachWithStripe=coaches.find(c=>c.stripe_url);
-    if(coachWithCashapp)document.getElementById('cashapp-link').href=coachWithCashapp.cashapp_url;
-    if(coachWithStripe)document.getElementById('stripe-link').href=coachWithStripe.stripe_url;
-  }
-
-  async function addCoach(){
-    const errorEl=document.getElementById('coach-error');errorEl.style.display='none';
-    const name=document.getElementById('coach-name').value.trim();const coachDiscordId=document.getElementById('coach-discord-id').value.trim();const logo=document.getElementById('coach-logo').value.trim();const game=document.getElementById('coach-game').value;const bio=document.getElementById('coach-bio').value.trim();const strengths=document.getElementById('coach-strengths').value.trim();const cashapp=document.getElementById('coach-cashapp').value.trim();const stripe=document.getElementById('coach-stripe').value.trim();
-    if(!name||!coachDiscordId){errorEl.textContent='// Error: Display name and Discord ID are required';errorEl.style.display='block';return;}
-    const{error}=await sb.from('coaches').insert({discord_server_id:'global',discord_profile_id:coachDiscordId,display_name:name,logo_url:logo||null,game,bio:bio||null,strengths:strengths||null,cashapp_url:cashapp||null,stripe_url:stripe||null});
-    if(error){errorEl.textContent='// Error: '+error.message;errorEl.style.display='block';return;}
-    document.getElementById('coach-name').value='';document.getElementById('coach-discord-id').value='';document.getElementById('coach-logo').value='';document.getElementById('coach-bio').value='';document.getElementById('coach-strengths').value='';document.getElementById('coach-cashapp').value='';document.getElementById('coach-stripe').value='';
-    document.getElementById('add-coach-form').style.display='none';showSaved('coach-saved');loadCoaches();
-  }
-
-  async function deleteCoach(id){
-    if(!confirm('Remove this coach? This will also revoke their coach access.'))return;
-    // Get the coach's discord_profile_id before deleting
-    const{data:coach}=await sb.from('coaches').select('discord_profile_id').eq('id',id).maybeSingle();
-    await sb.from('coaches').delete().eq('id',id);
-    // Revoke coach status in user_access
-    if(coach?.discord_profile_id){
-      await sb.from('user_access').update({is_coach:false,tier:'free'}).eq('discord_id',coach.discord_profile_id);
-    }
-    loadCoaches();
-  }
-
-  // ── COACH PROFILE ─────────────────────────────────────────────────────────
-  async function loadMyCoachProfile(){
-    const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;if(!discordId)return;
-    const{data:profile}=await sb.from('coaches').select('*').eq('discord_profile_id',discordId).maybeSingle();
-    if(profile){
-      if(profile.display_name)document.getElementById('my-coach-name').value=profile.display_name;
-      if(profile.logo_url)document.getElementById('my-coach-logo').value=profile.logo_url;
-      if(profile.game){const sel=document.getElementById('my-coach-game');if(sel)sel.value=profile.game;}
-      if(profile.bio)document.getElementById('my-coach-bio').value=profile.bio;
-      if(profile.strengths)document.getElementById('my-coach-strengths').value=profile.strengths;
-      if(profile.cashapp_url)document.getElementById('my-coach-cashapp').value=profile.cashapp_url;
-      if(profile.stripe_url)document.getElementById('my-coach-stripe').value=profile.stripe_url;
-      updateCoachPreview(profile);
-    }
-    await loadMyCoachingSessions(discordId);
-  }
-
-  async function saveMyCoachProfile(){
-    const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;const errorEl=document.getElementById('my-coach-error');errorEl.style.display='none';
-    const name=document.getElementById('my-coach-name').value.trim();if(!name){errorEl.textContent='// Error: Display name is required';errorEl.style.display='block';return;}
-    const game=document.getElementById('my-coach-game').value;
-    const profileData={discord_profile_id:discordId,discord_server_id:'global',display_name:name,logo_url:document.getElementById('my-coach-logo').value.trim()||null,game,bio:document.getElementById('my-coach-bio').value.trim()||null,strengths:document.getElementById('my-coach-strengths').value.trim()||null,cashapp_url:document.getElementById('my-coach-cashapp').value.trim()||null,stripe_url:document.getElementById('my-coach-stripe').value.trim()||null,is_active:true,discord_user_id:discordId};
-    const{error}=await sb.from('coaches').upsert(profileData,{onConflict:'discord_profile_id'});
-    if(error){errorEl.textContent='// Error: '+error.message;errorEl.style.display='block';return;}
-    updateCoachPreview(profileData);showSaved('my-coach-saved');
-  }
-
-  function updateCoachPreview(profile){
-    const preview=document.getElementById('coach-preview-card');if(!preview)return;
-    const gameNames={overwatch:'Overwatch 2',rivals:'Marvel Rivals',destiny:'Destiny 2'};const gameIcons={overwatch:'🎮',rivals:'⚔️',destiny:'🌌'};
-    preview.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">${profile.logo_url?`<img src="${profile.logo_url}" style="width:40px;height:40px;border-radius:50%;border:1px solid #00aaff;object-fit:cover" onerror="this.style.display='none'">`:`<div style="width:40px;height:40px;border-radius:50%;background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.3);display:flex;align-items:center;justify-content:center;font-size:18px">🎮</div>`}<div><p style="font-family:var(--font-display);font-size:0.72rem;font-weight:700;color:#00aaff;text-shadow:0 0 8px #00aaff44">${profile.display_name||'Coach'}</p><p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">${gameIcons[profile.game]||''} ${gameNames[profile.game]||profile.game||''}</p></div></div>${profile.bio?`<p style="font-family:var(--font-mono);font-size:0.62rem;color:rgba(232,234,240,0.7);line-height:1.7;margin-bottom:8px">${profile.bio}</p>`:''}${profile.strengths?`<p style="font-family:var(--font-mono);font-size:0.6rem;color:#00aaff;margin-bottom:10px">💪 ${profile.strengths}</p>`:''}<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${profile.cashapp_url?`<span style="font-family:var(--font-mono);font-size:0.58rem;color:#00d632;border:1px solid #00d632;padding:3px 8px">💵 CashApp</span>`:''}${profile.stripe_url?`<span style="font-family:var(--font-mono);font-size:0.58rem;color:#635bff;border:1px solid #635bff;padding:3px 8px">💳 Stripe</span>`:''}</div>`;
-  }
-
-  async function loadMyCoachingSessions(discordId){
-    const list=document.getElementById('my-coaching-sessions');if(!list)return;
-    const{data:sessions}=await sb.from('coaching_sessions').select('*').eq('coach_discord_id',discordId).order('created_at',{ascending:false});
-    if(!sessions||sessions.length===0){list.innerHTML='<p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">No coaching sessions yet.</p>';return;}
-    const statusBadge={pending:'<span class="badge badge-warning">Pending</span>',active:'<span class="badge badge-live">Active</span>',completed:'<span class="badge badge-active">Completed</span>',cancelled:'<span class="badge badge-free">Cancelled</span>'};
-    list.innerHTML=sessions.map(s=>`<div class="platform-row" style="margin-bottom:8px"><div><p class="platform-name">🎮 ${s.user_username||s.user_discord_id}</p><p class="platform-sub">${s.game||'N/A'} — ${new Date(s.created_at).toLocaleDateString()}</p></div>${statusBadge[s.status]||statusBadge.pending}</div>`).join('');
   }
 
   // ── THEME ─────────────────────────────────────────────────────────────────
@@ -3504,59 +2633,14 @@
   }
 
 
-  function showCoachApplyPaywall(){const el=document.getElementById('paywall-coach-apply');if(el){el.style.display='flex';}}
-  function hideCoachApplyPaywall(){const el=document.getElementById('paywall-coach-apply');if(el){el.style.display='none';}}
-
-  async function submitPaywallCoachApp(){
-    if(!currentUser)return;
-    const discordId=currentUser.user_metadata?.provider_id||currentUser.id;
-    const discordTag=currentUser.user_metadata?.full_name||currentUser.user_metadata?.name||discordId;
-    const name=document.getElementById('pw-apply-name').value.trim();
-    const game=document.getElementById('pw-apply-game').value;
-    const bio=document.getElementById('pw-apply-bio').value.trim();
-    const strengths=document.getElementById('pw-apply-strengths').value.trim()||null;
-    const cashapp=document.getElementById('pw-apply-cashapp').value.trim()||null;
-    const stripe=document.getElementById('pw-apply-stripe').value.trim()||null;
-    const errEl=document.getElementById('pw-apply-error');errEl.style.display='none';
-    if(!name){errEl.textContent='// Display name is required';errEl.style.display='block';return;}
-    if(!bio){errEl.textContent='// Bio is required';errEl.style.display='block';return;}
-    const{data:existing}=await sb.from('coach_applications').select('status').eq('discord_id',discordId).eq('status','pending').maybeSingle();
-    if(existing){errEl.textContent='// You already have a pending application';errEl.style.display='block';return;}
-    const{error}=await sb.from('coach_applications').insert({discord_id:discordId,discord_tag:discordTag,display_name:name,game,bio,strengths,cashapp_url:cashapp,stripe_url:stripe,status:'pending'});
-    if(error){errEl.textContent='// Error: '+error.message;errEl.style.display='block';return;}
-    document.getElementById('pw-apply-saved').style.display='block';
-    setTimeout(()=>hideCoachApplyPaywall(),3000);
-  }
-
   // Update paywall message based on why access was denied
   function showPaywall(reason){
     const overlay=document.getElementById('paywall-overlay');
     const title=document.getElementById('paywall-title');
     const msg=document.getElementById('paywall-message');
-    if(reason==='revoked'){
-      if(title)title.textContent='COACH ACCESS REVOKED';
-      if(msg)msg.textContent='Your coach status has been removed. You can reapply to become a coach, upgrade to a Pro plan for full dashboard access, or add AuraAI to your server to use the free bot features.';
-    } else {
-      if(title)title.textContent='ACCESS REQUIRED';
-      if(msg)msg.textContent="You don't have an active plan. Upgrade to Pro to unlock the full AuraAI dashboard, or apply to become a coach.";
-    }
+    if(title)title.textContent='ACCESS REQUIRED';
+    if(msg)msg.textContent="You don't have an active plan. Upgrade to Pro to unlock the full AuraAI dashboard, or add AuraAI to your server to use the free bot features.";
     if(overlay)overlay.classList.remove('hidden');
-  }
-
-  async function saveFunChannel() {
-    const discordId = currentUser?.user_metadata?.provider_id || currentUser?.id;
-    if (!selectedGuildId) {
-      const e = document.getElementById('fun-channel-error');
-      if (e) { e.style.display = 'block'; setTimeout(() => e.style.display = 'none', 4000); }
-      return;
-    }
-    const funId = channelPickers['fun-channel-picker'].getValue() || null;
-    await sb.from('server_settings').upsert(
-      { owner_discord_id: discordId, discord_server_id: selectedGuildId, fun_channel_id: funId },
-      { onConflict: 'discord_server_id' }
-    );
-    setChannelHint('fun-channel-current', funId);
-    showSaved('fun-channel-saved');
   }
 
   initChannelPickers();
