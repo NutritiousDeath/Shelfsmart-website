@@ -117,12 +117,6 @@
     <button class="sidebar-item" onclick="setTab('alerts',this);loadAlerts()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Social alerts
     </button>
-    <button class="sidebar-item" onclick="setTab('eso',this);loadEsoTab()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5L12 2z"/></svg>ESO Guild Sync
-    </button>
-    <button class="sidebar-item" onclick="setTab('eso-download',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 19h16"/></svg>ESO Sync Files
-    </button>
 
     <span class="sidebar-section">// Account</span>
     <button class="sidebar-item" onclick="setTab('billing',this)">
@@ -1415,10 +1409,19 @@
       </div>
     </div>
 
-    <!-- ══════════════════════════════════ ESO GUILD SYNC ══════════════════════════════════ -->
+    <!-- ══════════════════════════════════ ESO (guild sync + charter download, one page) ══════════════════════════════════ -->
     <div class="tab" id="tab-eso">
-      <p class="page-tag">// role automation</p>
-      <p class="page-title">ESO GUILD SYNC</p>
+      <div class="game-hero" style="border:1px solid rgba(0,240,255,0.3);padding:24px 26px;margin-bottom:24px;background:linear-gradient(135deg, rgba(0,240,255,0.08), rgba(180,79,255,0.05) 60%, transparent);position:relative">
+        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--pink);letter-spacing:3px;margin-bottom:6px">⚜ POSTED TO THE GUILD NOTICE BOARD</p>
+        <p class="page-tag">// elder scrolls online</p>
+        <p class="page-title" style="margin-bottom:10px">AURA // ESO GUILD SYNC</p>
+        <p style="font-family:var(--font-mono);font-size:0.82rem;color:var(--white);line-height:1.9">
+          Your guild's ranks in Tamriel, mirrored to Discord roles automatically. An addon reads the roster in-game, a small companion app carries it to AuraAI, and Aura sets everyone's roles to match.
+        </p>
+        <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--cyan);line-height:1.9;margin-top:8px">/eso-link &nbsp;·&nbsp; /eso &nbsp;·&nbsp; /pat-verify</p>
+      </div>
+
+      <p class="cmd-section-label">// your server's sync</p>
       <div class="section-card">
         <p class="card-title">// companion app sync token</p>
         <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);margin-bottom:10px;line-height:1.7">This server's private key for the ESO companion app. Anyone with this token can push roster updates to this server specifically — it does NOT work for any other server. Paste it into the companion app's config when you set it up.</p>
@@ -1442,14 +1445,35 @@
       <div id="eso-guilds-container">
         <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey)">Select your server to configure ESO guild sync.</p>
       </div>
-    </div>
 
-    <!-- ══════════════════════════════════ ESO SYNC FILES (broadcast style) ══════════════════════════════════ -->
-    <div class="tab" id="tab-eso-download">
-      <div style="border:1px solid rgba(0,240,255,0.3);padding:20px 24px;margin-bottom:24px;background:linear-gradient(180deg, rgba(0,240,255,0.06), transparent);position:relative">
-        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--pink);letter-spacing:3px;margin-bottom:6px">⚜ POSTED TO THE GUILD NOTICE BOARD</p>
-        <p class="page-title" style="margin-bottom:4px">CHARTER OF SYNCHRONIZATION</p>
-        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--cyan);letter-spacing:2px">ESO GUILD SYNC — ISSUED UNDER THE AUTHORITY OF AURAAI</p>
+      <p class="cmd-section-label" style="margin-top:26px">// the charter (download)</p>
+      <div class="section-card" style="border-color:rgba(0,240,255,0.35);text-align:center;padding:32px 24px">
+        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);letter-spacing:3px;margin-bottom:14px">THE CHARTER — VERSION 1.0.0</p>
+        <a href="downloads/AuraAI-ESO-Sync.zip" download class="btn-primary" style="display:inline-block;text-decoration:none;font-size:0.85rem;padding:14px 32px">⬇ CLAIM THE CHARTER</a>
+        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:14px">Includes the herald, the courier, and a written guide.</p>
+      </div>
+
+      <div class="section-card">
+        <p class="card-title">// rites of installation</p>
+        <ol style="font-family:var(--font-mono);font-size:0.78rem;color:var(--white);line-height:2.4;padding-left:20px">
+          <li>Unseal the package.</li>
+          <li>Place the <code style="color:var(--cyan)">EsoDiscordSync</code> folder within your ESO <code style="color:var(--cyan)">AddOns</code> folder.</li>
+          <li>Enter Tamriel. Confirm <code style="color:var(--cyan)">EsoDiscordSync</code> stands checked in the Addon Manager — the charter arrives already sealed for the current game version, nothing to inscribe by hand.</li>
+          <li>Should it ever be marked "out of date" after a great patch: this alone does not mean the charter has failed. Return to this notice board for a renewed copy.</li>
+          <li>Summon the companion service. It will ask for your Server ID and Sync Token — both are shown above, in <a href="#" onclick="event.preventDefault();var f=document.getElementById('eso-sync-token-field');if(f)f.scrollIntoView({behavior:'smooth',block:'center'});" style="color:var(--cyan)">your server's sync</a>.</li>
+          <li>In-game: speak <code style="color:var(--cyan)">/esosync</code>, then <code style="color:var(--cyan)">/reloadui</code>.</li>
+          <li style="color:var(--pink)">Tell your members: this charter binds no one automatically. Each member must speak the words <code style="color:var(--cyan)">/eso-link</code> themselves in Discord, offering their ESO account name — only then shall their rank be honored.</li>
+        </ol>
+        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);margin-top:14px;line-height:1.9">The full rite is written within the package's README.</p>
+      </div>
+
+      <div class="section-card">
+        <p class="card-title">// what is required of you</p>
+        <ul style="font-family:var(--font-mono);font-size:0.78rem;color:var(--grey);line-height:2.2;padding-left:20px">
+          <li>Elder Scrolls Online, installed and active</li>
+          <li>Node.js (18 or newer), installed on your PC</li>
+          <li>An AuraAI dashboard login for this server</li>
+        </ul>
       </div>
 
       <div class="section-card">
@@ -1467,35 +1491,6 @@
           AuraAI honors the charter, and ranks are set to match. Every time.<br><br>
           No scribe required. <span style="color:var(--cyan)">No rank forgotten.</span>
         </p>
-      </div>
-
-      <div class="section-card">
-        <p class="card-title">// what is required of you</p>
-        <ul style="font-family:var(--font-mono);font-size:0.78rem;color:var(--grey);line-height:2.2;padding-left:20px">
-          <li>Elder Scrolls Online, installed and active</li>
-          <li>Node.js (18 or newer), installed on your PC</li>
-          <li>An AuraAI dashboard login for this server</li>
-        </ul>
-      </div>
-
-      <div class="section-card" style="border-color:rgba(0,240,255,0.35);text-align:center;padding:32px 24px">
-        <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);letter-spacing:3px;margin-bottom:14px">THE CHARTER — VERSION 1.0.0</p>
-        <a href="downloads/AuraAI-ESO-Sync.zip" download class="btn-primary" style="display:inline-block;text-decoration:none;font-size:0.85rem;padding:14px 32px">⬇ CLAIM THE CHARTER</a>
-        <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:14px">Includes the herald, the courier, and a written guide.</p>
-      </div>
-
-      <div class="section-card">
-        <p class="card-title">// rites of installation</p>
-        <ol style="font-family:var(--font-mono);font-size:0.78rem;color:var(--white);line-height:2.4;padding-left:20px">
-          <li>Unseal the package.</li>
-          <li>Place the <code style="color:var(--cyan)">EsoDiscordSync</code> folder within your ESO <code style="color:var(--cyan)">AddOns</code> folder.</li>
-          <li>Enter Tamriel. Confirm <code style="color:var(--cyan)">EsoDiscordSync</code> stands checked in the Addon Manager — the charter arrives already sealed for the current game version, nothing to inscribe by hand.</li>
-          <li>Should it ever be marked "out of date" after a great patch: this alone does not mean the charter has failed. Return to this notice board for a renewed copy.</li>
-          <li>Summon the companion service. It will ask for your Server ID and Sync Token — both are recorded one tab away, upon <a href="#" onclick="setTab('eso',null);document.querySelectorAll('.sidebar-item').forEach(b=>{if(b.textContent.trim()==='ESO Guild Sync')b.classList.add('active')});return false" style="color:var(--cyan)">ESO Guild Sync</a>.</li>
-          <li>In-game: speak <code style="color:var(--cyan)">/esosync</code>, then <code style="color:var(--cyan)">/reloadui</code>.</li>
-          <li style="color:var(--pink)">Tell your members: this charter binds no one automatically. Each member must speak the words <code style="color:var(--cyan)">/eso-link</code> themselves in Discord, offering their ESO account name — only then shall their rank be honored.</li>
-        </ol>
-        <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--grey);margin-top:14px;line-height:1.9">The full rite is written within the package's README.</p>
       </div>
 
       <div class="section-card" style="border-color:rgba(255,255,255,0.1)">
@@ -1938,7 +1933,9 @@
 <script src="js/dashboard-mtg-banlist.js"></script>
 <script src="js/dashboard-div2.js"></script>
 <script src="js/dashboard-d2.js"></script>
+<script src="js/dashboard-eso-ops.js"></script>
 <script src="js/dashboard-premium.js"></script>
+<script src="js/dashboard-why.js"></script>
 <script src="js/dashboard-grammar.js"></script>
 <script>attachGrammarCheck('ob-intro-message');</script>
 

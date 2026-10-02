@@ -1,5 +1,5 @@
 // ─── DASHBOARD: GAME OPS (shared) ─────────────────────────────────────────────
-// Shared helpers for the player game pages (MTG Arena, Division 2, Destiny 2):
+// Shared helpers for the game pages (MTG Arena, Division 2, Destiny 2, ESO):
 //   • one sidebar section (GAME_SECTION_LABEL) with a button per game, in the
 //     order the page scripts load
 //   • tab creation, hero markup with Aura art (+ tinted fallback), auth, API
@@ -36,8 +36,9 @@
     s.className = 'sidebar-section';
     s.id = 'games-sidebar-section';
     s.textContent = GAME_SECTION_LABEL;
+    // Right after the last "// Features" item (Social alerts), before "// Account".
     const buttons = Array.from(document.querySelectorAll('.sidebar-item'));
-    const anchor = buttons.find((b) => (b.getAttribute('onclick') || '').includes("'eso-download'"))
+    const anchor = buttons.find((b) => (b.getAttribute('onclick') || '').includes("'alerts'"))
       || buttons.find((b) => (b.getAttribute('onclick') || '').includes("'eso'"));
     if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(s, anchor.nextSibling);
     else {
