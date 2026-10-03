@@ -26,7 +26,11 @@
   const CSS = `
     #mtg-banlist .bl-row { display:grid; grid-template-columns:110px 1fr; gap:12px; align-items:center; margin-top:14px; }
     #mtg-banlist .bl-label { ${mono}; font-size:0.62rem; color:var(--grey); letter-spacing:2px; }
-    #mtg-banlist .bl-formats { display:flex; flex-wrap:wrap; gap:8px; }
+    #mtg-banlist .bl-formats { display:flex; flex-direction:column; gap:12px; }
+    #mtg-banlist .bl-group { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+    #mtg-banlist .bl-group-name { ${mono}; font-size:0.6rem; letter-spacing:2px; color:var(--cyan); width:100%; }
+    #mtg-banlist .bl-group-all { ${mono}; font-size:0.58rem; letter-spacing:1px; color:var(--grey); cursor:pointer; margin-left:8px; text-decoration:underline; }
+    #mtg-banlist .bl-plat { ${mono}; font-size:0.7rem; color:var(--cyan); letter-spacing:2px; margin:16px 0 4px; grid-column:1/-1; }
     #mtg-banlist .bl-chip { ${mono}; font-size:0.68rem; letter-spacing:1px; padding:7px 12px; border:1px solid rgba(255,255,255,0.15); color:var(--grey); cursor:pointer; user-select:none; background:transparent; }
     #mtg-banlist .bl-chip.on { border-color:${ACCENT}; color:var(--white); background:rgba(180,79,255,0.12); box-shadow:0 0 8px rgba(180,79,255,0.35); }
     #mtg-banlist .bl-chip:disabled { opacity:0.4; cursor:not-allowed; }
@@ -51,7 +55,7 @@
         <span class="bl-badge">PREMIUM</span>
       </div>
       <p style="${mono};font-size:0.76rem;color:var(--white);line-height:1.9;margin-top:12px">
-        When the MTG Arena ban list changes, Aura posts what changed and the updated list in the channel you pick.
+        When an official ban list changes — MTG Arena or MTGO — Aura posts what changed and the updated list in the channel you pick.
         <span style="color:var(--grey)">Needs Aura Premium for MTG ($5/mo) or AuraAI Pro / Lifetime on the server.</span>
       </p>
       <div id="bl-upsell" style="display:none;margin-top:14px;border:1px solid rgba(180,79,255,0.45);background:rgba(180,79,255,0.06);padding:12px 14px">
@@ -69,7 +73,7 @@
       </div>
       <div class="bl-status" id="bl-status">Pick a server.</div>
       <details id="bl-current">
-        <summary>VIEW THE CURRENT ARENA BAN LIST AURA ENFORCES</summary>
+        <summary>VIEW THE CURRENT BAN LISTS AURA ENFORCES (ARENA + MTGO)</summary>
         <p id="bl-checked" style="${mono};font-size:0.62rem;color:var(--grey);margin-top:10px"></p>
         <div class="bl-list" id="bl-list"></div>
       </details>
@@ -123,12 +127,32 @@
 
   // ─── RENDER ─────────────────────────────────────────────────────────────────
 
+  const PLATFORMS = [
+    { key: 'arena', name: 'MTG ARENA' },
+    { key: 'mtgo', name: 'MTGO / TABLETOP' },
+  ];
+  const platformOf = (f) => f.platform || 'arena';
+  // Chip text without the "(MTGO)" suffix — the group heading already says it.
+  const chipLabel = (f) => f.label.replace(/\s*\(MTGO\)$/i, '').toUpperCase();
+
   function renderFormats(selected) {
     const box = document.getElementById('bl-formats');
     if (!box || !overview) return;
-    const on = new Set(selected && selected.length ? selected : overview.formats.map((f) => f.key));
-    box.innerHTML = overview.formats.map((f) => `<button type="button" class="bl-chip${on.has(f.key) ? ' on' : ''}" data-fmt="${f.key}">${esc(f.label.toUpperCase())}</button>`).join('');
+    // Nothing saved yet → the Arena formats are on, MTGO is opt-in.
+    const on = new Set(selected && selected.length ? selected : overview.formats.filter((f) => platformOf(f) === 'arena').map((f) => f.key));
+    box.innerHTML = PLATFORMS.map((p) => {
+      const fmts = overview.formats.filter((f) => platformOf(f) === p.key);
+      if (!fmts.length) return '';
+      return `<div class="bl-group" data-platform="${p.key}"><span class="bl-group-name">${p.name}<span class="bl-group-all" data-all="${p.key}">all / none</span></span>`
+        + fmts.map((f) => `<button type="button" class="bl-chip${on.has(f.key) ? ' on' : ''}" data-fmt="${f.key}">${esc(chipLabel(f))}</button>`).join('')
+        + '</div>';
+    }).join('');
     box.querySelectorAll('.bl-chip').forEach((b) => b.addEventListener('click', () => b.classList.toggle('on')));
+    box.querySelectorAll('.bl-group-all').forEach((a) => a.addEventListener('click', () => {
+      const chips = [...box.querySelectorAll(`.bl-group[data-platform="${a.dataset.all}"] .bl-chip`)];
+      const turnOn = chips.some((c) => !c.classList.contains('on'));
+      chips.forEach((c) => c.classList.toggle('on', turnOn));
+    }));
   }
 
   function renderCurrentList() {
@@ -136,12 +160,16 @@
     const checked = document.getElementById('bl-checked');
     if (!list || !overview) return;
     const st = overview.status || {};
-    checked.textContent = `Official list (hard-coded ${st.hardCodedDate || '—'}) + Scryfall, checked every 6 hours · last check ${ago(st.lastCheck?.at)}${st.lastCheck && st.lastCheck.ok === false ? ' (failed — using last good list)' : ''} · last change ${ago(st.lastChangeAt)}`;
+    checked.textContent = `Official Wizards lists (Arena checked ${st.hardCodedDate || '—'}${st.mtgoHardCodedDate ? `, MTGO checked ${st.mtgoHardCodedDate}` : ''}) · compared with Scryfall every 6 hours · last check ${ago(st.lastCheck?.at)}${st.lastCheck && st.lastCheck.ok === false ? ' (failed — using last good list)' : ''} · last change ${ago(st.lastChangeAt)}`;
+    let lastPlatform = null;
     list.innerHTML = overview.formats.map((f) => {
+      const heading = platformOf(f) !== lastPlatform ? `<p class="bl-plat">${(PLATFORMS.find((p) => p.key === platformOf(f)) || { name: platformOf(f).toUpperCase() }).name}</p>` : '';
+      lastPlatform = platformOf(f);
       const c = overview.current[f.key] || { banned: [], restricted: [] };
       const banned = c.banned.length ? c.banned.map((x) => esc(x.name) + (x.bo1 ? ' <span style="color:var(--yellow)">(Bo1)</span>' : '')).join(' · ') : '<span style="color:var(--grey)">None</span>';
       const restricted = c.restricted.length ? `<p style="margin-top:6px"><span style="color:var(--cyan)">Restricted (max 1):</span> ${c.restricted.map((x) => esc(x.name)).join(' · ')}</p>` : '';
-      return `<div class="bl-fmt"><p class="t">${esc(f.label.toUpperCase())} — ${c.banned.length} BANNED</p><p>${banned}</p>${restricted}</div>`;
+      const category = f.categories ? '<p style="margin-top:6px;color:var(--grey)">Also banned: all Conspiracy cards, cards that play for ante, and cards Wizards removed for offensive content.</p>' : '';
+      return `${heading}<div class="bl-fmt"><p class="t">${esc(chipLabel(f))} — ${c.banned.length} BANNED</p><p>${banned}</p>${restricted}${category}</div>`;
     }).join('');
   }
 
