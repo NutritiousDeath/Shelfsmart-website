@@ -14,7 +14,7 @@
 (function () {
   const API = (typeof RAILWAY_BOT_URL !== 'undefined') ? RAILWAY_BOT_URL : 'https://web-production-01b81.up.railway.app';
   const GAMES = [
-    { id: 'mtg', label: 'MTG Arena', premium: 'unlimited AI deck builds &amp; refines.', free: 'Syncing, collection, exports &amp; wildcard checks are always free.' },
+    { id: 'mtg', label: 'Magic: The Gathering', premium: 'unlimited AI deck builds &amp; refines.', free: 'Syncing, collection, exports &amp; wildcard checks are always free.' },
     { id: 'div2', label: 'Division 2', premium: 'unlimited AI build plans &amp; tweaks.', free: 'Your gear locker is always free.' },
     { id: 'd2', label: 'Destiny 2', premium: 'unlimited AI builds &amp; refines.', free: 'Linking your account and viewing your vault are always free.' },
   ];

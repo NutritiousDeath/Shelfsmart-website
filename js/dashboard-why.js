@@ -80,6 +80,18 @@
     .why .w-plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 14px; }
     .why .w-plan { border: 1px solid rgba(255,255,255,0.1); padding: 18px; background: rgba(5,8,16,0.6); position: relative; }
     .why .w-plan.hot { border-color: var(--cyan); box-shadow: 0 0 22px rgba(0,240,255,0.18); }
+    /* Server Pro: neon purple (same purple as the Lifetime badge) so it draws the eye. */
+    .why .w-plan.pro { border-color: #b44fff; background: linear-gradient(180deg, rgba(180,79,255,0.14), rgba(5,8,16,0.75) 70%);
+      box-shadow: 0 0 22px rgba(180,79,255,0.45), 0 0 60px rgba(180,79,255,0.15), inset 0 0 24px rgba(180,79,255,0.08); animation: whyProPulse 3.2s ease-in-out infinite; }
+    .why .w-plan.pro .pn { color: #d9a6ff; }
+    .why .w-plan.pro .pp { color: #fff; text-shadow: 0 0 10px #b44fff, 0 0 26px rgba(180,79,255,0.7); }
+    .why .w-plan.pro .pp small { color: #d9a6ff; text-shadow: none; }
+    .why .w-plan.pro li { color: #cdb8e6; }
+    .why .w-plan.pro li::before { color: #b44fff; text-shadow: 0 0 6px #b44fff; }
+    .why .w-plan.pro .flag { background: #b44fff; color: #fff; box-shadow: 0 0 12px #b44fff; }
+    @keyframes whyProPulse { 0%, 100% { box-shadow: 0 0 22px rgba(180,79,255,0.45), 0 0 60px rgba(180,79,255,0.15), inset 0 0 24px rgba(180,79,255,0.08); }
+      50% { box-shadow: 0 0 30px rgba(180,79,255,0.7), 0 0 80px rgba(180,79,255,0.28), inset 0 0 30px rgba(180,79,255,0.12); } }
+    @media (prefers-reduced-motion: reduce) { .why .w-plan.pro { animation: none; } }
     .why .w-plan .pn { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 3px; color: var(--grey); }
     .why .w-plan .pp { font-family: var(--font-display); font-size: 1.5rem; color: var(--white); margin: 8px 0 2px; letter-spacing: 1px; }
     .why .w-plan .pp small { font-size: 0.7rem; color: var(--grey); letter-spacing: 1px; }
@@ -153,7 +165,7 @@
           <div class="bar"></div>
           <div class="art"><img src="${IMG.mtg}" alt="Aura — MTG Arena" style="object-position:center 22%" onerror="this.style.display='none'"></div>
           <div class="body">
-            <p class="name" style="color:#b44fff">MTG ARENA</p>
+            <p class="name" style="color:#b44fff">MAGIC: THE GATHERING</p>
             <p class="hook">Decks built from the cards you <i>own</i>.</p>
             <ul>
               <li><b style="color:var(--white);font-weight:400">Aura Sync</b> reads your Arena collection automatically</li>
@@ -240,7 +252,7 @@
           <ul><li>Unlimited AI builds &amp; refines for one game</li><li>MTG: the ban list channel for your server</li><li>Cancel anytime</li></ul></div>
         <div class="w-plan"><p class="pn">PREMIUM — ALL GAMES</p><p class="pp">$10<small> /mo</small></p>
           <ul><li>Every game, unlimited</li><li>New games included as they launch</li><li>Cancel anytime</li></ul></div>
-        <div class="w-plan"><p class="pn">SERVER PRO</p><p class="pp">$9<small> /mo · or $79 once</small></p>
+        <div class="w-plan pro"><span class="flag">SERVER OWNERS</span><p class="pn">SERVER PRO</p><p class="pp">$9<small> /mo · or $79 once</small></p>
           <ul><li>For server owners</li><li>Pro tools: sticky messages, security, warn system, advanced logs</li><li>Lifetime option — pay once, keep it</li></ul></div>
       </div>
       <p class="w-fine">Unlimited AI builds have a fair-use limit of 100 a month. AI can make mistakes — Aura checks her work, but always look a deck or build over before spending resources on it.</p>

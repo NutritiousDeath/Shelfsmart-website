@@ -32,7 +32,7 @@
     // Lives under the shared "// Game Ops" section (js/dashboard-games.js).
     if (!window.AuraGames) { console.error('dashboard-games.js must load before dashboard-mtg.js'); return; }
     window.AuraGames.addButton({
-      id: 'mtg-sidebar-btn', tab: 'mtg', label: 'MTG Arena', icon: ICON_CARDS,
+      id: 'mtg-sidebar-btn', tab: 'mtg', label: '<span style="display:inline-block;line-height:1.2;vertical-align:middle">Magic:<br>The Gathering</span>', icon: ICON_CARDS,
       onOpen: () => loadMtgTab(),
     });
   }
@@ -118,7 +118,7 @@
       <img src="${CARD_IMAGE}" alt="Aura — MTG Arena companion" style="width:260px;max-width:60%;height:auto;border-radius:12px;box-shadow:0 0 26px rgba(180,79,255,0.55), 0 0 2px rgba(0,191,255,0.8)">
       <div style="flex:1;min-width:240px">
         <p class="page-tag">// mtg arena companion</p>
-        <p class="page-title" style="margin-bottom:10px">AURA // MTG ARENA</p>
+        <p class="page-title" style="margin-bottom:10px">AURA // MAGIC: THE GATHERING</p>
         <p style="${mono};font-size:0.82rem;color:var(--white);line-height:1.9">
           Sync your MTG Arena collection to AuraAI, then ask Aura what you own, what you're missing, and what to build — right in Discord.
         </p>

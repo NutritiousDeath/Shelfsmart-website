@@ -1,14 +1,16 @@
-// ─── DASHBOARD: MTG ARENA — BAN LIST CHANNEL ──────────────────────────────────
-// Adds a "// ban list channel" card to the MTG Arena tab (js/dashboard-mtg.js
+// ─── DASHBOARD: MAGIC — BAN LIST CHANNELS ─────────────────────────────────────
+// Adds a "// ban list channels" card to the Magic tab (js/dashboard-mtg.js
 // must load first — it has the #mtg-banlist-slot this mounts into, and calls
 // AuraMtgBanlist.load() whenever the tab opens or refreshes).
 //
-// Server admins pick a server, a channel and the formats to follow. When the
-// MTG Arena ban list changes, Aura posts what changed + the updated list there.
+// Server admins pick a server, then a channel + formats for MTG Arena and a
+// separate channel + formats for MTGO, so the two don't crowd each other.
+// When an official ban list changes, Aura posts what changed + the updated
+// list in that platform's channel.
 // Needs Aura Premium for MTG ($5/mo, or $10/mo All Games) or AuraAI Pro /
 // Lifetime on that server — the bot checks this, the page just explains it.
 //
-// Also shows the current Arena ban list Aura enforces in every deck.
+// Also shows the current official ban lists (Arena + MTGO) Aura enforces.
 
 (function () {
   const API = (typeof RAILWAY_BOT_URL !== 'undefined') ? RAILWAY_BOT_URL : 'https://web-production-01b81.up.railway.app';
@@ -20,7 +22,8 @@
   let guildInfo = null;      // GET /api/mtg/banlist/guild
   let currentGuild = null;
   let serverDd = null;
-  let channelDd = null;
+  let channelDd = null;      // MTG Arena channel
+  let mtgoChannelDd = null;  // MTGO channel
   let loading = false;
 
   const CSS = `
@@ -51,11 +54,11 @@
     <style>${CSS}</style>
     <div class="section-card" id="mtg-banlist" style="border-color:rgba(180,79,255,0.35)">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-        <p class="card-title" style="margin:0">// ban list channel</p>
+        <p class="card-title" style="margin:0">// ban list channels</p>
         <span class="bl-badge">PREMIUM</span>
       </div>
       <p style="${mono};font-size:0.76rem;color:var(--white);line-height:1.9;margin-top:12px">
-        When an official ban list changes — MTG Arena or MTGO — Aura posts what changed and the updated list in the channel you pick.
+        When an official Wizards ban list changes, Aura posts what changed and the updated list. MTG Arena and MTGO each get their own channel so they don't crowd each other — use one or both.
         <span style="color:var(--grey)">Needs Aura Premium for MTG ($5/mo) or AuraAI Pro / Lifetime on the server.</span>
       </p>
       <div id="bl-upsell" style="display:none;margin-top:14px;border:1px solid rgba(180,79,255,0.45);background:rgba(180,79,255,0.06);padding:12px 14px">
@@ -63,8 +66,12 @@
         <a href="${BILLING_URL}" class="btn-primary" style="display:inline-block;text-decoration:none;margin-top:10px;font-size:0.7rem;padding:8px 16px">SEE PLANS</a>
       </div>
       <div class="bl-row"><span class="bl-label">SERVER</span><div id="bl-server"></div></div>
-      <div class="bl-row"><span class="bl-label">CHANNEL</span><div id="bl-channel"></div></div>
-      <div class="bl-row" style="align-items:start"><span class="bl-label" style="padding-top:8px">FORMATS</span><div class="bl-formats" id="bl-formats"></div></div>
+      <p class="bl-plat" style="margin-top:20px">MTG ARENA</p>
+      <div class="bl-row" style="margin-top:6px"><span class="bl-label">CHANNEL</span><div id="bl-channel"></div></div>
+      <div class="bl-row" style="align-items:start"><span class="bl-label" style="padding-top:8px">FORMATS</span><div class="bl-formats" id="bl-formats-arena"></div></div>
+      <p class="bl-plat" style="margin-top:20px">MTGO / TABLETOP</p>
+      <div class="bl-row" style="margin-top:6px"><span class="bl-label">CHANNEL</span><div id="bl-channel-mtgo"></div></div>
+      <div class="bl-row" style="align-items:start"><span class="bl-label" style="padding-top:8px">FORMATS</span><div class="bl-formats" id="bl-formats-mtgo"></div></div>
       <div class="bl-actions">
         <button class="btn-primary" id="bl-save">SAVE &amp; TURN ON</button>
         <button class="btn-secondary" id="bl-post" style="font-size:0.65rem;padding:8px 14px">POST CURRENT LIST NOW</button>
@@ -118,7 +125,7 @@
   }
 
   function selectedFormats() {
-    return [...document.querySelectorAll('#bl-formats .bl-chip.on')].map((b) => b.dataset.fmt);
+    return [...document.querySelectorAll('#mtg-banlist .bl-formats .bl-chip.on')].map((b) => b.dataset.fmt);
   }
 
   function setBusy(busy) {
@@ -136,23 +143,23 @@
   const chipLabel = (f) => f.label.replace(/\s*\(MTGO\)$/i, '').toUpperCase();
 
   function renderFormats(selected) {
-    const box = document.getElementById('bl-formats');
-    if (!box || !overview) return;
+    if (!overview) return;
     // Nothing saved yet → the Arena formats are on, MTGO is opt-in.
     const on = new Set(selected && selected.length ? selected : overview.formats.filter((f) => platformOf(f) === 'arena').map((f) => f.key));
-    box.innerHTML = PLATFORMS.map((p) => {
+    for (const p of PLATFORMS) {
+      const box = document.getElementById(`bl-formats-${p.key}`);
+      if (!box) continue;
       const fmts = overview.formats.filter((f) => platformOf(f) === p.key);
-      if (!fmts.length) return '';
-      return `<div class="bl-group" data-platform="${p.key}"><span class="bl-group-name">${p.name}<span class="bl-group-all" data-all="${p.key}">all / none</span></span>`
+      box.innerHTML = `<div class="bl-group">`
         + fmts.map((f) => `<button type="button" class="bl-chip${on.has(f.key) ? ' on' : ''}" data-fmt="${f.key}">${esc(chipLabel(f))}</button>`).join('')
-        + '</div>';
-    }).join('');
-    box.querySelectorAll('.bl-chip').forEach((b) => b.addEventListener('click', () => b.classList.toggle('on')));
-    box.querySelectorAll('.bl-group-all').forEach((a) => a.addEventListener('click', () => {
-      const chips = [...box.querySelectorAll(`.bl-group[data-platform="${a.dataset.all}"] .bl-chip`)];
-      const turnOn = chips.some((c) => !c.classList.contains('on'));
-      chips.forEach((c) => c.classList.toggle('on', turnOn));
-    }));
+        + `<span class="bl-group-all">all / none</span></div>`;
+      box.querySelectorAll('.bl-chip').forEach((b) => b.addEventListener('click', () => b.classList.toggle('on')));
+      box.querySelector('.bl-group-all').addEventListener('click', () => {
+        const chips = [...box.querySelectorAll('.bl-chip')];
+        const turnOn = chips.some((c) => !c.classList.contains('on'));
+        chips.forEach((c) => c.classList.toggle('on', turnOn));
+      });
+    }
   }
 
   function renderCurrentList() {
@@ -160,7 +167,7 @@
     const checked = document.getElementById('bl-checked');
     if (!list || !overview) return;
     const st = overview.status || {};
-    checked.textContent = `Official Wizards lists (Arena checked ${st.hardCodedDate || '—'}${st.mtgoHardCodedDate ? `, MTGO checked ${st.mtgoHardCodedDate}` : ''}) · compared with Scryfall every 6 hours · last check ${ago(st.lastCheck?.at)}${st.lastCheck && st.lastCheck.ok === false ? ' (failed — using last good list)' : ''} · last change ${ago(st.lastChangeAt)}`;
+    checked.textContent = `Source: the official Wizards of the Coast ban lists (Arena checked ${st.hardCodedDate || '—'}${st.mtgoHardCodedDate ? `, MTGO checked ${st.mtgoHardCodedDate}` : ''}) · Scryfall (unofficial) is compared every 6 hours as an early warning only · last check ${ago(st.lastCheck?.at)}${st.lastCheck && st.lastCheck.ok === false ? ' (failed — using last good list)' : ''} · last change ${ago(st.lastChangeAt)}`;
     let lastPlatform = null;
     list.innerHTML = overview.formats.map((f) => {
       const heading = platformOf(f) !== lastPlatform ? `<p class="bl-plat">${(PLATFORMS.find((p) => p.key === platformOf(f)) || { name: platformOf(f).toUpperCase() }).name}</p>` : '';
@@ -168,7 +175,8 @@
       const c = overview.current[f.key] || { banned: [], restricted: [] };
       const banned = c.banned.length ? c.banned.map((x) => esc(x.name) + (x.bo1 ? ' <span style="color:var(--yellow)">(Bo1)</span>' : '')).join(' · ') : '<span style="color:var(--grey)">None</span>';
       const restricted = c.restricted.length ? `<p style="margin-top:6px"><span style="color:var(--cyan)">Restricted (max 1):</span> ${c.restricted.map((x) => esc(x.name)).join(' · ')}</p>` : '';
-      const category = f.categories ? '<p style="margin-top:6px;color:var(--grey)">Also banned: all Conspiracy cards, cards that play for ante, and cards Wizards removed for offensive content.</p>' : '';
+      const notes = [f.categories && 'all Conspiracy cards, cards that play for ante, and cards Wizards removed for offensive content', f.stickers && 'cards that bring stickers or Attractions'].filter(Boolean);
+      const category = notes.length ? `<p style="margin-top:6px;color:var(--grey)">Also banned: ${notes.join('; ')}.</p>` : '';
       return `${heading}<div class="bl-fmt"><p class="t">${esc(chipLabel(f))} — ${c.banned.length} BANNED</p><p>${banned}</p>${restricted}${category}</div>`;
     }).join('');
   }
@@ -185,9 +193,13 @@
     const via = guildInfo.premium ? 'your Aura Premium' : guildInfo.serverPro ? "this server's AuraAI Pro license" : null;
     if (!guildInfo.ok) upsell.style.display = 'block';
     if (cfg && cfg.enabled) {
-      const ch = guildChannelName(cfg.channelId);
+      const where = (id, fmtPlatform, name) => {
+        const has = (cfg.formats || []).some((k) => platformOf(overview.formats.find((f) => f.key === k) || {}) === fmtPlatform);
+        return id && has ? `${name} → <span style="color:var(--cyan)">#${esc(guildChannelName(id) || id)}</span>` : null;
+      };
+      const parts = [where(cfg.channelId, 'arena', 'Arena'), where(cfg.mtgoChannelId, 'mtgo', 'MTGO')].filter(Boolean);
       el.style.color = cfg.lastError ? 'var(--yellow)' : 'var(--green)';
-      el.innerHTML = `● ON — posting to <span style="color:var(--cyan)">#${esc(ch || cfg.channelId)}</span> · last post ${ago(cfg.lastPostedAt)}`
+      el.innerHTML = `● ON — ${parts.join(' · ') || 'no channels'} · last post ${ago(cfg.lastPostedAt)}`
         + (via ? `<br><span style="color:var(--grey)">Covered by ${via}.</span>` : '')
         + (cfg.lastError ? `<br>⚠ ${esc(cfg.lastError)}` : '');
     } else {
@@ -216,7 +228,7 @@
     channelCache = [];
     msg('');
     renderStatus();
-    if (channelDd) channelDd.setPlaceholder(guildId ? 'Loading channels…' : '— Select a server first —');
+    for (const dd of [channelDd, mtgoChannelDd]) if (dd) dd.setPlaceholder(guildId ? 'Loading channels…' : '— Select a server first —');
     if (!guildId) return;
     try {
       const [info, chans] = await Promise.all([
@@ -226,9 +238,10 @@
       if (currentGuild !== guildId) return; // switched servers while loading
       guildInfo = info;
       channelCache = chans.channels || [];
-      if (channelDd) {
-        if (channelCache.length) channelDd.setChannels(channelCache, info.config?.channelId || null);
-        else channelDd.setPlaceholder(info.botInServer === false ? "⚠ Aura isn't in this server" : '⚠ Could not load channels');
+      for (const [dd, id] of [[channelDd, info.config?.channelId], [mtgoChannelDd, info.config?.mtgoChannelId]]) {
+        if (!dd) continue;
+        if (channelCache.length) dd.setChannels(channelCache, id || null);
+        else dd.setPlaceholder(info.botInServer === false ? "⚠ Aura isn't in this server" : '⚠ Could not load channels');
       }
       renderFormats(info.config?.formats);
     } catch (err) {
@@ -245,6 +258,7 @@
       serverDd.searchInput.placeholder = 'Search servers...';
     }
     if (!channelDd) channelDd = new CyberDropdown('bl-channel', () => {});
+    if (!mtgoChannelDd) mtgoChannelDd = new CyberDropdown('bl-channel-mtgo', () => {});
     const guilds = adminGuilds();
     const opts = guilds.map((g) => ({ value: g.id, label: g.name }));
     if (!opts.length) { serverDd.setPlaceholder('— No servers you admin —'); return; }
@@ -266,7 +280,7 @@
     try {
       overview = await api('/api/mtg/banlist');
       renderCurrentList();
-      if (!document.querySelector('#bl-formats .bl-chip')) renderFormats(null);
+      if (!document.querySelector('#mtg-banlist .bl-formats .bl-chip')) renderFormats(null);
       mountDropdowns();
       if (currentGuild) await pickServer(currentGuild);
     } catch (err) {
@@ -280,16 +294,19 @@
 
   async function save() {
     if (!currentGuild) return msg('Pick a server first.', 'var(--pink)');
-    const channelId = channelDd && channelDd.getValue();
-    if (!channelId) return msg('Pick a channel.', 'var(--pink)');
     const formats = selectedFormats();
     if (!formats.length) return msg('Pick at least one format.', 'var(--pink)');
+    const isPlat = (k, p) => platformOf(overview.formats.find((f) => f.key === k) || {}) === p;
+    const arenaChannelId = channelDd && channelDd.getValue();
+    const mtgoChannelId = mtgoChannelDd && mtgoChannelDd.getValue();
+    if (formats.some((k) => isPlat(k, 'arena')) && !arenaChannelId) return msg('Pick a channel for MTG Arena (or turn its formats off).', 'var(--pink)');
+    if (formats.some((k) => isPlat(k, 'mtgo')) && !mtgoChannelId) return msg('Pick a channel for MTGO (or turn its formats off).', 'var(--pink)');
     setBusy(true);
     msg('Saving…');
     try {
-      const r = await api('/api/mtg/banlist/save', { method: 'POST', body: JSON.stringify({ guildId: currentGuild, channelId, formats, enabled: true }) });
+      const r = await api('/api/mtg/banlist/save', { method: 'POST', body: JSON.stringify({ guildId: currentGuild, arenaChannelId, mtgoChannelId, formats, enabled: true }) });
       if (r.warning) msg(r.warning, 'var(--yellow)');
-      else msg(r.postedNow ? 'Saved — Aura just posted the current list there. ✓' : 'Saved ✓', 'var(--green)');
+      else msg(r.postedNow ? 'Saved — Aura just posted the current list in the new channel. ✓' : 'Saved ✓', 'var(--green)');
       await pickServer(currentGuild);
     } catch (err) {
       msg(err.message, 'var(--pink)');
