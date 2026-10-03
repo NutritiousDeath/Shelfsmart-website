@@ -128,6 +128,11 @@
     return [...document.querySelectorAll('#mtg-banlist .bl-formats .bl-chip.on')].map((b) => b.dataset.fmt);
   }
 
+  function ensureFormatsOn(platform) {
+    const chips = [...document.querySelectorAll(`#bl-formats-${platform} .bl-chip`)];
+    if (chips.length && !chips.some((c) => c.classList.contains('on'))) chips.forEach((c) => c.classList.add('on'));
+  }
+
   function setBusy(busy) {
     ['bl-save', 'bl-post', 'bl-off'].forEach((id) => { const b = document.getElementById(id); if (b) b.disabled = busy; });
   }
@@ -257,8 +262,10 @@
       serverDd = new CyberDropdown('bl-server', (v) => pickServer(v));
       serverDd.searchInput.placeholder = 'Search servers...';
     }
-    if (!channelDd) channelDd = new CyberDropdown('bl-channel', () => {});
-    if (!mtgoChannelDd) mtgoChannelDd = new CyberDropdown('bl-channel-mtgo', () => {});
+    // Picking a channel for a platform with no formats on turns them all on —
+    // a channel with no formats would never get a post.
+    if (!channelDd) channelDd = new CyberDropdown('bl-channel', (v) => { if (v) ensureFormatsOn('arena'); });
+    if (!mtgoChannelDd) mtgoChannelDd = new CyberDropdown('bl-channel-mtgo', (v) => { if (v) ensureFormatsOn('mtgo'); });
     const guilds = adminGuilds();
     const opts = guilds.map((g) => ({ value: g.id, label: g.name }));
     if (!opts.length) { serverDd.setPlaceholder('— No servers you admin —'); return; }
@@ -294,6 +301,8 @@
 
   async function save() {
     if (!currentGuild) return msg('Pick a server first.', 'var(--pink)');
+    if (channelDd && channelDd.getValue()) ensureFormatsOn('arena');
+    if (mtgoChannelDd && mtgoChannelDd.getValue()) ensureFormatsOn('mtgo');
     const formats = selectedFormats();
     if (!formats.length) return msg('Pick at least one format.', 'var(--pink)');
     const isPlat = (k, p) => platformOf(overview.formats.find((f) => f.key === k) || {}) === p;
