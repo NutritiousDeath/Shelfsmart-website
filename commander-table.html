@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MTG Commander Table — AuraAI</title>
+<meta name="description" content="A fully automated four-player Magic: The Gathering Commander table for Tabletop Simulator.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/dashboard.css">
+<style>
+  body { cursor: auto; }
+  .public-wrap { max-width: 1100px; margin: 0 auto; padding: 96px 16px 24px; }
+  .public-links { display: flex; gap: 20px; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 1px; }
+  .public-links a { color: var(--grey); text-decoration: none; }
+  .public-links a:hover { color: var(--cyan); }
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+<nav class="nav">
+  <a class="nav-logo" href="features.html"><span class="logo-aura">AURA</span><span class="logo-ai">AI</span></a>
+  <div class="public-links">
+    <a href="features.html">About AuraAI</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+</nav>
+<main class="public-wrap">
+  <div id="mtg-tts-public"></div>
+</main>
+<script src="js/dashboard-mtg-tts.js"></script>
+</body>
+</html>

@@ -152,6 +152,9 @@
   `;
 
   function mount() {
+    // commander-table.html shows the same content publicly (no login).
+    const publicPage = document.getElementById('mtg-tts-public');
+    if (publicPage) { publicPage.innerHTML = TAB_HTML; return; }
     if (document.getElementById('mtg-tts-sidebar-btn')) return;
     if (!window.AuraGames) { console.error('dashboard-games.js must load before dashboard-mtg-tts.js'); return; }
     const btn = window.AuraGames.addButton({
