@@ -8,13 +8,11 @@
 // sub-item lands directly under the MTG button.
 //
 // To finish later:
-//   • REPO_URL     — the public GitHub repo (button shows when set)
 //   • WORKSHOP_URL — the Steam Workshop page, once it's public (button shows when set)
 //   • HERO_IMAGE   — drop a screenshot of the table at this path; until then the
 //                    hero shows without an image.
 
 (function () {
-  const REPO_URL = '';
   const WORKSHOP_URL = '';
   const HERO_IMAGE = 'img/mtg/tts-table.jpg';
   const ACCENT = '#b44fff';
@@ -44,7 +42,6 @@
   function linkButtons() {
     const btns = [];
     if (WORKSHOP_URL) btns.push(`<a href="${WORKSHOP_URL}" target="_blank" rel="noopener" class="btn-primary" style="display:inline-block;text-decoration:none">▶ OPEN IN TABLETOP SIMULATOR</a>`);
-    if (REPO_URL) btns.push(`<a href="${REPO_URL}" target="_blank" rel="noopener" class="btn-secondary" style="display:inline-block;text-decoration:none">⌥ VIEW ON GITHUB</a>`);
     if (!btns.length) return `<p style="${mono};font-size:0.72rem;color:var(--grey)">Public release coming after four-player playtests.</p>`;
     return `<div style="display:flex;gap:12px;flex-wrap:wrap">${btns.join('')}</div>`;
   }
@@ -152,6 +149,9 @@
   `;
 
   function mount() {
+    // commander-table.html shows the same content publicly (no login).
+    const publicPage = document.getElementById('mtg-tts-public');
+    if (publicPage) { publicPage.innerHTML = TAB_HTML; return; }
     if (document.getElementById('mtg-tts-sidebar-btn')) return;
     if (!window.AuraGames) { console.error('dashboard-games.js must load before dashboard-mtg-tts.js'); return; }
     const btn = window.AuraGames.addButton({
