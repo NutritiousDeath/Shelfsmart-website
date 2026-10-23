@@ -189,6 +189,7 @@
         <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtg-collection</p><p class="cmd-desc">Show a summary of your synced MTG Arena collection</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
         <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtgo-sync</p><p class="cmd-desc">Upload your MTGO collection (export it from MTGO's Collection screen as .dek or .csv)</p><div class="cmd-params"><b>file</b> — Your exported MTGO collection</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
         <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtgo-collection</p><p class="cmd-desc">Show a summary of your MTGO collection — copies, value in tix, cards legal in each format</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
+        <div class="cmd-card"><p class="cmd-name">/<span>/</span>goatbots</p><p class="cmd-desc">MTGO card prices from GoatBots — every version, cheapest first, with a link to live prices and stock</p><div class="cmd-params"><b>card</b> — card name (autocompletes)</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
         <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtg-export</p><p class="cmd-desc">Download your MTG Arena collection for Moxfield, Archidekt, MTGGoldfish, and more</p><div class="cmd-params"><b>format</b> — Which site the file is for</div><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
         <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtg-wildcards</p><p class="cmd-desc">Paste a decklist to see which cards you're missing and the wildcard cost</p><div style="margin-top:10px"><span class="cmd-who anyone">● Anyone</span></div></div>
         <div class="cmd-card"><p class="cmd-name">/<span>/</span>mtg-build</p><p class="cmd-desc">Build an MTG Arena or MTGO deck from cards you own (AI-built, double-checked by Aura)</p><div class="cmd-params">Pick <b>platform</b> (MTG Arena or MTGO), then a form opens:<br><b>Format</b> — formats for that platform<br><b>Power</b> — Casual, Focused (default) or Competitive<br><b>Commander</b> — Brawl / Commander (partners: "A + B")<br><b>Deck idea</b> — theme or colors, e.g. "BUG reanimator"<br><b>Wildcards</b> (Arena) — rarities Aura may craft · <b>Tix budget</b> (MTGO) — empty = only cards you own</div><div style="margin-top:10px"><span class="cmd-who captain">● Anyone · AI build</span></div></div>
@@ -1573,7 +1574,7 @@
 
 <script>
   const SUPABASE_URL = 'https://uptxufmqqwjytffhbcdd.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwdHh1Zm1xcXdqeXRmZmhiY2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NDUzNzMsImV4cCI6MjA4OTQyMTM3M30.Wkol9oWQwZePmfduJIteUnAxvP_SmDTiRfvWPU5JYGU';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ywJBdP4VLUWuRVdjdgvAuA_HQ_9Ro--'; // Supabase publishable key (safe to be public)
   const OWNER_DISCORD_ID = '176467159000678400';
   const RAILWAY_BOT_URL = 'https://web-production-01b81.up.railway.app';
 
@@ -2430,7 +2431,8 @@
     const resultsEl=document.getElementById('search-results');
     resultsEl.innerHTML='<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Searching...</div>';resultsEl.style.display='block';
     try{
-      const res=await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_ANON_KEY}`},body:JSON.stringify({query,platform})});
+      const { data: { session: searchSession } } = await sb.auth.getSession();
+      const res=await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${searchSession?.access_token || ''}`},body:JSON.stringify({query,platform})});
       const data=await res.json();
       if(!data.results||data.results.length===0){resultsEl.innerHTML='<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No results found</div>';return;}
       resultsEl.innerHTML=data.results.map(r=>`<div onclick='selectStreamer(${JSON.stringify(r)})' style="display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(0,240,255,0.06)" onmouseover="this.style.background='rgba(0,240,255,0.06)'" onmouseout="this.style.background='none'">${r.avatar?`<img src="${r.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover">`:'<div style="width:28px;height:28px;border-radius:50%;background:rgba(0,240,255,0.1)"></div>'}<div><p style="font-family:var(--font-display);font-size:0.65rem;font-weight:700;color:var(--white)">${r.displayName}</p><p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">@${r.username}${r.live?' 🔴 LIVE':''}${r.game?' — '+r.game:''}</p></div></div>`).join('');
