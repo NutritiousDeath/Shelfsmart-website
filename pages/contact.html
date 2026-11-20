@@ -1,169 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact — ShelfSmart</title>
-  <link rel="stylesheet" href="../css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — ShelfSmart Gaming</title>
+  <meta name="description" content="Get help with AuraAI, join the hosting waitlist, or ask about working together.">
+  <meta property="og:title" content="Contact — ShelfSmart Gaming">
+  <meta property="og:description" content="Get help with AuraAI, join the hosting waitlist, or ask about working together.">
+  <meta property="og:image" content="https://www.uptight-shelf-smart-flow.com/img/site/aura-fafo.jpg">
+  <meta name="theme-color" content="#07050d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
 </head>
 <body>
-  <div class="scanlines"></div>
-  <div class="noise"></div>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="../index.html">ShelfSmart<span> Gaming</span></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-links">Menu</button>
+    <ul id="site-links"><li><a href="../index.html">Home</a></li><li><a href="../pages/services.html">Services</a></li><li><a href="../pages/about.html">About</a></li><li><a href="../pages/contact.html" aria-current="page">Contact</a></li></ul>
+    <a class="btn slim" href="/login.html">Open dashboard</a>
+  </div>
+</header>
+<main id="main">
 
-  <nav class="nav">
-    <a href="../index.html" class="nav-logo">
-      <span class="logo-shelf">Shelf</span><span class="logo-smart">Smart</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="contact.html" class="active">Contact</a></li>
-      <li><a href="privacy.html">Privacy</a></li>
-    </ul>
-    <div class="nav-status">
-      <span class="status-dot"></span>
-      <span class="status-text">SYSTEM ONLINE</span>
+<section class="page-head">
+  <div class="wrap">
+    <h1>Contact</h1>
+    <p class="lede">Questions about AuraAI, a spot on the hosting waitlist, or something else entirely. One person reads all of these.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap split">
+    <form class="form" id="contact-form" action="https://formspree.io/f/myknpdll" method="POST">
+      <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" required></div>
+      <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="f-discord">Discord username <span class="muted">(optional)</span></label><input id="f-discord" name="discord" type="text" maxlength="40"></div>
+      <div class="field"><label for="f-topic">What's it about?</label>
+        <select id="f-topic" name="topic">
+          <option value="auraai">Help with AuraAI</option>
+          <option value="hosting">Hosting waitlist</option>
+          <option value="billing">Billing or a license</option>
+          <option value="collab">Working together</option>
+          <option value="other">Something else</option>
+        </select>
+      </div>
+      <div class="field"><label for="f-msg">Message</label><textarea id="f-msg" name="message" required placeholder="For the hosting waitlist, tell us roughly how many players you'd have."></textarea></div>
+      <input type="hidden" name="_subject" value="ShelfSmart Gaming contact form">
+      <div><button class="btn" type="submit">Send message</button></div>
+      <p class="form-note" id="form-note" role="status" aria-live="polite"></p>
+    </form>
+    <div>
+      <h2>Faster options</h2>
+      <ul class="facts" style="margin-top:24px">
+        <li><b>Bot settings</b><span>Most things can be changed in the <a href="/login.html">dashboard</a>. Sign in with Discord.</span></li>
+        <li><b>Billing</b><span>Manage or cancel Pro from the Billing page in the dashboard.</span></li>
+        <li><b>Live</b><span>Catch us on <a href="https://www.twitch.tv/nutritiousdeath" target="_blank" rel="noopener">Twitch</a> and ask in chat.</span></li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</section>
 
-  <section class="page-hero">
-    <div class="page-hero-grid"></div>
-    <div class="section-tag">// MAKE_CONTACT</div>
-    <h1 class="section-title">CONTACT <span class="accent">US</span></h1>
-    <p class="section-sub">Ready to bring ShelfSmart and AuraAI into your business? Let's talk.</p>
-  </section>
-
-  <section class="section">
-    <div class="contact-grid">
-      <div class="contact-info">
-        <div class="section-tag">// TRANSMISSION_CHANNELS</div>
-        <h2 style="font-family:var(--font-display); font-size:1.5rem; letter-spacing:3px; margin-bottom:2rem;">GET IN <span class="accent">TOUCH</span></h2>
-        <div class="contact-item">
-          <span class="contact-icon">◈</span>
-          <div>
-            <div class="contact-label">EMAIL</div>
-            <div class="contact-value">auraaibiz2026@gmail.com</div>
-          </div>
-        </div>
-        <div class="contact-item">
-          <span class="contact-icon">⬡</span>
-          <div>
-            <div class="contact-label">DISCORD</div>
-            <div class="contact-value">Join our server to talk to AuraAI directly</div>
-          </div>
-        </div>
-        <div class="contact-item">
-          <span class="contact-icon">⬟</span>
-          <div>
-            <div class="contact-label">RESPONSE TIME</div>
-            <div class="contact-value">Within 24 hours — usually faster</div>
-          </div>
-        </div>
-        <div class="terminal-mini">
-          <div class="terminal-header">
-            <span class="t-dot red"></span>
-            <span class="t-dot yellow"></span>
-            <span class="t-dot green"></span>
-            <span class="t-title">STATUS</span>
-          </div>
-          <div class="terminal-body" style="min-height:auto; padding:1rem;">
-            <div class="t-line" style="opacity:1;"><span class="t-prompt">></span> <span class="t-cmd">ACCEPTING TRANSMISSIONS</span> <span class="t-ok">✓</span></div>
-            <div class="t-line" style="opacity:1;"><span class="t-prompt">></span> <span class="t-cmd">AURAAI STANDING BY</span> <span class="t-ok">✓</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="contact-form-wrap">
-        <div class="section-tag">// SEND_MESSAGE</div>
-        <form class="contact-form" id="contactForm" action="https://formspree.io/f/myknpdll" method="POST">
-          <input type="hidden" name="_next" value="https://uptight-shelf-smart-flow.com/pages/contact.html" />
-          <div class="form-group">
-            <label class="form-label">YOUR NAME</label>
-            <input type="text" name="name" class="form-input" placeholder="Enter your name" required />
-          </div>
-          <div class="form-group">
-            <label class="form-label">EMAIL ADDRESS</label>
-            <input type="email" name="email" class="form-input" placeholder="your@email.com" required />
-          </div>
-          <div class="form-group">
-            <label class="form-label">SUBJECT</label>
-            <select name="subject" class="form-input">
-              <option value="">Select a topic</option>
-              <option>ShelfSmart Demo Request</option>
-              <option>AuraAI Integration</option>
-              <option>Pricing & Plans</option>
-              <option>Technical Support</option>
-              <option>General Inquiry</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">MESSAGE</label>
-            <textarea name="message" class="form-input form-textarea" placeholder="Describe what you're looking to achieve..." required></textarea>
-          </div>
-          <button type="submit" class="btn-primary" style="width:100%; text-align:center; border:none; cursor:pointer; font-size:0.8rem;">TRANSMIT MESSAGE</button>
-          <div class="form-success" id="formSuccess">
-            <span class="t-ok">✓</span> MESSAGE RECEIVED — WE'LL BE IN TOUCH SOON
-          </div>
-        </form>
-      </div>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <div>
+      <a class="mark" href="../index.html">ShelfSmart<span> Gaming</span></a>
+      <p>A Discord bot, game servers and streams, all from one small shop.</p>
     </div>
-  </section>
-
-  <footer class="footer">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="nav-logo"><span class="logo-shelf">Shelf</span><span class="logo-smart">Smart</span></div>
-        <p>Powered by AuraAI. Built for the future of retail.</p>
-      </div>
-      <div class="footer-links">
-        <h4>NAVIGATE</h4>
-        <a href="../index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="services.html">Services</a>
-        <a href="contact.html">Contact</a>
-        <a href="privacy.html">Privacy Policy</a>
-      </div>
-      <div class="footer-status">
-        <h4>SYSTEM STATUS</h4>
-        <div class="sys-item"><span class="status-dot"></span> AuraAI Core — Online</div>
-        <div class="sys-item"><span class="status-dot"></span> ShelfSmart API — Online</div>
-        <div class="sys-item"><span class="status-dot"></span> Discord Gateway — Online</div>
-      </div>
+    <div>
+      <h4>Site</h4>
+      <ul>
+        <li><a href="../pages/services.html">Services</a></li>
+        <li><a href="../pages/about.html">About</a></li>
+        <li><a href="../pages/contact.html">Contact</a></li>
+        <li><a href="../pages/privacy.html">Privacy</a></li>
+      </ul>
     </div>
-    <div class="footer-bottom">
-      <span>© 2026 ShelfSmart. All rights reserved.</span>
-      <span>POWERED BY AURAAI</span>
+    <div>
+      <h4>AuraAI</h4>
+      <ul>
+        <li><a href="/login.html">Dashboard</a></li>
+        <li><a href="https://discord.com/oauth2/authorize?client_id=1479991514351538350&permissions=2251799813900304&integration_type=0&scope=bot+applications.commands" target="_blank" rel="noopener">Add to Discord</a></li>
+        <li><a href="/features.html">Every feature</a></li>
+        <li><a href="https://nutritiousdeath.github.io/auraai-legal/terms.html" target="_blank" rel="noopener">Terms of Service</a></li>
+      </ul>
     </div>
-  </footer>
-
-  <script src="../js/main.js"></script>
-  <style>
-    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 1100px; margin: 0 auto; }
-    .contact-item { display: flex; gap: 1.5rem; align-items: flex-start; margin-bottom: 2rem; }
-    .contact-icon { font-size: 1.5rem; color: var(--cyan); text-shadow: var(--glow-cyan); flex-shrink: 0; }
-    .contact-label { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 3px; color: var(--grey); margin-bottom: 0.25rem; }
-    .contact-value { font-family: var(--font-body); font-size: 0.95rem; color: var(--white); }
-    .terminal-mini { margin-top: 2rem; background: #020408; border: 1px solid rgba(0,240,255,0.2); border-radius: 4px; overflow: hidden; }
-    .form-group { margin-bottom: 1.5rem; }
-    .form-label { display: block; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 3px; color: var(--cyan); margin-bottom: 0.5rem; }
-    .form-input {
-      width: 100%;
-      background: rgba(8,13,26,0.8);
-      border: 1px solid rgba(0,240,255,0.2);
-      color: var(--white);
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      padding: 0.85rem 1rem;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .form-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0,240,255,0.1); }
-    .form-input option { background: var(--bg-2); }
-    .form-textarea { min-height: 140px; resize: vertical; }
-    .form-success { display: none; margin-top: 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: #00ff88; letter-spacing: 2px; text-align: center; padding: 1rem; border: 1px solid #00ff88; }
-    @media(max-width:900px) { .contact-grid { grid-template-columns: 1fr; } }
-  </style>
+    <p class="legal">© 2026 ShelfSmart Gaming. Aura is the cyborg from the FAFO music video by Heaven is Overrated.</p>
+  </div>
+</footer>
+<script src="../js/site.js" defer></script>
 </body>
 </html>
