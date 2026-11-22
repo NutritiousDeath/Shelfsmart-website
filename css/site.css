@@ -335,3 +335,43 @@ button.btn:disabled { opacity: 0.6; cursor: wait; }
 .empty { border: 1px dashed var(--line); padding: 32px; max-width: 640px; }
 .empty h2 { font-size: 2.2rem; margin-bottom: 12px; }
 .empty p { color: var(--ash); }
+
+/* ── Hosting: orders ─────────────────────────────────────────────────────── */
+.order { margin-top: 8px; padding: clamp(22px, 3vw, 34px); border: 1px solid var(--line); background: var(--plate); position: relative; }
+.order::after { content: ""; position: absolute; left: -1px; right: -1px; bottom: -1px; height: 3px; background: var(--violet); box-shadow: var(--strip); }
+.order h2 { font-size: clamp(2.2rem, 4.5vw, 3.2rem); margin-bottom: 10px; }
+.order > p { max-width: 70ch; }
+.order-form { margin-top: 26px; gap: 28px; max-width: 760px; }
+.order-form fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 18px; min-width: 0; }
+.order-form legend { font: 800 1.6rem/1 var(--display); color: var(--bone); margin-bottom: 14px; padding: 0; }
+.field-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px; }
+.hint { color: var(--ash); font-size: 0.88rem; margin-top: 6px; }
+.check { display: flex; align-items: center; gap: 10px; font-weight: 500; cursor: pointer; }
+.check input { width: 18px; height: 18px; accent-color: var(--violet); }
+.field select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ash) 50%), linear-gradient(135deg, var(--ash) 50%, transparent 50%); background-position: calc(100% - 18px) 55%, calc(100% - 13px) 55%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 36px; }
+
+.order-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; padding: 26px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 40px; }
+.order-cta p { color: var(--ash); max-width: 60ch; }
+.order-cta .spots { color: var(--bone); font-weight: 600; }
+
+.order-card { border: 1px solid var(--line); background: var(--plate); padding: 22px 24px; margin-bottom: 40px; }
+.order-card h3 { font-size: 1.9rem; margin-bottom: 6px; }
+.order-card .status { margin: 0 0 10px; }
+.order-card p { color: var(--ash); }
+.order-card .actions { margin-top: 16px; }
+.order-meta { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 10px; color: var(--ash); font-size: 0.93rem; }
+.order-meta b { color: var(--bone); font-weight: 600; }
+
+.admin-orders { margin-top: 16px; padding-top: 40px; border-top: 1px solid var(--line); }
+.admin-orders h2 { font-size: clamp(2.2rem, 4.5vw, 3.2rem); }
+.admin-list { list-style: none; margin-top: 20px; border-top: 1px solid var(--line); }
+.admin-list > li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 24px; padding: 18px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.admin-list h3 { font-size: 1.5rem; }
+.admin-list .who { color: var(--ash); font-size: 0.93rem; }
+.admin-list .status { margin: 4px 0 0; }
+.admin-list .btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.admin-list .order-note { grid-column: 1 / -1; min-height: 0; }
+@media (max-width: 620px) { .admin-list > li { grid-template-columns: 1fr; } .admin-list .btns { justify-content: flex-start; } }
+.srv-admin { margin-top: 32px; padding-top: 18px; border-top: 1px dashed var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; color: var(--ash); font-size: 0.93rem; }
+
+.form-note.wait { color: var(--fiber); }

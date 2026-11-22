@@ -48,6 +48,67 @@
   <div class="wrap">
     <p class="host-line" id="host-line"><span class="dot"></span>Checking the host…</p>
     <div id="servers"><p class="muted">Loading your servers…</p></div>
+
+    <!-- Orders: status of your latest order, and the order form -->
+    <div id="orders"></div>
+
+    <section class="order" id="order-section" hidden aria-labelledby="order-title">
+      <h2 id="order-title">Set up a new server</h2>
+      <p class="muted">Minecraft: Java Edition, vanilla. Small plan: 4 GB of memory, up to 10 players. While hosting is in testing, every order is checked by hand before the server is made. Nothing is charged.</p>
+      <form class="form order-form" id="order-form" novalidate>
+        <fieldset>
+          <legend>The server</legend>
+          <div class="field"><label for="o-name">Server name</label>
+            <input id="o-name" name="serverName" maxlength="32" required autocomplete="off" placeholder="Night Shift SMP">
+            <p class="hint">3–32 letters, numbers, spaces, - _ or '. Shown in your panel.</p></div>
+          <div class="field"><label for="o-motd">Message in the server list <span class="muted">(optional)</span></label>
+            <input id="o-motd" name="motd" maxlength="59" autocomplete="off" placeholder="Welcome to the night shift">
+            <p class="hint">Up to 59 characters. Plain text.</p></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>The world</legend>
+          <div class="field-row">
+            <div class="field"><label for="o-mode">Game mode</label>
+              <select id="o-mode" name="gamemode"><option value="survival" selected>Survival</option><option value="creative">Creative</option><option value="adventure">Adventure</option></select></div>
+            <div class="field"><label for="o-diff">Difficulty</label>
+              <select id="o-diff" name="difficulty"><option value="peaceful">Peaceful</option><option value="easy">Easy</option><option value="normal" selected>Normal</option><option value="hard">Hard</option></select></div>
+            <div class="field"><label for="o-world">World type</label>
+              <select id="o-world" name="worldType"><option value="normal" selected>Normal</option><option value="large_biomes">Large biomes</option><option value="amplified">Amplified</option><option value="flat">Superflat</option></select></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label for="o-seed">Seed <span class="muted">(optional)</span></label>
+              <input id="o-seed" name="seed" maxlength="32" autocomplete="off" placeholder="Leave empty for a random world"></div>
+            <div class="field"><label for="o-max">Max players</label>
+              <input id="o-max" name="maxPlayers" type="number" min="1" max="10" value="10" required></div>
+          </div>
+          <label class="check"><input type="checkbox" id="o-pvp" name="pvp" checked> Players can hurt each other (PvP)</label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Who can join</legend>
+          <p class="hint">The server only lets in players on its list. It's always on, so bots and strangers stay out. You can add or remove players from this panel any time.</p>
+          <div class="field"><label for="o-owner">Your Minecraft name</label>
+            <input id="o-owner" name="ownerName" maxlength="16" required autocomplete="off" placeholder="Steve"></div>
+          <div class="field"><label for="o-players">Friends' Minecraft names <span class="muted">(optional)</span></label>
+            <textarea id="o-players" name="players" rows="3" placeholder="Alex, Notch, jeb_"></textarea>
+            <p class="hint">Separate names with commas or spaces. Up to 20 now.</p></div>
+        </fieldset>
+
+        <div class="actions" style="margin-top:0">
+          <button class="btn" type="submit">Send order</button>
+          <button class="btn ghost" type="button" id="order-cancel">Cancel</button>
+        </div>
+        <p class="form-note" id="order-note" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- Admins only (MC_HOSTING_ADMIN_EMAILS on Railway) -->
+    <section class="admin-orders" id="admin-section" hidden aria-labelledby="admin-title">
+      <h2 id="admin-title">Orders</h2>
+      <p class="muted" id="admin-slots"></p>
+      <div id="admin-orders"></div>
+    </section>
   </div>
 </section>
 

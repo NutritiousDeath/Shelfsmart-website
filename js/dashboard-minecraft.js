@@ -23,7 +23,7 @@
 
   const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 12l9-5M12 12v10M12 12L3 7"/></svg>';
 
-  const LABEL = { start: 'Start', stop: 'Stop', restart: 'Restart', backup: 'Backup', whitelist_add: 'Whitelist +', whitelist_remove: 'Whitelist −', say: 'Say' };
+  const LABEL = { start: 'Start', stop: 'Stop', restart: 'Restart', backup: 'Backup', whitelist_add: 'Whitelist +', whitelist_remove: 'Whitelist −', say: 'Say', create_server: 'Created', delete_server: 'Delete server' };
 
   let timer = null;
   let busy = new Set();      // server ids with an action in flight

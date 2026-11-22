@@ -10,6 +10,10 @@
 // The panel never reads the database directly. Everything goes through the
 // AuraAI gateway on Railway (/api/hosting/*), which checks the signed-in
 // account owns the server before queueing anything.
+//
+// Orders: the panel also holds the order form (nothing is made until an admin
+// clicks Create — later Stripe will) and, for admins only, the order list
+// with Create / Reject, plus Delete on customer servers.
 
 (function () {
   const SUPABASE_URL = 'https://uptxufmqqwjytffhbcdd.supabase.co';
@@ -144,7 +148,9 @@
   const notes = new Map();     // server id -> { text, kind }, survives re-renders
   let timer = null;
 
-  const LABEL = { start: 'Start', stop: 'Stop', restart: 'Restart', whitelist_add: 'Whitelist add', whitelist_remove: 'Whitelist remove', say: 'Message', backup: 'Backup' };
+  const LABEL = { start: 'Start', stop: 'Stop', restart: 'Restart', whitelist_add: 'Whitelist add', whitelist_remove: 'Whitelist remove', say: 'Message', backup: 'Backup', create_server: 'Server created', delete_server: 'Delete server' };
+  let ordersData = null;
+  let fastTimer = null;
 
   async function api(path, { method = 'GET', body } = {}) {
     const { data } = await sb.auth.getSession();
@@ -241,6 +247,7 @@
       </section>
 
       ${(s.recentJobs || []).length ? `<section class="srv-section"><h3>Recent activity</h3><ul class="activity">${s.recentJobs.map(jobLine).join('')}</ul></section>` : ''}
+      ${s.deletable ? `<div class="srv-admin"><span>Admin</span><button type="button" class="btn danger slim" data-delete="1" ${hostOk && !busy.has(s.id) ? '' : 'disabled'}>Delete server</button><span>Stops it, takes a last backup, then removes it from the host.</span></div>` : ''}
     </article>`;
   }
 
@@ -260,18 +267,232 @@
     if (box.contains(document.activeElement) && document.activeElement.tagName === 'INPUT' && document.activeElement.value) return;
 
     if (!data.servers.length) {
-      box.innerHTML = `<div class="empty"><h2>No servers on this account yet</h2>
-        <p>When you order a server, it shows up here automatically. Hosting isn't open for orders yet. <a href="/pages/services.html#hosting">See the plan</a> or <a href="/pages/contact.html?topic=hosting">join the waitlist</a>.</p></div>`;
+      box.innerHTML = '';
       return;
     }
     box.innerHTML = data.servers.map((s) => serverHtml(s, hostOk)).join('');
   }
 
+  // ─── ORDERS ───────────────────────────────────────────────────────────────
+
+  const ORDER_STATE = {
+    pending: { text: 'Waiting for review', cls: 'building' },
+    creating: { text: 'Being set up', cls: 'live' },
+    active: { text: 'Ready', cls: 'live' },
+    failed: { text: 'Setup hit a problem', cls: 'building' },
+    rejected: { text: 'Not approved', cls: 'planned' },
+    cancelled: { text: 'Cancelled', cls: 'planned' },
+    deleted: { text: 'Deleted', cls: 'planned' },
+  };
+  const MODE = { survival: 'Survival', creative: 'Creative', adventure: 'Adventure' };
+  const WORLD = { normal: 'Normal', large_biomes: 'Large biomes', amplified: 'Amplified', flat: 'Superflat' };
+
+  function orderMeta(o) {
+    return `<ul class="order-meta">
+      <li><b>${esc(MODE[o.gamemode] || o.gamemode)}</b>, ${esc(o.difficulty)}</li>
+      <li>World: <b>${esc(WORLD[o.worldType] || o.worldType)}</b>${o.seed ? ` (seed ${esc(o.seed)})` : ''}</li>
+      <li>Up to <b>${esc(o.maxPlayers)}</b> players, PvP ${o.pvp ? 'on' : 'off'}</li>
+      <li>Whitelist: <b>${esc([o.ownerName, ...(o.players || [])].join(', '))}</b></li>
+    </ul>`;
+  }
+
+  function orderCard(o) {
+    const st = ORDER_STATE[o.status] || { text: o.status, cls: 'planned' };
+    const text = {
+      pending: 'We\'ll check it and set it up soon. It shows up on this page as soon as it\'s ready.',
+      creating: 'Aura is building your server now. This usually takes a few minutes. This page updates on its own.',
+      failed: `${o.note ? `${o.note} ` : ''}We've been told and will try again.`,
+      rejected: o.note || 'This order wasn\'t approved.',
+    }[o.status] || '';
+    return `<article class="order-card" data-order="${esc(o.id)}">
+      <p class="status ${st.cls}">${esc(st.text)}</p>
+      <h3>${esc(o.serverName)}</h3>
+      <p>${esc(text)}</p>
+      ${orderMeta(o)}
+      ${o.status === 'pending' ? '<div class="actions"><button type="button" class="btn ghost slim" data-cancel-order="1">Cancel order</button></div>' : ''}
+      <p class="form-note" data-order-note role="status" aria-live="polite"></p>
+    </article>`;
+  }
+
+  function renderOrders() {
+    const box = $('#orders');
+    const formSection = $('#order-section');
+    if (!ordersData) return;
+    const { slots, orders } = ordersData;
+    const servers = lastData?.servers || [];
+    const latest = orders[0];
+    const open = orders.some((o) => o.status === 'pending' || o.status === 'creating');
+    const showLatest = latest && ['pending', 'creating', 'failed', 'rejected'].includes(latest.status);
+
+    let html = showLatest ? orderCard(latest) : '';
+    if (!open) {
+      if (slots.soldOut) {
+        html += `<div class="order-cta"><p><span class="spots">All ${esc(slots.total)} server spots are taken.</span> <a href="/pages/contact.html?topic=hosting">Join the waitlist</a> and we'll email you when one opens.</p></div>`;
+        formSection.hidden = true;
+      } else if (formSection.hidden) {
+        html += `<div class="order-cta">
+          <button type="button" class="btn" data-open-order="1">Set up a new server</button>
+          <p><span class="spots">${esc(slots.available)} of ${esc(slots.total)} spots open.</span> ${servers.length ? 'Want another world? Order one here.' : 'You don\'t have a server yet. Order one and it appears here when it\'s ready.'}</p>
+        </div>`;
+      }
+    } else {
+      formSection.hidden = true;
+    }
+    box.innerHTML = html;
+    renderAdmin();
+
+    clearTimeout(fastTimer);
+    const creating = open || (ordersData.admin?.orders || []).some((o) => o.status === 'creating');
+    if (creating) fastTimer = setTimeout(() => { if (!document.hidden && !busy.size) load(); }, 5000);
+  }
+
+  function renderAdmin() {
+    const section = $('#admin-section');
+    const admin = ordersData?.admin;
+    if (!admin) { section.hidden = true; return; }
+    section.hidden = false;
+    const { slots } = ordersData;
+    $('#admin-slots').textContent = `Spots in use: ${slots.used} of ${slots.total}. Pending orders don't take a spot until you click Create.`;
+    const list = admin.orders;
+    if (!list.length) { $('#admin-orders').innerHTML = '<p class="muted">No orders yet.</p>'; return; }
+    const rank = { pending: 0, failed: 1, creating: 2 };
+    const sorted = [...list].sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9));
+    const hostOk = !!lastData?.host?.online && !lastData?.host?.problem;
+    $('#admin-orders').innerHTML = `<ul class="admin-list">${sorted.map((o) => {
+      const st = ORDER_STATE[o.status] || { text: o.status, cls: 'planned' };
+      const canAct = o.status === 'pending' || o.status === 'failed';
+      return `<li data-admin-order="${esc(o.id)}">
+        <div>
+          <h3>${esc(o.serverName)}</h3>
+          <p class="who">${esc(o.email)} · ${esc(timeAgo(o.createdAt))}</p>
+          <p class="status ${st.cls}">${esc(st.text)}</p>
+          ${o.note ? `<p class="who">${esc(o.note)}</p>` : ''}
+          ${orderMeta(o)}
+        </div>
+        <div class="btns">${canAct
+          ? `<button type="button" class="btn slim" data-admin="create" ${hostOk && !slots.soldOut ? '' : 'disabled'} title="${hostOk ? (slots.soldOut ? 'All spots are in use' : '') : 'The host is offline'}">${o.status === 'failed' ? 'Try again' : 'Create server'}</button>
+             <button type="button" class="btn ghost slim" data-admin="reject">Reject</button>`
+          : ''}</div>
+        <p class="form-note order-note" data-order-note role="status" aria-live="polite"></p>
+      </li>`;
+    }).join('')}</ul>`;
+  }
+
   async function load() {
-    try { render(await api('/api/hosting/servers')); }
-    catch (err) {
+    try {
+      const [servers, orders] = await Promise.all([
+        api('/api/hosting/servers'),
+        api('/api/hosting/orders').catch((err) => { if (err.message === 'Not signed in') throw err; return null; }),
+      ]);
+      render(servers);
+      if (orders) { ordersData = orders; renderOrders(); }
+      if (!servers.servers.length && !orders) $('#servers').innerHTML = '<p class="muted">No servers on this account yet.</p>';
+    } catch (err) {
       if (err.message === 'Not signed in') return;
       if (!lastData) $('#servers').innerHTML = `<p class="form-note err">Couldn't load your servers: ${esc(err.message)}</p>`;
+    }
+  }
+
+  function orderNote(scope, text, kind) {
+    const el = scope?.querySelector('[data-order-note]') || $('#order-note');
+    note(el, text, kind);
+  }
+
+  async function submitOrder(form) {
+    const f = form.elements;
+    const body = {
+      serverName: f.serverName.value.trim(),
+      motd: f.motd.value.trim(),
+      gamemode: f.gamemode.value,
+      difficulty: f.difficulty.value,
+      worldType: f.worldType.value,
+      seed: f.seed.value.trim(),
+      maxPlayers: Number(f.maxPlayers.value),
+      pvp: f.pvp.checked,
+      ownerName: f.ownerName.value.trim(),
+      players: f.players.value,
+    };
+    const noteEl = $('#order-note');
+    if (!/^[A-Za-z0-9][A-Za-z0-9 _'\-]{1,30}[A-Za-z0-9]$/.test(body.serverName.replace(/\s+/g, ' '))) { f.serverName.focus(); return note(noteEl, 'Server name: 3–32 letters, numbers, spaces, - _ or \', starting and ending with a letter or number.', 'err'); }
+    if (!NAME_RE.test(body.ownerName)) { f.ownerName.focus(); return note(noteEl, 'Your Minecraft name: 3–16 letters, numbers or underscores.', 'err'); }
+    if (!Number.isInteger(body.maxPlayers) || body.maxPlayers < 1 || body.maxPlayers > 10) { f.maxPlayers.focus(); return note(noteEl, 'Max players: 1 to 10.', 'err'); }
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    note(noteEl, 'Sending your order…', 'wait');
+    try {
+      await api('/api/hosting/order', { method: 'POST', body });
+      form.reset();
+      note(noteEl, '');
+      $('#order-section').hidden = true;
+      await load();
+      $('#orders').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      note(noteEl, err.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  async function ordersClick(e) {
+    const btn = e.target.closest('button');
+    if (!btn || btn.disabled) return;
+
+    if (btn.dataset.openOrder) {
+      $('#order-section').hidden = false;
+      renderOrders();
+      $('#o-name').focus();
+      $('#order-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    if (btn.dataset.cancelOrder) {
+      const card = btn.closest('[data-order]');
+      if (!confirm('Cancel this order?')) return;
+      btn.disabled = true;
+      try { await api('/api/hosting/order/cancel', { method: 'POST', body: { orderId: card.dataset.order } }); await load(); }
+      catch (err) { btn.disabled = false; orderNote(card, err.message, 'err'); }
+      return;
+    }
+
+    if (btn.dataset.admin) {
+      const row = btn.closest('[data-admin-order]');
+      const orderId = row.dataset.adminOrder;
+      const name = row.querySelector('h3')?.textContent || 'this server';
+      let body = { orderId, action: btn.dataset.admin };
+      if (btn.dataset.admin === 'create' && !confirm(`Create "${name}" on the host now?`)) return;
+      if (btn.dataset.admin === 'reject') {
+        const reason = prompt('Reason the customer will see (optional):', '');
+        if (reason === null) return;
+        body.reason = reason;
+      }
+      row.querySelectorAll('button').forEach((b) => { b.disabled = true; });
+      orderNote(row, btn.dataset.admin === 'create' ? 'Sending to the host…' : 'Saving…', 'wait');
+      try { await api('/api/hosting/admin/order', { method: 'POST', body }); await load(); }
+      catch (err) { orderNote(row, err.message, 'err'); row.querySelectorAll('button').forEach((b) => { b.disabled = false; }); }
+    }
+  }
+
+  async function deleteServer(serverId) {
+    const server = lastData?.servers.find((s) => s.id === serverId);
+    if (!server) return;
+    const typed = prompt(`This deletes "${server.name}" from the host (a last backup is taken first).\n\nType the server's name to confirm:`, '');
+    if (typed === null) return;
+    if (typed.trim() !== server.name) return setNote(serverId, 'The name didn\'t match, so nothing was deleted.', 'err');
+    busy.add(serverId);
+    setNote(serverId, 'Delete server: sending to the host…', 'wait');
+    if (lastData) render(lastData);
+    try {
+      const { job } = await api('/api/hosting/admin/server/delete', { method: 'POST', body: { serverId, confirmName: typed.trim() } });
+      const done = await waitForJob(job.id);
+      busy.delete(serverId);
+      if (!done) setNote(serverId, 'Still working. This page updates on its own.', 'wait');
+      else if (done.status === 'done') setNote(serverId, `✓ ${done.result || 'Deleted.'}`, 'ok');
+      else setNote(serverId, `✕ ${done.result || 'That didn\'t work.'}`, 'err');
+      await load();
+    } catch (err) {
+      busy.delete(serverId);
+      setNote(serverId, err.message, 'err');
+      if (lastData) render(lastData);
     }
   }
 
@@ -335,6 +556,7 @@
       if (!btn || btn.disabled) return;
       const id = btn.closest('.srv')?.dataset.id;
       if (btn.dataset.act) return run(id, btn.dataset.act);
+      if (btn.dataset.delete) return deleteServer(id);
       if (btn.dataset.remove) return run(id, 'whitelist_remove', btn.dataset.remove);
       if (btn.dataset.copy) {
         navigator.clipboard?.writeText(btn.dataset.copy).then(() => {
@@ -360,6 +582,12 @@
         return run(id, 'say', value);
       }
     });
+
+    // Orders + admin.
+    $('#orders').addEventListener('click', ordersClick);
+    $('#admin-section').addEventListener('click', ordersClick);
+    $('#order-form').addEventListener('submit', (e) => { e.preventDefault(); submitOrder(e.target); });
+    $('#order-cancel').addEventListener('click', () => { $('#order-section').hidden = true; note($('#order-note'), ''); renderOrders(); });
 
     // Account: change password, sign out.
     const pwForm = $('#password-form');
