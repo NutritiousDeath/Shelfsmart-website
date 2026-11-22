@@ -5,7 +5,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AuraAI — Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -38,18 +40,18 @@
 
     <div style="display:flex;flex-direction:column;gap:12px;align-items:center">
       <!-- Upgrade to Pro -->
-      <button id="paywall-stripe-btn" onclick="startCheckout('pro')" style="width:100%;max-width:320px;font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:2px;padding:13px 24px;background:var(--cyan);color:var(--bg);border:none;cursor:pointer;text-decoration:none;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);display:block;text-align:center;transition:all 0.2s" onmouseover="this.style.background='#fff'" onmouseout="this.style.background='var(--cyan)'">
+      <button id="paywall-stripe-btn" onclick="startCheckout('pro')" style="width:100%;max-width:320px;font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:2px;padding:13px 24px;background:var(--cyan);color:var(--bg);border:none;cursor:pointer;text-decoration:none;display:block;text-align:center;transition:all 0.2s" onmouseover="this.style.background='#fff'" onmouseout="this.style.background='var(--cyan)'">
         ⚡ UPGRADE TO PRO — $9/mo
       </button>
 
       <!-- Add to Discord -->
-      <a href="https://discord.com/oauth2/authorize?client_id=1479991514351538350&permissions=2251799813900304&integration_type=0&scope=bot+applications.commands" target="_blank" style="width:100%;max-width:320px;font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:2px;padding:13px 24px;background:transparent;color:var(--grey);border:1px solid rgba(74,80,104,0.4);text-decoration:none;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);display:block;text-align:center;transition:all 0.2s" onmouseover="this.style.borderColor='var(--cyan)';this.style.color='var(--cyan)'" onmouseout="this.style.borderColor='rgba(74,80,104,0.4)';this.style.color='var(--grey)'">
+      <a href="https://discord.com/oauth2/authorize?client_id=1479991514351538350&permissions=2251799813900304&integration_type=0&scope=bot+applications.commands" target="_blank" style="width:100%;max-width:320px;font-family:var(--font-display);font-size:0.68rem;font-weight:700;letter-spacing:2px;padding:13px 24px;background:transparent;color:var(--grey);border:1px solid rgba(var(--grey-rgb),0.4);text-decoration:none;display:block;text-align:center;transition:all 0.2s" onmouseover="this.style.borderColor='var(--cyan)';this.style.color='var(--cyan)'" onmouseout="this.style.borderColor='rgba(var(--grey-rgb),0.4)';this.style.color='var(--grey)'">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.055a19.85 19.85 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
         ADD AURAAI TO YOUR SERVER (FREE)
       </a>
     </div>
 
-    <div style="width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,240,255,0.2),transparent);margin:20px 0"></div>
+    <div style="width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--accent-rgb),0.2),transparent);margin:20px 0"></div>
     <button onclick="signOut()" style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);background:none;border:none;cursor:pointer;letter-spacing:1px;text-decoration:underline">Sign out</button>
   </div>
 
@@ -57,7 +59,7 @@
 
 <!-- NAV -->
 <nav class="nav">
-  <a href="/" class="nav-logo"><span class="logo-aura">AURA</span><span class="logo-ai">AI</span></a>
+  <a href="/" class="nav-logo"><span><span class="logo-aura">AURA</span><span class="logo-ai">AI</span></span><span class="nav-by">by ShelfSmart Gaming</span></a>
   <div class="nav-user">
     <span class="nav-user-name" id="nav-username">—</span>
     <span class="nav-tier" id="nav-tier">FREE</span>
@@ -90,7 +92,7 @@
 <!-- LAYOUT -->
 <div class="layout">
   <aside class="sidebar">
-    <div style="padding:14px 12px 10px;border-bottom:1px solid rgba(0,240,255,0.08);margin-bottom:8px">
+    <div style="padding:14px 12px 10px;border-bottom:1px solid rgba(var(--accent-rgb),0.08);margin-bottom:8px">
       <div style="font-family:var(--font-display);font-size:0.8rem;font-weight:900;letter-spacing:2px"><span style="color:var(--cyan);text-shadow:var(--glow-cyan)">AURA</span><span style="color:var(--white)">AI</span></div>
       <div style="margin-top:8px">
         <!-- Server picker — CyberDropdown mounted here by JS -->
@@ -125,8 +127,8 @@
 
     <div class="status-indicator">
       <div class="status-row"><div class="dot-green"></div>Bot online</div>
-      <div class="status-row" style="color:rgba(74,80,104,0.6)"><div style="width:6px;height:6px;border-radius:50%;background:var(--purple);flex-shrink:0"></div>Railway gateway</div>
-      <div class="status-row" style="color:rgba(74,80,104,0.6)"><div style="width:6px;height:6px;border-radius:50%;background:var(--grey);flex-shrink:0"></div>Supabase connected</div>
+      <div class="status-row" style="color:rgba(var(--grey-rgb),0.6)"><div style="width:6px;height:6px;border-radius:50%;background:var(--purple);flex-shrink:0"></div>Railway gateway</div>
+      <div class="status-row" style="color:rgba(var(--grey-rgb),0.6)"><div style="width:6px;height:6px;border-radius:50%;background:var(--grey);flex-shrink:0"></div>Supabase connected</div>
     </div>
   </aside>
 
@@ -146,7 +148,8 @@
         <p class="card-title">// dashboard theme</p>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:14px;line-height:1.7;letter-spacing:0.5px">Choose your dashboard color scheme. Saved per account.</p>
         <div class="theme-toggle-wrap">
-          <button class="theme-btn active" id="theme-btn-cyber" onclick="setTheme('cyber')">🔵 Cyber Blue</button>
+          <button class="theme-btn active" id="theme-btn-shelf" onclick="setTheme('shelf')">🟣 ShelfSmart</button>
+          <button class="theme-btn" id="theme-btn-cyber" onclick="setTheme('cyber')">🔵 Cyber Blue</button>
           <button class="theme-btn" id="theme-btn-red" onclick="setTheme('red')">🔴 Crimson Red</button>
           <button class="theme-btn" id="theme-btn-pink" onclick="setTheme('pink')">🩷 Neon Pink</button>
           <button class="theme-btn" id="theme-btn-orange" onclick="setTheme('orange')">🟠 Neon Orange</button>
@@ -158,7 +161,7 @@
         <div style="display:flex;flex-wrap:wrap;gap:10px">
           <button class="btn-secondary" onclick="setTab('alerts',document.querySelector('[onclick*=alerts]'))">Add social alert</button>
           <button class="btn-secondary" onclick="setTab('billing',document.querySelector('[onclick*=billing]'))">Grant access</button>
-          <a href="https://discord.com/oauth2/authorize?client_id=1479991514351538350&permissions=2251799813900304&integration_type=0&scope=bot+applications.commands" target="_blank" style="font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;padding:9px 18px;background:transparent;color:var(--cyan);border:1px solid var(--cyan);cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);transition:all 0.2s;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(0,240,255,0.08)'" onmouseout="this.style.background='transparent'">
+          <a href="https://discord.com/oauth2/authorize?client_id=1479991514351538350&permissions=2251799813900304&integration_type=0&scope=bot+applications.commands" target="_blank" style="font-family:var(--font-display);font-size:0.62rem;font-weight:700;letter-spacing:2px;padding:9px 18px;background:transparent;color:var(--cyan);border:1px solid var(--cyan);cursor:pointer;transition:all 0.2s;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:8px" onmouseover="this.style.background='rgba(var(--accent-rgb),0.08)'" onmouseout="this.style.background='transparent'">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.033.055a19.85 19.85 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
             Add to Server
           </a>
@@ -306,9 +309,9 @@
       <p class="page-title" id="bot-config-page-title">BOT CONFIG</p>
 
       <!-- Server warning banner -->
-      <div id="bot-config-server-warning" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid rgba(255,45,120,0.5);background:rgba(255,45,120,0.07);box-shadow:0 0 12px rgba(255,45,120,0.15);margin-bottom:14px;transition:all 0.4s">
+      <div id="bot-config-server-warning" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid rgba(var(--pink-rgb),0.5);background:rgba(var(--pink-rgb),0.07);box-shadow:0 0 12px rgba(var(--pink-rgb),0.15);margin-bottom:14px;transition:all 0.4s">
         <span id="bot-warning-icon" style="font-size:18px;flex-shrink:0">⚠️</span>
-        <p id="bot-warning-text" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--pink);letter-spacing:0.5px;line-height:1.7;text-shadow:0 0 8px rgba(255,45,120,0.5)">No server selected — select your Discord server from the sidebar dropdown first.</p>
+        <p id="bot-warning-text" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--pink);letter-spacing:0.5px;line-height:1.7;text-shadow:0 0 8px rgba(var(--pink-rgb),0.5)">No server selected — select your Discord server from the sidebar dropdown first.</p>
       </div>
 
       <!-- ══════════ LANDING GRID — click a card to configure that section ══════════ -->
@@ -486,7 +489,7 @@
           <p class="save-msg" id="patverify-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
 
-        <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
+        <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
           <label class="field-label" style="margin-top:0">What gets posted</label>
           <div style="background:#2b2d31;border-radius:8px;padding:14px;font-family:'gg sans',Helvetica,Arial,sans-serif;margin-top:8px">
             <div style="color:#dbdee1;font-size:0.85rem;margin-bottom:8px">@member submitted a scan:</div>
@@ -527,7 +530,7 @@
           <p class="save-msg" id="levels-channel-error" style="color:var(--pink)">// Error: Please select your Discord server first!</p>
         </div>
 
-        <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
+        <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
           <label class="field-label">XP Rate</label>
           <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);line-height:1.8;margin-bottom:14px;letter-spacing:0.5px">
             Multiplies XP gained per message. x1 is the default MEE6-parity rate — turn it down to slow leveling, or up to speed it up.
@@ -604,7 +607,7 @@
         <div id="rr-options-container" style="margin-top:8px"></div>
         <button class="btn-secondary" onclick="addReactionRoleOption()" style="margin-top:8px">+ Add Role Button</button>
 
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
           <button class="btn-primary" onclick="postReactionRoleMenu()">Post / Update in Discord</button>
           <p class="save-msg" id="rr-saved">// Settings saved successfully</p>
           <p class="save-msg" id="rr-error" style="color:var(--pink)"></p>
@@ -620,7 +623,7 @@
           Keeps a message at the bottom of a channel by deleting and reposting it as new messages come in (refreshes at most once every ~12 seconds — not on every single message, to stay clear of rate limits).
         </p>
 
-        <div style="display:flex;gap:4px;border-bottom:1px solid rgba(0,240,255,0.15);margin-bottom:18px">
+        <div style="display:flex;gap:4px;border-bottom:1px solid rgba(var(--accent-rgb),0.15);margin-bottom:18px">
           <button class="sticky-subtab-btn active" id="sticky-subtab-btn-messages" onclick="showStickySubtab('messages')">Messages</button>
           <button class="sticky-subtab-btn" id="sticky-subtab-btn-templates" onclick="showStickySubtab('templates')">Templates</button>
         </div>
@@ -635,7 +638,7 @@
           <div style="overflow-x:auto;margin-top:12px">
             <table style="width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:0.72rem">
               <thead>
-                <tr style="border-bottom:1px solid rgba(0,240,255,0.15);text-align:left">
+                <tr style="border-bottom:1px solid rgba(var(--accent-rgb),0.15);text-align:left">
                   <th style="padding:8px;color:var(--cyan)">CHANNEL</th>
                   <th style="padding:8px;color:var(--cyan)">CONTENT</th>
                   <th style="padding:8px;color:var(--cyan)">EXPIRES</th>
@@ -658,7 +661,7 @@
           <div style="overflow-x:auto;margin-top:12px">
             <table style="width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:0.72rem">
               <thead>
-                <tr style="border-bottom:1px solid rgba(0,240,255,0.15);text-align:left">
+                <tr style="border-bottom:1px solid rgba(var(--accent-rgb),0.15);text-align:left">
                   <th style="padding:8px;color:var(--cyan)">NAME</th>
                   <th style="padding:8px;color:var(--cyan)">CONTENT</th>
                   <th style="padding:8px;color:var(--cyan)">ACTIONS</th>
@@ -672,7 +675,7 @@
         </div>
 
         <!-- ── SHARED EDITOR (message mode or template mode) ───────────────────── -->
-        <div id="sticky-editor" style="display:none;margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.15)">
+        <div id="sticky-editor" style="display:none;margin-top:24px;padding-top:20px;border-top:1px solid rgba(var(--accent-rgb),0.15)">
           <p class="card-title" id="sticky-editor-heading" style="font-size:0.75rem">// new sticky message</p>
 
           <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:12px">
@@ -733,7 +736,7 @@
                 </label>
               </div>
 
-              <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+              <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
                 <button class="btn-primary" onclick="saveStickyFromEditor()" id="sticky-save-btn">Save & Post</button>
                 <button class="btn-secondary" onclick="cancelStickyEditor()" style="margin-left:8px">Cancel</button>
                 <button class="btn-secondary" onclick="deleteFromStickyEditor()" id="sticky-delete-btn" style="display:none;margin-left:8px;border-color:var(--pink);color:var(--pink)">Delete</button>
@@ -741,7 +744,7 @@
                 <p class="save-msg" id="sticky-error" style="color:var(--pink)"></p>
               </div>
 
-              <div id="sticky-save-as-template-wrap" style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+              <div id="sticky-save-as-template-wrap" style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
                 <button class="btn-secondary" onclick="saveCurrentEditorAsTemplate()">Save Current As Template</button>
               </div>
 
@@ -751,7 +754,7 @@
               <label class="field-label">Live Preview</label>
               <div id="sticky-preview-box" style="background:#2b2d31;border-radius:8px;padding:14px;font-family:'gg sans',sans-serif;margin-top:8px">
                 <div id="sticky-preview-msgtext" style="color:#dbdee1;font-size:0.9rem;margin-bottom:8px"></div>
-                <div style="border-left:4px solid #00f0ff;background:#1e1f22;border-radius:4px;padding:10px 14px" id="sticky-preview-embed">
+                <div style="border-left:4px solid var(--cyan);background:#1e1f22;border-radius:4px;padding:10px 14px" id="sticky-preview-embed">
                   <div id="sticky-preview-subtitle" style="color:#dbdee1;font-size:0.75rem;font-weight:600;margin-bottom:4px"></div>
                   <div id="sticky-preview-title" style="color:#fff;font-size:1rem;font-weight:700;margin-bottom:6px"></div>
                   <div id="sticky-preview-desc" style="color:#dbdee1;font-size:0.85rem;white-space:pre-wrap;line-height:1.5"></div>
@@ -795,14 +798,14 @@
             The moment a member gains ANY ONE of the roles you check below — from any source, not just AuraAI — the New Member role gets removed and they're unlocked. If you use a separate verification bot (like Double Counter), check its "Verified" role. If your Reaction Roles menu has multiple options (game roles, interest roles, etc.), you can check all of them — picking up any single one unlocks the member.<br><br>
             <span style="color:var(--pink)">⚠</span> Don't check the same role selected in Step 2 — a role can't unlock itself.
           </p>
-          <div id="nmg-unlock-roles" style="max-height:220px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);border-radius:6px;padding:10px;background:rgba(0,0,0,0.2)"></div>
+          <div id="nmg-unlock-roles" style="max-height:220px;overflow-y:auto;border:1px solid rgba(var(--accent-rgb),0.15);border-radius:6px;padding:10px;background:rgba(0,0,0,0.2)"></div>
         </div>
 
         <div class="nmg-step">
           <p class="nmg-step-num">STEP 4</p>
           <p class="nmg-step-title">Choose which channels new members CAN see</p>
           <p class="nmg-step-desc" style="margin-bottom:10px">Every other channel gets hidden from this role until they unlock. At minimum, check your general chat and wherever your verification happens.</p>
-          <div id="nmg-unlock-channels" style="max-height:220px;overflow-y:auto;border:1px solid rgba(0,240,255,0.15);border-radius:6px;padding:10px;background:rgba(0,0,0,0.2)"></div>
+          <div id="nmg-unlock-channels" style="max-height:220px;overflow-y:auto;border:1px solid rgba(var(--accent-rgb),0.15);border-radius:6px;padding:10px;background:rgba(0,0,0,0.2)"></div>
         </div>
 
         <div class="nmg-step">
@@ -831,7 +834,7 @@
           </label>
         </div>
 
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
           <button class="btn-primary" onclick="saveNewMemberGateSettings()">Save Settings</button>
           <p class="save-msg" id="nmg-saved">// Settings saved successfully</p>
           <p class="save-msg" id="nmg-error" style="color:var(--pink)"></p>
@@ -902,13 +905,13 @@
           </label>
         </div>
 
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
           <button class="btn-primary" onclick="saveOnboardingSettings()">Save Settings</button>
           <p class="save-msg" id="ob-saved">// Settings saved successfully</p>
           <p class="save-msg" id="ob-error" style="color:var(--pink)"></p>
         </div>
 
-        <details style="margin-top:24px;border:1px solid rgba(180,79,255,0.3);border-radius:6px;background:rgba(0,0,0,0.2)">
+        <details style="margin-top:24px;border:1px solid rgba(var(--purple-rgb),0.3);border-radius:6px;background:rgba(0,0,0,0.2)">
           <summary style="cursor:pointer;padding:14px;font-family:var(--font-mono);font-size:0.88rem;color:var(--purple);user-select:none">
             ⚡ Switching over from Discord's native Onboarding? Click for full steps.
           </summary>
@@ -963,7 +966,7 @@
             <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-bottom:10px">Roles that can claim/close/reopen/delete tickets from this panel, and see every ticket channel. Up to 10 roles. <span id="ticket-manager-role-count">(0/10)</span></p>
             <div id="ticket-manager-roles-chips" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
             <button class="btn-secondary" onclick="toggleTicketRolePicker()">+ Add manager role</button>
-            <div id="ticket-manager-roles-picker" style="display:none;margin-top:10px;max-height:200px;overflow-y:auto;background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.1);border-radius:6px;padding:8px"></div>
+            <div id="ticket-manager-roles-picker" style="display:none;margin-top:10px;max-height:200px;overflow-y:auto;background:rgba(var(--accent-rgb),0.04);border:1px solid rgba(var(--accent-rgb),0.1);border-radius:6px;padding:8px"></div>
           </div>
 
           <div class="section-card">
@@ -1049,7 +1052,7 @@
         <label class="field-label" style="margin-top:14px">Timeout duration (minutes)</label>
         <input class="cyber-input" type="number" id="warnthreshold-minutes" min="1" max="40320" value="60">
 
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
           <button class="btn-primary" onclick="saveWarnThreshold()">Save</button>
           <p class="save-msg" id="warnthreshold-saved">// Settings saved successfully</p>
           <p class="save-msg" id="warnthreshold-error" style="color:var(--pink)"></p>
@@ -1065,7 +1068,7 @@
           Members with <span style="color:var(--cyan)">Manage Server</span> or <span style="color:var(--cyan)">Administrator</span> are always immune to both tools below — you'll never lock yourself out testing your own settings.
         </p>
 
-        <div style="display:flex;gap:4px;border-bottom:1px solid rgba(0,240,255,0.15);margin-bottom:18px">
+        <div style="display:flex;gap:4px;border-bottom:1px solid rgba(var(--accent-rgb),0.15);margin-bottom:18px">
           <button class="sticky-subtab-btn active" id="security-subtab-btn-domains" onclick="showSecuritySubtab('domains')">Domain Blacklist</button>
           <button class="sticky-subtab-btn" id="security-subtab-btn-honeypot" onclick="showSecuritySubtab('honeypot')">Honeypot</button>
         </div>
@@ -1108,7 +1111,7 @@
             <input class="cyber-input" type="number" id="security-domain-timeout-minutes" min="1" max="40320" value="10">
           </div>
 
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
             <button class="btn-primary" onclick="saveDomainBlacklistSettings()">Save</button>
             <p class="save-msg" id="security-domains-saved">// Settings saved successfully</p>
             <p class="save-msg" id="security-domains-error" style="color:var(--pink)"></p>
@@ -1153,7 +1156,7 @@
             <input class="cyber-input" type="number" id="security-honeypot-timeout-minutes" min="1" max="40320" value="60">
           </div>
 
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
             <button class="btn-primary" onclick="saveHoneypotSettings()">Save</button>
             <p class="save-msg" id="security-honeypot-saved">// Settings saved successfully</p>
             <p class="save-msg" id="security-honeypot-error" style="color:var(--pink)"></p>
@@ -1185,7 +1188,7 @@
           <label class="modlog-event-row"><input type="checkbox" id="modlog-automod" class="modlog-checkbox"> Discord AutoMod actions</label>
         </div>
 
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
           <button class="btn-primary" onclick="saveModLogSettings()">Save</button>
           <p class="save-msg" id="modlogsettings-saved">// Settings saved successfully</p>
           <p class="save-msg" id="modlogsettings-error" style="color:var(--pink)"></p>
@@ -1201,7 +1204,7 @@
           These settings control the DM behavior, default duration, and message purge for AuraAI's own moderation commands. Command permissions (who can run them) are controlled by Discord's own role permissions, not here.
         </p>
 
-        <div style="display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid rgba(0,240,255,0.15);margin-bottom:18px">
+        <div style="display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid rgba(var(--accent-rgb),0.15);margin-bottom:18px">
           <button class="sticky-subtab-btn active" id="modact-subtab-btn-ban" onclick="showModActionSubtab('ban')">Ban</button>
           <button class="sticky-subtab-btn" id="modact-subtab-btn-kick" onclick="showModActionSubtab('kick')">Kick</button>
           <button class="sticky-subtab-btn" id="modact-subtab-btn-mute" onclick="showModActionSubtab('mute')">Mute</button>
@@ -1219,7 +1222,7 @@
           <label class="field-label" style="margin-top:18px">Default message purge (days)</label>
           <input class="cyber-input" type="number" id="modact-ban-purge" min="0" max="7" value="2">
 
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
             <button class="btn-primary" onclick="saveModAction('ban')">Save</button>
             <p class="save-msg" id="modact-ban-saved">// Settings saved successfully</p>
             <p class="save-msg" id="modact-ban-error" style="color:var(--pink)"></p>
@@ -1232,7 +1235,7 @@
           <div id="modact-kick-dm"></div>
           <p class="modact-example" id="modact-kick-example"></p>
 
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
             <button class="btn-primary" onclick="saveModAction('kick')">Save</button>
             <p class="save-msg" id="modact-kick-saved">// Settings saved successfully</p>
             <p class="save-msg" id="modact-kick-error" style="color:var(--pink)"></p>
@@ -1261,7 +1264,7 @@
             <input class="cyber-input" type="number" id="modact-mute-minutes" min="0" max="59" placeholder="Minutes">
           </div>
 
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
             <button class="btn-primary" onclick="saveModAction('mute')">Save</button>
             <p class="save-msg" id="modact-mute-saved">// Settings saved successfully</p>
             <p class="save-msg" id="modact-mute-error" style="color:var(--pink)"></p>
@@ -1284,7 +1287,7 @@
             <input class="cyber-input" type="number" id="modact-hardmute-minutes" min="0" max="59" placeholder="Minutes">
           </div>
 
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
             <button class="btn-primary" onclick="saveModAction('hardmute')">Save</button>
             <p class="save-msg" id="modact-hardmute-saved">// Settings saved successfully</p>
             <p class="save-msg" id="modact-hardmute-error" style="color:var(--pink)"></p>
@@ -1307,7 +1310,7 @@
             <input class="cyber-input" type="number" id="modact-timeout-minutes" min="0" max="59" placeholder="Minutes">
           </div>
 
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
             <button class="btn-primary" onclick="saveModAction('timeout')">Save</button>
             <p class="save-msg" id="modact-timeout-saved">// Settings saved successfully</p>
             <p class="save-msg" id="modact-timeout-error" style="color:var(--pink)"></p>
@@ -1329,7 +1332,7 @@
           <label class="field-label" style="margin-top:18px">Default message purge (days)</label>
           <input class="cyber-input" type="number" id="modact-tempban-purge" min="0" max="7" value="2">
 
-          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
             <button class="btn-primary" onclick="saveModAction('tempban')">Save</button>
             <p class="save-msg" id="modact-tempban-saved">// Settings saved successfully</p>
             <p class="save-msg" id="modact-tempban-error" style="color:var(--pink)"></p>
@@ -1349,7 +1352,7 @@
         <label class="field-label">Publish to channel</label>
         <div id="infohub-channel-picker"></div>
 
-        <div style="display:flex;gap:4px;border-bottom:1px solid rgba(0,240,255,0.15);margin:18px 0">
+        <div style="display:flex;gap:4px;border-bottom:1px solid rgba(var(--accent-rgb),0.15);margin:18px 0">
           <button class="sticky-subtab-btn active" id="infohub-subtab-btn-custom" onclick="showInfoHubSubtab('custom')">Custom</button>
           <button class="sticky-subtab-btn" id="infohub-subtab-btn-themed" onclick="showInfoHubSubtab('themed')">Themed</button>
         </div>
@@ -1364,7 +1367,7 @@
           <div style="overflow-x:auto;margin-top:18px">
             <table style="width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:0.72rem">
               <thead>
-                <tr style="border-bottom:1px solid rgba(0,240,255,0.15);text-align:left">
+                <tr style="border-bottom:1px solid rgba(var(--accent-rgb),0.15);text-align:left">
                   <th style="padding:8px;color:var(--cyan)">ORDER</th>
                   <th style="padding:8px;color:var(--cyan)">TITLE</th>
                   <th style="padding:8px;color:var(--cyan)">BANNER</th>
@@ -1378,7 +1381,7 @@
           </div>
 
           <!-- ── PANEL EDITOR (shared for create + edit) ─────────────────────── -->
-          <div id="infohub-editor" style="display:none;margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
+          <div id="infohub-editor" style="display:none;margin-top:24px;padding-top:20px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
             <p class="card-title" id="infohub-editor-heading" style="font-size:0.75rem">// new panel</p>
 
             <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:12px">
@@ -1395,7 +1398,7 @@
                 <label class="field-label" style="margin-top:14px">Embed accent color</label>
                 <input class="cyber-input" type="text" id="infohub-color" placeholder="#00f0ff" maxlength="7">
 
-                <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+                <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
                   <button class="btn-primary" onclick="saveInfoHubPanel()">Save Panel</button>
                   <button class="btn-secondary" onclick="cancelInfoHubPanel()" style="margin-left:8px">Cancel</button>
                   <button class="btn-secondary" onclick="deleteInfoHubPanelFromEditor()" id="infohub-delete-btn" style="display:none;margin-left:8px;border-color:var(--pink);color:var(--pink)">Delete</button>
@@ -1408,7 +1411,7 @@
                 <label class="field-label">Live Preview</label>
                 <div style="background:#2b2d31;border-radius:8px;padding:14px;margin-top:8px">
                   <div id="infohub-preview-banner" style="height:70px;border-radius:4px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:900;color:#fff;text-transform:uppercase"></div>
-                  <div style="border-left:4px solid #00f0ff;background:#1e1f22;border-radius:4px;padding:10px 14px" id="infohub-preview-embed">
+                  <div style="border-left:4px solid var(--cyan);background:#1e1f22;border-radius:4px;padding:10px 14px" id="infohub-preview-embed">
                     <div id="infohub-preview-content" style="color:#dbdee1;font-size:0.85rem;white-space:pre-wrap;line-height:1.5"></div>
                   </div>
                 </div>
@@ -1416,7 +1419,7 @@
             </div>
           </div>
 
-          <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
+          <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
             <button class="btn-primary" onclick="publishInfoHub()">Publish / Update All Panels</button>
             <p id="infohub-publish-result" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-top:10px"></p>
           </div>
@@ -1434,17 +1437,17 @@
             <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">Checking available themes...</p>
           </div>
 
-          <div id="infohub-themed-panels" style="display:none;margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,240,255,0.1)">
+          <div id="infohub-themed-panels" style="display:none;margin-top:24px;padding-top:20px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
             <p class="card-title" style="font-size:0.75rem" id="infohub-themed-heading">// theme panels</p>
             <div id="infohub-themed-panel-list" style="margin-top:12px"></div>
 
-            <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+            <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
               <button class="btn-primary" onclick="saveThemedInfoHubContent()">Save All Panel Content</button>
               <p class="save-msg" id="infohub-themed-saved">// Settings saved successfully</p>
               <p class="save-msg" id="infohub-themed-error" style="color:var(--pink)"></p>
             </div>
 
-            <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(0,240,255,0.1)">
+            <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(var(--accent-rgb),0.1)">
               <button class="btn-primary" onclick="publishThemedInfoHubAction()">Publish / Update Themed Hub</button>
               <p id="infohub-themed-publish-result" style="font-family:var(--font-mono);font-size:0.65rem;color:var(--grey);margin-top:10px"></p>
             </div>
@@ -1487,9 +1490,9 @@
         <label class="field-label">Search for streamer / channel</label>
         <div style="position:relative">
           <input class="cyber-input" type="text" id="alert-search" placeholder="Type a name to search..." oninput="onAlertSearch(this.value)" autocomplete="off">
-          <div id="search-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:#080d1a;border:1px solid rgba(0,240,255,0.2);border-top:none;z-index:100;max-height:240px;overflow-y:auto"></div>
+          <div id="search-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--bg-2);border:1px solid rgba(var(--accent-rgb),0.2);border-top:none;z-index:100;max-height:240px;overflow-y:auto"></div>
         </div>
-        <div id="selected-streamer" style="display:none;margin-top:10px;padding:10px 12px;border:1px solid rgba(0,240,255,0.3);background:rgba(0,240,255,0.04)">
+        <div id="selected-streamer" style="display:none;margin-top:10px;padding:10px 12px;border:1px solid rgba(var(--accent-rgb),0.3);background:rgba(var(--accent-rgb),0.04)">
           <div style="display:flex;align-items:center;gap:10px">
             <img id="selected-avatar" src="" style="width:32px;height:32px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'">
             <div><p id="selected-name" style="font-family:var(--font-display);font-size:0.7rem;font-weight:700;color:var(--cyan)"></p><p id="selected-meta" style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey)"></p></div>
@@ -1516,7 +1519,7 @@
 
     <!-- ══════════════════════════════════ ESO (guild sync + charter download, one page) ══════════════════════════════════ -->
     <div class="tab" id="tab-eso">
-      <div class="game-hero" style="border:1px solid rgba(0,240,255,0.3);padding:24px 26px;margin-bottom:24px;background:linear-gradient(135deg, rgba(0,240,255,0.08), rgba(180,79,255,0.05) 60%, transparent);position:relative">
+      <div class="game-hero" style="border:1px solid rgba(var(--accent-rgb),0.3);padding:24px 26px;margin-bottom:24px;background:linear-gradient(135deg, rgba(var(--accent-rgb),0.08), rgba(var(--purple-rgb),0.05) 60%, transparent);position:relative">
         <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--pink);letter-spacing:3px;margin-bottom:6px">⚜ POSTED TO THE GUILD NOTICE BOARD</p>
         <p class="page-tag">// elder scrolls online</p>
         <p class="page-title" style="margin-bottom:10px">AURA // ESO GUILD SYNC</p>
@@ -1552,7 +1555,7 @@
       </div>
 
       <p class="cmd-section-label" style="margin-top:26px">// the charter (download)</p>
-      <div class="section-card" style="border-color:rgba(0,240,255,0.35);text-align:center;padding:32px 24px">
+      <div class="section-card" style="border-color:rgba(var(--accent-rgb),0.35);text-align:center;padding:32px 24px">
         <p style="font-family:var(--font-mono);font-size:0.62rem;color:var(--grey);letter-spacing:3px;margin-bottom:14px">THE CHARTER — VERSION 1.0.0</p>
         <a href="downloads/AuraAI-ESO-Sync.zip" download class="btn-primary" style="display:inline-block;text-decoration:none;font-size:0.85rem;padding:14px 32px">⬇ CLAIM THE CHARTER</a>
         <p style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey);margin-top:14px">Includes the herald, the courier, and a written guide.</p>
@@ -1660,7 +1663,7 @@
         <div class="plans-grid">
           <div class="plan-card" id="plan-card-free"><div id="plan-badge-free" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div><p class="plan-name">Free</p><p class="plan-price">$0<span>/mo</span></p><div class="divider"></div><div class="plan-feature">✓ /chat command</div><div class="plan-feature">✓ Game tools: MTG, Division 2, Destiny 2, ESO</div><div class="plan-feature">✓ Moderation, tickets, leveling</div><div class="plan-feature off">✗ Social alerts</div><div class="plan-feature off">✗ AI persona</div></div>
           <div class="plan-card" id="plan-card-pro"><div id="plan-badge-pro" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div><p class="plan-name">Pro</p><p class="plan-price">$9<span>/mo</span></p><div class="divider"></div><div class="plan-feature">✓ Everything in Free</div><div class="plan-feature">✓ Social alerts</div><div class="plan-feature">✓ AI persona</div><div class="plan-feature">✓ Pro moderation &amp; mod log</div><div class="plan-feature">✓ Sticky messages, security tools</div><div id="plan-upgrade-pro"><button class="btn-secondary" style="width:100%;margin-top:14px;font-size:0.58rem" onclick="startCheckout('pro')">Upgrade</button></div></div>
-          <div class="plan-card" id="plan-card-lifetime"><div id="plan-badge-lifetime" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:#b44fff;text-shadow:0 0 8px #b44fff;letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div><p class="plan-name" style="color:#b44fff;text-shadow:0 0 10px #b44fff,0 0 30px #b44fff44;letter-spacing:3px">Lifetime</p><p class="plan-price" style="color:#b44fff;text-shadow:0 0 10px #b44fff,0 0 30px #b44fff44">$79<span> once</span></p><div class="divider"></div><div class="plan-feature">✓ Everything in Pro</div><div class="plan-feature">✓ Priority support</div><div class="plan-feature">✓ Early access</div><div class="plan-feature">✓ No recurring fees</div><div id="plan-upgrade-lifetime"><button class="btn-secondary" style="width:100%;margin-top:14px;font-size:0.58rem" onclick="startCheckout('lifetime')">Upgrade</button></div></div>
+          <div class="plan-card" id="plan-card-lifetime"><div id="plan-badge-lifetime" style="display:none;font-family:var(--font-mono);font-size:0.55rem;color:var(--purple);text-shadow:0 0 8px var(--purple);letter-spacing:2px;margin-bottom:6px">★ CURRENT PLAN</div><p class="plan-name" style="color:var(--purple);text-shadow:0 0 10px var(--purple),0 0 30px #b44fff44;letter-spacing:3px">Lifetime</p><p class="plan-price" style="color:var(--purple);text-shadow:0 0 10px var(--purple),0 0 30px #b44fff44">$79<span> once</span></p><div class="divider"></div><div class="plan-feature">✓ Everything in Pro</div><div class="plan-feature">✓ Priority support</div><div class="plan-feature">✓ Early access</div><div class="plan-feature">✓ No recurring fees</div><div id="plan-upgrade-lifetime"><button class="btn-secondary" style="width:100%;margin-top:14px;font-size:0.58rem" onclick="startCheckout('lifetime')">Upgrade</button></div></div>
         </div>
       </div>
     </div>
@@ -2239,11 +2242,11 @@
       if (upgradeProBtn) upgradeProBtn.style.display = (tier === 'pro' || tier === 'lifetime') ? 'none' : 'block';
       const planEl = document.getElementById('billing-plan'); const renewEl = document.getElementById('billing-renew'); const badgeEl = document.getElementById('billing-badge');
       if (tier === 'lifetime') {
-        if (planEl) { planEl.textContent = 'Lifetime License'; planEl.style.color = '#b44fff'; planEl.style.textShadow = '0 0 10px #b44fff,0 0 30px #b44fff44'; planEl.style.fontFamily = 'var(--font-display)'; planEl.style.letterSpacing = '2px'; }
+        if (planEl) { planEl.textContent = 'Lifetime License'; planEl.style.color = 'var(--purple)'; planEl.style.textShadow = '0 0 10px var(--purple),0 0 30px #b44fff44'; planEl.style.fontFamily = 'var(--font-display)'; planEl.style.letterSpacing = '2px'; }
         if (renewEl) renewEl.textContent = '★ Never expires — unlimited access forever';
-        if (badgeEl) { badgeEl.textContent = 'LIFETIME'; badgeEl.style.color = '#b44fff'; badgeEl.style.borderColor = '#b44fff'; badgeEl.style.boxShadow = '0 0 10px #b44fff,0 0 30px #b44fff44'; }
+        if (badgeEl) { badgeEl.textContent = 'LIFETIME'; badgeEl.style.color = 'var(--purple)'; badgeEl.style.borderColor = 'var(--purple)'; badgeEl.style.boxShadow = '0 0 10px var(--purple),0 0 30px #b44fff44'; }
         const navTier = document.getElementById('nav-tier');
-        if (navTier) { navTier.style.borderColor = '#b44fff'; navTier.style.color = '#b44fff'; navTier.style.boxShadow = '0 0 10px #b44fff,0 0 30px #b44fff44'; navTier.classList.remove('coach-badge'); }
+        if (navTier) { navTier.style.borderColor = 'var(--purple)'; navTier.style.color = 'var(--purple)'; navTier.style.boxShadow = '0 0 10px var(--purple),0 0 30px #b44fff44'; navTier.classList.remove('coach-badge'); }
       } else if (tier === 'pro') {
         if (planEl) planEl.textContent = 'Pro — $9/month';
         if (renewEl) { if (access.expires_at) renewEl.textContent = `Renews ${new Date(access.expires_at).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}`; else renewEl.textContent = '★ Manually granted — no expiry date set'; }
@@ -2328,13 +2331,13 @@
     const warningText = document.getElementById('bot-warning-text');
     if (warning) {
       if (guildId) {
-        warning.style.border='1px solid rgba(0,255,136,0.5)';warning.style.background='rgba(0,255,136,0.07)';warning.style.boxShadow='0 0 12px rgba(0,255,136,0.15)';
+        warning.style.border='1px solid rgba(var(--green-rgb),0.5)';warning.style.background='rgba(var(--green-rgb),0.07)';warning.style.boxShadow='0 0 12px rgba(var(--green-rgb),0.15)';
         if (warningIcon) warningIcon.textContent='✅';
-        if (warningText) { warningText.style.color='var(--green)';warningText.style.textShadow='0 0 8px rgba(0,255,136,0.5)';const guild=userGuilds.find(g=>g.id===guildId);warningText.textContent=`Server selected: ${guild?guild.name:guildId} — settings below apply to this server.`; }
+        if (warningText) { warningText.style.color='var(--green)';warningText.style.textShadow='0 0 8px rgba(var(--green-rgb),0.5)';const guild=userGuilds.find(g=>g.id===guildId);warningText.textContent=`Server selected: ${guild?guild.name:guildId} — settings below apply to this server.`; }
       } else {
-        warning.style.border='1px solid rgba(255,45,120,0.5)';warning.style.background='rgba(255,45,120,0.07)';warning.style.boxShadow='0 0 12px rgba(255,45,120,0.15)';
+        warning.style.border='1px solid rgba(var(--pink-rgb),0.5)';warning.style.background='rgba(var(--pink-rgb),0.07)';warning.style.boxShadow='0 0 12px rgba(var(--pink-rgb),0.15)';
         if (warningIcon) warningIcon.textContent='⚠️';
-        if (warningText) { warningText.style.color='var(--pink)';warningText.style.textShadow='0 0 8px rgba(255,45,120,0.5)';warningText.textContent='No server selected — select your Discord server from the sidebar dropdown first.'; }
+        if (warningText) { warningText.style.color='var(--pink)';warningText.style.textShadow='0 0 8px rgba(var(--pink-rgb),0.5)';warningText.textContent='No server selected — select your Discord server from the sidebar dropdown first.'; }
       }
     }
 
@@ -2545,7 +2548,7 @@
       const res=await fetch('https://uptxufmqqwjytffhbcdd.supabase.co/functions/v1/dynamic-function',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${searchSession?.access_token || ''}`},body:JSON.stringify({query,platform})});
       const data=await res.json();
       if(!data.results||data.results.length===0){resultsEl.innerHTML='<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--grey)">No results found</div>';return;}
-      resultsEl.innerHTML=data.results.map(r=>`<div onclick='selectStreamer(${JSON.stringify(r)})' style="display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(0,240,255,0.06)" onmouseover="this.style.background='rgba(0,240,255,0.06)'" onmouseout="this.style.background='none'">${r.avatar?`<img src="${r.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover">`:'<div style="width:28px;height:28px;border-radius:50%;background:rgba(0,240,255,0.1)"></div>'}<div><p style="font-family:var(--font-display);font-size:0.65rem;font-weight:700;color:var(--white)">${r.displayName}</p><p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">@${r.username}${r.live?' 🔴 LIVE':''}${r.game?' — '+r.game:''}</p></div></div>`).join('');
+      resultsEl.innerHTML=data.results.map(r=>`<div onclick='selectStreamer(${JSON.stringify(r)})' style="display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid rgba(var(--accent-rgb),0.06)" onmouseover="this.style.background='rgba(var(--accent-rgb),0.06)'" onmouseout="this.style.background='none'">${r.avatar?`<img src="${r.avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover">`:'<div style="width:28px;height:28px;border-radius:50%;background:rgba(var(--accent-rgb),0.1)"></div>'}<div><p style="font-family:var(--font-display);font-size:0.65rem;font-weight:700;color:var(--white)">${r.displayName}</p><p style="font-family:var(--font-mono);font-size:0.58rem;color:var(--grey)">@${r.username}${r.live?' 🔴 LIVE':''}${r.game?' — '+r.game:''}</p></div></div>`).join('');
     }catch(err){resultsEl.innerHTML='<div style="padding:10px 12px;font-family:var(--font-mono);font-size:0.65rem;color:var(--pink)">Search error — try entering username manually</div>';}
   }
 
@@ -2574,30 +2577,24 @@
   }
 
   // ── THEME ─────────────────────────────────────────────────────────────────
-  async function setTheme(theme){
+  // Themes: 'shelf' (default, matches the public site), 'cyber' (original), 'red', 'pink', 'orange'.
+  const THEMES=['shelf','cyber','red','pink','orange'];
+  function applyTheme(theme){
+    if(!THEMES.includes(theme))theme='shelf';
     document.body.classList.remove('theme-red','theme-pink','theme-orange','theme-cyber');
-    if(theme==='red')document.body.classList.add('theme-red');
-    if(theme==='pink')document.body.classList.add('theme-pink');
-    if(theme==='orange')document.body.classList.add('theme-orange');
-    document.getElementById('theme-btn-cyber').classList.toggle('active',theme==='cyber');
-    document.getElementById('theme-btn-red').classList.toggle('active',theme==='red');
-    document.getElementById('theme-btn-pink').classList.toggle('active',theme==='pink');
-    document.getElementById('theme-btn-orange').classList.toggle('active',theme==='orange');
-    const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
-    if(discordId)await sb.from('user_access').update({theme}).eq('discord_id',discordId);
-    localStorage.setItem('auraai-theme',theme);showSaved('theme-saved');
+    if(theme!=='shelf')document.body.classList.add('theme-'+theme);
+    THEMES.forEach(t=>{const b=document.getElementById('theme-btn-'+t);if(b)b.classList.toggle('active',t===theme);});
   }
 
-  function applyTheme(theme){
-    document.body.classList.remove('theme-red','theme-pink','theme-orange','theme-cyber');
-    if(theme==='red')document.body.classList.add('theme-red');
-    if(theme==='pink')document.body.classList.add('theme-pink');
-    if(theme==='orange')document.body.classList.add('theme-orange');
-    const cyberBtn=document.getElementById('theme-btn-cyber');const redBtn=document.getElementById('theme-btn-red');const pinkBtn=document.getElementById('theme-btn-pink');const orangeBtn=document.getElementById('theme-btn-orange');
-    if(cyberBtn)cyberBtn.classList.toggle('active',theme==='cyber'||!theme);
-    if(redBtn)redBtn.classList.toggle('active',theme==='red');
-    if(pinkBtn)pinkBtn.classList.toggle('active',theme==='pink');
-    if(orangeBtn)orangeBtn.classList.toggle('active',theme==='orange');
+  async function setTheme(theme){
+    applyTheme(theme);
+    localStorage.setItem('auraai-theme',theme);
+    const discordId=currentUser?.user_metadata?.provider_id||currentUser?.id;
+    if(discordId){
+      const {error}=await sb.from('user_access').update({theme}).eq('discord_id',discordId);
+      if(error)console.warn('Theme not saved to account:',error.message);
+    }
+    showSaved('theme-saved');
   }
 
   async function saveWelcomeChannel() {

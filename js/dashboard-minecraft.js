@@ -51,7 +51,7 @@
     #tab-mc .mc-label { ${mono}; font-size:0.58rem; letter-spacing:2px; color:var(--grey); margin-top:16px; }
     #tab-mc .mc-msg { ${mono}; font-size:0.68rem; margin-top:10px; min-height:1em; }
     #tab-mc .mc-job { display:flex; gap:10px; ${mono}; font-size:0.64rem; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--grey); }
-    #tab-mc .mc-addr { ${mono}; font-size:0.78rem; color:var(--cyan); cursor:pointer; border-bottom:1px dashed rgba(0,240,255,0.4); }
+    #tab-mc .mc-addr { ${mono}; font-size:0.78rem; color:var(--cyan); cursor:pointer; border-bottom:1px dashed rgba(var(--accent-rgb),0.4); }
     #tab-mc .mc-link { ${mono}; font-size:0.6rem; color:var(--grey); background:none; border:none; cursor:pointer; text-decoration:underline; padding:0; }
   `;
 

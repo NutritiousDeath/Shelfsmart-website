@@ -19,12 +19,12 @@
     const css = document.createElement('style');
     css.id = 'aura-scrollbar-style';
     css.textContent = `
-      .sidebar, .main { scrollbar-width: thin; scrollbar-color: rgba(0,240,255,0.28) transparent;
+      .sidebar, .main { scrollbar-width: thin; scrollbar-color: rgba(var(--accent-rgb),0.28) transparent;
         scrollbar-color: color-mix(in srgb, var(--cyan) 30%, transparent) transparent; }
       .sidebar::-webkit-scrollbar, .main::-webkit-scrollbar { width: 5px; }
       .sidebar::-webkit-scrollbar-track, .main::-webkit-scrollbar-track { background: transparent; }
-      .sidebar::-webkit-scrollbar-thumb, .main::-webkit-scrollbar-thumb { background: rgba(0,240,255,0.28); border-radius: 3px; }
-      .sidebar::-webkit-scrollbar-thumb:hover, .main::-webkit-scrollbar-thumb:hover { background: rgba(0,240,255,0.55); }
+      .sidebar::-webkit-scrollbar-thumb, .main::-webkit-scrollbar-thumb { background: rgba(var(--accent-rgb),0.28); border-radius: 3px; }
+      .sidebar::-webkit-scrollbar-thumb:hover, .main::-webkit-scrollbar-thumb:hover { background: rgba(var(--accent-rgb),0.55); }
     `;
     (document.head || document.documentElement).appendChild(css);
   })();
@@ -100,14 +100,14 @@
     const mono = 'font-family:var(--font-mono)';
     return `
       <div class="game-hero game-hero-banner" style="border:1px solid ${accent}66;margin-bottom:24px;overflow:hidden;background:linear-gradient(160deg, ${accent}14, rgba(0,191,255,0.03) 55%, transparent);box-shadow:0 0 24px ${accent}26">
-        <div style="position:relative;background:#050810">
+        <div style="position:relative;background:var(--bg)">
           <img src="${art}" alt="Aura" onerror="this.style.display='none';this.parentNode.style.minHeight='120px'"
             style="display:block;width:100%;height:clamp(200px, 32vw, 360px);object-fit:cover;object-position:${focus || 'center 30%'}">
-          <div style="position:absolute;inset:0;background:linear-gradient(180deg, transparent 45%, rgba(5,8,16,0.55) 72%, #050810 100%);pointer-events:none"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg, transparent 45%, rgba(var(--bg-rgb),0.55) 72%, var(--bg) 100%);pointer-events:none"></div>
           <div style="position:absolute;left:0;top:0;bottom:0;width:4px;background:${accent};box-shadow:0 0 14px ${accent}"></div>
           <div style="position:absolute;left:26px;right:26px;bottom:14px">
-            <p class="page-tag" style="color:${accent};text-shadow:0 0 8px #050810">${tag}</p>
-            <p class="page-title" style="margin:0;text-shadow:0 0 18px #050810, 0 0 4px #050810">${title}</p>
+            <p class="page-tag" style="color:${accent};text-shadow:0 0 8px var(--bg)">${tag}</p>
+            <p class="page-title" style="margin:0;text-shadow:0 0 18px var(--bg), 0 0 4px var(--bg)">${title}</p>
           </div>
         </div>
         <div style="padding:16px 26px 20px">

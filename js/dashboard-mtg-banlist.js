@@ -16,7 +16,7 @@
   const API = (typeof RAILWAY_BOT_URL !== 'undefined') ? RAILWAY_BOT_URL : 'https://web-production-01b81.up.railway.app';
   const BILLING_URL = 'dashboard.html?premium=plans';
   const mono = 'font-family:var(--font-mono)';
-  const ACCENT = '#b44fff';
+  const ACCENT = 'var(--purple)';
 
   let overview = null;       // GET /api/mtg/banlist
   let guildInfo = null;      // GET /api/mtg/banlist/guild
@@ -35,11 +35,11 @@
     #mtg-banlist .bl-group-all { ${mono}; font-size:0.58rem; letter-spacing:1px; color:var(--grey); cursor:pointer; margin-left:8px; text-decoration:underline; }
     #mtg-banlist .bl-plat { ${mono}; font-size:0.7rem; color:var(--cyan); letter-spacing:2px; margin:16px 0 4px; grid-column:1/-1; }
     #mtg-banlist .bl-chip { ${mono}; font-size:0.68rem; letter-spacing:1px; padding:7px 12px; border:1px solid rgba(255,255,255,0.15); color:var(--grey); cursor:pointer; user-select:none; background:transparent; }
-    #mtg-banlist .bl-chip.on { border-color:${ACCENT}; color:var(--white); background:rgba(180,79,255,0.12); box-shadow:0 0 8px rgba(180,79,255,0.35); }
+    #mtg-banlist .bl-chip.on { border-color:${ACCENT}; color:var(--white); background:rgba(var(--purple-rgb),0.12); box-shadow:0 0 8px rgba(var(--purple-rgb),0.35); }
     #mtg-banlist .bl-chip:disabled { opacity:0.4; cursor:not-allowed; }
     #mtg-banlist .bl-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; align-items:center; }
     #mtg-banlist .bl-status { ${mono}; font-size:0.72rem; line-height:1.8; margin-top:14px; padding:10px 14px; border:1px solid rgba(255,255,255,0.1); }
-    #mtg-banlist .bl-badge { ${mono}; font-size:0.56rem; letter-spacing:2px; padding:3px 8px; border:1px solid ${ACCENT}; color:${ACCENT}; text-shadow:0 0 6px rgba(180,79,255,0.6); }
+    #mtg-banlist .bl-badge { ${mono}; font-size:0.56rem; letter-spacing:2px; padding:3px 8px; border:1px solid ${ACCENT}; color:${ACCENT}; text-shadow:0 0 6px rgba(var(--purple-rgb),0.6); }
     #mtg-banlist details { margin-top:20px; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px; }
     #mtg-banlist summary { ${mono}; font-size:0.7rem; color:var(--cyan); cursor:pointer; letter-spacing:1px; }
     #mtg-banlist .bl-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr)); gap:12px; margin-top:12px; }
@@ -52,7 +52,7 @@
 
   const HTML = `
     <style>${CSS}</style>
-    <div class="section-card" id="mtg-banlist" style="border-color:rgba(180,79,255,0.35)">
+    <div class="section-card" id="mtg-banlist" style="border-color:rgba(var(--purple-rgb),0.35)">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
         <p class="card-title" style="margin:0">// ban list channels</p>
         <span class="bl-badge">PREMIUM</span>
@@ -61,7 +61,7 @@
         When an official Wizards ban list changes, Aura posts what changed and the updated list. MTG Arena and MTGO each get their own channel so they don't crowd each other — use one or both.
         <span style="color:var(--grey)">Needs Aura Premium for MTG ($5/mo) or AuraAI Pro / Lifetime on the server.</span>
       </p>
-      <div id="bl-upsell" style="display:none;margin-top:14px;border:1px solid rgba(180,79,255,0.45);background:rgba(180,79,255,0.06);padding:12px 14px">
+      <div id="bl-upsell" style="display:none;margin-top:14px;border:1px solid rgba(var(--purple-rgb),0.45);background:rgba(var(--purple-rgb),0.06);padding:12px 14px">
         <p style="${mono};font-size:0.72rem;color:var(--white);line-height:1.8">⭐ This server isn't covered yet. Get <span style="color:${ACCENT}">Aura Premium — MTG Arena ($5/mo)</span> or All Games ($10/mo) to turn it on for any server you admin.</p>
         <a href="${BILLING_URL}" class="btn-primary" style="display:inline-block;text-decoration:none;margin-top:10px;font-size:0.7rem;padding:8px 16px">SEE PLANS</a>
       </div>
@@ -75,7 +75,7 @@
       <div class="bl-actions">
         <button class="btn-primary" id="bl-save">SAVE &amp; TURN ON</button>
         <button class="btn-secondary" id="bl-post" style="font-size:0.65rem;padding:8px 14px">POST CURRENT LIST NOW</button>
-        <button class="btn-secondary" id="bl-off" style="font-size:0.65rem;padding:8px 14px;border-color:rgba(255,45,120,0.5);color:var(--pink)">TURN OFF</button>
+        <button class="btn-secondary" id="bl-off" style="font-size:0.65rem;padding:8px 14px;border-color:rgba(var(--pink-rgb),0.5);color:var(--pink)">TURN OFF</button>
         <span class="bl-msg" id="bl-msg"></span>
       </div>
       <div class="bl-status" id="bl-status">Pick a server.</div>

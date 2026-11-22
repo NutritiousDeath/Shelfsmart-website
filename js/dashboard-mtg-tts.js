@@ -15,7 +15,7 @@
 (function () {
   const WORKSHOP_URL = '';
   const HERO_IMAGE = 'img/mtg/tts-table.jpg';
-  const ACCENT = '#b44fff';
+  const ACCENT = 'var(--purple)';
 
   const ICON_TABLE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="12" rx="2"/><rect x="6.5" y="8.5" width="3" height="4.2" rx="0.5"/><rect x="14.5" y="11.3" width="3" height="4.2" rx="0.5"/><path d="M3 12h3M18 12h3"/></svg>';
 
@@ -53,7 +53,7 @@
       <div style="padding:22px 26px">
         <p class="page-tag">// magic: the gathering · tabletop simulator</p>
         <p class="page-title" style="margin-bottom:10px">MTG // COMMANDER TABLE</p>
-        <span style="display:inline-block;${mono};font-size:0.6rem;letter-spacing:2px;color:#050810;background:${ACCENT};padding:4px 10px;margin-bottom:14px;box-shadow:0 0 12px ${ACCENT}">IN DEVELOPMENT · TESTING</span>
+        <span style="display:inline-block;${mono};font-size:0.6rem;letter-spacing:2px;color:var(--bg);background:${ACCENT};padding:4px 10px;margin-bottom:14px;box-shadow:0 0 12px ${ACCENT}">IN DEVELOPMENT · TESTING</span>
         <p style="${mono};font-size:0.82rem;color:var(--white);line-height:1.9">
           A fully automated, four-player Commander table, built from scratch in Lua for Tabletop Simulator.
           It follows the turn structure, runs the stack, reads each card's rules text and sets up its triggers,

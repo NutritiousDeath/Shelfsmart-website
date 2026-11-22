@@ -72,7 +72,7 @@ function renderTicketPanelList() {
   container.innerHTML = '';
   ticketPanelsCache.forEach(panel => {
     const row = document.createElement('div');
-    row.style = 'display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.1);border-radius:6px;margin-bottom:8px;cursor:pointer';
+    row.style = 'display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:rgba(var(--accent-rgb),0.04);border:1px solid rgba(var(--accent-rgb),0.1);border-radius:6px;margin-bottom:8px;cursor:pointer';
     row.onclick = () => openTicketPanelEditor(panel.id);
 
     const left = document.createElement('div');
@@ -82,7 +82,7 @@ function renderTicketPanelList() {
 
     const right = document.createElement('span');
     right.textContent = panel.status === 'published' ? 'Published' : 'Draft';
-    right.style = `font-family:var(--font-mono);font-size:0.6rem;padding:3px 10px;border-radius:10px;${panel.status === 'published' ? 'background:rgba(0,255,136,0.15);color:var(--green)' : 'background:rgba(255,255,255,0.08);color:var(--grey)'}`;
+    right.style = `font-family:var(--font-mono);font-size:0.6rem;padding:3px 10px;border-radius:10px;${panel.status === 'published' ? 'background:rgba(var(--green-rgb),0.15);color:var(--green)' : 'background:rgba(255,255,255,0.08);color:var(--grey)'}`;
 
     row.appendChild(left);
     row.appendChild(right);
@@ -139,7 +139,7 @@ async function openTicketPanelEditor(panelId) {
     const embed = panel.panel_embed || {};
     document.getElementById('ticket-panel-embed-title').value = embed.title || '';
     document.getElementById('ticket-panel-embed-desc').value = embed.description || '';
-    document.getElementById('ticket-panel-embed-color').value = embed.color || '#00f0ff';
+    document.getElementById('ticket-panel-embed-color').value = embed.color || 'var(--cyan)';
     document.getElementById('ticket-panel-embed-image').value = embed.image_url || '';
 
     setTicketPanelMode(panel.mode === 'dropdown' ? 'dropdown' : 'buttons');
@@ -179,7 +179,7 @@ function renderTicketCommandToggles(panel) {
   ];
   commands.forEach(cmd => {
     const row = document.createElement('label');
-    row.style = 'display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.1);border-radius:6px;margin-bottom:8px;cursor:pointer';
+    row.style = 'display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(var(--accent-rgb),0.04);border:1px solid rgba(var(--accent-rgb),0.1);border-radius:6px;margin-bottom:8px;cursor:pointer';
     row.innerHTML = `<input type="checkbox" id="ticket-${cmd.key}" ${panel[cmd.dbKey] !== false ? 'checked' : ''}>` +
       `<span><span style="font-weight:600;font-size:0.8rem">${cmd.name}</span><br><span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--grey)">${cmd.desc}</span></span>`;
     container.appendChild(row);
@@ -222,7 +222,7 @@ function renderTicketManagerRoleChips() {
   ticketManagerRoleIds.forEach(roleId => {
     const role = (guildRoleCache || []).find(r => r.id === roleId);
     const chip = document.createElement('span');
-    chip.style = 'display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(0,240,255,0.12);border:1px solid rgba(0,240,255,0.3);border-radius:12px;font-family:var(--font-mono);font-size:0.65rem';
+    chip.style = 'display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(var(--accent-rgb),0.12);border:1px solid rgba(var(--accent-rgb),0.3);border-radius:12px;font-family:var(--font-mono);font-size:0.65rem';
     chip.innerHTML = `${role ? role.name : roleId} <span style="cursor:pointer;color:var(--pink)">✕</span>`;
     chip.querySelector('span').onclick = () => {
       ticketManagerRoleIds = ticketManagerRoleIds.filter(id => id !== roleId);
@@ -283,7 +283,7 @@ async function openTicketEmojiPicker(rowId) {
   const btn = document.getElementById(rowId + '-emoji-btn');
   const popup = document.createElement('div');
   popup.id = 'ticket-emoji-popup';
-  popup.style = 'position:absolute;z-index:50;margin-top:4px;width:260px;max-height:260px;overflow-y:auto;background:#0a0e18;border:1px solid rgba(0,240,255,0.3);border-radius:8px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,0.5)';
+  popup.style = 'position:absolute;z-index:50;margin-top:4px;width:260px;max-height:260px;overflow-y:auto;background:#0a0e18;border:1px solid rgba(var(--accent-rgb),0.3);border-radius:8px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,0.5)';
 
   const unicodeRow = document.createElement('input');
   unicodeRow.className = 'cyber-input';
@@ -312,7 +312,7 @@ async function openTicketEmojiPicker(rowId) {
     const item = document.createElement('button');
     item.type = 'button';
     item.title = e.name;
-    item.style = 'width:36px;height:36px;border:none;border-radius:6px;background:rgba(0,240,255,0.05);cursor:pointer;display:flex;align-items:center;justify-content:center';
+    item.style = 'width:36px;height:36px;border:none;border-radius:6px;background:rgba(var(--accent-rgb),0.05);cursor:pointer;display:flex;align-items:center;justify-content:center';
     item.innerHTML = `<img src="${e.url}" style="width:22px;height:22px" alt="${e.name}">`;
     item.onclick = () => setTicketTypeEmoji(rowId, `<${e.animated ? 'a' : ''}:${e.name}:${e.id}>`);
     grid.appendChild(item);
@@ -330,7 +330,7 @@ function addTicketType(existing) {
   const rowId = 'tk-type-' + (ticketTypeCounter++);
   const row = document.createElement('div');
   row.id = rowId;
-  row.style = 'padding:14px;background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.1);border-radius:6px;margin-bottom:12px';
+  row.style = 'padding:14px;background:rgba(var(--accent-rgb),0.04);border:1px solid rgba(var(--accent-rgb),0.1);border-radius:6px;margin-bottom:12px';
 
   const topLine = document.createElement('div');
   topLine.style = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px';
@@ -348,7 +348,7 @@ function addTicketType(existing) {
   emojiBtn.type = 'button';
   emojiBtn.id = rowId + '-emoji-btn';
   emojiBtn.title = 'Choose an emoji';
-  emojiBtn.style = 'width:38px;height:34px;border-radius:6px;border:1px solid rgba(0,240,255,0.2);background:rgba(0,240,255,0.06);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0';
+  emojiBtn.style = 'width:38px;height:34px;border-radius:6px;border:1px solid rgba(var(--accent-rgb),0.2);background:rgba(var(--accent-rgb),0.06);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0';
   emojiBtn.onclick = () => openTicketEmojiPicker(rowId);
   topLine.appendChild(emojiBtn);
 
@@ -483,7 +483,7 @@ async function saveTicketPanel(publish) {
     panelEmbed: {
       title: document.getElementById('ticket-panel-embed-title').value || null,
       description: document.getElementById('ticket-panel-embed-desc').value || null,
-      color: document.getElementById('ticket-panel-embed-color').value || '#00f0ff',
+      color: document.getElementById('ticket-panel-embed-color').value || 'var(--cyan)',
       image_url: document.getElementById('ticket-panel-embed-image').value || null,
     },
     mode: ticketCurrentMode,

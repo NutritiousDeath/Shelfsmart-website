@@ -64,15 +64,15 @@
     #tab-mtg .mtg-soon-band {
       position: absolute; left: -20%; right: -20%; top: -46px;
       transform: rotate(-7deg);
-      background: linear-gradient(90deg, rgba(180,79,255,0.0), rgba(180,79,255,0.88) 18%, rgba(120,40,200,0.92) 50%, rgba(180,79,255,0.88) 82%, rgba(180,79,255,0.0));
+      background: linear-gradient(90deg, rgba(var(--purple-rgb),0.0), rgba(var(--purple-rgb),0.88) 18%, rgba(120,40,200,0.92) 50%, rgba(var(--purple-rgb),0.88) 82%, rgba(var(--purple-rgb),0.0));
       border-top: 2px solid var(--cyan); border-bottom: 2px solid var(--cyan);
-      box-shadow: 0 0 28px rgba(180,79,255,0.7), 0 0 60px rgba(0,240,255,0.25);
+      box-shadow: 0 0 28px rgba(var(--purple-rgb),0.7), 0 0 60px rgba(var(--accent-rgb),0.25);
       padding: 16px 0 12px; text-align: center;
     }
     #tab-mtg .mtg-soon-title {
       font-family: var(--font-display); font-weight: 900; font-size: clamp(2rem, 6vw, 4.2rem);
       letter-spacing: 0.35em; color: #fff; line-height: 1;
-      text-shadow: 0 0 10px var(--cyan), 0 0 26px var(--cyan), 0 0 44px rgba(180,79,255,0.9);
+      text-shadow: 0 0 10px var(--cyan), 0 0 26px var(--cyan), 0 0 44px rgba(var(--purple-rgb),0.9);
       animation: mtgSoonPulse 2.6s ease-in-out infinite;
     }
     #tab-mtg .mtg-soon-sub {
@@ -114,8 +114,8 @@
 
   const mono = 'font-family:var(--font-mono)';
   const TAB_HTML = `
-    <div class="mtg-hero game-hero" style="display:flex;gap:32px;align-items:center;flex-wrap:wrap;border:1px solid rgba(180,79,255,0.35);padding:24px 26px;margin-bottom:24px;background:linear-gradient(135deg, rgba(180,79,255,0.10), rgba(0,191,255,0.04) 60%, transparent)">
-      <img src="${CARD_IMAGE}" alt="Aura — MTG Arena companion" style="width:260px;max-width:60%;height:auto;border-radius:12px;box-shadow:0 0 26px rgba(180,79,255,0.55), 0 0 2px rgba(0,191,255,0.8)">
+    <div class="mtg-hero game-hero" style="display:flex;gap:32px;align-items:center;flex-wrap:wrap;border:1px solid rgba(var(--purple-rgb),0.35);padding:24px 26px;margin-bottom:24px;background:linear-gradient(135deg, rgba(var(--purple-rgb),0.10), rgba(0,191,255,0.04) 60%, transparent)">
+      <img src="${CARD_IMAGE}" alt="Aura — MTG Arena companion" style="width:260px;max-width:60%;height:auto;border-radius:12px;box-shadow:0 0 26px rgba(var(--purple-rgb),0.55), 0 0 2px rgba(0,191,255,0.8)">
       <div style="flex:1;min-width:240px">
         <p class="page-tag">// mtg arena companion</p>
         <p class="page-title" style="margin-bottom:10px">AURA // MAGIC: THE GATHERING</p>

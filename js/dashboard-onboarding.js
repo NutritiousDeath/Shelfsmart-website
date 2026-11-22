@@ -115,7 +115,7 @@ function renderObQuestions() {
 
   obQuestions.forEach((q, qi) => {
     const card = document.createElement('div');
-    card.style = 'border:1px solid rgba(0,240,255,0.15);border-radius:6px;padding:14px;margin-bottom:14px;background:rgba(0,0,0,0.2)';
+    card.style = 'border:1px solid rgba(var(--accent-rgb),0.15);border-radius:6px;padding:14px;margin-bottom:14px;background:rgba(0,0,0,0.2)';
 
     const header = document.createElement('div');
     header.style = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:10px';

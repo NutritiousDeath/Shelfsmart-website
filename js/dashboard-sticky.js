@@ -75,7 +75,7 @@
     const title = resolveStickyPreviewText(document.getElementById('sticky-title').value);
     const desc = resolveStickyPreviewText(document.getElementById('sticky-description').value);
     const subtitle = resolveStickyPreviewText(document.getElementById('sticky-embed-subtitle').value);
-    const color = document.getElementById('sticky-color').value || '#00f0ff';
+    const color = document.getElementById('sticky-color').value || 'var(--cyan)';
     const bannerStyle = document.getElementById('sticky-banner-style').value;
     const imageUrl = document.getElementById('sticky-image-url').value;
 
@@ -83,11 +83,11 @@
     document.getElementById('sticky-preview-title').textContent = title;
     document.getElementById('sticky-preview-desc').textContent = desc;
     document.getElementById('sticky-preview-subtitle').textContent = subtitle;
-    document.getElementById('sticky-preview-embed').style.borderLeftColor = /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#00f0ff';
+    document.getElementById('sticky-preview-embed').style.borderLeftColor = /^#[0-9a-fA-F]{6}$/.test(color) ? color : 'var(--cyan)';
 
     const img = document.getElementById('sticky-preview-image');
     if (bannerStyle !== 'none') {
-      const grad = bannerStyle === 'sunset' ? 'linear-gradient(180deg,#3a0d3f,#7a1f4d,#150422)' : bannerStyle === 'purple' ? 'linear-gradient(135deg,#0a0510,#2a0a3f)' : 'linear-gradient(135deg,#050810,#0a2530)';
+      const grad = bannerStyle === 'sunset' ? 'linear-gradient(180deg,#3a0d3f,#7a1f4d,#150422)' : bannerStyle === 'purple' ? 'linear-gradient(135deg,#0a0510,#2a0a3f)' : 'linear-gradient(135deg,var(--bg),#0a2530)';
       img.style.display = 'flex';
       img.removeAttribute('src');
       img.style.background = grad;
@@ -167,7 +167,7 @@
       const channelName = guildChannelCache.find(c => c.id === s.channel_id)?.name || '(deleted channel)';
       const contentSnippet = (s.title || s.description || '').slice(0, 60);
       const tr = document.createElement('tr');
-      tr.style = 'border-bottom:1px solid rgba(0,240,255,0.06)';
+      tr.style = 'border-bottom:1px solid rgba(var(--accent-rgb),0.06)';
       tr.innerHTML = `
         <td style="padding:8px;color:var(--white)">#${channelName}${s.enabled ? '' : ' <span style="color:var(--grey)">(disabled)</span>'}</td>
         <td style="padding:8px;color:var(--grey)">${contentSnippet || '<em>(no title/description)</em>'}</td>
@@ -292,7 +292,7 @@
     rows.forEach(t => {
       const contentSnippet = (t.title || t.description || '').slice(0, 60);
       const tr = document.createElement('tr');
-      tr.style = 'border-bottom:1px solid rgba(0,240,255,0.06)';
+      tr.style = 'border-bottom:1px solid rgba(var(--accent-rgb),0.06)';
       tr.innerHTML = `
         <td style="padding:8px;color:var(--white)">${t.name}</td>
         <td style="padding:8px;color:var(--grey)">${contentSnippet || '<em>(empty)</em>'}</td>

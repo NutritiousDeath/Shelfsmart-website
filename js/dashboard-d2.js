@@ -34,7 +34,7 @@
     #tab-d2 .d2-build pre { ${mono}; font-size:0.66rem; color:var(--white); line-height:1.8; white-space:pre-wrap; margin:0; }
     #tab-d2 .d2-msg { ${mono}; font-size:0.68rem; margin-top:10px; min-height:1em; }
     #tab-d2 .d2-link-btn { font-family:var(--font-display); font-size:0.68rem; font-weight:700; letter-spacing:2px; padding:12px 22px; border:none; cursor:pointer;
-      background:linear-gradient(90deg, ${ACCENT}, var(--cyan)); color:#050810; clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); }
+      background:linear-gradient(90deg, ${ACCENT}, var(--cyan)); color:var(--bg);  }
     #tab-d2 .d2-link-btn:hover { filter:brightness(1.15); }
     #tab-d2 button[disabled] { opacity:0.5; cursor:not-allowed; }
   `;

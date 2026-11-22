@@ -26,7 +26,7 @@
     licenses.forEach(lic => {
       const assignedGuild = lic.guild_id ? userGuilds.find(g => g.id === lic.guild_id) : null;
       const row = document.createElement('div');
-      row.style = 'display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:14px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.12);border-radius:6px;margin-bottom:10px';
+      row.style = 'display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:14px;background:rgba(var(--accent-rgb),0.03);border:1px solid rgba(var(--accent-rgb),0.12);border-radius:6px;margin-bottom:10px';
 
       const statusColor = lic.status === 'active' ? 'var(--green)' : lic.status === 'past_due' ? 'var(--yellow)' : 'var(--pink)';
       const tierLabel = lic.tier === 'lifetime' ? 'Lifetime' : 'Pro Monthly';

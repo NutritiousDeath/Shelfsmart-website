@@ -22,17 +22,17 @@
     .why { --why-accent: var(--cyan); }
     .why * { box-sizing: border-box; }
     .why .w-mono { font-family: var(--font-mono); }
-    .why .w-hero { position: relative; overflow: hidden; border: 1px solid rgba(0,240,255,0.35); padding: clamp(28px, 5vw, 56px) clamp(18px, 4vw, 44px);
+    .why .w-hero { position: relative; overflow: hidden; border: 1px solid rgba(var(--accent-rgb),0.35); padding: clamp(28px, 5vw, 56px) clamp(18px, 4vw, 44px);
       margin-bottom: 26px; background:
-        radial-gradient(1200px 300px at 85% -10%, rgba(180,79,255,0.22), transparent 60%),
-        radial-gradient(900px 260px at -10% 110%, rgba(0,240,255,0.16), transparent 60%),
-        linear-gradient(180deg, rgba(5,8,16,0.6), rgba(5,8,16,0.95)); }
+        radial-gradient(1200px 300px at 85% -10%, rgba(var(--purple-rgb),0.22), transparent 60%),
+        radial-gradient(900px 260px at -10% 110%, rgba(var(--accent-rgb),0.16), transparent 60%),
+        linear-gradient(180deg, rgba(var(--bg-rgb),0.6), rgba(var(--bg-rgb),0.95)); }
     .why .w-hero::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.18;
       background: repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 3px); }
     .why .w-hero::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--cyan); box-shadow: 0 0 18px var(--cyan); }
     .why .w-tag { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 4px; color: var(--pink); text-transform: uppercase; margin-bottom: 14px; }
     .why .w-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(2.4rem, 8vw, 5.4rem); line-height: 0.95; letter-spacing: 0.08em; color: #fff; margin: 0 0 16px;
-      text-shadow: 0 0 12px var(--cyan), 0 0 34px rgba(0,240,255,0.45); position: relative; display: inline-block; }
+      text-shadow: 0 0 12px var(--cyan), 0 0 34px rgba(var(--accent-rgb),0.45); position: relative; display: inline-block; }
     .why .w-title span { color: var(--cyan); }
     .why .w-title::before, .why .w-title::after { content: attr(data-text); position: absolute; left: 0; top: 0; width: 100%; overflow: hidden; pointer-events: none; }
     .why .w-title::before { color: var(--pink); clip-path: inset(0 0 62% 0); opacity: 0; animation: whyGlitch 4.2s infinite steps(1); }
@@ -44,23 +44,23 @@
     .why .w-lead b { color: var(--white); font-weight: 400; }
     .why .w-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
     .why .w-btn { font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; padding: 13px 22px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-      border: 1px solid var(--cyan); color: #050810; background: var(--cyan); box-shadow: 0 0 18px rgba(0,240,255,0.35); clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%); }
+      border: 1px solid var(--cyan); color: var(--bg); background: var(--cyan); box-shadow: 0 0 18px rgba(var(--accent-rgb),0.35);  }
     .why .w-btn.alt { background: transparent; color: var(--cyan); box-shadow: none; }
     .why .w-btn:hover { filter: brightness(1.15); }
     .why .w-btn:focus-visible, .why-pop button:focus-visible, .why-pop input:focus-visible { outline: 2px solid var(--pink); outline-offset: 3px; }
     .why .w-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 30px; }
-    .why .w-stat { border: 1px solid rgba(255,255,255,0.08); padding: 12px 14px; background: rgba(5,8,16,0.55); }
+    .why .w-stat { border: 1px solid rgba(255,255,255,0.08); padding: 12px 14px; background: rgba(var(--bg-rgb),0.55); }
     .why .w-stat p:first-child { font-family: var(--font-display); font-size: 1.05rem; color: var(--cyan); letter-spacing: 1px; }
     .why .w-stat p:last-child { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 2px; color: var(--grey); margin-top: 4px; text-transform: uppercase; }
     .why .w-h { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 4px; color: var(--cyan); margin: 34px 0 6px; text-transform: uppercase; }
     .why .w-h2 { font-family: var(--font-display); font-size: clamp(1.05rem, 3vw, 1.5rem); letter-spacing: 3px; color: var(--white); margin-bottom: 18px; }
     .why .w-games { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 16px; }
-    .why .w-game { border: 1px solid rgba(255,255,255,0.1); background: rgba(5,8,16,0.6); display: flex; flex-direction: column; overflow: hidden; position: relative; }
-    .why .w-game .art { height: 180px; background: #050810; overflow: hidden; position: relative; }
+    .why .w-game { border: 1px solid rgba(255,255,255,0.1); background: rgba(var(--bg-rgb),0.6); display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    .why .w-game .art { height: 180px; background: var(--bg); overflow: hidden; position: relative; }
     .why .w-game .art img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .why .w-game .art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(5,8,16,0.95)); }
+    .why .w-game .art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(var(--bg-rgb),0.95)); }
     .why .w-game .art.text { display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 2.6rem; letter-spacing: 6px; color: rgba(255,255,255,0.12);
-      background: radial-gradient(400px 160px at 50% 40%, rgba(255,214,102,0.14), transparent), #050810; }
+      background: radial-gradient(400px 160px at 50% 40%, rgba(255,214,102,0.14), transparent), var(--bg); }
     .why .w-game .body { padding: 16px 18px 18px; flex: 1; }
     .why .w-game .name { font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 3px; margin-bottom: 4px; }
     .why .w-game .hook { font-family: var(--font-mono); font-size: 0.74rem; color: var(--white); margin-bottom: 12px; line-height: 1.7; }
@@ -70,35 +70,35 @@
     .why .w-game code { color: var(--game, var(--cyan)); font-family: var(--font-mono); }
     .why .w-game .bar { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--game, var(--cyan)); box-shadow: 0 0 12px var(--game, var(--cyan)); z-index: 2; }
     .why .w-diff { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 14px; }
-    .why .w-tile { border: 1px solid rgba(180,79,255,0.3); background: linear-gradient(180deg, rgba(180,79,255,0.08), transparent); padding: 18px; }
+    .why .w-tile { border: 1px solid rgba(var(--purple-rgb),0.3); background: linear-gradient(180deg, rgba(var(--purple-rgb),0.08), transparent); padding: 18px; }
     .why .w-tile .k { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 3px; color: var(--purple); }
     .why .w-tile .t { font-family: var(--font-display); font-size: 0.86rem; letter-spacing: 2px; color: var(--white); margin: 6px 0 8px; }
     .why .w-tile .d { font-family: var(--font-mono); font-size: 0.68rem; line-height: 1.8; color: var(--grey); }
     .why .w-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 10px; }
-    .why .w-tool { font-family: var(--font-mono); font-size: 0.68rem; color: var(--white); border-left: 2px solid var(--cyan); padding: 10px 12px; background: rgba(0,240,255,0.04); line-height: 1.6; }
+    .why .w-tool { font-family: var(--font-mono); font-size: 0.68rem; color: var(--white); border-left: 2px solid var(--cyan); padding: 10px 12px; background: rgba(var(--accent-rgb),0.04); line-height: 1.6; }
     .why .w-tool span { display: block; color: var(--grey); font-size: 0.6rem; }
     .why .w-plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 14px; }
-    .why .w-plan { border: 1px solid rgba(255,255,255,0.1); padding: 18px; background: rgba(5,8,16,0.6); position: relative; }
-    .why .w-plan.hot { border-color: var(--cyan); box-shadow: 0 0 22px rgba(0,240,255,0.18); }
+    .why .w-plan { border: 1px solid rgba(255,255,255,0.1); padding: 18px; background: rgba(var(--bg-rgb),0.6); position: relative; }
+    .why .w-plan.hot { border-color: var(--cyan); box-shadow: 0 0 22px rgba(var(--accent-rgb),0.18); }
     /* Server Pro: neon purple (same purple as the Lifetime badge) so it draws the eye. */
-    .why .w-plan.pro { border-color: #b44fff; background: linear-gradient(180deg, rgba(180,79,255,0.14), rgba(5,8,16,0.75) 70%);
-      box-shadow: 0 0 22px rgba(180,79,255,0.45), 0 0 60px rgba(180,79,255,0.15), inset 0 0 24px rgba(180,79,255,0.08); animation: whyProPulse 3.2s ease-in-out infinite; }
+    .why .w-plan.pro { border-color: var(--purple); background: linear-gradient(180deg, rgba(var(--purple-rgb),0.14), rgba(var(--bg-rgb),0.75) 70%);
+      box-shadow: 0 0 22px rgba(var(--purple-rgb),0.45), 0 0 60px rgba(var(--purple-rgb),0.15), inset 0 0 24px rgba(var(--purple-rgb),0.08); animation: whyProPulse 3.2s ease-in-out infinite; }
     .why .w-plan.pro .pn { color: #d9a6ff; }
-    .why .w-plan.pro .pp { color: #fff; text-shadow: 0 0 10px #b44fff, 0 0 26px rgba(180,79,255,0.7); }
+    .why .w-plan.pro .pp { color: #fff; text-shadow: 0 0 10px var(--purple), 0 0 26px rgba(var(--purple-rgb),0.7); }
     .why .w-plan.pro .pp small { color: #d9a6ff; text-shadow: none; }
     .why .w-plan.pro li { color: #cdb8e6; }
-    .why .w-plan.pro li::before { color: #b44fff; text-shadow: 0 0 6px #b44fff; }
-    .why .w-plan.pro .flag { background: #b44fff; color: #fff; box-shadow: 0 0 12px #b44fff; }
-    @keyframes whyProPulse { 0%, 100% { box-shadow: 0 0 22px rgba(180,79,255,0.45), 0 0 60px rgba(180,79,255,0.15), inset 0 0 24px rgba(180,79,255,0.08); }
-      50% { box-shadow: 0 0 30px rgba(180,79,255,0.7), 0 0 80px rgba(180,79,255,0.28), inset 0 0 30px rgba(180,79,255,0.12); } }
+    .why .w-plan.pro li::before { color: var(--purple); text-shadow: 0 0 6px var(--purple); }
+    .why .w-plan.pro .flag { background: var(--purple); color: #fff; box-shadow: 0 0 12px var(--purple); }
+    @keyframes whyProPulse { 0%, 100% { box-shadow: 0 0 22px rgba(var(--purple-rgb),0.45), 0 0 60px rgba(var(--purple-rgb),0.15), inset 0 0 24px rgba(var(--purple-rgb),0.08); }
+      50% { box-shadow: 0 0 30px rgba(var(--purple-rgb),0.7), 0 0 80px rgba(var(--purple-rgb),0.28), inset 0 0 30px rgba(var(--purple-rgb),0.12); } }
     @media (prefers-reduced-motion: reduce) { .why .w-plan.pro { animation: none; } }
     .why .w-plan .pn { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 3px; color: var(--grey); }
     .why .w-plan .pp { font-family: var(--font-display); font-size: 1.5rem; color: var(--white); margin: 8px 0 2px; letter-spacing: 1px; }
     .why .w-plan .pp small { font-size: 0.7rem; color: var(--grey); letter-spacing: 1px; }
     .why .w-plan ul { list-style: none; padding: 0; margin: 12px 0 0; font-family: var(--font-mono); font-size: 0.66rem; line-height: 1.9; color: var(--grey); }
     .why .w-plan li::before { content: "✓ "; color: var(--green); }
-    .why .w-plan .flag { position: absolute; top: -9px; right: 12px; font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 2px; padding: 3px 8px; background: var(--cyan); color: #050810; }
-    .why .w-end { text-align: center; border: 1px solid rgba(255,45,120,0.35); padding: 34px 18px; margin-top: 34px; background: linear-gradient(180deg, rgba(255,45,120,0.07), transparent); }
+    .why .w-plan .flag { position: absolute; top: -9px; right: 12px; font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 2px; padding: 3px 8px; background: var(--cyan); color: var(--bg); }
+    .why .w-end { text-align: center; border: 1px solid rgba(var(--pink-rgb),0.35); padding: 34px 18px; margin-top: 34px; background: linear-gradient(180deg, rgba(var(--pink-rgb),0.07), transparent); }
     .why .w-end .w-cta { justify-content: center; }
     .why .w-fine { font-family: var(--font-mono); font-size: 0.58rem; color: var(--grey); line-height: 1.8; margin-top: 22px; opacity: 0.8; }
     @media (prefers-reduced-motion: reduce) { .why .w-title::before, .why .w-title::after { animation: none; } }
@@ -108,9 +108,9 @@
       background: rgba(3,5,10,0.86); backdrop-filter: blur(4px); }
     .why-pop[hidden] { display: none; }
     .why-pop .box { width: 100%; max-width: 560px; max-height: calc(100vh - 32px); overflow: auto; position: relative; border: 1px solid var(--cyan);
-      background: linear-gradient(180deg, rgba(8,13,26,0.98), rgba(5,8,16,0.98)); box-shadow: 0 0 40px rgba(0,240,255,0.25), inset 0 0 60px rgba(180,79,255,0.06);
-      padding: 26px clamp(18px, 4vw, 30px) 22px; clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
-      scrollbar-width: thin; scrollbar-color: rgba(0,240,255,0.3) transparent; }
+      background: linear-gradient(180deg, rgba(var(--bg2-rgb),0.98), rgba(var(--bg-rgb),0.98)); box-shadow: 0 0 40px rgba(var(--accent-rgb),0.25), inset 0 0 60px rgba(var(--purple-rgb),0.06);
+      padding: 26px clamp(18px, 4vw, 30px) 22px; 
+      scrollbar-width: thin; scrollbar-color: rgba(var(--accent-rgb),0.3) transparent; }
     .why-pop.full .box { max-width: 1100px; height: calc(100vh - 32px); padding-top: 18px; }
     .why-pop .x { position: absolute; top: 10px; right: 14px; background: none; border: none; color: var(--grey); font-size: 20px; cursor: pointer; line-height: 1; z-index: 3; }
     .why-pop .ptag { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 4px; color: var(--pink); margin-bottom: 8px; }
@@ -123,13 +123,13 @@
     .why-pop .plist b { color: var(--cyan); font-weight: 400; }
     .why-pop .more { width: 100%; font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; padding: 13px; cursor: pointer;
       background: transparent; color: var(--cyan); border: 1px solid var(--cyan); margin-bottom: 16px; }
-    .why-pop .more:hover { background: rgba(0,240,255,0.08); }
+    .why-pop .more:hover { background: rgba(var(--accent-rgb),0.08); }
     .why-pop .ack { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px; }
-    .why-pop.full .ack { position: sticky; bottom: -22px; background: rgba(5,8,16,0.97); padding-bottom: 14px; margin: 0 -4px; padding-left: 4px; padding-right: 4px; z-index: 2; }
+    .why-pop.full .ack { position: sticky; bottom: -22px; background: rgba(var(--bg-rgb),0.97); padding-bottom: 14px; margin: 0 -4px; padding-left: 4px; padding-right: 4px; z-index: 2; }
     .why-pop label { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--white); cursor: pointer; }
     .why-pop input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--cyan); cursor: pointer; }
     .why-pop .go { font-family: var(--font-display); font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; padding: 12px 22px; cursor: pointer; border: 1px solid var(--cyan);
-      background: var(--cyan); color: #050810; box-shadow: 0 0 16px rgba(0,240,255,0.35); }
+      background: var(--cyan); color: var(--bg); box-shadow: 0 0 16px rgba(var(--accent-rgb),0.35); }
     .why-pop .go:disabled { background: transparent; color: var(--grey); border-color: rgba(255,255,255,0.15); box-shadow: none; cursor: not-allowed; }
     .why-pop .hint { width: 100%; font-family: var(--font-mono); font-size: 0.58rem; color: var(--grey); margin-top: 2px; }
     .why-pop .full-body { display: none; }
@@ -161,11 +161,11 @@
       <p class="w-h">// what she does</p>
       <p class="w-h2">BUILT FOR THE GAMES YOU ACTUALLY PLAY</p>
       <div class="w-games">
-        <div class="w-game" style="--game:#b44fff">
+        <div class="w-game" style="--game:var(--purple)">
           <div class="bar"></div>
           <div class="art"><img src="${IMG.mtg}" alt="Aura — MTG Arena" style="object-position:center 22%" onerror="this.style.display='none'"></div>
           <div class="body">
-            <p class="name" style="color:#b44fff">MAGIC: THE GATHERING</p>
+            <p class="name" style="color:var(--purple)">MAGIC: THE GATHERING</p>
             <p class="hook">Decks built from the cards you <i>own</i>.</p>
             <ul>
               <li><b style="color:var(--white);font-weight:400">Aura Sync</b> reads your Arena collection automatically</li>
@@ -353,7 +353,7 @@
         btn.id = 'why-sidebar-btn';
         btn.setAttribute('data-player-keep', ''); // players see it too
         btn.setAttribute('onclick', "setTab('why',this)");
-        btn.innerHTML = `${ICON}<span style="color:var(--pink);text-shadow:0 0 8px rgba(255,45,120,0.5)">Why Aura</span>`;
+        btn.innerHTML = `${ICON}<span style="color:var(--pink);text-shadow:0 0 8px rgba(var(--pink-rgb),0.5)">Why Aura</span>`;
         overview.parentNode.insertBefore(btn, overview.nextSibling);
       }
     }

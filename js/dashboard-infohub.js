@@ -12,14 +12,14 @@
   function infohubBannerGradient(style) {
     if (style === 'sunset') return 'linear-gradient(180deg,#3a0d3f,#7a1f4d,#150422)';
     if (style === 'purple') return 'linear-gradient(135deg,#0a0510,#2a0a3f)';
-    if (style === 'cyan') return 'linear-gradient(135deg,#050810,#0a2530)';
+    if (style === 'cyan') return 'linear-gradient(135deg,var(--bg),#0a2530)';
     return 'none';
   }
 
   function updateInfoHubPreview() {
     const title = document.getElementById('infohub-title').value || 'Untitled';
     const content = document.getElementById('infohub-content').value;
-    const color = document.getElementById('infohub-color').value || '#00f0ff';
+    const color = document.getElementById('infohub-color').value || 'var(--cyan)';
     const bannerStyle = channelPickers['infohub-banner-style']?.getValue() || 'none';
 
     const bannerEl = document.getElementById('infohub-preview-banner');
@@ -32,7 +32,7 @@
     }
 
     document.getElementById('infohub-preview-content').textContent = content;
-    document.getElementById('infohub-preview-embed').style.borderLeftColor = /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#00f0ff';
+    document.getElementById('infohub-preview-embed').style.borderLeftColor = /^#[0-9a-fA-F]{6}$/.test(color) ? color : 'var(--cyan)';
   }
 
   function clearInfoHubEditorFields() {
@@ -80,7 +80,7 @@
     tbody.innerHTML = '';
     infohubPanelsCache.forEach((panel, i) => {
       const tr = document.createElement('tr');
-      tr.style = 'border-bottom:1px solid rgba(0,240,255,0.06)';
+      tr.style = 'border-bottom:1px solid rgba(var(--accent-rgb),0.06)';
       tr.innerHTML = `
         <td style="padding:8px;color:var(--grey)">${i + 1}</td>
         <td style="padding:8px;color:var(--white)">${panel.title}</td>
@@ -91,14 +91,14 @@
 
       const upBtn = document.createElement('button');
       upBtn.textContent = '↑'; upBtn.title = 'Move up';
-      upBtn.style = 'background:var(--bg-2);color:var(--cyan);border:1px solid rgba(0,240,255,0.2);border-radius:4px;width:26px;height:26px;cursor:pointer;margin-right:4px';
+      upBtn.style = 'background:var(--bg-2);color:var(--cyan);border:1px solid rgba(var(--accent-rgb),0.2);border-radius:4px;width:26px;height:26px;cursor:pointer;margin-right:4px';
       upBtn.disabled = i === 0;
       if (i === 0) upBtn.style.opacity = '0.3';
       upBtn.onclick = () => moveInfoHubPanel(i, -1);
 
       const downBtn = document.createElement('button');
       downBtn.textContent = '↓'; downBtn.title = 'Move down';
-      downBtn.style = 'background:var(--bg-2);color:var(--cyan);border:1px solid rgba(0,240,255,0.2);border-radius:4px;width:26px;height:26px;cursor:pointer;margin-right:8px';
+      downBtn.style = 'background:var(--bg-2);color:var(--cyan);border:1px solid rgba(var(--accent-rgb),0.2);border-radius:4px;width:26px;height:26px;cursor:pointer;margin-right:8px';
       downBtn.disabled = i === infohubPanelsCache.length - 1;
       if (i === infohubPanelsCache.length - 1) downBtn.style.opacity = '0.3';
       downBtn.onclick = () => moveInfoHubPanel(i, 1);
@@ -331,9 +331,9 @@
     gallery.innerHTML = '';
     completeThemes.forEach(theme => {
       const tile = document.createElement('div');
-      tile.style = `cursor:pointer;border:2px solid ${theme.id === infohubSelectedThemeId ? 'var(--cyan)' : 'rgba(0,240,255,0.15)'};border-radius:6px;overflow:hidden;transition:border-color 0.2s`;
+      tile.style = `cursor:pointer;border:2px solid ${theme.id === infohubSelectedThemeId ? 'var(--cyan)' : 'rgba(var(--accent-rgb),0.15)'};border-radius:6px;overflow:hidden;transition:border-color 0.2s`;
       tile.innerHTML = `
-        <div style="height:70px;background:#050810;background-image:url('${INFOHUB_IMAGE_BASE}/${theme.id}/welcome.png');background-size:cover;background-position:center"></div>
+        <div style="height:70px;background:var(--bg);background-image:url('${INFOHUB_IMAGE_BASE}/${theme.id}/welcome.png');background-size:cover;background-position:center"></div>
         <p style="font-family:var(--font-mono);font-size:0.65rem;color:var(--white);text-align:center;padding:6px 4px">${theme.label}</p>
       `;
       tile.onclick = () => selectInfoHubTheme(theme.id);
@@ -372,7 +372,7 @@
     INFOHUB_STANDARD_PANELS.forEach(p => {
       const existing = infohubThemedContentCache[p.slug];
       const row = document.createElement('div');
-      row.style = 'display:flex;gap:14px;padding:12px;background:rgba(0,240,255,0.03);border:1px solid rgba(0,240,255,0.1);border-radius:6px;margin-bottom:10px;flex-wrap:wrap';
+      row.style = 'display:flex;gap:14px;padding:12px;background:rgba(var(--accent-rgb),0.03);border:1px solid rgba(var(--accent-rgb),0.1);border-radius:6px;margin-bottom:10px;flex-wrap:wrap';
       row.innerHTML = `
         <img src="${INFOHUB_IMAGE_BASE}/${infohubSelectedThemeId}/${p.slug}.png" style="width:120px;height:34px;object-fit:cover;border-radius:4px;flex-shrink:0" alt="${p.label}">
         <div style="flex:1;min-width:200px">

@@ -72,7 +72,7 @@ function renderEsoGuilds() {
     const slotsWrap = document.createElement('div');
     g.slots.forEach(slot => {
       const row = document.createElement('div');
-      row.style = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;padding:10px;background:rgba(0,240,255,0.04);border:1px solid rgba(0,240,255,0.1);border-radius:6px;flex-wrap:wrap';
+      row.style = 'display:flex;gap:8px;align-items:center;margin-bottom:8px;padding:10px;background:rgba(var(--accent-rgb),0.04);border:1px solid rgba(var(--accent-rgb),0.1);border-radius:6px;flex-wrap:wrap';
 
       const num = document.createElement('span');
       num.textContent = '#' + slot.slot_number;

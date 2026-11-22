@@ -91,7 +91,7 @@ function showGrammarSuggestion(fieldId, corrected) {
 
   const box = document.createElement('div');
   box.id = 'gc-suggestion-' + fieldId;
-  box.style = 'margin-top:8px;padding:10px;border:1px solid rgba(0,240,255,0.25);border-radius:6px;background:rgba(0,240,255,0.04)';
+  box.style = 'margin-top:8px;padding:10px;border:1px solid rgba(var(--accent-rgb),0.25);border-radius:6px;background:rgba(var(--accent-rgb),0.04)';
 
   const label = document.createElement('p');
   label.style = 'font-family:var(--font-mono);font-size:0.6rem;color:var(--cyan);margin-bottom:6px';

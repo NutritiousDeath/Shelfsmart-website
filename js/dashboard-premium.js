@@ -27,8 +27,8 @@
 
   const CSS = `
     #premium-section .pm-plans { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px; margin-top:16px; }
-    #premium-section .pm-plan { border:1px solid rgba(0,240,255,0.25); padding:18px 18px 16px; position:relative; background:rgba(0,240,255,0.03); }
-    #premium-section .pm-plan.best { border-color:rgba(180,79,255,0.7); background:linear-gradient(135deg, rgba(180,79,255,0.12), rgba(0,240,255,0.04)); box-shadow:0 0 18px rgba(180,79,255,0.25); }
+    #premium-section .pm-plan { border:1px solid rgba(var(--accent-rgb),0.25); padding:18px 18px 16px; position:relative; background:rgba(var(--accent-rgb),0.03); }
+    #premium-section .pm-plan.best { border-color:rgba(var(--purple-rgb),0.7); background:linear-gradient(135deg, rgba(var(--purple-rgb),0.12), rgba(var(--accent-rgb),0.04)); box-shadow:0 0 18px rgba(var(--purple-rgb),0.25); }
     #premium-section .pm-tag { position:absolute; top:-10px; right:12px; background:var(--purple); color:#fff; ${mono}; font-size:0.55rem; letter-spacing:2px; padding:3px 8px; }
     #premium-section .pm-name { font-family:var(--font-display); font-size:0.85rem; letter-spacing:2px; color:var(--white); }
     #premium-section .pm-price { font-family:var(--font-display); font-size:1.5rem; color:var(--cyan); margin:8px 0 4px; }
@@ -36,7 +36,7 @@
     #premium-section .pm-list { ${mono}; font-size:0.7rem; color:var(--white); line-height:1.9; margin:10px 0 14px; padding-left:16px; }
     #premium-section .pm-games { display:flex; gap:6px; flex-wrap:wrap; margin:6px 0 12px; }
     #premium-section .pm-game { ${mono}; font-size:0.62rem; letter-spacing:1px; padding:6px 10px; border:1px solid rgba(255,255,255,0.15); background:transparent; color:var(--grey); cursor:pointer; }
-    #premium-section .pm-game.on { border-color:var(--cyan); color:var(--cyan); background:rgba(0,240,255,0.08); }
+    #premium-section .pm-game.on { border-color:var(--cyan); color:var(--cyan); background:rgba(var(--accent-rgb),0.08); }
     #premium-section .pm-status { display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap; border:1px solid rgba(255,255,255,0.08); padding:12px 14px; }
     #premium-section .pm-msg { ${mono}; font-size:0.68rem; margin-top:10px; min-height:1em; }
     #premium-section button[disabled] { opacity:0.5; cursor:not-allowed; }
@@ -47,15 +47,15 @@
     body.aura-player-mode .sidebar > *:not([data-player-keep]):not(.status-indicator) { display:none !important; }
     body.aura-player-mode #tab-billing > *:not(#premium-section):not(.page-tag):not(.page-title):not(style):not(#pm-player-note) { display:none !important; }
     #pm-player-btn { width:100%; max-width:320px; font-family:var(--font-display); font-size:0.68rem; font-weight:700; letter-spacing:2px; padding:13px 24px;
-      background:linear-gradient(90deg, rgba(180,79,255,0.9), rgba(0,240,255,0.85)); color:#050810; border:none; cursor:pointer;
-      clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); }
+      background:linear-gradient(90deg, rgba(var(--purple-rgb),0.9), rgba(var(--accent-rgb),0.85)); color:var(--bg); border:none; cursor:pointer;
+       }
     #pm-player-btn:hover { filter:brightness(1.15); }
     #pm-player-sub { font-family:var(--font-mono); font-size:0.6rem; color:var(--grey); letter-spacing:0.5px; margin:-4px 0 6px; max-width:320px; line-height:1.7; }
   `;
 
   const SECTION_HTML = `
     <style>${CSS}</style>
-    <div class="section-card" id="premium-section" style="border-color:rgba(180,79,255,0.45)">
+    <div class="section-card" id="premium-section" style="border-color:rgba(var(--purple-rgb),0.45)">
       <p class="card-title">// aura premium — game features</p>
       <p style="${mono};font-size:0.66rem;color:var(--grey);line-height:1.8;letter-spacing:0.5px">
         For <span style="color:var(--white)">you as a player</span>, in any server with AuraAI — separate from AuraAI server licenses.
@@ -228,7 +228,7 @@
       strip = document.createElement('div');
       strip.id = `pm-${g.id}-strip`;
       strip.className = 'section-card pm-game-strip';
-      strip.style.cssText = 'border-color:rgba(180,79,255,0.45);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px';
+      strip.style.cssText = 'border-color:rgba(var(--purple-rgb),0.45);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 18px';
       const hero = tab.querySelector('.game-hero');
       if (hero && hero.parentNode) hero.parentNode.insertBefore(strip, hero.nextSibling); else tab.prepend(strip);
     }
