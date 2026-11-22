@@ -150,6 +150,8 @@
 
   const LABEL = { start: 'Start', stop: 'Stop', restart: 'Restart', whitelist_add: 'Whitelist add', whitelist_remove: 'Whitelist remove', say: 'Message', backup: 'Backup', create_server: 'Server created', delete_server: 'Delete server' };
   let ordersData = null;
+  let ordersAt = 0;               // orders change rarely: refreshed once a minute, or right after an action
+  const ORDERS_EVERY_MS = 60 * 1000;
   let fastTimer = null;
 
   async function api(path, { method = 'GET', body } = {}) {
@@ -343,7 +345,7 @@
 
     clearTimeout(fastTimer);
     const creating = open || (ordersData.admin?.orders || []).some((o) => o.status === 'creating');
-    if (creating) fastTimer = setTimeout(() => { if (!document.hidden && !busy.size) load(); }, 5000);
+    if (creating) fastTimer = setTimeout(() => { if (!document.hidden && !busy.size) load({ orders: true }); }, 5000);
   }
 
   function renderAdmin() {
@@ -378,15 +380,17 @@
     }).join('')}</ul>`;
   }
 
-  async function load() {
+  async function load(opts = {}) {
     try {
+      const wantOrders = opts.orders || !ordersData || Date.now() - ordersAt >= ORDERS_EVERY_MS;
       const [servers, orders] = await Promise.all([
         api('/api/hosting/servers'),
-        api('/api/hosting/orders').catch((err) => { if (err.message === 'Not signed in') throw err; return null; }),
+        wantOrders ? api('/api/hosting/orders').catch((err) => { if (err.message === 'Not signed in') throw err; return null; }) : Promise.resolve(null),
       ]);
       render(servers);
-      if (orders) { ordersData = orders; renderOrders(); }
-      if (!servers.servers.length && !orders) $('#servers').innerHTML = '<p class="muted">No servers on this account yet.</p>';
+      if (orders) { ordersData = orders; ordersAt = Date.now(); }
+      if (ordersData) renderOrders();
+      if (!servers.servers.length && !ordersData) $('#servers').innerHTML = '<p class="muted">No servers on this account yet.</p>';
     } catch (err) {
       if (err.message === 'Not signed in') return;
       if (!lastData) $('#servers').innerHTML = `<p class="form-note err">Couldn't load your servers: ${esc(err.message)}</p>`;
@@ -424,7 +428,7 @@
       form.reset();
       note(noteEl, '');
       $('#order-section').hidden = true;
-      await load();
+      await load({ orders: true });
       $('#orders').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {
       note(noteEl, err.message, 'err');
@@ -449,7 +453,7 @@
       const card = btn.closest('[data-order]');
       if (!confirm('Cancel this order?')) return;
       btn.disabled = true;
-      try { await api('/api/hosting/order/cancel', { method: 'POST', body: { orderId: card.dataset.order } }); await load(); }
+      try { await api('/api/hosting/order/cancel', { method: 'POST', body: { orderId: card.dataset.order } }); await load({ orders: true }); }
       catch (err) { btn.disabled = false; orderNote(card, err.message, 'err'); }
       return;
     }
@@ -467,7 +471,7 @@
       }
       row.querySelectorAll('button').forEach((b) => { b.disabled = true; });
       orderNote(row, btn.dataset.admin === 'create' ? 'Sending to the host…' : 'Saving…', 'wait');
-      try { await api('/api/hosting/admin/order', { method: 'POST', body }); await load(); }
+      try { await api('/api/hosting/admin/order', { method: 'POST', body }); await load({ orders: true }); }
       catch (err) { orderNote(row, err.message, 'err'); row.querySelectorAll('button').forEach((b) => { b.disabled = false; }); }
     }
   }
@@ -488,7 +492,7 @@
       if (!done) setNote(serverId, 'Still working. This page updates on its own.', 'wait');
       else if (done.status === 'done') setNote(serverId, `✓ ${done.result || 'Deleted.'}`, 'ok');
       else setNote(serverId, `✕ ${done.result || 'That didn\'t work.'}`, 'err');
-      await load();
+      await load({ orders: true });
     } catch (err) {
       busy.delete(serverId);
       setNote(serverId, err.message, 'err');
