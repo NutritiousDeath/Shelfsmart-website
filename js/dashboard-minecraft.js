@@ -88,6 +88,18 @@
     el.innerHTML = `<span class="mc-dot" style="background:${color};box-shadow:0 0 8px ${color}"></span><span style="color:${color === ACCENT ? 'var(--white)' : color}">${text}</span>`;
   }
 
+  // Crafty sometimes reports sizes as raw bytes (e.g. "1288564736") and
+  // sometimes already formatted (e.g. "1.2GB"). Show bytes as GB/MB.
+  function fmtSize(v) {
+    if (v == null || v === '') return null;
+    const s = String(v).trim();
+    if (!/^\d+(\.\d+)?$/.test(s)) return s;
+    const n = Number(s);
+    if (n >= 1024 ** 3) return `${(n / 1024 ** 3).toFixed(1)} GB`;
+    if (n >= 1024 ** 2) return `${Math.round(n / 1024 ** 2)} MB`;
+    return `${Math.round(n / 1024)} KB`;
+  }
+
   function stat(label, value, color) {
     return `<div style="border:1px solid rgba(255,255,255,0.08);padding:10px 12px">
       <p style="${mono};font-size:0.54rem;color:var(--grey);letter-spacing:2px;margin-bottom:5px">${esc(label)}</p>
@@ -132,8 +144,8 @@
         ${stat('PLAYERS', s.live ? `${live.online}/${live.max}` : '—', running ? ACCENT : null)}
         ${stat('VERSION', live.version || '—')}
         ${stat('CPU', live.cpu != null && running ? `${Number(live.cpu).toFixed(1)}%` : '—')}
-        ${stat('RAM', running && live.mem ? `${live.mem}${live.memPercent != null ? ` · ${live.memPercent}%` : ''}` : '—')}
-        ${stat('WORLD', live.worldSize || '—')}
+        ${stat('RAM', running && live.mem ? `${fmtSize(live.mem)}${live.memPercent != null ? ` · ${live.memPercent}%` : ''}` : '—')}
+        ${stat('WORLD', fmtSize(live.worldSize) || '—')}
       </div>
 
       <div class="mc-row">
