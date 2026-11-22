@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Server login — ShelfSmart Gaming</title>
+  <meta name="description" content="Sign in to manage your Minecraft server hosted by ShelfSmart Gaming.">
+  <meta property="og:title" content="Server login — ShelfSmart Gaming">
+  <meta property="og:description" content="Sign in to manage your Minecraft server hosted by ShelfSmart Gaming.">
+  <meta property="og:image" content="https://www.uptight-shelf-smart-flow.com/img/site/aura-fafo.jpg">
+  <meta name="theme-color" content="#07050d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="../index.html">ShelfSmart<span> Gaming</span></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-links">Menu</button>
+    <ul id="site-links"><li><a href="../index.html">Home</a></li><li><a href="../pages/services.html">Services</a></li><li><a href="../pages/about.html">About</a></li><li><a href="../pages/contact.html">Contact</a></li></ul>
+    <a class="btn slim" href="/login.html">Open dashboard</a>
+  </div>
+</header>
+<main id="main">
+
+<section class="block signin">
+  <div class="wrap split">
+    <div>
+      <h1>Server login</h1>
+      <p class="lede" style="margin-top:20px;color:var(--ash)">Manage your Minecraft server: start it, stop it and choose who can join. This login is separate from the AuraAI Discord dashboard.</p>
+
+      <div class="tabs" role="tablist" aria-label="Sign in options">
+        <button type="button" role="tab" id="tab-signin" aria-controls="form-signin" aria-selected="true">Sign in</button>
+        <button type="button" role="tab" id="tab-signup" aria-controls="form-signup" aria-selected="false">Create account</button>
+        <button type="button" role="tab" id="tab-link" aria-controls="form-link" aria-selected="false">Email me a link</button>
+      </div>
+
+      <form class="form auth-form" id="form-signin" role="tabpanel" aria-labelledby="tab-signin">
+        <div class="field"><label for="si-email">Email</label><input id="si-email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="si-pass">Password</label><input id="si-pass" name="password" type="password" autocomplete="current-password" required></div>
+        <div class="actions" style="margin-top:4px"><button class="btn" type="submit">Sign in</button></div>
+        <p class="small muted">Forgot your password? <button type="button" class="linkish" data-goto="link">Email me a sign-in link</button> instead, then set a new one in your panel.</p>
+      </form>
+
+      <form class="form auth-form" id="form-signup" role="tabpanel" aria-labelledby="tab-signup" hidden>
+        <div class="field"><label for="su-email">Email</label><input id="su-email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="su-pass">Password <span class="muted">(at least 8 characters)</span></label><input id="su-pass" name="password" type="password" autocomplete="new-password" minlength="8" required></div>
+        <div class="field"><label for="su-pass2">Password again</label><input id="su-pass2" name="password2" type="password" autocomplete="new-password" minlength="8" required></div>
+        <div class="actions" style="margin-top:4px"><button class="btn" type="submit">Create account</button></div>
+        <p class="small muted">We'll email you a link to confirm your address before you can sign in.</p>
+      </form>
+
+      <form class="form auth-form" id="form-link" role="tabpanel" aria-labelledby="tab-link" hidden>
+        <div class="field"><label for="ml-email">Email</label><input id="ml-email" name="email" type="email" autocomplete="email" required></div>
+        <div class="actions" style="margin-top:4px"><button class="btn" type="submit">Email me a sign-in link</button></div>
+        <p class="small muted">The link signs you in once and expires after a short time. Open it on this device.</p>
+      </form>
+
+      <p class="form-note" id="auth-note" role="status" aria-live="polite" style="margin-top:18px"></p>
+    </div>
+    <img src="../img/site/aura-fafo-tall.jpg" alt="Aura, close up, with glowing purple fiber-optic hair" width="800" height="1001" class="signin-art">
+  </div>
+</section>
+
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <div>
+      <a class="mark" href="../index.html">ShelfSmart<span> Gaming</span></a>
+      <p>A Discord bot, game servers and streams, all from one small shop.</p>
+    </div>
+    <div>
+      <h4>Site</h4>
+      <ul>
+        <li><a href="../pages/services.html">Services</a></li>
+        <li><a href="../pages/about.html">About</a></li>
+        <li><a href="../pages/contact.html">Contact</a></li>
+        <li><a href="../pages/privacy.html">Privacy</a></li>
+        <li><a href="../hosting/">Server login</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>AuraAI</h4>
+      <ul>
+        <li><a href="/login.html">Dashboard</a></li>
+        <li><a href="https://discord.com/oauth2/authorize?client_id=1479991514351538350&permissions=2251799813900304&integration_type=0&scope=bot+applications.commands" target="_blank" rel="noopener">Add to Discord</a></li>
+        <li><a href="/features.html">Every feature</a></li>
+        <li><a href="https://nutritiousdeath.github.io/auraai-legal/terms.html" target="_blank" rel="noopener">Terms of Service</a></li>
+      </ul>
+    </div>
+    <p class="legal">© 2026 ShelfSmart Gaming. Aura is the cyborg from the FAFO music video by Heaven is Overrated.</p>
+  </div>
+</footer>
+<script src="../js/site.js" defer></script>
+<script src="../js/hosting.js"></script>
+</body>
+</html>

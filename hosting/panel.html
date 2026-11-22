@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your servers — ShelfSmart Gaming</title>
+  <meta name="description" content="Your Minecraft server panel.">
+  <meta property="og:title" content="Your servers — ShelfSmart Gaming">
+  <meta property="og:description" content="Your Minecraft server panel.">
+  <meta property="og:image" content="https://www.uptight-shelf-smart-flow.com/img/site/aura-fafo.jpg">
+  <meta name="theme-color" content="#07050d">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/site.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="../index.html">ShelfSmart<span> Gaming</span></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-links">Menu</button>
+    <ul id="site-links"><li><a href="../index.html">Home</a></li><li><a href="../pages/services.html">Services</a></li><li><a href="../pages/about.html">About</a></li><li><a href="../pages/contact.html">Contact</a></li></ul>
+    <a class="btn slim" href="/login.html">Open dashboard</a>
+  </div>
+</header>
+<main id="main">
+
+<section class="page-head panel-head">
+  <div class="wrap">
+    <h1>Your servers</h1>
+    <div class="account-bar" id="account-bar" hidden>
+      <span>Signed in as <b id="account-email"></b><span id="admin-badge" class="admin-badge" hidden>Admin</span></span>
+      <button type="button" class="linkish" id="btn-password">Change password</button>
+      <button type="button" class="linkish" id="btn-signout">Sign out</button>
+    </div>
+    <form class="form password-form" id="password-form" hidden>
+      <div class="field"><label for="np-1">New password <span class="muted">(at least 8 characters)</span></label><input id="np-1" type="password" autocomplete="new-password" minlength="8" required></div>
+      <div class="field"><label for="np-2">New password again</label><input id="np-2" type="password" autocomplete="new-password" minlength="8" required></div>
+      <div class="actions" style="margin-top:0"><button class="btn slim" type="submit">Save new password</button><button class="btn ghost slim" type="button" id="btn-password-cancel">Cancel</button></div>
+      <p class="form-note" id="password-note" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<section class="block panel-body">
+  <div class="wrap">
+    <p class="host-line" id="host-line"><span class="dot"></span>Checking the host…</p>
+    <div id="servers"><p class="muted">Loading your servers…</p></div>
+  </div>
+</section>
+
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <div>
+      <a class="mark" href="../index.html">ShelfSmart<span> Gaming</span></a>
+      <p>A Discord bot, game servers and streams, all from one small shop.</p>
+    </div>
+    <div>
+      <h4>Site</h4>
+      <ul>
+        <li><a href="../pages/services.html">Services</a></li>
+        <li><a href="../pages/about.html">About</a></li>
+        <li><a href="../pages/contact.html">Contact</a></li>
+        <li><a href="../pages/privacy.html">Privacy</a></li>
+        <li><a href="../hosting/">Server login</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>AuraAI</h4>
+      <ul>
+        <li><a href="/login.html">Dashboard</a></li>
+        <li><a href="https://discord.com/oauth2/authorize?client_id=1479991514351538350&permissions=2251799813900304&integration_type=0&scope=bot+applications.commands" target="_blank" rel="noopener">Add to Discord</a></li>
+        <li><a href="/features.html">Every feature</a></li>
+        <li><a href="https://nutritiousdeath.github.io/auraai-legal/terms.html" target="_blank" rel="noopener">Terms of Service</a></li>
+      </ul>
+    </div>
+    <p class="legal">© 2026 ShelfSmart Gaming. Aura is the cyborg from the FAFO music video by Heaven is Overrated.</p>
+  </div>
+</footer>
+<script src="../js/site.js" defer></script>
+<script src="../js/hosting.js"></script>
+</body>
+</html>
