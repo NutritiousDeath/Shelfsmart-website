@@ -29,6 +29,9 @@
   // Bedrock Edition: Xbox gamertags (letters, numbers, single spaces, optional #1234 ending).
   const GAMERTAG_RE = /^(?=.{1,16}$)[A-Za-z0-9]+(?: [A-Za-z0-9]+)*(?:#[0-9]{1,4})?$/;
   const isBedrock = (s) => s && s.edition === 'bedrock';
+  let dlTimer = null;          // faster refresh while a world download is being made
+  const fmtBytes = (n) => (n >= 1e9 ? `${(n / 1e9).toFixed(1)} GB` : n >= 1e6 ? `${Math.round(n / 1e6)} MB` : n > 0 ? `${Math.max(1, Math.round(n / 1e3))} KB` : '');
+  const fmtUntil = (iso) => new Date(iso).toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' });
 
   if (!window.supabase) { console.error('supabase-js failed to load'); return; }
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -151,7 +154,7 @@
   const notes = new Map();     // server id -> { text, kind }, survives re-renders
   let timer = null;
 
-  const LABEL = { start: 'Start', stop: 'Stop', restart: 'Restart', whitelist_add: 'Player added', whitelist_remove: 'Player removed', say: 'Message', backup: 'Backup', create_server: 'Server created', delete_server: 'Delete server' };
+  const LABEL = { start: 'Start', stop: 'Stop', restart: 'Restart', whitelist_add: 'Player added', whitelist_remove: 'Player removed', say: 'Message', backup: 'Backup', create_server: 'Server created', delete_server: 'Delete server', download_world: 'World download' };
   let ordersData = null;
   let ordersAt = 0;               // orders change rarely: refreshed once a minute, or right after an action
   const ORDERS_EVERY_MS = 60 * 1000;
@@ -265,13 +268,68 @@
         </form>
       </section>
 
+      ${lastData?.features?.worldDownload ? worldHtml(s, hostOk) : ''}
+
       ${(s.recentJobs || []).length ? `<section class="srv-section"><h3>Recent activity</h3><ul class="activity">${s.recentJobs.map(jobLine).join('')}</ul></section>` : ''}
       ${s.deletable ? `<div class="srv-admin"><span>Admin</span><button type="button" class="btn danger slim" data-delete="1" ${hostOk && !busy.has(s.id) ? '' : 'disabled'}>Delete server</button><span>Stops it, takes a last backup, then removes it from the host.</span></div>` : ''}
     </article>`;
   }
 
+  // "Your world": download a zip of the world (fresh backup, link for 24h).
+  function worldHtml(s, hostOk) {
+    const d = s.download;
+    const working = d && (d.status === 'queued' || d.status === 'running');
+    const ready = d && d.status === 'done' && d.expiresAt && new Date(d.expiresAt).getTime() > Date.now();
+    const canStart = hostOk && s.status === 'active' && !working;
+    let body;
+    if (working) {
+      body = `<p class="world-state wait">Making a fresh backup and packing your world… this can take a few minutes. This page updates on its own.</p>
+        <button type="button" class="btn slim" disabled>Download world</button>`;
+    } else if (ready) {
+      body = `<p class="world-state ok">Your world is ready${d.bytes ? ` (${esc(fmtBytes(d.bytes))})` : ''}. The download works until ${esc(fmtUntil(d.expiresAt))}.</p>
+        <div class="world-btns"><button type="button" class="btn slim" data-world-get="1">Download${d.bytes ? ` (${esc(fmtBytes(d.bytes))})` : ''}</button>
+        <button type="button" class="btn ghost slim" data-world-new="1" ${canStart ? '' : 'disabled'}>Make a new one</button></div>`;
+    } else {
+      body = `${d && d.status === 'failed' ? `<p class="world-state err">${esc(d.result || 'The last download didn\'t work.')} Try again.</p>` : ''}
+        <button type="button" class="btn slim" data-world-new="1" ${canStart ? '' : 'disabled'}>Download world</button>`;
+    }
+    return `<section class="srv-section world">
+        <h3>Your world</h3>
+        <p>Download a copy of your world as a .zip. We take a fresh backup first, so it's up to the minute.</p>
+        ${body}
+      </section>`;
+  }
+
+  async function startWorldDownload(id) {
+    setNote(id, 'World download: asking the host…', 'wait');
+    try {
+      await api('/api/hosting/download', { method: 'POST', body: { serverId: id } });
+      setNote(id, '');
+      await load();
+    } catch (err) {
+      setNote(id, err.message, 'err');
+    }
+  }
+
+  async function getWorldDownload(id, btn) {
+    btn.disabled = true;
+    try {
+      const { url } = await api(`/api/hosting/download-link?serverId=${encodeURIComponent(id)}`);
+      window.location.href = url;   // the file downloads; the page stays
+    } catch (err) {
+      setNote(id, err.message, 'err');
+      await load();
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
   function render(data) {
     lastData = data;
+    clearTimeout(dlTimer);
+    if ((data.servers || []).some((x) => x.download && (x.download.status === 'queued' || x.download.status === 'running'))) {
+      dlTimer = setTimeout(() => { if (!document.hidden && !busy.size) load(); }, 5000);
+    }
     $('#account-email').textContent = data.email || session?.user?.email || '';
     $('#admin-badge').hidden = !data.isAdmin;
     $('#account-bar').hidden = false;
@@ -578,6 +636,8 @@
       const id = btn.closest('.srv')?.dataset.id;
       if (btn.dataset.act) return run(id, btn.dataset.act);
       if (btn.dataset.delete) return deleteServer(id);
+      if (btn.dataset.worldNew) return startWorldDownload(id);
+      if (btn.dataset.worldGet) return getWorldDownload(id, btn);
       if (btn.dataset.remove) return run(id, 'whitelist_remove', btn.dataset.remove);
       if (btn.dataset.copy) {
         navigator.clipboard?.writeText(btn.dataset.copy).then(() => {

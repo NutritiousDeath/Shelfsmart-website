@@ -380,3 +380,10 @@ button.btn:disabled { opacity: 0.6; cursor: wait; }
 .edition { font-weight: 600; font-size: 0.82rem; color: var(--ash); border: 1px solid var(--line); padding: 3px 9px; align-self: center; }
 .edition.bedrock { color: var(--live); border-color: rgba(62, 230, 255, 0.4); }
 .addr .addr-port { margin-left: 10px; }
+
+/* ── Hosting: Your world (download) ──────────────────────────────────────── */
+.world .world-state { margin: 4px 0 14px; font-weight: 500; }
+.world .world-state.wait { color: var(--fiber); }
+.world .world-state.ok { color: var(--live); }
+.world .world-state.err { color: #ff8a96; }
+.world .world-btns { display: flex; flex-wrap: wrap; gap: 10px; }
