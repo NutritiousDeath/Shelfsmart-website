@@ -26,6 +26,9 @@
   const JOB_POLL_MS = 1500;
   const JOB_POLL_MAX = 30;
   const NAME_RE = /^[A-Za-z0-9_]{3,16}$/;
+  // Bedrock Edition: Xbox gamertags (letters, numbers, single spaces, optional #1234 ending).
+  const GAMERTAG_RE = /^(?=.{1,16}$)[A-Za-z0-9]+(?: [A-Za-z0-9]+)*(?:#[0-9]{1,4})?$/;
+  const isBedrock = (s) => s && s.edition === 'bedrock';
 
   if (!window.supabase) { console.error('supabase-js failed to load'); return; }
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
@@ -148,7 +151,7 @@
   const notes = new Map();     // server id -> { text, kind }, survives re-renders
   let timer = null;
 
-  const LABEL = { start: 'Start', stop: 'Stop', restart: 'Restart', whitelist_add: 'Whitelist add', whitelist_remove: 'Whitelist remove', say: 'Message', backup: 'Backup', create_server: 'Server created', delete_server: 'Delete server' };
+  const LABEL = { start: 'Start', stop: 'Stop', restart: 'Restart', whitelist_add: 'Player added', whitelist_remove: 'Player removed', say: 'Message', backup: 'Backup', create_server: 'Server created', delete_server: 'Delete server' };
   let ordersData = null;
   let ordersAt = 0;               // orders change rarely: refreshed once a minute, or right after an action
   const ORDERS_EVERY_MS = 60 * 1000;
@@ -182,6 +185,17 @@
   }
 
   function addressHtml(s) {
+    // Bedrock has no SRV records, so players type the address and port in
+    // two separate boxes. Show (and copy) them separately.
+    if (s.address && isBedrock(s)) {
+      const m = /^(.*?)(?::(\d{1,5}))?$/.exec(s.address);
+      const host = m ? m[1] : s.address;
+      const port = m && m[2] ? m[2] : '';
+      return `<span class="addr-label">Server address</span><span class="addr-value">${esc(host)}</span>
+        <button type="button" class="btn ghost slim" data-copy="${esc(host)}">Copy</button>
+        <span class="addr-label addr-port">Port</span><span class="addr-value">${esc(port || '—')}</span>
+        ${port ? `<button type="button" class="btn ghost slim" data-copy="${esc(port)}">Copy</button>` : ''}`;
+    }
     if (s.address) {
       return `<span class="addr-label">Address</span><span class="addr-value">${esc(s.address)}</span>
         <button type="button" class="btn ghost slim" data-copy="${esc(s.address)}">Copy</button>`;
@@ -206,10 +220,13 @@
     const online = new Set(live.players || []);
     const whitelist = live.whitelist || [];
     const n = notes.get(s.id);
+    const bed = isBedrock(s);
+    const nameWord = bed ? 'Xbox gamertag' : 'Minecraft name';
 
     return `<article class="srv${running ? ' on' : ''}" data-id="${esc(s.id)}" aria-labelledby="srv-${esc(s.id)}">
       <div class="srv-head">
         <h2 id="srv-${esc(s.id)}">${esc(s.name)}</h2>
+        <span class="edition${bed ? ' bedrock' : ''}">${bed ? 'Bedrock' : 'Java'}</span>
         <p class="status ${st.cls}">${esc(st.text)}</p>
         ${busy.has(s.id) ? '<span class="busy">Working…</span>' : ''}
       </div>
@@ -229,13 +246,13 @@
       <p class="srv-note${n ? ` ${n.kind}` : ''}" role="status" aria-live="polite">${esc(n?.text || '')}</p>
 
       <section class="srv-section">
-        <h3>Who can join</h3>
+        <h3>Who can join <span class="muted">· ${bed ? 'Allowlist' : 'Whitelist'}</span></h3>
         <p>Only players on this list can join. It's always on, which keeps bots and strangers out. ${running ? '' : 'Start the server to change it.'}</p>
         <div class="chips">${whitelist.length
           ? whitelist.map((name) => `<span class="chip${online.has(name) ? ' online' : ''}" title="${online.has(name) ? 'Online now' : ''}">${esc(name)}<button type="button" data-remove="${esc(name)}" aria-label="Remove ${esc(name)}" ${dis(running)}>×</button></span>`).join('')
-          : '<p class="muted">Nobody yet. Add your own Minecraft name first.</p>'}</div>
+          : `<p class="muted">Nobody yet. Add your own ${nameWord} first.</p>`}</div>
         <form class="inline-form" data-form="whitelist">
-          <input name="player" maxlength="16" placeholder="Minecraft name" aria-label="Minecraft name to add" autocomplete="off" ${running ? '' : 'disabled'}>
+          <input name="player" maxlength="${bed ? 24 : 16}" placeholder="${nameWord}" aria-label="${nameWord} to add" autocomplete="off" ${running ? '' : 'disabled'}>
           <button class="btn slim" type="submit" ${dis(running)}>Add player</button>
         </form>
       </section>
@@ -576,9 +593,12 @@
       const input = form.querySelector('input');
       const value = input.value.trim();
       if (form.dataset.form === 'whitelist') {
-        if (!NAME_RE.test(value)) return setNote(id, 'Minecraft names are 3–16 letters, numbers or underscores.', 'err');
+        const bed = isBedrock(lastData?.servers.find((x) => x.id === id));
+        const name = bed ? value.replace(/\s+/g, ' ') : value;
+        if (bed && !GAMERTAG_RE.test(name)) return setNote(id, 'Xbox gamertags are up to 16 letters, numbers and single spaces.', 'err');
+        if (!bed && !NAME_RE.test(name)) return setNote(id, 'Minecraft names are 3–16 letters, numbers or underscores.', 'err');
         input.value = '';
-        return run(id, 'whitelist_add', value);
+        return run(id, 'whitelist_add', name);
       }
       if (form.dataset.form === 'say') {
         if (!value) return setNote(id, 'Type a message first.', 'err');

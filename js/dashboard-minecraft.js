@@ -23,12 +23,22 @@
 
   const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 12l9-5M12 12v10M12 12L3 7"/></svg>';
 
-  const LABEL = { start: 'Start', stop: 'Stop', restart: 'Restart', backup: 'Backup', whitelist_add: 'Whitelist +', whitelist_remove: 'Whitelist −', say: 'Say', create_server: 'Created', delete_server: 'Delete server' };
+  const LABEL = { start: 'Start', stop: 'Stop', restart: 'Restart', backup: 'Backup', whitelist_add: 'List +', whitelist_remove: 'List −', say: 'Say', create_server: 'Created', delete_server: 'Delete server' };
 
   let timer = null;
   let busy = new Set();      // server ids with an action in flight
   let lastData = null;
   let editingAddress = null; // server id whose address box is open
+
+  // Java uses Minecraft names + a whitelist; Bedrock uses Xbox gamertags
+  // (spaces allowed) + an allowlist, and players always type the port.
+  const JAVA_NAME = /^[A-Za-z0-9_]{3,16}$/;
+  const GAMERTAG = /^(?=.{1,16}$)[A-Za-z0-9]+(?: [A-Za-z0-9]+)*(?:#[0-9]{1,4})?$/;
+  const isBedrock = (s) => s && s.edition === 'bedrock';
+  function splitAddress(addr) {
+    const m = /^(.*?)(?::(\d{1,5}))?$/.exec(String(addr || ''));
+    return { host: m ? m[1] : '', port: m && m[2] ? m[2] : '' };
+  }
 
   const CSS = `
     #tab-mc .mc-host { display:flex; align-items:center; gap:12px; flex-wrap:wrap; border:1px solid rgba(255,255,255,0.08); padding:12px 16px; margin-bottom:20px; ${mono}; font-size:0.7rem; color:var(--grey); }
@@ -53,6 +63,10 @@
     #tab-mc .mc-job { display:flex; gap:10px; ${mono}; font-size:0.64rem; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05); color:var(--grey); }
     #tab-mc .mc-addr { ${mono}; font-size:0.78rem; color:var(--cyan); cursor:pointer; border-bottom:1px dashed rgba(var(--accent-rgb),0.4); }
     #tab-mc .mc-link { ${mono}; font-size:0.6rem; color:var(--grey); background:none; border:none; cursor:pointer; text-decoration:underline; padding:0; }
+    #tab-mc .mc-ed { ${mono}; font-size:0.56rem; letter-spacing:1px; padding:3px 8px; border:1px solid var(--line); color:var(--grey); }
+    #tab-mc .mc-ed.bedrock { color:var(--green); border-color:rgba(var(--green-rgb),0.45); }
+    #tab-mc .mc-connect { display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+    #tab-mc .mc-connect span.k { ${mono}; font-size:0.58rem; color:var(--grey); margin-right:6px; }
   `;
 
   const TAB_HTML = `
@@ -124,17 +138,29 @@
     const dis = (cond) => (controllable && cond ? '' : 'disabled');
     const online = new Set(live.players || []);
     const whitelist = live.whitelist || [];
+    const bed = isBedrock(s);
+    const listWord = bed ? 'ALLOWLIST' : 'WHITELIST';
+    const nameWord = bed ? 'Xbox gamertag' : 'Minecraft name';
 
+    let shown = '';
+    if (s.address && bed) {
+      const { host, port } = splitAddress(s.address);
+      shown = `<span class="mc-connect">
+          <span><span class="k">SERVER ADDRESS</span><span class="mc-addr" data-copy="${esc(host)}" title="Click to copy">${esc(host)}</span></span>
+          <span><span class="k">PORT</span>${port ? `<span class="mc-addr" data-copy="${esc(port)}" title="Click to copy">${esc(port)}</span>` : '<span style="color:var(--pink)">missing — edit to add it</span>'}</span>
+        </span> <button class="mc-link" data-addr-edit="${s.id}">edit</button>`;
+    } else if (s.address) {
+      shown = `<span class="mc-addr" data-copy="${esc(s.address)}" title="Click to copy">${esc(s.address)}</span> <button class="mc-link" data-addr-edit="${s.id}">edit</button>`;
+    }
     const address = editingAddress === s.id
-      ? `<div class="mc-row" style="margin-top:6px"><input class="mc-input" data-addr-input="${s.id}" maxlength="96" placeholder="play.example.com:25565" value="${esc(s.address || '')}" style="flex:1;max-width:320px">
+      ? `<div class="mc-row" style="margin-top:6px"><input class="mc-input" data-addr-input="${s.id}" maxlength="96" placeholder="${bed ? 'play.example.com:19132' : 'play.example.com:25565'}" value="${esc(s.address || '')}" style="flex:1;max-width:320px">
            <button class="mc-btn" data-addr-save="${s.id}">Save</button><button class="mc-link" data-addr-cancel="1">cancel</button></div>`
-      : (s.address
-        ? `<span class="mc-addr" data-copy="${esc(s.address)}" title="Click to copy">${esc(s.address)}</span> <button class="mc-link" data-addr-edit="${s.id}">edit</button>`
-        : `<button class="mc-link" data-addr-edit="${s.id}" style="color:var(--cyan)">+ set the address players connect to</button>`);
+      : (shown || `<button class="mc-link" data-addr-edit="${s.id}" style="color:var(--cyan)">+ set the address players connect to${bed ? ' (with the port)' : ''}</button>`);
 
     return card(`// ${esc(s.name.toLowerCase())}`, `
       <div class="mc-head">
         <span class="mc-name">${esc(s.name)}</span>
+        <span class="mc-ed${bed ? ' bedrock' : ''}">${bed ? 'BEDROCK' : 'JAVA'}</span>
         <span class="mc-pill" style="color:${st.color};border-color:${st.color}">${esc(st.text)}</span>
         ${busy.has(s.id) ? `<span style="${mono};font-size:0.6rem;color:var(--cyan)">working…</span>` : ''}
       </div>
@@ -155,12 +181,12 @@
         <button class="mc-btn" data-act="backup" data-id="${s.id}" ${dis(true)}>Backup</button>
       </div>
 
-      <p class="mc-label">WHITELIST — WHO CAN JOIN ${whitelist.length ? `(${whitelist.length})` : ''}</p>
+      <p class="mc-label">${listWord} — WHO CAN JOIN ${whitelist.length ? `(${whitelist.length})` : ''}</p>
       <div>${whitelist.length
         ? whitelist.map((n) => `<span class="mc-chip${online.has(n) ? ' on' : ''}" title="${online.has(n) ? 'Online now' : ''}">${online.has(n) ? '● ' : ''}${esc(n)}<button data-wl-remove="${esc(n)}" data-id="${s.id}" title="Remove" ${dis(running)}>×</button></span>`).join('')
         : `<p style="${mono};font-size:0.66rem;color:var(--grey);margin-top:6px">Nobody yet.</p>`}</div>
       <div class="mc-row">
-        <input class="mc-input" data-wl-input="${s.id}" maxlength="16" placeholder="Minecraft name" style="width:190px">
+        <input class="mc-input" data-wl-input="${s.id}" maxlength="${bed ? 24 : 16}" placeholder="${nameWord}" style="width:190px">
         <button class="mc-btn" data-wl-add="${s.id}" ${dis(running)}>Add</button>
         ${!running && s.status === 'active' ? `<span style="${mono};font-size:0.6rem;color:var(--grey)">server must be running</span>` : ''}
       </div>
@@ -264,8 +290,11 @@
     if (d.wlRemove) return runAction(d.id, 'whitelist_remove', d.wlRemove);
     if (d.wlAdd) {
       const input = document.querySelector(`#tab-mc [data-wl-input="${d.wlAdd}"]`);
-      const name = input.value.trim();
-      if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) return msg(d.wlAdd, 'Minecraft names are 3–16 letters, numbers or underscores.', 'var(--pink)');
+      const server = lastData?.servers?.find((x) => x.id === d.wlAdd);
+      const bed = isBedrock(server);
+      const name = bed ? input.value.trim().replace(/\s+/g, ' ') : input.value.trim();
+      if (bed && !GAMERTAG.test(name)) return msg(d.wlAdd, 'Xbox gamertags are up to 16 letters, numbers and single spaces.', 'var(--pink)');
+      if (!bed && !JAVA_NAME.test(name)) return msg(d.wlAdd, 'Minecraft names are 3–16 letters, numbers or underscores.', 'var(--pink)');
       input.value = '';
       return runAction(d.wlAdd, 'whitelist_add', name);
     }

@@ -375,3 +375,8 @@ button.btn:disabled { opacity: 0.6; cursor: wait; }
 .srv-admin { margin-top: 32px; padding-top: 18px; border-top: 1px dashed var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; color: var(--ash); font-size: 0.93rem; }
 
 .form-note.wait { color: var(--fiber); }
+
+/* ── Hosting: Minecraft edition ──────────────────────────────────────────── */
+.edition { font-weight: 600; font-size: 0.82rem; color: var(--ash); border: 1px solid var(--line); padding: 3px 9px; align-self: center; }
+.edition.bedrock { color: var(--live); border-color: rgba(62, 230, 255, 0.4); }
+.addr .addr-port { margin-left: 10px; }
