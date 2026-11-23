@@ -68,6 +68,7 @@ p { max-width: 64ch; }
 .nav ul a { color: var(--ash); text-decoration: none; font-weight: 500; font-size: 0.95rem; }
 .nav ul a:hover, .nav ul a[aria-current="page"] { color: var(--bone); }
 .nav ul a[aria-current="page"] { box-shadow: 0 2px 0 var(--violet); }
+.nav-phone { display: none; }
 .nav-toggle { display: none; margin-left: auto; background: none; border: 1px solid var(--line); color: var(--bone); padding: 8px 12px; font: 500 0.9rem var(--body); cursor: pointer; }
 
 @media (max-width: 860px) {
@@ -77,6 +78,7 @@ p { max-width: 64ch; }
   .nav ul a { display: block; padding: 12px clamp(20px, 5vw, 56px); }
   .nav ul a[aria-current="page"] { box-shadow: inset 3px 0 0 var(--violet); }
   .nav .btn { display: none; }
+  .nav ul .nav-phone { display: list-item; }
 }
 
 /* ── Buttons ─────────────────────────────────────────────────────────────── */
